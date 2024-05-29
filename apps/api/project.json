@@ -61,7 +61,7 @@
             "dependsOn": ["^build"],
             "executor": "nx:run-commands",
             "options": {
-                "command": "npx hardhat node --hostname 0.0.0.0",
+                "command": "npx hardhat node",
                 "cwd": "apps/api/src/app/hardhat"
             }
         },
