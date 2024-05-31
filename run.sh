@@ -8,4 +8,6 @@ npm install -g yarn
 
 yarn
 
+source .santa-keys || true
+
 $1
