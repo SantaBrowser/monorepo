@@ -1,19 +1,19 @@
 ### Usage
 
-Run in this order as apps depend on eachother and will fail if services are not fully started.
+### localhost
 
-install node version 18.18.2
-
-create .env in root folder from .env.example
-
-create .env in apps/api/.env from .env.example
-
-create .env in apps/auth/.env from .env.example
+This repo requires 18.18.2 node version, it is mandatory to use only this version.
 
 ```bash
-yarn
-yarn serve:docker
-yarn hardhat
-yarn serve:api
-yarn serve:auth
+Terminal 1
+./init.sh
+
+./run.sh "yarn hardhat" # This will leave terminal busy with hardhat service
+
+Terminal 2
+./run.sh "yarn serve:auth" # This will leave terminal busy with auth service
+
+Terminal 2
+./run.sh "yarn serve:api" # This will leave terminal busy with api service
+
 ```
