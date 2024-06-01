@@ -8,8 +8,7 @@ cd ..
 
 cp -f .env.example .env
 cp apps/auth/.env.example apps/auth/.env
-
+cp apps/app/.env.example apps/app/.env
 cp apps/api/.env.example apps/api/.env
 
 ./run.sh echo
-./run.sh "yarn serve:docker"
