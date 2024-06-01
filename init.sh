@@ -6,14 +6,10 @@ cd certs
 openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 365 -keyout localhost.key -out localhost.crt
 cd ..
 
-cp -f .env.localhost .env
-cat ~/.santa-thx-keys >> .env
+cp -f .env.example .env
+cp apps/auth/.env.example apps/auth/.env
 
-cp apps/auth/.env.localhost apps/auth/.env
-cat ~/.santa-thx-keys >> apps/auth/.env
-
-cp apps/api/.env.localhost apps/api/.env
-cat ~/.santa-thx-keys >> apps/api/.env
+cp apps/api/.env.example apps/api/.env
 
 ./run.sh echo
 ./run.sh "yarn serve:docker"

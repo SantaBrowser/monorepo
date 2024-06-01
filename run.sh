@@ -8,6 +8,4 @@ npm install -g yarn
 
 yarn
 
-source $HOME/.santa-thx-keys || true
-
 $1

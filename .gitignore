@@ -50,3 +50,8 @@ certs/*
 
 # Docker
 docker/data/**/*
+
+# Logs
+hardhat.log 
+api.log
+auth.log
