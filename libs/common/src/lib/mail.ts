@@ -20,7 +20,7 @@ function sendMail(to: string, subject: string, html: string) {
                     Data: subject,
                 },
             },
-            Source: 'DemanTag Network <jaleel27@gmail.com>',
+            Source: 'Santabrowser <no-reply@santabrowser.com>',
         },
         console.log,
     );
