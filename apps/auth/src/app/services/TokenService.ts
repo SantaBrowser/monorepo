@@ -82,6 +82,7 @@ export default class TokenService {
     }
 
     static async setToken(account: AccountDocument, token: Partial<TokenDocument>) {
+        console.log("setToken", account, token)
         // Store the token for the new account
         return Token.findOneAndUpdate(
             { sub: account._id, kind: token.kind },
@@ -91,6 +92,7 @@ export default class TokenService {
     }
 
     static async unsetToken(account: AccountDocument, kind: AccessTokenKind) {
+        console.log("unsetToken", account, kind)
         const token = await this.getToken(account, kind);
 
         // Revoke access at token provider if token has scopes

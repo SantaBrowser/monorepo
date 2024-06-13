@@ -42,7 +42,7 @@ morganBody(app, {
 });
 
 app.use(express.urlencoded({ extended: true }));
-app.use(corsHandler);
+// app.use(corsHandler);
 app.use(`/${VERSION}`, router);
 app.use(notFoundHandler);
 app.use(errorLogger);

@@ -31,11 +31,12 @@ function createOTP(account: AccountDocument) {
 
 export class MailService {
     static sendMail(to: string, subject: string, html: string, link = '') {
+	console.log(NODE_ENV);
         if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || NODE_ENV === 'test' || CYPRESS_EMAIL === to) {
             logger.debug({ message: 'Not sending e-mail', link });
             return;
         }
-        sendMail(to, subject, html);
+        //sendMail(to, subject, html);
     }
 
     static async sendVerificationEmail(account: AccountDocument, email: string, returnUrl: string) {
@@ -67,6 +68,7 @@ export class MailService {
 
     static async sendOTPMail(account: AccountDocument) {
         const otp = createOTP(account);
+	console.log("CREATE OTP", otp);
         const hashedOtp = await bcrypt.hash(otp, 10);
         const html = await ejs.renderFile(
             path.join(mailTemplatePath, 'email-otp.ejs'),

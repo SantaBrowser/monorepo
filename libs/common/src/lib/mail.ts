@@ -1,7 +1,7 @@
 import { SES } from '@aws-sdk/client-ses';
 
 const ses = new SES({
-    region: 'eu-west-3',
+    region: 'ap-south-1',
 });
 
 function sendMail(to: string, subject: string, html: string) {
@@ -20,7 +20,7 @@ function sendMail(to: string, subject: string, html: string) {
                     Data: subject,
                 },
             },
-            Source: 'THX Network <noreply@thx.network>',
+            Source: 'Santabrowser <no-reply@santabrowser.com>',
         },
         console.log,
     );
