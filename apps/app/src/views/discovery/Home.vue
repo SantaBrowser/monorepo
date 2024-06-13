@@ -28,13 +28,7 @@
                 <BaseCardCampaign v-for="campaign of campaigns.results" class="mt-3" :campaign="campaign" />
             </b-col>
         </b-row>
-        <b-pagination
-            v-model="page"
-            :per-page="limit"
-            :total-rows="campaigns.total"
-            align="center"
-            class="mt-3 mb-0"
-        ></b-pagination>
+        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />
     </b-container>
     <b-container class="mb-5">
         <b-row class="mt-5 mb-3">
@@ -87,6 +81,7 @@ import { decodeHTML } from '../../utils/decode-html';
 import imgJumbotron from '../../assets/thx_token_governance.png';
 import imgLogo from '../../assets/logo.png';
 import imgHeader from '../../assets/thx_token_governance.png';
+import * as html from 'html-entities';
 
 export default defineComponent({
     name: 'Home',
@@ -104,7 +99,7 @@ export default defineComponent({
             imgLogo,
             isLoading: true,
             page: 1,
-            limit: 15,
+            limit: 20,
             search: '',
             debouncedSearch: null as any,
             screenWidth: window.innerWidth,
@@ -127,7 +122,6 @@ export default defineComponent({
         await this.getCampaigns();
         await this.getQuests();
         this.isLoading = false;
-        this.accountStore.getParticipants();
     },
     methods: {
         async getCampaigns() {
@@ -141,6 +135,11 @@ export default defineComponent({
             const res = await fetch(url);
             const campaigns = await res.json();
             this.campaigns = campaigns;
+            this.campaigns.results = this.campaigns.results.map((campaign: any) => ({
+                ...campaign,
+                title: html.decode(campaign.title),
+                description: html.decode(campaign.description),
+            }));
         },
         async getQuests() {
             const url = new URL(API_URL);
@@ -148,7 +147,11 @@ export default defineComponent({
             const res = await fetch(url);
             const questLists = await res.json();
 
-            this.questLists = questLists;
+            this.questLists = questLists.map((quest: TBaseQuest) => ({
+                ...quest,
+                title: html.decode(quest.title),
+                description: html.decode(quest.description),
+            }));
         },
         onInputSearch() {
             this.isLoadingSearch = true;

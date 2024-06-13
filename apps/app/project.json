@@ -23,6 +23,18 @@
             },
             "configurations": {}
         },
+        "lambda-deploy": {
+            "executor": "nx:run-commands",
+            "options": {
+                "commands": [
+                    "zip -r {args.app}-HTMLResponseCampaignDetail.zip .",
+                    "aws lambda update-function-code --function-name {args.app}-HTMLResponseCampaignDetail --region us-east-1 --zip-file fileb://{args.app}-HTMLResponseCampaignDetail.zip",
+                    "aws lambda publish-version --function-name {args.app}-HTMLResponseCampaignDetail --region us-east-1"
+                ],
+                "parallel": false,
+                "cwd": "apps/app/src/lambda/HTMLResponseCampaignDetail"
+            }
+        },
         "lint": {
             "executor": "@nx/eslint:lint",
             "outputs": ["{options.outputFile}"]

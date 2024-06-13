@@ -12,8 +12,8 @@ export const useRewardStore = defineStore('reward', {
     actions: {
         updateSupply: function (id: string) {
             const index = this.rewards.findIndex((reward) => reward._id === id);
-            this.rewards[index].limitSupply.count = this.rewards[index].limitSupply.count + 1;
-            this.rewards[index].limit.count = this.rewards[index].limit.count + 1;
+            this.rewards[index].limitSupplyProgress.count = this.rewards[index].limitSupplyProgress.count + 1;
+            this.rewards[index].limitProgress.count = this.rewards[index].limitProgress.count + 1;
         },
         trackEvent(variant: RewardVariant) {
             const { account, poolId } = useAccountStore();
@@ -40,11 +40,11 @@ export const useRewardStore = defineStore('reward', {
             this.updateSupply(id);
             this.trackEvent(variant);
         },
-        async list() {
+        async list(poolId?: string) {
             const { api } = useAccountStore();
             this.isLoading = true;
 
-            const { coin, nft, custom, coupon, discordRole, galachain } = await api.rewards.list();
+            const { coin, nft, custom, coupon, discordRole, galachain } = await api.rewards.list(poolId);
             this.rewards = [...coin, ...nft, ...custom, ...coupon, ...discordRole, ...galachain]
                 .sort((a: any, b: any) => toNumber(b.createdAt) - toNumber(a.createdAt))
                 .sort((a: any, b: any) => toNumber(b.isPromoted) - toNumber(a.isPromoted));

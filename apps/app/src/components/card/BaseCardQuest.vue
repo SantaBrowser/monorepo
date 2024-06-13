@@ -64,7 +64,7 @@
                             <div>
                                 {{ link.label }}
                             </div>
-                            <i class="fas fa-caret-right text-opaque"></i>
+                            <i class="fas fa-caret-right text-opaque ms-3"></i>
                         </b-dropdown-item>
                     </b-dropdown>
                 </div>
@@ -159,7 +159,7 @@ export default defineComponent({
             });
         },
         isAlertMinFollowersShown() {
-            return this.quest.contentMetadata && !!this.quest.contentMetadata.minFollowersCount;
+            return this.quest.contentMetadata && !!Number(this.quest.contentMetadata.minFollowersCount);
         },
         hasExpiry() {
             return !!this.expiryDate;

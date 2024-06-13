@@ -51,7 +51,12 @@ certs/*
 # Docker
 docker/data/**/*
 
-# Logs
-hardhat.log 
-api.log
-auth.log
+# yarn
+.pnp.*
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

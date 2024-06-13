@@ -11,6 +11,9 @@ import { BigNumber } from 'ethers/lib/ethers';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
 import { mapStores } from 'pinia';
 import { useVeStore } from '@thxnetwork/app/stores/VE';
+import { useAccountStore } from '@thxnetwork/app/stores/Account';
+import { contractNetworks } from '../../config/constants';
+import { ChainId } from '@thxnetwork/common/enums';
 
 export default defineComponent({
     name: 'BaseButtonLiquidityLock',
@@ -25,12 +28,24 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useWalletStore, useVeStore),
+        ...mapStores(useWalletStore, useVeStore, useAccountStore),
+        address() {
+            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            return contractNetworks[this.walletStore.wallet.chainId];
+        },
         amountInWei() {
             return BigNumber.from(this.amount);
         },
+        balanceBPTGauge() {
+            return BigNumber.from(this.walletStore.balances[this.address.BPTGauge]);
+        },
         isDisabled() {
-            return this.isPolling;
+            return (
+                this.isPolling ||
+                !this.veStore.isAccepted ||
+                this.balanceBPTGauge.lt(this.amountInWei) ||
+                this.amountInWei.eq(0)
+            );
         },
     },
     methods: {
@@ -42,8 +57,10 @@ export default defineComponent({
                 this.isPolling = true;
 
                 const lockEndTimestamp = Math.ceil(new Date(this.lockEnd).getTime() / 1000);
-                await this.veStore.deposit(wallet, { amountInWei: this.amountInWei.toString(), lockEndTimestamp });
+                const data = { amountInWei: this.amountInWei.toString(), lockEndTimestamp };
+                await this.veStore.deposit(wallet, data);
                 await this.veStore.waitForLock(wallet, this.amountInWei, lockEndTimestamp);
+                await this.walletStore.getBalance(this.address.BPTGauge);
 
                 this.$emit('success');
             } catch (error) {

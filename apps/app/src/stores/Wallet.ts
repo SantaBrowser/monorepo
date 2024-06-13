@@ -175,12 +175,19 @@ export const useWalletStore = defineStore('wallet', {
         async sendTransaction(from: string, to: `0x${string}`, data: `0x${string}`, gas?: any) {
             await this.createWeb3Modal();
 
-            if (!this.account || this.account.address !== from) {
-                await this.connect();
+            if (
+                !this.account ||
+                !this.account.address ||
+                !this.wallet ||
+                this.wallet.address.toLowerCase() !== this.account.address.toLowerCase()
+            ) {
+                this.isModalChainSwitchShown = true;
+                throw new Error(`Please connect address ${from}.`);
             }
 
-            if (this.chainId && this.chainId !== this.chainId) {
-                await this.switchChain(this.chainId);
+            if (this.chainId && this.wallet && this.wallet.chainId !== this.chainId) {
+                this.isModalChainSwitchShown = true;
+                throw new Error(`Please set your network to ${this.wallet.chainId}.`);
             }
 
             return sendTransaction(wagmiConfig, { to, data, gas });
@@ -216,21 +223,24 @@ export const useWalletStore = defineStore('wallet', {
             this.erc721[index] = { ...token, component: 'BaseCardERC721' };
         },
         async list() {
-            if (!this.wallet) return;
             const { api } = useAccountStore();
             this.isLoading = true;
 
-            const [erc20, erc721, erc1155, payments] = await Promise.all([
-                api.erc20.list({ walletId: this.wallet._id }),
-                api.erc721.list({ walletId: this.wallet._id }),
-                api.erc1155.list({ walletId: this.wallet._id }),
+            const promises = [
                 api.request.get('/v1/rewards/payments'),
-            ]);
+                ...(this.wallet
+                    ? [
+                          api.erc20.list({ walletId: this.wallet._id }),
+                          api.erc721.list({ walletId: this.wallet._id }),
+                          api.erc1155.list({ walletId: this.wallet._id }),
+                      ]
+                    : []),
+            ];
 
-            // TODO Refactor to using a component map with r.variant as key
-            this.erc20 = erc20.map((t: TERC20Token) => ({ ...t, component: 'BaseCardERC20' }));
-            this.erc721 = erc721.map((t: TERC721Token) => ({ ...t, component: 'BaseCardERC721' }));
-            this.erc1155 = erc1155.map((t: TERC721Token) => ({ ...t, component: 'BaseCardERC721' }));
+            const [payments, erc20, erc721, erc1155] = await Promise.all(promises);
+            this.erc20 = erc20 ? erc20.map((t: TERC20Token) => ({ ...t, component: 'BaseCardERC20' })) : [];
+            this.erc721 = erc721 ? erc721.map((t: TERC721Token) => ({ ...t, component: 'BaseCardERC721' })) : [];
+            this.erc1155 = erc1155 ? erc1155.map((t: TERC721Token) => ({ ...t, component: 'BaseCardERC721' })) : [];
             this.couponCodes = payments
                 .filter((p: { rewardVariant: RewardVariant }) => p.rewardVariant === RewardVariant.Coupon)
                 .map((t: TRewardCouponPayment[]) => ({

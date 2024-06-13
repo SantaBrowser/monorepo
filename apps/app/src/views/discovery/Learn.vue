@@ -1,28 +1,19 @@
 <template>
-    <BaseCardHeader>
+    <BaseCardHeader :img-src="imgTreasury">
         <template #primary>
-            <h1 class="text-opaque">
-                Onboarding <br />
-                Quest &amp; Rewards
-            </h1>
+            <h1 class="">Learn about <br /><strong>THX Network</strong></h1>
             <p class="lead">
                 Get lottery tickets for NFT's at a discount and claim the Discord Role for your membership rank.
             </p>
-            <b-button variant="success" href="https://app.thx.network/c/thx-app/rewards" target="_blank" class="px-5">
-                Onboarding Rewards
+            <b-button class="px-5" variant="success" href="https://docs.thx.network/faq/lottery" target="_blank">
+                Learn more
+                <i class="fas fa-chevron-right ms-2" />
             </b-button>
         </template>
         <template #secondary>
-            <div
-                :style="{
-                    backgroundImage: `url(${imgTreasury})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center bottom',
-                }"
-                class="d-flex align-items-center justify-content-center h-100 rounded p-5"
-            >
-                <div class="p-5 rounded text-center" :style="{ background: 'rgba(0, 0, 0, 0.75)' }">
-                    <strong class="text-success h1">
+            <div class="d-flex align-items-center justify-content-end h-100 p-5 position-relative">
+                <div class="w-100 p-5 rounded text-center" :style="{ background: 'rgba(0, 0, 0, 0.5)' }">
+                    <strong class="text-success h1 fw-bold">
                         {{ participant ? participant.balance : 0 }}
                     </strong>
                     <br />
@@ -33,7 +24,7 @@
     </BaseCardHeader>
     <b-container>
         <b-row>
-            <b-col lg="8" offset-lg="2">
+            <b-col md="8">
                 <div v-for="(quest, index) of questStore.quests" class="d-flex align-items-start quest-wrapper py-5">
                     <div
                         style="width: 50px; height: 50px; font-size: 1.5rem"
@@ -45,6 +36,16 @@
                     <component :is="questComponentMap[quest.variant]" :quest="quest" />
                 </div>
             </b-col>
+            <b-col md="4">
+                <BaseCardReward v-for="reward of rewards" :image="reward.image" :reward="reward">
+                    <template #title>
+                        <div class="flex-grow-1">{{ reward.title }}</div>
+                        <div class="text-accent fw-bold">
+                            {{ reward.amount }} {{ reward.erc20 && reward.erc20.symbol }}
+                        </div>
+                    </template>
+                </BaseCardReward>
+            </b-col>
         </b-row>
     </b-container>
 </template>
@@ -54,7 +55,7 @@ import { useQuestStore } from '@thxnetwork/app/stores/Quest';
 import { mapStores } from 'pinia';
 import { defineComponent } from 'vue';
 import { questComponentMap } from '../../utils/quests';
-import imgTreasury from '../../assets/thx_token_subscribe.webp';
+import imgTreasury from '../../assets/thx_header_learn.jpg';
 import BaseCardQuestInvite from '../../components/card/BaseCardQuestInvite.vue';
 import BaseCardQuestSocial from '../../components/card/BaseCardQuestSocial.vue';
 import BaseCardQuestCustom from '../../components/card/BaseCardQuestCustom.vue';
@@ -64,6 +65,8 @@ import BaseCardQuestGitcoin from '../../components/card/BaseCardQuestGitcoin.vue
 import BaseCardQuestWebhook from '../../components/card/BaseCardQuestWebhook.vue';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
+import { useRewardStore } from '@thxnetwork/app/stores/Reward';
+import { CAMPAIGN_ID } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'Learn',
@@ -81,19 +84,27 @@ export default defineComponent({
             imgTreasury,
             questComponentMap,
             isAlertShown: true,
-            campaignId: '663259683f597135e0007c60',
+            campaignId: CAMPAIGN_ID,
         };
     },
     computed: {
-        ...mapStores(useQuestStore, useAccountStore, useAuthStore),
+        ...mapStores(useQuestStore, useRewardStore, useAccountStore, useAuthStore),
         participant() {
             return this.accountStore.participants.find((p) => p.poolId === this.campaignId);
+        },
+        quests() {
+            return this.questStore.quests;
+        },
+        rewards() {
+            const blacklist = [''];
+            return this.rewardStore.rewards.filter((r) => !blacklist.includes(r._id));
         },
     },
     watch: {
         'accountStore.isAuthenticated': {
             handler(isAuthenticated: boolean) {
                 this.questStore.list(this.campaignId);
+                this.rewardStore.list(this.campaignId);
                 if (!isAuthenticated) return;
                 this.accountStore.getParticipants(this.campaignId);
             },

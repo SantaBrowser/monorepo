@@ -25,6 +25,7 @@ import {
     QuestDaily,
     CouponCode,
     WalletDocument,
+    Brand,
 } from '@thxnetwork/api/models';
 
 import AccountProxy from '../proxies/AccountProxy';
@@ -34,6 +35,7 @@ import SafeService from './SafeService';
 import ParticipantService from './ParticipantService';
 import DiscordService from './DiscordService';
 import ContractService from './ContractService';
+import AnalyticsService from './AnalyticsService';
 
 export const ADMIN_ROLE = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
@@ -62,6 +64,22 @@ function getByAddress(address: string) {
     return Pool.findOne({ address });
 }
 
+async function getLeaderboard(pool: PoolDocument, options: { startDate: Date; endDate: Date; limit: number }) {
+    const leaderboard = await AnalyticsService.createLeaderboard(pool, options);
+    const topTen = leaderboard.slice(0, options.limit);
+    const subs = topTen.map((p) => p.sub);
+    const accounts = await AccountProxy.find({ subs });
+    return topTen.map((p, index) => {
+        const { username, profileImg } = accounts.find((a) => a.sub === p.sub);
+        return {
+            rank: Number(index) + 1,
+            account: { username, profileImg },
+            score: p.score,
+            questEntryCount: p.questEntryCount,
+        };
+    });
+}
+
 async function deploy(sub: string, title: string): Promise<PoolDocument> {
     const pool = await Pool.create({
         sub,
@@ -72,10 +90,6 @@ async function deploy(sub: string, title: string): Promise<PoolDocument> {
             description: '',
             isArchived: false,
             isWeeklyDigestEnabled: true,
-            isTwitterSyncEnabled: false,
-            defaults: {
-                conditionalRewards: { title: '', description: '', amount: 50 },
-            },
             authenticationMethods: [
                 AccountVariant.EmailPassword,
                 AccountVariant.Metamask,
@@ -108,11 +122,22 @@ async function getAllBySub(sub: string): Promise<PoolDocument[]> {
         pools = pools.concat(collaborationPools);
     }
 
+    // Get usernames for pool owners
+    const subs = pools.map((p) => p.sub);
+    const accounts = await AccountProxy.find({ subs });
+
     // Add Safes to pools
     return await Promise.all(
         pools.map(async (pool) => {
+            const brand = await Brand.findOne({ poolId: pool.id });
             const safe = await SafeService.findOneByPool(pool);
-            return { ...pool.toJSON(), safe };
+            const participantCount = await Participant.countDocuments({ poolId: pool.id });
+            const account = accounts.find((a) => a.sub === pool.sub);
+            const author = account && {
+                username: account.username,
+            };
+
+            return { ...pool.toJSON(), participantCount, author, brand, safe };
         }),
     );
 }
@@ -405,4 +430,5 @@ export default {
     findCollaborators,
     findCouponCodes,
     inviteCollaborator,
+    getLeaderboard,
 };

@@ -10,9 +10,13 @@
             <i class="fas fa-exclamation-circle me-1"></i>
             {{ error }}
         </b-alert>
+
+        <b-alert v-model="isEarlyAlertShown" class="p-2" variant="primary">
+            <i class="fas fa-info-circle me-1" />
+            A penalty will be applied on early withdrawals!
+        </b-alert>
         <p class="text-opaque">
-            A penalty is applied to early withdraws. This penalty will be subtracted from your locked amount and
-            redistributed as rewards.
+            This penalty will be subtracted from your locked amount and redistributed to other lockers as rewards.
         </p>
         <b-form-group v-if="isEarly">
             <b-form-checkbox v-model="isEarlyAttempt">
@@ -42,8 +46,10 @@ import { useVeStore } from '../../stores/VE';
 import { useWalletStore } from '../../stores/Wallet';
 import { MAX_LOCK_TIME, contractNetworks } from '../../config/constants';
 import { useLiquidityStore } from '@thxnetwork/app/stores/Liquidity';
+import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { calculatePenalty, toFiatPrice } from '@thxnetwork/app/utils/price';
 import { WalletVariant } from '@thxnetwork/app/types/enums/accountVariant';
+import { track } from '@thxnetwork/common/mixpanel';
 
 export default defineComponent({
     name: 'BaseModalWithdraw',
@@ -62,9 +68,12 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useWalletStore, useVeStore, useLiquidityStore),
+        ...mapStores(useWalletStore, useVeStore, useLiquidityStore, useAccountStore),
         isAlertInfoShown() {
             return !!this.error;
+        },
+        isEarlyAlertShown() {
+            return this.isEarly;
         },
         penaltyInWei() {
             const end = Math.floor(this.veStore.lock.end / 1000);
@@ -101,6 +110,7 @@ export default defineComponent({
 
                 this.walletStore.getBalance(contractNetworks[wallet.chainId].BPTGauge);
 
+                this.trackEvent({ isEarly: this.isEarly, isEarlyAttempt: this.isEarlyAttempt });
                 this.$emit('hidden');
             } catch (response) {
                 this.onError(response);
@@ -110,6 +120,11 @@ export default defineComponent({
         },
         onError(response: any) {
             this.error = response && response.error ? response.error.message : 'Something went wrong...';
+        },
+        trackEvent(data: any) {
+            const { poolId, account } = this.accountStore;
+            const { wallet } = this.walletStore;
+            track('UserCreates', [account?.sub, 'withdrawal', { poolId, address: wallet?.address, ...data }]);
         },
     },
 });

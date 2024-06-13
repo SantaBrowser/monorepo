@@ -70,7 +70,7 @@ export default class RewardService {
                         const isAvailable = account
                             ? !isLocked && !isExpired && !isLimitSupplyReached && !isLimitReached
                             : true;
-                        const limit = {
+                        const limitProgress = {
                             count: account
                                 ? await serviceMap[reward.variant].models.payment.countDocuments({
                                       rewardId: reward.id,
@@ -82,7 +82,7 @@ export default class RewardService {
                         const paymentCount = await serviceMap[reward.variant].models.payment.countDocuments({
                             rewardId: reward.id,
                         });
-                        const limitSupply = {
+                        const limitSupplyProgress = {
                             count: paymentCount,
                             max: reward.limitSupply,
                         };
@@ -96,10 +96,9 @@ export default class RewardService {
                             author: {
                                 username: owner.username,
                             },
-                            // Decorated properties may override generic properties
+                            limitSupplyProgress,
+                            limitProgress,
                             ...decorated,
-                            limit,
-                            limitSupply,
                         };
                     } catch (error) {
                         logger.error(error);
@@ -174,12 +173,11 @@ export default class RewardService {
                 const payments = await serviceMap[rewardVariant].models.payment.find({ sub });
                 const callback = payments.map(async (p: Document & TRewardPayment) => {
                     const decorated = await serviceMap[rewardVariant].decoratePayment(p);
-                    return { ...decorated.toJSON(), rewardVariant };
+                    return { ...decorated, rewardVariant };
                 });
                 return await Promise.all(callback);
             }),
         );
-
         return payments
             .filter((result) => result.status === 'fulfilled')
             .map((result: any) => result.value)
@@ -198,6 +196,8 @@ export default class RewardService {
             const validationResult = await this.getValidationResult({ reward, account, wallet, safe: pool.safe });
             if (!validationResult.result) return validationResult.reason;
 
+            // @TODO Should create payment and update after point subtraction and reward distribution etc
+
             // Subtract points for account
             await PointBalanceService.subtract(pool, account, reward.pointPrice);
 
@@ -209,9 +209,6 @@ export default class RewardService {
             html += `<p>Your payment has been received! <strong>${reward.title}</strong> is available in your account.</p>`;
             html += `<p class="btn"><a href="${pool.campaignURL}">View Wallet</a></p>`;
             await MailService.send(account.email, `🎁 Reward Received!`, html);
-
-            // Register THX onboarding campaign event
-            await THXService.createEvent(account, 'reward_payment_created');
         } catch (error) {
             console.log(error);
             logger.error(error);

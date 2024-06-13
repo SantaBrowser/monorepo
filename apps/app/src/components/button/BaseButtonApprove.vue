@@ -10,9 +10,12 @@ import { defineComponent, PropType } from 'vue';
 import { BigNumber } from 'ethers/lib/ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
+import { useVeStore } from '@thxnetwork/app/stores/VE';
+import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { mapStores } from 'pinia';
 import { contractNetworks } from '@thxnetwork/app/config/constants';
 import { ChainId } from '@thxnetwork/common/enums';
+import { track } from '@thxnetwork/common/mixpanel';
 import poll from 'promise-poller';
 
 export default defineComponent({
@@ -22,6 +25,7 @@ export default defineComponent({
         amount: { type: String, required: true },
         token: { type: Object as PropType<{ address: string; decimals: number }>, required: true },
         spender: { type: String, required: true },
+        disabled: { type: Boolean, default: false },
     },
     data() {
         return {
@@ -29,7 +33,7 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useWalletStore),
+        ...mapStores(useVeStore, useWalletStore, useAccountStore),
         address() {
             if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
             return contractNetworks[this.walletStore.wallet.chainId];
@@ -49,7 +53,7 @@ export default defineComponent({
             return BigNumber.from(this.allowanceInWei).gte(this.amountInWei);
         },
         isDisabled() {
-            return !this.amountInWei.gt(0) || this.isPolling;
+            return this.isPolling || !this.amountInWei.gt(0) || this.disabled;
         },
     },
     methods: {
@@ -67,20 +71,27 @@ export default defineComponent({
             try {
                 this.isPolling = true;
 
-                await this.walletStore.approve({
+                const data = {
                     tokenAddress: this.token.address,
                     spender: this.spender,
                     amountInWei: this.amountInWei.toString(),
-                });
+                };
+                await this.walletStore.approve(data);
 
                 await this.waitForApproval();
 
+                this.trackEvent(data);
                 this.$emit('success');
             } catch (error) {
                 this.$emit('error', error);
             } finally {
                 this.isPolling = false;
             }
+        },
+        trackEvent(data: any) {
+            const { poolId, account } = this.accountStore;
+            const { wallet } = this.walletStore;
+            track('UserCreates', [account?.sub, 'allowance', { poolId, address: wallet?.address, ...data }]);
         },
     },
 });

@@ -7,6 +7,7 @@ import { WalletVariant } from '../types/enums/accountVariant';
 import { BigNumber } from 'alchemy-sdk';
 import { PoolWithMethods } from '@balancer-labs/sdk';
 import { ChainId } from '@thxnetwork/common/enums';
+import { track } from '@thxnetwork/common/mixpanel';
 
 type TCreateLiquidityOptions = {
     thxAmountInWei: string;
@@ -139,10 +140,22 @@ export const useLiquidityStore = defineStore('liquidity', {
                 const thxBalanceExpected = BigNumber.from(currentTHXBalanceInWei).sub(data.thxAmountInWei);
                 const usdcBalance = useWalletStore().balances[USDC];
                 const thxBalance = useWalletStore().balances[THX];
+                const isDone = usdcBalanceExpected.eq(usdcBalance) && thxBalanceExpected.eq(thxBalance);
 
-                return usdcBalanceExpected.eq(usdcBalance) && thxBalanceExpected.eq(thxBalance)
-                    ? Promise.resolve()
-                    : Promise.reject('Liquidity');
+                if (isDone) {
+                    track('UserCreates', [
+                        useAccountStore().account?.sub,
+                        'liquidity',
+                        {
+                            address: wallet?.address,
+                            usdcAmountInWei: data.usdcAmountInWei,
+                            thxAmountInWei: data.thxAmountInWei,
+                            slippage: data.slippage,
+                        },
+                    ]);
+                }
+
+                return isDone ? Promise.resolve() : Promise.reject('Liquidity');
             };
 
             return poll({ taskFn, interval: 3000, retries: 20 });
@@ -209,8 +222,17 @@ export const useLiquidityStore = defineStore('liquidity', {
 
                 const bptGaugeBalance = useWalletStore().balances[bptGaugeAddress];
                 const bptGaugeBalanceExpected = amountInWei.add(oldBalanceInWei);
+                const isDone = bptGaugeBalanceExpected.eq(bptGaugeBalance);
 
-                return bptGaugeBalanceExpected.eq(bptGaugeBalance) ? Promise.resolve() : Promise.reject('Stake');
+                if (isDone) {
+                    track('UserCreates', [
+                        useAccountStore().account?.sub,
+                        'staked liquidity',
+                        { address: wallet?.address, amountInWei: amountInWei.toString() },
+                    ]);
+                }
+
+                return isDone ? Promise.resolve() : Promise.reject('Stake');
             };
 
             return poll({ taskFn, interval: 3000, retries: 20 });

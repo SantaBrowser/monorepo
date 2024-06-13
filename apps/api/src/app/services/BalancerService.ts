@@ -169,10 +169,11 @@ class BalancerService {
     }
 
     async calculateTHXAPR(gauge: ethers.Contract, veTHX: ethers.Contract, rewardsInBPT: string, pricePerBPT: number) {
-        const monthlyEmissions = Number(formatUnits(rewardsInBPT, 18));
-        const totalShares = Number(formatUnits(await gauge.balanceOf(veTHX.address), 18));
-        const pricePerShare = pricePerBPT;
-        return ((monthlyEmissions * 12) / totalShares / pricePerShare) * 100;
+        // const monthlyEmissions = Number(formatUnits(rewardsInBPT, 18));
+        // const totalShares = Number(formatUnits(await gauge.balanceOf(veTHX.address), 18));
+        // const pricePerShare = pricePerBPT;
+        // return ((monthlyEmissions * 12) / totalShares / pricePerShare) * 100;
+        return 0;
     }
 
     async calculateBalancerAPR(gauge: ethers.Contract, priceOfBAL: number, pricePerBPT: number) {
@@ -231,12 +232,15 @@ class BalancerService {
 
         // Add reward distributor BAL balance to the current week
         const balContract = new ethers.Contract(BAL, contractArtifacts['BAL'].abi, provider);
+        const bptContract = new ethers.Contract(BPT, contractArtifacts['BPT'].abi, provider);
         const balBalance = await balContract.balanceOf(RewardDistributor);
         balSchedule[0] = BigNumber.from(balSchedule[0]).add(balBalance).toString();
+        const bptBalance = await bptContract.balanceOf(RewardDistributor);
+        bptSchedule[0] = BigNumber.from(bptSchedule[0]).add(bptBalance).toString();
 
         return {
             schedule: { bal: balSchedule, bpt: bptSchedule },
-            rewards: { bal: balTotal.add(balBalance).toString(), bpt: bptTotal.toString() },
+            rewards: { bal: balTotal.add(balBalance).toString(), bpt: bptTotal.add(bptBalance).toString() },
         };
     }
 }

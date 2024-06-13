@@ -1,6 +1,6 @@
 <template>
     <b-card no-body class="mb-2 x-lg-0 my-lg-3" :class="{ 'card-promoted': reward.isPromoted }">
-        <header class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
+        <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
             <b-badge
                 v-if="reward.expiry && reward.expiry.date"
                 v-b-tooltip.hover.left
@@ -16,13 +16,13 @@
             <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
         </header>
         <b-card-body class="pb-0">
-            <b-card-title class="d-flex">
-                <i class="me-2" :class="iconMap[reward.variant]"></i>
-                <slot name="title"></slot>
+            <b-card-title class="d-flex align-items-center">
+                <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
+                <slot name="title" />
             </b-card-title>
             <b-card-text class="card-description" v-html="reward.description" />
-            <div class="d-flex pb-3">
-                <div v-if="reward.pointPrice" class="d-flex align-items-center me-auto">
+            <div class="d-flex">
+                <div v-if="reward.pointPrice" class="d-flex align-items-center me-auto pb-3">
                     <span class="card-text me-1"> Price: </span>
                     <b-badge variant="primary" class="ms-1 p-1 bg-primary">
                         <span class="text-accent">
@@ -30,19 +30,13 @@
                         </span>
                     </b-badge>
                 </div>
-                <div v-if="reward.limitSupply.max" class="d-flex align-items-center">
+                <div v-if="reward.limitSupplyProgress.max" class="d-flex align-items-center pb-3">
                     <span class="card-text me-1"> Supply: </span>
                     <b-badge variant="primary" class="ms-1 p-1 px-2 bg-primary">
-                        <span
-                            :class="{
-                                'text-danger': progressPercentage >= 0.9,
-                                'text-warning': progressPercentage > 0.75 && progressPercentage < 0.9,
-                                'text-accent': progressPercentage >= 0 && progressPercentage <= 0.75,
-                            }"
-                        >
-                            {{ reward.limitSupply.count }}
+                        <span :class="limitSupplyVariant">
+                            {{ reward.limitSupplyProgress.max - reward.limitSupplyProgress.count }}
                         </span>
-                        <span class="card-text">/{{ reward.limitSupply.max }}</span>
+                        <span class="card-text">/{{ reward.limitSupplyProgress.max }}</span>
                     </b-badge>
                 </div>
             </div>
@@ -62,12 +56,12 @@
                 >
                     {{ btnLabel }}
                     <b-progress
-                        v-if="reward.limit.max"
-                        v-b-tooltip
-                        variant="primary"
-                        :title="`You can purchase this reward ${reward.limit.max} times.`"
-                        :value="reward.limit.count"
-                        :max="reward.limit.max"
+                        v-if="reward.limitProgress.max"
+                        v-b-tooltip.bottom
+                        :variant="limitVariant"
+                        :title="`You can purchase this reward ${reward.limitProgress.max} times.`"
+                        :value="reward.limitProgress.count"
+                        :max="reward.limitProgress.max"
                         style="height: 6px"
                     />
                 </b-button>
@@ -118,6 +112,16 @@ export default defineComponent({
     },
     computed: {
         ...mapStores(useAccountStore),
+        limitSupplyVariant() {
+            if (this.limitSupplyPerct >= 0.9) return 'text-danger';
+            if (this.limitSupplyPerct > 0.75 && this.limitSupplyPerct < 0.9) return 'text-warning';
+            if (this.limitSupplyPerct >= 0 && this.limitSupplyPerct <= 0.75) return 'text-success';
+        },
+        limitVariant() {
+            if (this.limitPerct >= 0.75) return 'danger';
+            if (this.limitPerct > 0.5 && this.limitPerct < 0.75) return 'warning';
+            if (this.limitPerct >= 0 && this.limitPerct <= 0.5) return 'success';
+        },
         btnLabel() {
             if (this.reward.isLimitSupplyReached) {
                 return 'Sold out';
@@ -138,9 +142,13 @@ export default defineComponent({
         isDisabled() {
             return !this.reward.isAvailable;
         },
-        progressPercentage: function () {
-            if (!this.reward.limitSupply.max) return 100;
-            return this.reward.limitSupply.count / this.reward.limitSupply.max;
+        limitSupplyPerct: function () {
+            if (!this.reward.limitSupplyProgress.max) return 1;
+            return this.reward.limitSupplyProgress.count / this.reward.limitSupplyProgress.max;
+        },
+        limitPerct: function () {
+            if (!this.reward.limitProgress.max) return 1;
+            return this.reward.limitProgress.count / this.reward.limitProgress.max;
         },
         expiryDate: function () {
             return !this.reward.isExpired && this.reward.expiry
@@ -166,6 +174,8 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
+    border-top-left-radius: var(--bs-border-radius) !important;
+    border-top-right-radius: var(--bs-border-radius) !important;
 
     .badge-expiry {
         position: absolute;
