@@ -289,8 +289,7 @@ export const useAccountStore = defineStore('account', {
             return window.sessionStorage.getItem(`thx:${this.poolId}:id`);
         },
         async getLeaderboard() {
-            const leaderboard = await this.api.request.get(`/v1/leaderboards/${this.poolId}`);
-            this.leaderboard = leaderboard;
+            this.leaderboard = await this.api.request.get(`/v1/leaderboards/${this.poolId}`);
         },
         async waitForJob(jobId: string) {
             const taskFn = async () => {
@@ -299,7 +298,7 @@ export const useAccountStore = defineStore('account', {
             };
 
             // Poll for job to finish
-            await poll({ taskFn, interval: 1000 });
+            await poll({ taskFn, interval: 1000, retries: 60 });
         },
     },
 });
