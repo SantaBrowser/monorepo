@@ -3,9 +3,14 @@ import { Request, Response } from 'express';
 import { TwitterQuery } from '@thxnetwork/api/models';
 import { TwitterQuery as TwitterQueryParser } from '@thxnetwork/common/twitter';
 import { BadRequestError } from '@thxnetwork/api/util/errors';
-import TwitterQueryService from '@thxnetwork/api/services/TwitterQueryService';
+import { agenda } from '@thxnetwork/api/util/agenda';
+import { TwitterQueryService } from '@thxnetwork/api/services';
 
-const validation = [param('id').isMongoId(), body('operators').customSanitizer((ops) => TwitterQueryParser.parse(ops))];
+const validation = [
+    param('id').isMongoId(),
+    body('frequencyInHours').isInt(),
+    body('operators').customSanitizer((ops) => TwitterQueryParser.parse(ops)),
+];
 
 const controller = async (req: Request, res: Response) => {
     const query = TwitterQueryParser.create(req.body.operators);
@@ -17,9 +22,16 @@ const controller = async (req: Request, res: Response) => {
 
     const twitterQuery = await TwitterQuery.create({
         poolId: req.params.id,
+        frequencyInHours: req.body.frequencyInHours,
         operators: req.body.operators,
         defaults: req.body.defaults,
         query,
+    });
+
+    // Start an agenda job that runs every frequencyInHours from now
+    // Will be deleted when the query is deleted
+    await agenda.every(`${req.body.frequencyInHours} hours`, twitterQuery.jobName, {
+        queryId: twitterQuery.id,
     });
 
     // Search initial posts and create quests
