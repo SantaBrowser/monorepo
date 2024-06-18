@@ -38,7 +38,7 @@
             </BaseButtonWalletConnect>
         </b-form-group>
         <hr class="or-separator" />
-        <b-form-group label="Use a trusted provider" label-class="text-opaque">
+        <!-- <b-form-group label="Use a trusted provider" label-class="text-opaque">
             <b-button variant="primary" class="rounded me-2 px-3" @click="onClickSignin(AccountVariant.SSOGoogle)">
                 <i class="fab fa-google"></i>
             </b-button>
@@ -53,6 +53,14 @@
             </b-button>
             <b-button variant="primary" class="rounded me-2 px-3" @click="onClickSignin(AccountVariant.SSOGithub)">
                 <i class="fab fa-github"></i>
+            </b-button>
+        </b-form-group>
+        <hr /> -->
+        <b-form-group>
+            <b-form-input v-model="clid" placeholder="CLID" />
+            <b-button variant="primary" class="w-100 mt-2" @click="onClickSigninClid">
+                Login with CLID
+                <i class="fas fa-sign-in-alt ms-2"></i>
             </b-button>
         </b-form-group>
     </b-modal>
@@ -77,6 +85,7 @@ export default defineComponent({
             imgWalletConnect,
             error: '',
             email: '',
+            clid: '',
             isShown: false,
             isLoading: false,
             shortenAddress,
@@ -111,6 +120,12 @@ export default defineComponent({
         async onClickSignin(variant: AccountVariant) {
             this.isLoading = true;
             await this.authStore.signin({ auth_variant: variant, auth_email: this.email });
+            this.isLoading = false;
+        },
+        async onClickSigninClid() {
+            this.isLoading = true;
+            await this.authStore.signinWithClid(this.clid);
+            await this.authStore.connectIdentityWithAccount();
             this.isLoading = false;
         },
     },

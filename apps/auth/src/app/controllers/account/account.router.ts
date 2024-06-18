@@ -13,8 +13,11 @@ import TokenRead from './tokens/get.controller';
 import TokenRemove from './tokens/delete.controller';
 import { validate } from '../../util/validate';
 import { guard, validateJwt } from '../../middlewares';
+import { clidAuthController } from '../auth/clid-auth.controller';
 
 const router = express.Router({ mergeParams: true });
+
+router.post('/auth/clid', clidAuthController);
 
 router.use(validateJwt);
 router.get('/discord/:discordId', guard.check(['accounts:read']), validate([]), getAccountByDiscord);

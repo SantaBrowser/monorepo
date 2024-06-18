@@ -31,6 +31,8 @@ type TAuthState = {
     privateKey: string;
     oAuthShare: string;
     securityQuestion: string;
+    clid: string | null;
+    authToken: string;
 };
 
 type TParticipant = {

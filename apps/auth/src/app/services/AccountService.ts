@@ -48,7 +48,7 @@ export class AccountService {
             }
 
             // Always send mail in case this is a retry
-            console.log(WIDGET_URL)
+            console.log(WIDGET_URL);
             // await MailService.sendVerificationEmail(account, data.email, WIDGET_URL);
         }
 
@@ -111,6 +111,19 @@ export class AccountService {
             variant: AccountVariant.Metamask,
             plan: AccountPlanType.Lite,
             address,
+        });
+    }
+
+    static async findAccountForClid(clid: string) {
+        const account = await Account.findOne({ clid });
+        if (account) return account;
+
+        return await Account.create({
+            variant: AccountVariant.CLID,
+            plan: AccountPlanType.Lite,
+            clid,
+            username: generateUsername(),
+            active: true,
         });
     }
 }

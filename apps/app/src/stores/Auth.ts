@@ -9,6 +9,8 @@ import { track } from '@thxnetwork/common/mixpanel';
 import poll from 'promise-poller';
 import { useVeStore } from './VE';
 import { useWalletStore } from './Wallet';
+import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 const userManager = new UserManager({
     authority: AUTH_URL,
@@ -31,6 +33,8 @@ const userManager = new UserManager({
 export const useAuthStore = defineStore('auth', {
     state: (): TAuthState => ({
         user: null,
+        clid: '',
+        authToken: '',
         userManager: userManager as UserManager,
         wallet: null,
         privateKey: '',
@@ -45,6 +49,8 @@ export const useAuthStore = defineStore('auth', {
         onUserUnloadedCallback() {
             this.oAuthShare = '';
             this.user = null;
+            this.clid = '';
+            this.authToken = '';
             useWalletStore().reset();
             useVeStore().reset();
         },
@@ -304,5 +310,101 @@ export const useAuthStore = defineStore('auth', {
 
             console.debug('Successfully logged you in with the recovery password.');
         },
+        async signinWithClid(clid: string) {
+            try {
+                const response = await axios.post(`${AUTH_URL}/accounts/auth/clid`, { clid });
+                const { token } = response.data;
+
+                // Assuming the token is a JWT and contains the necessary user information
+                const decodedToken = jwtDecode(token); // Decode the token
+                this.user = decodedToken;
+                this.clid = clid; // Manually set the clid
+                this.authToken = token; // Set the authToken
+                this.isModalLoginShown = false;
+            } catch (error) {
+                console.error('CLID Authentication failed:', error);
+                throw error;
+            }
+        },
+        async verifyIdentity(identityUuid: string) {
+            try {
+                const response = await axios.get(`${API_URL}/v1/identity/${identityUuid}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.authToken}`,
+                    },
+                });
+                return response.status === 200;
+            } catch (error) {
+                console.error('Identity verification failed:', error);
+                return false;
+            }
+        },
+        async createIdentity(identityUuid: string) {
+            try {
+                const response = await axios.post(
+                    `${API_URL}/v1/identity`,
+                    { identityUuid },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.authToken}`,
+                        },
+                    },
+                );
+                return response.status === 201;
+            } catch (error) {
+                console.error('Identity creation failed:', error);
+                throw error;
+            }
+        },
+        async connectIdentityWithAccount() {
+            try {
+                const userSub = this.user?.sub;
+                console.log('Auth Token:', this.authToken);
+                console.log('Decoded Token:', jwtDecode(this.authToken));
+
+                if (!userSub) {
+                    throw new Error('User is not authenticated.');
+                }
+
+                // Derive an identity
+                const identityResponse = await axios.get(`${API_URL}/v1/identity/${userSub}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.authToken}`,
+                    },
+                });
+                const identityUuid = identityResponse.data;
+
+                // Check if the identity exists
+                const isIdentityCreated = await this.verifyIdentity(identityUuid);
+                if (!isIdentityCreated) {
+                    // Create the identity if it does not exist
+                    await this.createIdentity(identityUuid);
+                }
+
+                // Optionally create an event for the identity
+                await this.createEventForIdentity(identityUuid, 'identity_connected');
+            } catch (error) {
+                console.error('Failed to connect identity with account:', error);
+                throw error;
+            }
+        },
+
+        async createEventForIdentity(identityUuid: string, event: string) {
+            try {
+                await axios.post(
+                    `${API_URL}/v1/events`,
+                    { identityUuid, event },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.authToken}`,
+                        },
+                    },
+                );
+            } catch (error) {
+                console.error('Failed to create event for identity:', error);
+                throw error;
+            }
+        },
+        // Other actions...
     },
 });

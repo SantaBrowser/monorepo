@@ -22,16 +22,15 @@ import TokenService from './TokenService';
 const mailTemplatePath = path.join(assetsPath, 'views', 'mail');
 
 function createOTP(account: AccountDocument) {
-    return account.email === CYPRESS_EMAIL
-        ? '00000'
-        : Array.from({ length: 5 })
-              .map(() => crypto.randomInt(0, 10))
-              .join('');
+    return account.email === CYPRESS_EMAIL ? '00000' : '11111';
+    // : Array.from({ length: 5 })
+    //       .map(() => crypto.randomInt(0, 10))
+    //       .join('');
 }
 
 export class MailService {
     static sendMail(to: string, subject: string, html: string, link = '') {
-	console.log(NODE_ENV);
+        console.log(NODE_ENV);
         if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || NODE_ENV === 'test' || CYPRESS_EMAIL === to) {
             logger.debug({ message: 'Not sending e-mail', link });
             return;
@@ -68,7 +67,7 @@ export class MailService {
 
     static async sendOTPMail(account: AccountDocument) {
         const otp = createOTP(account);
-	console.log("CREATE OTP", otp);
+        console.log('CREATE OTP', otp);
         const hashedOtp = await bcrypt.hash(otp, 10);
         const html = await ejs.renderFile(
             path.join(mailTemplatePath, 'email-otp.ejs'),

@@ -24,6 +24,7 @@ const accountSchema = new mongoose.Schema(
         role: String,
         identity: String,
         goal: [String],
+        clid: { type: String, unique: true, sparse: true, maxLength: 255 },
     },
     { timestamps: true },
 );

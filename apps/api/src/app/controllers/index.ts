@@ -29,6 +29,7 @@ import RouterJobs from './jobs/jobs.router';
 import RouterLotteries from './lotteries/lotteries.router';
 import RouterCoupons from './coupons/coupons.router';
 import { checkJwt, corsHandler } from '@thxnetwork/api/middlewares';
+import { validateJwt } from '../middlewares/validateJwt';
 
 const router: express.Router = express.Router({ mergeParams: true });
 
@@ -50,8 +51,8 @@ router.use('/lotteries', RouterLotteries);
 router.use(checkJwt, corsHandler);
 router.use('/jobs', RouterJobs);
 router.use('/upload', RouterUpload);
-router.use('/identity', RouterIdentity);
-router.use('/events', RouterEvents);
+router.use('/identity', validateJwt, RouterIdentity);
+router.use('/events', validateJwt, RouterEvents);
 router.use('/coupons', RouterCoupons);
 router.use('/account', RouterAccount);
 router.use('/participants', RouterParticipants);

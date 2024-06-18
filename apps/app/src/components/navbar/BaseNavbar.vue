@@ -67,6 +67,8 @@
                     </b-button>
                 </template>
                 <template v-else>
+                    <span class="text-white me-3">My clid: {{ authStore.clid }}</span>
+                    <!-- <span class="text-white me-3">{{ authStore.user }}</span> -->
                     <b-button class="px-4 rounded py-2 ms-2" variant="primary" @click="accountStore.signout()">
                         Sign out
                         <i class="fas fa-sign-out-alt ms-2"></i>
