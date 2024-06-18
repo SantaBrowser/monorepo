@@ -38,9 +38,13 @@ export default class PaymentService {
         if (!THXPaymentSplitter && wallet.chainId === ChainId.Polygon) {
             return '0';
         }
-
         const splitter = ContractService.getContract('THXPaymentSplitter', wallet.chainId, THXPaymentSplitter);
-        const balance = await splitter.balanceOf(wallet.address);
+        let balance = '0';
+        try {
+            balance = await splitter.balanceOf(wallet.address);
+        } catch (err) {
+            return '0';
+        }
         return balance.toString();
     }
 

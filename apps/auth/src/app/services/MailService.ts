@@ -36,7 +36,7 @@ export class MailService {
             logger.debug({ message: 'Not sending e-mail', link });
             return;
         }
-        //sendMail(to, subject, html);
+        sendMail(to, subject, html);
     }
 
     static async sendVerificationEmail(account: AccountDocument, email: string, returnUrl: string) {
