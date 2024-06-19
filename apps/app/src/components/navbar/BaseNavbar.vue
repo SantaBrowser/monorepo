@@ -8,7 +8,7 @@
         :container="true"
         class="navbar-menu px-3 py-1"
     >
-        <b-navbar-brand href="#">
+        <!-- <b-navbar-brand href="#">
             <b-link to="/">
                 <b-img :src="imgLogo" height="50" alt="" />
             </b-link>
@@ -16,9 +16,9 @@
         <BaseDropdownWallets v-if="accountStore.isAuthenticated" class="d-block d-lg-none ms-auto" />
         <b-button variant="link" class="d-block d-lg-none" @click="isNavbarOffcanvasShown = true">
             <i class="fas fa-bars text-white"></i>
-        </b-button>
+        </b-button> -->
         <b-collapse id="nav-collapse" is-nav>
-            <b-button
+            <!-- <b-button
                 class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"
                 variant="link"
                 to="/learn"
@@ -46,7 +46,7 @@
             >
                 Members
                 <sup><i class="fas fa-circle text-danger" /></sup>
-            </b-button>
+            </b-button> -->
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0 justify-content-end align-items-center">
                 <b-button
                     v-if="accountStore.isMobile"
@@ -86,7 +86,7 @@
         header-class="pt-4"
         body-class="p-3"
     >
-        <template #title>
+        <!-- <template #title>
             <b-link to="/" class="d-flex align-items-center font-weight-bold text-decoration-none text-white">
                 <b-img :src="imgLogo" height="30" alt="" class="me-3" />
                 THX Network
@@ -123,7 +123,7 @@
                 <div style="width: 30px"><i class="fas fa-wallet me-1 text-opaque"></i></div>
                 My Rewards
             </b-list-group-item>
-        </b-list-group>
+        </b-list-group> -->
         <b-button v-if="!accountStore.isAuthenticated" v-b-modal="'modalLogin'" variant="primary">
             Sign in
             <i class="fas fa-sign-in-alt ml-auto"></i>

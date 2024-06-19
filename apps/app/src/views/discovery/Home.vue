@@ -1,6 +1,83 @@
 <template>
-    <BaseCardHeaderHome />
-    <b-container>
+    <b-container fluid>
+        <b-row>
+            <!-- Left Side Container -->
+            <b-col md="7" class="">
+                <b-container class="mb-5">
+                    <!-- Earnings Section -->
+                    <b-row class="mb-3">
+                        <b-col xs="12" class="d-flex align-items-center sm-gap">
+                            <img src="../../assets/cup.png" alt="cup" class="cup" />
+                            <span class="custom-heading">Earnings</span>
+                        </b-col>
+                    </b-row>
+
+                    <!-- Trending Quests Section -->
+                    <b-row class="mt-5 mb-3">
+                        <b-col xs="12">
+                            <span class="custom-subheading">Trending Quests</span>
+                        </b-col>
+                    </b-row>
+                    <QuestCarousel />
+
+                    <!-- Refer Friends Section -->
+                    <ReferralLink />
+
+                    <!-- Default Browser Section -->
+                    <DefaultBrowser />
+
+                    <!-- Social Activities Section -->
+                    <SocialQuests />
+                </b-container>
+            </b-col>
+
+            <!-- Right Side Container -->
+            <b-col md="5">
+                <b-container class="mb-5">
+                    <div class="right-side">
+                        <QuestsBuy />
+                        <ShopPlay />
+                        <Leaderboard />
+                    </div>
+
+                    <!-- New Components Section -->
+                    <!-- <b-row class="mt-5 mb-3">
+                        <b-col xs="12">
+                            <span class="custom-heading">New Section</span>
+                        </b-col>
+                    </b-row> -->
+
+                    <!-- Add your new components here -->
+                    <!-- <b-row class="mt-3">
+                        <b-col xs="12">
+                            <h2>Explore Campaigns</h2>
+                        </b-col>
+                    </b-row>
+                    <b-row class="mt-3">
+                        <b-col xs="12">
+                            <div v-if="isLoading" class="justify-content-center d-flex">
+                                <b-spinner small variant="primary" />
+                            </div>
+                            <p v-if="!isLoading && !campaigns.results.length" class="text-opaque">
+                                Could not find a campaign with that name...
+                            </p>
+                            <BaseCardCampaign v-for="campaign of campaigns.results" class="mt-3" :campaign="campaign" />
+                        </b-col>
+                    </b-row>
+                    <b-pagination
+                        v-model="page"
+                        :per-page="limit"
+                        :total-rows="campaigns.total"
+                        align="center"
+                        class="mt-3 mb-0"
+                    /> -->
+                </b-container>
+            </b-col>
+        </b-row>
+    </b-container>
+
+    <!-- <BaseCardHeaderHome /> -->
+    <!-- <b-container>
         <b-row class="mt-5 mb-3">
             <b-col xs="12" md="6">
                 <h2>Explore Campaigns</h2>
@@ -29,8 +106,8 @@
             </b-col>
         </b-row>
         <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />
-    </b-container>
-    <b-container class="mb-5">
+    </b-container> -->
+    <!-- <b-container class="mb-5">
         <b-row class="mt-5 mb-3">
             <b-col xs="12" md="6">
                 <h2>Quest Spotlight</h2>
@@ -41,8 +118,8 @@
                 <BaseCardQuestSpotlight :quest="quest" class="mb-2" />
             </b-col>
         </b-row>
-    </b-container>
-    <BaseCardHeader row-class="py-md-0" class="my-5">
+    </b-container> -->
+    <!-- <BaseCardHeader row-class="py-md-0" class="my-5">
         <template #primary>
             <b-img :src="imgHeader" fluid />
         </template>
@@ -68,7 +145,7 @@
                 </b-button>
             </div>
         </template>
-    </BaseCardHeader>
+    </BaseCardHeader> -->
 </template>
 
 <script lang="ts">
@@ -246,5 +323,44 @@ export default defineComponent({
         height: 10px;
         border-radius: 50%;
     }
+}
+
+.cup {
+    width: 40px;
+    height: 40px;
+}
+.custom-heading {
+    font-family: 'Poppins', sans-serif;
+    color: #f5f5f5;
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-family: Poppins;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 83.333% */
+}
+.sm-gap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.custom-subheading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    background: linear-gradient(90deg, #fff 0%, #d7d7d7 26.5%, #dedede 55.5%, #fff 76.5%, #b4b1b1 88%, #999 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.right-side {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(35, 35, 35, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    gap: 10px;
 }
 </style>

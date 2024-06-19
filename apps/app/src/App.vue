@@ -4,6 +4,7 @@
         We are running some maintenance and will be back shortly. See you soon! ❤️
     </b-alert>
     <div v-else id="main" :class="{ 'overflow-hidden': accountStore.isMobile }">
+        <img src="../src/assets/shadow.png" class="shadow-img" alt="shadow" />
         <BaseNavbarTop />
         <div class="d-flex h-100">
             <transition name="fade" mode="out-in">
@@ -79,5 +80,13 @@ export default defineComponent({
     overflow-x: hidden;
     overflow-y: auto;
     height: 100% !important;
+}
+.shadow-img {
+    position: absolute;
+    z-index: -1;
+    width: 600px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-20%, -30%);
 }
 </style>
