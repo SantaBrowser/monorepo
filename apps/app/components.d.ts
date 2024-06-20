@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ActiveActivities: typeof import('./src/components/newui/ActiveActivities.vue')['default']
+    ActivityCard: typeof import('./src/components/newui/ActivityCard.vue')['default']
     BAlert: typeof import('bootstrap-vue-next')['BAlert']
     BaseAlertErrorList: typeof import('./src/components/alert/BaseAlertErrorList.vue')['default']
     BaseBlockquoteDiscordInviteUsed: typeof import('./src/components/blockquote/BaseBlockquoteDiscordInviteUsed.vue')['default']
@@ -179,6 +181,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ShopPlay: typeof import('./src/components/newui/ShopPlay.vue')['default']
     SocialQuests: typeof import('./src/components/newui/SocialQuests.vue')['default']
+    TopBrands: typeof import('./src/components/newui/TopBrands.vue')['default']
   }
   export interface ComponentCustomProperties {
     vBModal: typeof import('bootstrap-vue-next')['vBModal']

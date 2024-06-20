@@ -2,8 +2,9 @@
     <b-container fluid>
         <b-row>
             <!-- Left Side Container -->
-            <b-col md="7" class="">
+            <b-col id="left-sidebar" md="7">
                 <b-container class="mb-5">
+                    <BaseNavbar />
                     <!-- Earnings Section -->
                     <b-row class="mb-3">
                         <b-col xs="12" class="d-flex align-items-center sm-gap">
@@ -27,12 +28,33 @@
                     <DefaultBrowser />
 
                     <!-- Social Activities Section -->
+                    <b-row class="mt-5 mb-3">
+                        <b-col xs="12">
+                            <span class="custom-subheading">Social Activities</span>
+                        </b-col>
+                    </b-row>
                     <SocialQuests />
+
+                    <!-- Top Brands Section -->
+                    <b-row class="mt-5 mb-3">
+                        <b-col xs="12">
+                            <span class="custom-subheading">Top Brands</span>
+                        </b-col>
+                    </b-row>
+                    <TopBrands />
+
+                    <!-- Active Activities Section -->
+                    <b-row class="mt-5 mb-3">
+                        <b-col xs="12">
+                            <span class="custom-subheading">Active Activities</span>
+                        </b-col>
+                    </b-row>
+                    <ActiveActivities />
                 </b-container>
             </b-col>
 
             <!-- Right Side Container -->
-            <b-col md="5">
+            <b-col md="5" class="fixed-container">
                 <b-container class="mb-5">
                     <div class="right-side">
                         <QuestsBuy />
@@ -196,9 +218,20 @@ export default defineComponent({
         },
     },
     async mounted() {
-        await this.getCampaigns();
-        await this.getQuests();
-        this.isLoading = false;
+        console.log('Mounted hook called');
+        // await this.getCampaigns();
+        // await this.getQuests();
+        // this.isLoading = false;
+
+        const fixedContainer = document.querySelector('.fixed-container');
+        const leftSidebar = document.querySelector('.router-view-app');
+
+        if (fixedContainer && leftSidebar) {
+            fixedContainer.addEventListener('wheel', (event: any) => {
+                leftSidebar.scrollTop += event.deltaY;
+                event.preventDefault();
+            });
+        }
     },
     methods: {
         async getCampaigns() {
@@ -362,5 +395,9 @@ export default defineComponent({
     padding: 10px;
     border-radius: 5px;
     gap: 10px;
+}
+.fixed-container {
+    position: fixed;
+    right: 0;
 }
 </style>
