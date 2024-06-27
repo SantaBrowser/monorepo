@@ -4,7 +4,6 @@
         We are running some maintenance and will be back shortly. See you soon! ❤️
     </b-alert>
     <div v-else id="main" :class="{ 'overflow-hidden': accountStore.isMobile }">
-        <BaseNavbarTop />
         <div class="d-flex h-100">
             <transition name="fade" mode="out-in">
                 <router-view class="router-view-app order-lg-0" />

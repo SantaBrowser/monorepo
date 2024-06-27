@@ -147,16 +147,14 @@ export const getTokensForWallet = async (wallet: WalletDocument) => {
       console.log(token, 'token')
         try {
             const decorated = await decorate(token, wallet);
-          console.log(decorated, 'tokenaaaaaa')
-
-          result.push(decorated);
+            result.push(decorated);
         } catch (error) {
             console.log(error);
         }
     }
 
     const defaultTokens = (await findDefaultTokens(wallet)).filter(({ walletBalance }) => walletBalance > 0);
-    console.log(defaultTokens, 'defaultTokens');
+
     return result.concat(defaultTokens);
 };
 

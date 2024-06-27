@@ -1,5 +1,14 @@
 import { defineStore } from 'pinia';
-import { CLIENT_ID, CLIENT_SECRET, WIDGET_URL, AUTH_URL, VERIFIER_ID, API_URL } from '../config/secrets';
+import {
+    CLIENT_ID,
+    CLIENT_SECRET,
+    WIDGET_URL,
+    AUTH_URL,
+    VERIFIER_ID,
+    API_URL,
+    SANTA_CAMPAIGN_ID,
+    CP_CAMPAIGN_ID,
+} from '../config/secrets';
 import { useQRCodeStore } from './QRCode';
 import { tKey } from '../utils/tkey';
 import { useAccountStore } from './Account';
@@ -13,6 +22,8 @@ import { useWalletStore } from './Wallet';
 const userManager = new UserManager({
     authority: AUTH_URL,
     resource: API_URL,
+    santaCampaign: SANTA_CAMPAIGN_ID,
+    cpCampaign: CP_CAMPAIGN_ID,
     response_type: 'code',
     response_mode: 'query',
     redirect_uri: WIDGET_URL + '/signin-popup.html',

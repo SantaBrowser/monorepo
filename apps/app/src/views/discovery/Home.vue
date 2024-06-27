@@ -1,5 +1,4 @@
 <template>
-    <BaseCardHeaderHome />
     <b-container>
         <b-row class="mt-5 mb-3">
             <b-col xs="12" md="6">
@@ -42,39 +41,40 @@
             </b-col>
         </b-row>
     </b-container>
-    <BaseCardHeader row-class="py-md-0" class="my-5">
-        <template #primary>
-            <b-img :src="imgHeader" fluid />
-        </template>
-        <template #secondary>
-            <div class="py-lg-5 pe-lg-5">
-                <h1 class="mt-lg-3">
-                    Quest<br />
-                    Campaigns
-                </h1>
-                <p class="lead mb-4">
-                    Give back to your community while increasing engagement with effective Quest Campaigns.
-                </p>
-                <b-button :href="`${publicURL}/pricing`" variant="primary" class="me-3 px-5" target="_blank">
-                    Campaign Pricing
-                </b-button>
-                <b-button
-                    href="https://discord.com/invite/TzbbSmkE7Y"
-                    target="_blank"
-                    variant="link"
-                    class="text-white"
-                >
-                    Reach out! We don't bite😉
-                </b-button>
-            </div>
-        </template>
-    </BaseCardHeader>
+    <!--    <BaseCardHeader row-class="py-md-0" class="my-5">-->
+    <!--        <template #primary>-->
+    <!--            <b-img :src="imgHeader" fluid />-->
+    <!--        </template>-->
+    <!--        <template #secondary>-->
+    <!--            <div class="py-lg-5 pe-lg-5">-->
+    <!--                <h1 class="mt-lg-3">-->
+    <!--                    Quest<br />-->
+    <!--                    Campaigns-->
+    <!--                </h1>-->
+    <!--                <p class="lead mb-4">-->
+    <!--                    Give back to your community while increasing engagement with effective Quest Campaigns.-->
+    <!--                </p>-->
+    <!--                <b-button :href="`${publicURL}/pricing`" variant="primary" class="me-3 px-5" target="_blank">-->
+    <!--                    Campaign Pricing-->
+    <!--                </b-button>-->
+    <!--                <b-button-->
+    <!--                    href="https://discord.com/invite/TzbbSmkE7Y"-->
+    <!--                    target="_blank"-->
+    <!--                    variant="link"-->
+    <!--                    class="text-white"-->
+    <!--                >-->
+    <!--                    Reach out! We don't bite😉-->
+    <!--                </b-button>-->
+    <!--            </div>-->
+    <!--        </template>-->
+    <!--    </BaseCardHeader>-->
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { API_URL, DASHBOARD_URL, PUBLIC_URL } from '../../config/secrets';
+import { API_URL, DASHBOARD_URL, PUBLIC_URL, SANTA_CAMPAIGN_ID, CP_CAMPAIGN_ID } from '../../config/secrets';
 import { useAccountStore } from '../../stores/Account';
+import { useRewardStore } from '../../stores/Reward';
 import { useAuthStore } from '../../stores/Auth';
 import { mapStores } from 'pinia';
 import { decodeHTML } from '../../utils/decode-html';
@@ -108,14 +108,22 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useAccountStore, useAuthStore),
+        ...mapStores(useAccountStore, useAuthStore, useRewardStore),
     },
     watch: {
-        async page(page) {
+        async 'page'(page) {
             this.page = page;
             this.isLoadingPage = true;
             await this.getCampaigns();
             this.isLoadingPage = false;
+        },
+        'accountStore.account': {
+            handler(account: TAccount | null) {
+                if (!account) return;
+                this.accountStore.getParticipants();
+                // this.rewardStore.list('666063576145f8faf0050189');
+            },
+            immediate: true,
         },
     },
     async mounted() {
@@ -134,9 +142,23 @@ export default defineComponent({
             }
             const res = await fetch(url);
             const campaigns = await res.json();
+            // const campaingsss = campaigns.result.filter(({ campaign: any }) => campaign.slug === 18);
+
             this.campaigns = campaigns;
+
+            // this.campaigns.results = this.campaigns.results.map(
+            //     (campaign: any) => campaign.slug !== '667d8b189e9cc9750d4e7d7b',
+            // );
+            console.log(SANTA_CAMPAIGN_ID, 'SANTA_CAMPAIGN_ID');
+            this.campaigns.results = this.campaigns.results
+                .map((campaign) =>
+                    campaign.slug === SANTA_CAMPAIGN_ID || campaign.slug === CP_CAMPAIGN_ID ? campaign : null,
+                )
+                .filter(Boolean);
+            console.log(this.campaigns);
             this.campaigns.results = this.campaigns.results.map((campaign: any) => ({
                 ...campaign,
+                // campaign._id === '667d8b189e9cc9750d4e7d7b',
                 title: html.decode(campaign.title),
                 description: html.decode(campaign.description),
             }));
@@ -166,6 +188,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.campaign-tile {
+    min-height: 200px;
+}
 .pagination {
     --bs-pagination-focus-bg: var(--bs-purple-dark);
     --bs-pagination-focus-color: rgba(255, 255, 255, 0.5);

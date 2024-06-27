@@ -11,7 +11,6 @@ const controller = async (req: Request, res: Response) => {
     if (!wallet) throw new BadRequestError('Wallet not found');
 
     const tokens = await ERC20Service.getTokensForWallet(wallet);
-  console.log(req.params.walletId, wallet, 'erc20.addresssss', tokens);
 
     res.json(
         tokens.reverse().filter((token: TERC20Token & { erc20: TERC20 }) => {
