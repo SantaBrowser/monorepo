@@ -48,7 +48,7 @@ export class AccountService {
             }
 
             // Always send mail in case this is a retry
-            await MailService.sendVerificationEmail(account, data.email, WIDGET_URL);
+            // await MailService.sendVerificationEmail(account, data.email, WIDGET_URL);
         }
 
         return await Account.findByIdAndUpdate(account._id, data, { new: true });
@@ -100,6 +100,7 @@ export class AccountService {
 
     static async findAccountForAddress(address: string) {
         const checksummedAddress = toChecksumAddress(address);
+        // const identity = 'bd8845b7-3ccb-df59-c2c4-dd5425c7e827'
         // Checking for non checksummed as well in order to avoid issues with existing data in db
         const account = await Account.findOne({
             $or: [{ address: checksummedAddress }, { address }],
@@ -110,6 +111,7 @@ export class AccountService {
             variant: AccountVariant.Metamask,
             plan: AccountPlanType.Lite,
             address,
+            // identity
         });
     }
 }

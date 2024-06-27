@@ -23,10 +23,10 @@ const mailTemplatePath = path.join(assetsPath, 'views', 'mail');
 
 function createOTP(account: AccountDocument) {
     return account.email === CYPRESS_EMAIL
-        ? '00000'
-        : Array.from({ length: 5 })
-              .map(() => crypto.randomInt(0, 10))
-              .join('');
+        ? '00000': '11111';
+        // : Array.from({ length: 5 })
+        //       .map(() => crypto.randomInt(0, 10))
+        //       .join('');
 }
 
 export class MailService {

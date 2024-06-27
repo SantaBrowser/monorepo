@@ -27,7 +27,7 @@ const send = async (to: string, subject: string, htmlContent: string, link = { s
         return;
     }
 
-    return sendMail(to, subject, html);
+    // return sendMail(to, subject, html);
 };
 
 export default { send };

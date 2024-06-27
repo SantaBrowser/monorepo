@@ -2842,7 +2842,7 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@balancer-labs/sdk@^1.1.5":
+"@balancer-labs/sdk@1.1.5":
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/@balancer-labs/sdk/-/sdk-1.1.5.tgz#29e70d15d7e98899831b18d8b909b6569e062758"
   integrity sha512-Hxmo1u8qJureQxdbVAMAkN9qceeZxcKx4QjoevTDMrSGY5H9jc1hX18p9TTZXwlGAkw8n4rdErydUgsdWjWuLA==
@@ -2870,7 +2870,7 @@
   dependencies:
     isomorphic-fetch "^2.2.1"
 
-"@balancer/sdk@^0.14.0":
+"@balancer/sdk@0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@balancer/sdk/-/sdk-0.14.0.tgz#fc948aa36e55792cde71b2c891c3502fdbcdc75d"
   integrity sha512-gdDZLM04gjScSkBMgFnZwGctPxfgot4UEfTeScIBn+1iVUrxKKIrHNjGCLXNogo4+Mr68hpAAvxw1iG4Q8tiVw==

@@ -17,6 +17,8 @@ const controller = async (req: Request, res: Response) => {
     // Still no address.
     if (!erc20.address) return res.send(erc20);
 
+    console.log(req.params.id, erc20.address, 'erc20.address');
+
     const { defaultAccount } = getProvider(erc20.chainId);
     const [totalSupplyInWei, decimalsString, adminBalanceInWei] = await Promise.all([
         erc20.contract.methods.totalSupply().call(),

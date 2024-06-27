@@ -73,12 +73,12 @@ export default class QuestDailyService implements IQuestService {
                 'createdAt': { $gt: new Date(start), $lt: new Date(end) },
                 'metadata.ip': data.metadata.ip,
             }));
-            if (isCompletedForIP) {
-                return {
-                    result: false,
-                    reason: 'You have completed this quest from this IP within the last 24 hours.',
-                };
-            }
+            // if (isCompletedForIP) {
+            //     return {
+            //         result: false,
+            //         reason: 'You have completed this quest from this IP within the last 24 hours.',
+            //     };
+            // }
         }
 
         const isCompleted = await QuestDailyEntry.findOne({

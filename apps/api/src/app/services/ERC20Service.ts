@@ -144,16 +144,19 @@ export const getTokensForWallet = async (wallet: WalletDocument) => {
 
     const result = [];
     for (const token of tokens) {
+      console.log(token, 'token')
         try {
             const decorated = await decorate(token, wallet);
-            result.push(decorated);
+          console.log(decorated, 'tokenaaaaaa')
+
+          result.push(decorated);
         } catch (error) {
             console.log(error);
         }
     }
 
     const defaultTokens = (await findDefaultTokens(wallet)).filter(({ walletBalance }) => walletBalance > 0);
-
+    console.log(defaultTokens, 'defaultTokens');
     return result.concat(defaultTokens);
 };
 
@@ -303,8 +306,11 @@ async function findDefaultTokens(wallet: WalletDocument) {
         const { abi } = getArtifact('THXERC20_LimitedSupply');
         const contract = new web3.eth.Contract(abi, erc20.address);
         const walletBalanceInWei = await contract.methods.balanceOf(wallet.address).call();
+        console.log(walletBalanceInWei, 'walletBalanceInWei');
         const walletBalance = Number(fromWei(walletBalanceInWei));
-        return {
+      console.log(walletBalance, 'walletBalance');
+
+      return {
             sub: wallet.sub,
             erc20Id: '',
             walletId: wallet.id,

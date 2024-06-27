@@ -35,10 +35,10 @@ const collaborators = [
     },
 ];
 
-// const chainId = ChainId.Hardhat;
-const chainId = ChainId.Polygon;
-// const erc20Id = '64d3a4149f7e6d78c9366982'; // Local
-const erc20Id = '6464c665633c1cf385d8cc2b'; // THX Network (POS) on Prod
+const chainId = ChainId.Hardhat;
+// const chainId = ChainId.Polygon;
+const erc20Id = '64d3a4149f7e6d78c9366982'; // Local
+// const erc20Id = '6464c665633c1cf385d8cc2b'; // THX Network (POS) on Prod
 
 export default async function main() {
     const start = Date.now();

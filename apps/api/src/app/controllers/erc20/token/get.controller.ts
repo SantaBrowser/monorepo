@@ -16,6 +16,7 @@ const controller = async (req: Request, res: Response) => {
 
     const wallet = await WalletService.findById(req.query.walletId as string);
     if (!wallet) throw new BadRequestError('Wallet not found');
+  console.log(req.params.id, wallet.address, 'erc20.address');
 
     const walletBalanceInWei = await erc20.contract.methods.balanceOf(wallet.address).call();
     const walletBalance = Number(fromWei(walletBalanceInWei, 'ether'));

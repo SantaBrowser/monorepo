@@ -10,7 +10,9 @@ const validation = [query('walletId').isMongoId(), query('tokenAddress').isEther
 const controller = async (req: Request, res: Response) => {
     const walletId = req.query.walletId as string;
     const wallet = await WalletService.findById(walletId);
-    if (!wallet) throw new NotFoundError('Wallet not found');
+  console.log(req.params.walletId, 'erc20.address');
+
+  if (!wallet) throw new NotFoundError('Wallet not found');
 
     const { web3 } = getProvider(wallet.chainId);
     const { abi } = getArtifact('THXERC20_LimitedSupply');
