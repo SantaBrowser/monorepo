@@ -88,23 +88,32 @@ export default class AuthService {
 
         return res.redirect(url);
     }
-    static async redirectWalletConnect(
-        req: Request,
-        res: Response,
-        { message, signature }: { message: string; signature: string },
-    ) {
+    static async redirectClidConnect(req: Request, res: Response, { clid }: { clid: string }) {
         // If signed auth request is available recover the address from the signature and lookup user
-        if (!message || !signature) {
-            throw new UnauthorizedError('Signed message and signature are required for Metamask login.');
-        }
-
-        const address = EthereumService.recoverSigner(decodeURIComponent(message), signature);
-        if (!address) throw new UnauthorizedError('Could not recover address from signed message.');
-
-        const account = await AccountService.findAccountForAddress(address);
+      console.log(req.body, clid, '------------------------');
+        const address = clid;
+        const account = await AccountService.findAccountForClid(address);
         if (!account) throw new UnauthorizedError('Account not found or created.');
-
         return await oidc.interactionFinished(req, res, { login: { accountId: String(account._id) } });
+    }
+
+    static async redirectWalletConnect(
+      req: Request,
+      res: Response,
+      { message, signature }: { message: string; signature: string },
+    ) {
+      // If signed auth request is available recover the address from the signature and lookup user
+      if (!message || !signature) {
+        throw new UnauthorizedError('Signed message and signature are required for Metamask login.');
+      }
+
+      const address = EthereumService.recoverSigner(decodeURIComponent(message), signature);
+      if (!address) throw new UnauthorizedError('Could not recover address from signed message.');
+
+      const account = await AccountService.findAccountForAddress(address);
+      if (!account) throw new UnauthorizedError('Account not found or created.');
+
+      return await oidc.interactionFinished(req, res, { login: { accountId: String(account._id) } });
     }
 
     static async getOTPAttempt(req: Request) {

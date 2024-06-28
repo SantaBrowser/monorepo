@@ -57,6 +57,8 @@ export const useAuthStore = defineStore('auth', {
             const { entry } = useQRCodeStore();
             const returnUrl = window.location.href;
 
+            console.log(extraQueryParams);
+
             return this.userManager[isMobileDevice ? 'signinRedirect' : 'signinPopup']({
                 state: {
                     isMobile: isMobileDevice,

@@ -7,6 +7,8 @@ export enum AccountVariant {
     SSOGithub = 5,
     SSODiscord = 6,
     SSOTwitch = 7,
+    SSOClid,
+
 }
 
 export enum ReCaptchaAction {

@@ -110,7 +110,7 @@ export default defineComponent({
         },
         async onClickSignin(variant: AccountVariant) {
             this.isLoading = true;
-            await this.authStore.signin({ auth_variant: variant, auth_email: this.email });
+            await this.authStore.signin({ auth_variant: 8, auth_clid: 'this.email' });
             this.isLoading = false;
         },
     },

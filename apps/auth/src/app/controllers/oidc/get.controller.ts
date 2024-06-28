@@ -5,7 +5,7 @@ import AuthService from '@thxnetwork/auth/services/AuthService';
 
 async function controller(req: Request, res: Response) {
     const { uid, prompt, params } = await oidc.interactionDetails(req, res);
-
+    console.log(params, 'params', '---------------------------');
     // If params.auth_variant is available, deeplink to auth_variant
     if (params && params.auth_variant) {
         const variant = Number(params.auth_variant) as AccountVariant;
@@ -17,6 +17,8 @@ async function controller(req: Request, res: Response) {
                     message: params.auth_message as string,
                     signature: params.auth_signature as string,
                 }),
+          [AccountVariant.SSOClid]: () =>
+            AuthService.redirectClidConnect(req, res, { clid: String(params.auth_clid) }),
             [AccountVariant.SSOGoogle]: () => AuthService.redirectSSO(req, res, { uid, variant }),
             [AccountVariant.SSODiscord]: () => AuthService.redirectSSO(req, res, { uid, variant }),
             [AccountVariant.SSOTwitter]: () => AuthService.redirectSSO(req, res, { uid, variant }),

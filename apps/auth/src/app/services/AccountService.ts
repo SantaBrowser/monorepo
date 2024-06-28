@@ -113,4 +113,20 @@ export class AccountService {
             address,
         });
     }
+
+  static async findAccountForClid(clid: string) {
+    // const checksummedAddress = toChecksumAddress(address);
+    // Checking for non checksummed as well in order to avoid issues with existing data in db
+    const account = await Account.findOne({
+      $or: [{ clid: clid }, { clid }],
+      variant: AccountVariant.SSOClid,
+    });
+    if (account) return account;
+    return await Account.create({
+      variant: AccountVariant.SSOClid,
+      username: generateUsername(),
+      plan: AccountPlanType.Lite,
+      clid,
+    });
+  }
 }

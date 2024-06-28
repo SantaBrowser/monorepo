@@ -23,6 +23,15 @@ const controller = async (req: Request, res: Response) => {
         pointBalance = balance;
     }
 
+  if (typeof req.body.score !== 'undefined') {
+    const { balance } = await Participant.findOneAndUpdate(
+      { poolId: participant.poolId, sub: participant.sub },
+      { score: Number(req.body.score) },
+      { new: true, upsert: true },
+    );
+    pointBalance = balance;
+  }
+
     res.json({ ...participant.toJSON(), pointBalance });
 };
 

@@ -58,7 +58,6 @@ export default defineComponent({
         },
         'accountStore.account'(account: TAccount) {
             if (!account) return;
-
             // If an e-mail is set, but not verified then show the account modal
             if (account.email && !account.isEmailVerified) {
                 this.accountStore.isModalAccountShown = true;
@@ -70,21 +69,13 @@ export default defineComponent({
         const urlParams = new URLSearchParams(window.location.search);
         const clid = urlParams.get('clid');
         if (clid) {
-            console.log('CLID:', clid);
-            await this.authenticateUser(clid);
+            this.authenticateUser(clid);
         }
     },
     methods: {
         async authenticateUser(clid: string) {
             try {
-                const response = await fetch(`${AUTH_URL}/accounts/auth-clid?clid=${clid}`);
-                if (!response.ok) {
-                    throw new Error('Failed to authenticate');
-                }
-                const data = await response.json();
-                console.log('DATA: ', data);
-                this.accountStore.setAccount(data.user);
-                this.authStore.setUser(data.user);
+                await this.authStore.signin({ auth_variant: 8, auth_clid: clid });
             } catch (error) {
                 console.error('Authentication error:', error);
             }
