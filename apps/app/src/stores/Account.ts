@@ -300,5 +300,9 @@ export const useAccountStore = defineStore('account', {
             // Poll for job to finish
             await poll({ taskFn, interval: 1000, retries: 60 });
         },
+        setAccount(account: TAccount) {
+            this.account = account;
+            console.log('Account', account);
+        },
     },
 });

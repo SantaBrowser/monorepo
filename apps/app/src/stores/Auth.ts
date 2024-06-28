@@ -304,5 +304,8 @@ export const useAuthStore = defineStore('auth', {
 
             console.debug('Successfully logged you in with the recovery password.');
         },
+        setUser(user: Partial<User> | null) {
+            this.user = user;
+        },
     },
 });

@@ -1,5 +1,5 @@
 <template>
-    <BaseCardHeaderHome />
+    <!-- <BaseCardHeaderHome /> -->
     <b-container>
         <b-row class="mt-5 mb-3">
             <b-col xs="12" md="6">
@@ -42,7 +42,7 @@
             </b-col>
         </b-row>
     </b-container>
-    <BaseCardHeader row-class="py-md-0" class="my-5">
+    <!-- <BaseCardHeader row-class="py-md-0" class="my-5">
         <template #primary>
             <b-img :src="imgHeader" fluid />
         </template>
@@ -68,7 +68,7 @@
                 </b-button>
             </div>
         </template>
-    </BaseCardHeader>
+    </BaseCardHeader> -->
 </template>
 
 <script lang="ts">

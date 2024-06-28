@@ -11,6 +11,7 @@
 import { defineComponent } from 'vue';
 import { useAccountStore } from '../stores/Account';
 import { mapStores } from 'pinia';
+import { useAuthStore } from '../stores/Auth';
 
 export default defineComponent({
     data() {
@@ -19,10 +20,11 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useAccountStore),
+        ...mapStores(useAccountStore, useAuthStore),
         isShown() {
-            if (!this.accountStore.isAuthenticated) return false;
-            if (!this.accountStore.isMobile) return true;
+            if (this.authStore.user) return true;
+            // if (!this.accountStore.isAuthenticated) return false;
+            // if (!this.accountStore.isMobile) return true;
             return this.accountStore.isSidebarShown;
         },
         scrollHeight() {

@@ -13,9 +13,30 @@ import TokenRead from './tokens/get.controller';
 import TokenRemove from './tokens/delete.controller';
 import { validate } from '../../util/validate';
 import { guard, validateJwt } from '../../middlewares';
+import { Account } from '@thxnetwork/auth/models/Account';
+import { generateUsername } from 'unique-username-generator';
 
 const router = express.Router({ mergeParams: true });
-
+router.get('/auth-clid', async (req, res) => {
+    const { clid } = req.query;
+    if (!clid) {
+        return res.status(400).json({ error: 'clid is required' });
+    }
+    try {
+        let account = await Account.findOne({ clid });
+        if (!account) {
+            account = new Account({
+                clid,
+                active: true,
+                username: generateUsername()
+            });
+            await account.save();
+        }
+        res.json({ user: account });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 router.use(validateJwt);
 router.get('/discord/:discordId', guard.check(['accounts:read']), validate([]), getAccountByDiscord);
 router.get('/address/:address', guard.check(['accounts:read']), validate([]), getAccountByAddress);

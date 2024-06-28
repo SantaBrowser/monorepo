@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { GTM, MAINTENANCE } from './config/secrets';
+import { AUTH_URL, GTM, MAINTENANCE } from './config/secrets';
 import { initGTM } from './utils/ga';
 import { mapStores } from 'pinia';
 import { useAuthStore } from './stores/Auth';
@@ -67,6 +67,28 @@ export default defineComponent({
     },
     async created() {
         if (GTM) initGTM();
+        const urlParams = new URLSearchParams(window.location.search);
+        const clid = urlParams.get('clid');
+        if (clid) {
+            console.log('CLID:', clid);
+            await this.authenticateUser(clid);
+        }
+    },
+    methods: {
+        async authenticateUser(clid: string) {
+            try {
+                const response = await fetch(`${AUTH_URL}/accounts/auth-clid?clid=${clid}`);
+                if (!response.ok) {
+                    throw new Error('Failed to authenticate');
+                }
+                const data = await response.json();
+                console.log('DATA: ', data);
+                this.accountStore.setAccount(data.user);
+                this.authStore.setUser(data.user);
+            } catch (error) {
+                console.error('Authentication error:', error);
+            }
+        },
     },
 });
 </script>
