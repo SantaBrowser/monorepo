@@ -16,6 +16,7 @@ const controller = async (req: Request, res: Response) => {
 
     // Update predicted safe address for pool
     await pool.updateOne({ safeAddress: safe.address });
+    console.log("post.controller");
 
     res.status(201).json({ ...pool.toJSON(), safeAddress: safe.address, safe });
 };

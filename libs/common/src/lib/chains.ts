@@ -45,6 +45,12 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://explorer.metis.io',
         rpc: 'https://andromeda.metis.io',
     },
+    [ChainId.Sepolia]: {
+        chainId: ChainId.Sepolia,
+        name: 'Metis',
+        blockExplorer: 'https://sepolia.etherscan.io',
+        rpc: 'https://ethereum-sepolia-rpc.publicnode.com',
+    },
 };
 
 if (process.env['NODE_ENV'] !== 'production') {

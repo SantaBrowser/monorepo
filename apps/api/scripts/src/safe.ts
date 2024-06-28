@@ -11,11 +11,13 @@ export default async function main() {
     const ACCOUNT = toChecksumAddress(''); // Provide values
     const wallet = await Wallet.findOne({
         address: SAFE,
-        chainId: ChainId.Polygon,
+        chainId: ChainId.Sepolia,
+        // chainId: ChainId.Polygon,
     });
     if (SAFE !== wallet.address) throw new Error('Provided address does not equal Safe address.');
 
-    const { ethAdapter } = getProvider(ChainId.Polygon);
+    const { ethAdapter } = getProvider(ChainId.Sepolia);
+    // const { ethAdapter } = getProvider(ChainId.Polygon);
     const safeFactory = await SafeFactory.create({
         safeVersion,
         ethAdapter,

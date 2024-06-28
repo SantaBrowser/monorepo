@@ -44,6 +44,21 @@ const controller = async (req: Request, res: Response) => {
             Participant.countDocuments({ poolId: req.params.id, isSubscribed: true }),
             PaymentService.balanceOf(safe),
         ]);
+    console.log("get controller");
+    // console.log({
+    //     ...pool.toJSON(),
+    //     balance,
+    //     address: pool.safeAddress,
+    //     safe,
+    //     identities,
+    //     events,
+    //     wallets,
+    //     widget,
+    //     brand,
+    //     subscriberCount,
+    //     owner,
+    //     collaborators,
+    // });
 
     res.json({
         ...pool.toJSON(),

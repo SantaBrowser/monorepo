@@ -6,6 +6,8 @@ import { subWeeks } from 'date-fns';
 const validation = [param('campaignId').isMongoId()];
 
 const controller = async (req: Request, res: Response) => {
+    console.log("#############leaderboards");
+    console.log(req.params);
     const pool = await PoolService.getById(req.params.campaignId);
     const endDate = new Date();
     const startDate = subWeeks(endDate, pool.settings.leaderboardInWeeks);

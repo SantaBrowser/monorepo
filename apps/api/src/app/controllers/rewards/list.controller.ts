@@ -15,6 +15,8 @@ const controller = async (req: Request, res: Response) => {
         pool,
         account,
     });
+    console.log("rewards.list.controller");
+    console.log({ coin, nft, custom, coupon, discordRole, galachain });
 
     res.json({ coin, nft, custom, coupon, discordRole, galachain });
 };

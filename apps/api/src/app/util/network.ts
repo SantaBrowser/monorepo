@@ -1,5 +1,6 @@
 import {
     HARDHAT_RPC,
+    SEPOLIA_RPC,
     POLYGON_RELAYER,
     POLYGON_RELAYER_API_KEY,
     POLYGON_RELAYER_API_SECRET,
@@ -75,6 +76,20 @@ if (POLYGON_RELAYER) {
             signer,
             relayer,
             defaultAccount: POLYGON_RELAYER,
+        };
+    })();
+}
+
+if (SEPOLIA_RPC) {
+    networks[ChainId.Sepolia] = (() => {
+        const web3 = new Web3(SEPOLIA_RPC);
+        const signer = new Wallet(PRIVATE_KEY, new ethers.providers.JsonRpcProvider(SEPOLIA_RPC));
+        return {
+            web3,
+            txServiceUrl: SAFE_TXS_SERVICE,
+            ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer as any }),
+            signer,
+            defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
         };
     })();
 }

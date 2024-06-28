@@ -46,9 +46,11 @@ const validationBaseQuest = [
 const validation = [param('id').isMongoId(), ...validationBaseQuest];
 
 const controller = async (req: Request, res: Response) => {
+    console.log("#############reward controller", req.params.id);
     const pool = await PoolService.getById(req.params.id);
     if (!pool) throw new NotFoundError('Could not find pool');
     const variant = req.params.variant as unknown as RewardVariant;
+    console.log(variant, { id: req.params.id }, req.body, req.file);
     const reward = await RewardService.create(variant, req.params.id, req.body, req.file);
 
     res.status(201).json(reward);

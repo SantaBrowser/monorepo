@@ -43,6 +43,9 @@ const controller = async (req: Request, res: Response) => {
         await agenda.now(JobType.UpdateCampaignRanks);
     }
 
+    console.log("patch.controller");
+    console.log(result);
+
     return res.json(result);
 };
 export { controller, validation };

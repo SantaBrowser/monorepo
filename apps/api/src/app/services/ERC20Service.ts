@@ -20,6 +20,7 @@ import {
 import TransactionService from './TransactionService';
 import PoolService from './PoolService';
 import { fromWei } from 'web3-utils';
+import { PRIVATE_KEY } from '../config/secrets';
 
 async function decorate(token: ERC20TokenDocument, wallet: WalletDocument) {
     const erc20 = await getById(token.erc20Id);
@@ -57,28 +58,56 @@ export async function findBySub(sub: string) {
 }
 
 export const deploy = async (params: Partial<TERC20>, forceSync = true) => {
-    const erc20 = await ERC20.create({
-        name: params.name,
-        symbol: params.symbol,
-        chainId: params.chainId,
-        type: params.type,
-        sub: params.sub,
-        logoImgUrl: params.logoImgUrl,
-    });
-    const { web3 } = getProvider(erc20.chainId);
-    const { abi, bytecode } = getArtifact(erc20.contractName);
+    const { web3, defaultAccount } = getProvider(params.chainId);
+    const { abi, bytecode } = getArtifact(params.type == '1' ? 'THXERC20_UnlimitedSupply' : 'THXERC20_LimitedSupply');
     const contract = new web3.eth.Contract(abi);
     const fn = contract.deploy({
         data: bytecode,
-        arguments: getDeployArgs(erc20, String(params.totalSupply)),
+        arguments: params.type == '1' ? [params.name, params.symbol, defaultAccount] : [params.name, params.symbol, defaultAccount, params.totalSupply],
     });
 
-    const txId = await TransactionService.sendAsync(null, fn, erc20.chainId, forceSync, {
-        type: 'Erc20DeployCallback',
-        args: { erc20Id: String(erc20._id) },
+    const estimate = await fn.estimateGas({ from: defaultAccount });
+
+    // Instantiate the contract object
+    const contractInstance = new web3.eth.Contract(abi);
+
+    // Encode the deployment data
+    const deployData = contractInstance.deploy({
+        data: bytecode,
+        arguments: params.type == '1' ? [params.name, params.symbol, defaultAccount] : [params.name, params.symbol, defaultAccount, params.totalSupply],
+    }).encodeABI();
+
+    const privateKey = PRIVATE_KEY; // Your private key
+
+    // Construct the transaction object
+    const tx = {
+        data: deployData,
+        gas: estimate,
+    };
+
+    // Sign the transaction
+    web3.eth.accounts.signTransaction(tx, privateKey).then(signed => {
+        // console.log('Signed transaction:', signed);
+        web3.eth.sendSignedTransaction(signed.rawTransaction).on('receipt', receipt => {
+            // console.log('Receipt:', receipt);
+            // console.log('New contract address:', receipt.contractAddress);
+            ERC20.create({
+                name: params.name,
+                symbol: params.symbol,
+                chainId: params.chainId,
+                type: params.type,
+                sub: params.sub,
+                logoImgUrl: params.logoImgUrl,
+                address: receipt.contractAddress,
+                transactions: [receipt.transactionHash],
+            }).then(erc20 => {
+                console.log("##########success");
+                return erc20;
+            });
+        });
     });
 
-    return ERC20.findByIdAndUpdate(erc20._id, { transactions: [txId] }, { new: true });
+    // return ERC20.findByIdAndUpdate(erc20._id, { transactions: [txId] }, { new: true });
 };
 
 export async function deployCallback({ erc20Id }: TERC20DeployCallbackArgs, receipt: TransactionReceipt) {

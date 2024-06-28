@@ -1,5 +1,5 @@
 <template>
-    <BaseCardHeaderHome />
+    <!-- <BaseCardHeaderHome /> -->
     <b-container>
         <b-row class="mt-5 mb-3">
             <b-col xs="12" md="6">
@@ -126,14 +126,19 @@ export default defineComponent({
     methods: {
         async getCampaigns() {
             const url = new URL(API_URL);
+            console.log('campaigns');
             url.pathname = '/v1/leaderboards';
             url.searchParams.append('page', this.page.toString());
             url.searchParams.append('limit', this.limit.toString());
             if (this.search) {
                 url.searchParams.append('search', this.search);
             }
+            console.log(url);
             const res = await fetch(url);
+            console.log(res);
             const campaigns = await res.json();
+            console.log('campaigns show');
+            console.log(campaigns);
             this.campaigns = campaigns;
             this.campaigns.results = this.campaigns.results.map((campaign: any) => ({
                 ...campaign,

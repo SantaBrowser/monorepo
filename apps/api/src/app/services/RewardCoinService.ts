@@ -38,7 +38,9 @@ export default class RewardCoinService implements IRewardService {
 
     async create(data: Partial<TRewardCoin>) {
         const erc20 = await this.getERC20(data.erc20Id);
-        await this.addMinter(erc20, data.poolId);
+        // await this.addMinter(erc20, data.poolId);
+
+        console.log("reward create", data);
 
         return await this.models.reward.create(data);
     }

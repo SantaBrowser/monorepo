@@ -16,60 +16,60 @@ const ONE_DAY = 60 * 60 * 24;
 
 export default class PaymentService {
     static async deposit(safe: WalletDocument, sub: string, amountInWei: BigNumber) {
-        const { web3 } = getProvider(safe.chainId);
-        const addresses = contractNetworks[safe.chainId];
-        const contract = new web3.eth.Contract(
-            contractArtifacts['THXPaymentSplitter'].abi,
-            addresses.THXPaymentSplitter,
-        );
+        // const { web3 } = getProvider(safe.chainId);
+        // const addresses = contractNetworks[safe.chainId];
+        // const contract = new web3.eth.Contract(
+        //     contractArtifacts['THXPaymentSplitter'].abi,
+        //     addresses.THXPaymentSplitter,
+        // );
 
-        // @dev Using default slippage value here as payments
-        const { minBPTOut } = await BalancerService.buildJoin(safe, amountInWei.toString(), '0', '50');
-        const fn = contract.methods.deposit(safe.address, amountInWei, minBPTOut);
+        // // @dev Using default slippage value here as payments
+        // const { minBPTOut } = await BalancerService.buildJoin(safe, amountInWei.toString(), '0', '50');
+        // const fn = contract.methods.deposit(safe.address, amountInWei, minBPTOut);
 
-        await Payment.create({ poolId: safe.poolId, sub, amountInWei });
+        // await Payment.create({ poolId: safe.poolId, sub, amountInWei });
 
-        return await TransactionService.sendSafeAsync(safe, addresses.THXPaymentSplitter, fn);
+        // return await TransactionService.sendSafeAsync(safe, addresses.THXPaymentSplitter, fn);
     }
 
     static async balanceOf(wallet: WalletDocument) {
         // TODO Deploy Polygon PaymentSplitter before using this middleware
-        const { THXPaymentSplitter } = contractNetworks[wallet.chainId];
-        if (!THXPaymentSplitter && wallet.chainId === ChainId.Polygon) {
-            return '0';
-        }
+        // const { THXPaymentSplitter } = contractNetworks[wallet.chainId];
+        // if (!THXPaymentSplitter && wallet.chainId === ChainId.Polygon) {
+        //     return '0';
+        // }
 
-        const splitter = ContractService.getContract('THXPaymentSplitter', wallet.chainId, THXPaymentSplitter);
-        const balance = await splitter.balanceOf(wallet.address);
-        return balance.toString();
+        // const splitter = ContractService.getContract('THXPaymentSplitter', wallet.chainId, THXPaymentSplitter);
+        // const balance = await splitter.balanceOf(wallet.address);
+        // return balance.toString();
     }
 
     static async getRate(wallet: WalletDocument) {
-        const splitter = ContractService.getContract(
-            'THXPaymentSplitter',
-            wallet.chainId,
-            contractNetworks[wallet.chainId].THXPaymentSplitter,
-        );
-        const rate = await splitter.rates(wallet.address);
-        return rate.toString();
+        // const splitter = ContractService.getContract(
+        //     'THXPaymentSplitter',
+        //     wallet.chainId,
+        //     contractNetworks[wallet.chainId].THXPaymentSplitter,
+        // );
+        // const rate = await splitter.rates(wallet.address);
+        // return rate.toString();
     }
 
     static async setRate(safe: WalletDocument, plan: AccountPlanType) {
-        const { web3 } = getProvider(safe.chainId);
-        const addresses = contractNetworks[safe.chainId];
-        const contract = new web3.eth.Contract(
-            contractArtifacts['THXPaymentSplitter'].abi,
-            addresses.THXPaymentSplitter,
-        );
-        // Convert plan pricing to rate in wei per second
-        const pricing = planPricingMap[plan];
-        // Using 6 decimals for USDC
-        const costInWeiPerThirtyDays = BigNumber.from(parseUnits(pricing.costSubscription.toString(), 6));
-        // Plan pricing is determined on a per 4 week basis
-        const rateInWeiPerSecond = costInWeiPerThirtyDays.div(4 * 7 * 24 * 60 * 60);
-        const fn = contract.methods.setRate(rateInWeiPerSecond);
+        // const { web3 } = getProvider(safe.chainId);
+        // const addresses = contractNetworks[safe.chainId];
+        // const contract = new web3.eth.Contract(
+        //     contractArtifacts['THXPaymentSplitter'].abi,
+        //     addresses.THXPaymentSplitter,
+        // );
+        // // Convert plan pricing to rate in wei per second
+        // const pricing = planPricingMap[plan];
+        // // Using 6 decimals for USDC
+        // const costInWeiPerThirtyDays = BigNumber.from(parseUnits(pricing.costSubscription.toString(), 6));
+        // // Plan pricing is determined on a per 4 week basis
+        // const rateInWeiPerSecond = costInWeiPerThirtyDays.div(4 * 7 * 24 * 60 * 60);
+        // const fn = contract.methods.setRate(rateInWeiPerSecond);
 
-        return await TransactionService.sendSafeAsync(safe, addresses.PaymentSplitter, fn);
+        // return await TransactionService.sendSafeAsync(safe, addresses.PaymentSplitter, fn);
     }
 
     static async getTimeLeftInSeconds(safe: WalletDocument, pool: TPool) {
@@ -80,7 +80,7 @@ export default class PaymentService {
         // Devide balance by rate and calculate time left for the pool
         const balanceInWei = await this.balanceOf(safe);
         const rateInWeiPerSecond = await this.getRate(safe);
-        return BigNumber.from(balanceInWei).div(rateInWeiPerSecond);
+        return BigNumber.from(balanceInWei).div(1);
     }
 
     static async assertPaymentsJob() {

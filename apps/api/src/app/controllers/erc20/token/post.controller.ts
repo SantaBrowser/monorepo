@@ -9,6 +9,7 @@ const validation = [
 ];
 
 const controller = async (req: Request, res: Response) => {
+    console.log("##############################ERC20 token controller");
     const erc20 = await ERC20Service.importToken(
         Number(req.body.chainId),
         req.body.address,

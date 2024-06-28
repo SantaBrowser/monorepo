@@ -6,6 +6,8 @@ const validation = [query('walletId').optional().isMongoId()];
 
 const controller = async (req: Request, res: Response) => {
     const payments = await RewardService.findPaymentsForSub(req.auth.sub);
+    console.log("rewards.payments.list.controller");
+    console.log(payments);
     res.json(payments);
 };
 

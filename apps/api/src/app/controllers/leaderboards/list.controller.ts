@@ -5,6 +5,7 @@ import { query } from 'express-validator';
 import { Participant } from '@thxnetwork/api/models/Participant';
 import RewardService from '@thxnetwork/api/services/RewardService';
 import QuestService from '@thxnetwork/api/services/QuestService';
+import { match } from 'assert';
 
 const matchTitle = (search) => {
     if (!search || !search.length) return;
@@ -19,13 +20,19 @@ const matchTitle = (search) => {
 
 export const paginatedResults = async (page: number, limit: number, search: string) => {
     const startIndex = (page - 1) * limit;
+    console.log(page, limit, search);
     const $match = {
-        'rank': { $exists: true },
+        // 'rank': { $exists: true },
         'settings.isPublished': true,
         ...(search && { 'settings.title': matchTitle(search) }),
     };
+    console.log($match);
     const total = await Pool.countDocuments($match);
-    const results = await Pool.find($match).sort({ rank: 1 }).skip(startIndex).limit(limit);
+    console.log({total: total});
+    const results = await Pool.find($match).skip(startIndex).limit(limit);
+    // const results = await Pool.find($match).sort({ rank: 1 }).skip(startIndex).limit(limit);
+    // const results = await Pool.find();
+    console.log(results);
 
     return { page, total, limit, results };
 };
@@ -33,6 +40,8 @@ export const paginatedResults = async (page: number, limit: number, search: stri
 const validation = [query('page').isInt(), query('limit').isInt(), query('search').optional().isString()];
 
 const controller = async (req: Request, res: Response) => {
+    console.log("#############leaderboards.list");
+    console.log(req.query);
     const { page, limit, search } = req.query;
     const result = await paginatedResults(Number(page), Number(limit), search ? String(search) : '');
     const widgets = await Widget.find({ poolId: result.results.map((p: PoolDocument) => p._id) });

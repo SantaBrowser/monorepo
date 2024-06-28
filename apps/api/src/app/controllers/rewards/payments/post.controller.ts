@@ -41,6 +41,9 @@ const controller = async (req: Request, res: Response) => {
         walletId: req.body.walletId,
     });
 
+    console.log("rewards.payments.post.controller");
+    console.log(job.attrs._id);
+
     res.json({ jobId: job.attrs._id });
 };
 

@@ -18,10 +18,11 @@ const validation = [
 ];
 
 const controller = async (req: Request, res: Response) => {
+    console.log("#############################createTokenController");
     const logoImgUrl = req.file && (await ImageService.upload(req.file));
     const forceSync = req.query.forceSync !== undefined ? req.query.forceSync === 'true' : false;
 
-    const erc20 = await ERC20Service.deploy(
+    ERC20Service.deploy(
         {
             name: req.body.name,
             symbol: req.body.symbol,
@@ -32,8 +33,9 @@ const controller = async (req: Request, res: Response) => {
             logoImgUrl,
         },
         forceSync,
-    );
-
-    res.status(201).json(erc20);
+    ).then(erc20 => {
+        console.log({erc20: erc20});
+        res.json(erc20);
+    });
 };
 export { controller, validation };

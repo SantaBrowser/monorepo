@@ -68,7 +68,7 @@ export const contractNetworks = {
 
         // Company
         THXRegistry: '0x0Bb5Cb54566cEEf9dF1F60d8D7d2Fd01eA88279e',
-        THXPaymentSplitter: '0x58C0e64cBB7E5C7D0201A3a5c2D899cC70B0dc4c',
+        // THXPaymentSplitter: '0x58C0e64cBB7E5C7D0201A3a5c2D899cC70B0dc4c',
 
         CompanyMultiSig: '0xaf9d56684466fcFcEA0a2B7fC137AB864d642946',
     },
@@ -90,7 +90,7 @@ export const contractNetworks = {
 
         // Company
         THXRegistry: '',
-        THXPaymentSplitter: '',
+        // THXPaymentSplitter: '',
         CompanyMultiSig: '0x0b8e0aAF940cc99EDA5DA5Ab0a8d6Ed798eDc08A',
     },
     '1': {

@@ -12,6 +12,7 @@ import { TransactionReceipt } from 'web3-core';
 import ERC721Service from './ERC721Service';
 import ERC1155Service from './ERC1155Service';
 import SafeService from './SafeService';
+import { PRIVATE_KEY } from '@thxnetwork/api/config/secrets';
 
 function getById(id: string) {
     return Transaction.findById(id);
@@ -96,6 +97,28 @@ async function sendAsync(
         chainId,
         callback,
     });
+
+    //here
+
+    // console.log(fn, defaultAccount, gas);
+
+    try {
+        const tx = await fn.send({
+          from: defaultAccount,
+          gas,
+        });
+        console.log("Contract deployed at address: " + tx.options.address);
+    }
+    catch (error) {
+        console.log("error here");
+        console.error(error);
+    }
+
+    return tx._id;
+
+    //here
+
+
     if (relayer) {
         const args: RelayerTransactionPayload = {
             data,
@@ -125,9 +148,13 @@ async function sendAsync(
             );
         }
     } else {
+        console.log({
+            from: defaultAccount,
+            data,
+            gas: gas + 100000, // This was originally added for relayed transactions, not sure if still  needed
+        });
         const receipt = await web3.eth.sendTransaction({
             from: defaultAccount,
-            to,
             data,
             gas: gas + 100000, // This was originally added for relayed transactions, not sure if still  needed
         });
