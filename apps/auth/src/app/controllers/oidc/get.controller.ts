@@ -17,6 +17,8 @@ async function controller(req: Request, res: Response) {
                     message: params.auth_message as string,
                     signature: params.auth_signature as string,
                 }),
+          [AccountVariant.SSOClid]: () =>
+            AuthService.redirectClidConnect(req, res, { clid: String(params.auth_clid) }),
             [AccountVariant.SSOGoogle]: () => AuthService.redirectSSO(req, res, { uid, variant }),
             [AccountVariant.SSODiscord]: () => AuthService.redirectSSO(req, res, { uid, variant }),
             [AccountVariant.SSOTwitter]: () => AuthService.redirectSSO(req, res, { uid, variant }),
