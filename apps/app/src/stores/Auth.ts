@@ -52,6 +52,16 @@ export const useAuthStore = defineStore('auth', {
             this.user = user;
             this.isModalLoginShown = false;
         },
+        async restoreUser() {
+            try {
+                this.user = await this.userManager.getUser();
+                if (this.user) {
+                    this.onUserLoadedCallback(this.user);
+                }
+            } catch (error) {
+                console.error('Error restoring user:', error);
+            }
+        },
         signin(extraQueryParams?: { [key: string]: any }) {
             const { poolId, config, isMobileDevice } = useAccountStore();
             const { entry } = useQRCodeStore();

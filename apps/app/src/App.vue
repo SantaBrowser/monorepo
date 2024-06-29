@@ -66,10 +66,11 @@ export default defineComponent({
     },
     async created() {
         if (GTM) initGTM();
+        await this.authStore.restoreUser();
         const urlParams = new URLSearchParams(window.location.search);
         const clid = urlParams.get('clid');
-        if (clid) {
-            this.authenticateUser(clid);
+        if (clid && !this.authStore.user) {
+            await this.authenticateUser(clid);
         }
     },
     methods: {
