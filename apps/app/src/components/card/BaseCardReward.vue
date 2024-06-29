@@ -26,7 +26,7 @@
                     <span class="card-text me-1"> Price: </span>
                     <b-badge variant="primary" class="ms-1 p-1 bg-primary">
                         <span class="text-accent">
-                            {{ reward.pointPrice }}
+                            {{ convertToDollar(reward.pointPrice) }}
                         </span>
                     </b-badge>
                 </div>
@@ -142,9 +142,7 @@ export default defineComponent({
             } else if (this.reward.isDisabled) {
                 return 'Not available';
             } else if (this.reward.pointPrice) {
-                return `${this.reward.pointPrice} point${
-                    this.reward.pointPrice && this.reward.pointPrice > 1 ? 's' : ''
-                }`;
+                return `${this.convertToDollar(this.reward.pointPrice)}`;
             } else {
                 return 'Free!';
             }
@@ -166,6 +164,11 @@ export default defineComponent({
                       addSuffix: false,
                   })
                 : 'expired';
+        },
+    },
+    methods: {
+        convertToDollar(points: number) {
+            return `$${(points * 0.01).toFixed(2)}`;
         },
     },
 });
