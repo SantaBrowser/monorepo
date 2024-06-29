@@ -48,7 +48,8 @@ export class AccountService {
             }
 
             // Always send mail in case this is a retry
-            await MailService.sendVerificationEmail(account, data.email, WIDGET_URL);
+            console.log(WIDGET_URL)
+            // await MailService.sendVerificationEmail(account, data.email, WIDGET_URL);
         }
 
         return await Account.findByIdAndUpdate(account._id, data, { new: true });
