@@ -1,8 +1,9 @@
 <template>
-    <aside v-if="isShown" class="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-panel h-100">
-            <BaseCardAccount />
-            <BaseCardRewards />
+            <BaseCardAccount v-if="isShown" />
+            <BaseCardRewards v-if="isShown" />
+            <BaseQuestLeaderboardSmall v-if="isShown" />
             <BaseCardDiscord class="mt-auto" />
         </div>
     </aside>

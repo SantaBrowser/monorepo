@@ -77,16 +77,16 @@
                     />
                 </b-button>
             </span>
-            <div class="d-flex align-items-center justify-content-between pb-2 mt-2" style="opacity: 0.5">
-                <div class="d-flex align-items-center text-opaque small">
-                    <span v-if="reward.author" class="text-white me-1"> {{ reward.author.username }} &CenterDot; </span>
-                    <span v-if="reward.createdAt">{{ format(new Date(reward.createdAt), 'MMMM do') }} </span>
-                </div>
-                <div v-if="reward.paymentCount" class="d-flex align-items-center text-opaque small">
-                    <i class="fas fa-users me-1" />
-                    {{ reward.paymentCount }}
-                </div>
-            </div>
+            <!--            <div class="d-flex align-items-center justify-content-between pb-2 mt-2" style="opacity: 0.5">-->
+            <!--                <div class="d-flex align-items-center text-opaque small">-->
+            <!--                    <span v-if="reward.author" class="text-white me-1"> {{ reward.author.username }} &CenterDot; </span>-->
+            <!--                    <span v-if="reward.createdAt">{{ format(new Date(reward.createdAt), 'MMMM do') }} </span>-->
+            <!--                </div>-->
+            <!--                <div v-if="reward.paymentCount" class="d-flex align-items-center text-opaque small">-->
+            <!--                    <i class="fas fa-users me-1" />-->
+            <!--                    {{ reward.paymentCount }}-->
+            <!--                </div>-->
+            <!--            </div>-->
         </b-card-body>
     </b-card>
     <BaseModalRewardPayment :id="`modalRewardPayment${reward._id}`" :reward="reward" />

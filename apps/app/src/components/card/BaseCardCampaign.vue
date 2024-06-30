@@ -64,7 +64,7 @@
             </b-col>
             <b-col md="9">
                 <div class="d-flex w-100 align-items-center">
-                    <RewardsSmall :message="campaign.slug"></RewardsSmall>
+                    <RewardsSmall :message="campaign._id"></RewardsSmall>
                     <!--                                <b-button-->
                     <!--                                    size="sm"-->
                     <!--                                    variant="primary"-->

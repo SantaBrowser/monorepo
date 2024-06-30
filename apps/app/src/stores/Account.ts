@@ -27,6 +27,7 @@ export const useAccountStore = defineStore('account', {
         css: null,
         subscription: null,
         leaderboard: [],
+        leaderboardPrimary: [],
         participants: [],
         windowHeight: 0,
         isSidebarShown: false,
@@ -299,8 +300,12 @@ export const useAccountStore = defineStore('account', {
         getIdentity() {
             return window.sessionStorage.getItem(`thx:${this.poolId}:id`);
         },
-        async getLeaderboard() {
-            this.leaderboard = await this.api.request.get(`/v1/leaderboards/${this.poolId}`);
+        async getLeaderboard(poolId: string) {
+            if (poolId) {
+                this.leaderboardPrimary = await this.api.request.get(`/v1/leaderboards/${poolId}`);
+            } else {
+                this.leaderboard = await this.api.request.get(`/v1/leaderboards/${this.poolId}`);
+            }
         },
         async waitForJob(jobId: string) {
             const taskFn = async () => {
