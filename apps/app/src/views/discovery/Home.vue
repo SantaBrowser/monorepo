@@ -1,21 +1,21 @@
 <template>
-    <BaseCardHeaderHome />
+    <!-- <BaseCardHeaderHome /> -->
     <b-container>
         <b-row class="mt-5 mb-3">
-            <b-col xs="12" md="6">
-                <h2>Explore Campaigns</h2>
-            </b-col>
-            <b-col xs="12" md="4" offset-md="2" class="d-flex align-items-center justify-content-end">
-                <b-input-group class="mb-3 mb-md-0">
-                    <template #prepend>
-                        <b-input-group-text class="bg-primary">
-                            <b-spinner v-if="isLoadingSearch" small variant="white" />
-                            <i v-else class="fas fa-search"></i>
-                        </b-input-group-text>
-                    </template>
-                    <b-form-input v-model="search" placeholder="Search..." @input="onInputSearch" />
-                </b-input-group>
-            </b-col>
+            <!--            <b-col xs="12" md="6">-->
+            <!--                <h2>Earnings Dashboard</h2>-->
+            <!--            </b-col>-->
+            <!--            <b-col xs="12" md="4" offset-md="2" class="d-flex align-items-center justify-content-end">-->
+            <!--                <b-input-group class="mb-3 mb-md-0">-->
+            <!--                    <template #prepend>-->
+            <!--                        <b-input-group-text class="bg-primary">-->
+            <!--                            <b-spinner v-if="isLoadingSearch" small variant="white" />-->
+            <!--                            <i v-else class="fas fa-search"></i>-->
+            <!--                        </b-input-group-text>-->
+            <!--                    </template>-->
+            <!--                    <b-form-input v-model="search" placeholder="Search..." @input="onInputSearch" />-->
+            <!--                </b-input-group>-->
+            <!--            </b-col>-->
         </b-row>
         <b-row :style="{ opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1 }">
             <b-col>

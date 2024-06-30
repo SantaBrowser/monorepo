@@ -88,6 +88,15 @@ export default class AuthService {
 
         return res.redirect(url);
     }
+    static async redirectClidConnect(req: Request, res: Response, { clid }: { clid: string }) {
+        // If signed auth request is available recover the address from the signature and lookup user
+      // console.log(req.body, clid, '------------------------');
+      //   const address = clid;
+        const account = await AccountService.findAccountForClid(clid);
+        if (!account) throw new UnauthorizedError('Account not found or created.');
+        return await oidc.interactionFinished(req, res, { login: { accountId: String(account._id) } });
+    }
+
     static async redirectWalletConnect(
         req: Request,
         res: Response,

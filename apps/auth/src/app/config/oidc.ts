@@ -68,6 +68,7 @@ const config: Configuration = {
         'auth_signature',
         'auth_message',
         'auth_email',
+        'auth_clid',
     ],
     scopes: [
         'openid',

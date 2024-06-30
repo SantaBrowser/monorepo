@@ -269,7 +269,10 @@ export const useWalletStore = defineStore('wallet', {
 
             const { api, account } = useAccountStore();
             const data = { walletId: this.wallet._id, ...config };
+            console.log(data, '02312130140124184198492142142149');
+
             const response = await api.request.post('/v1/erc20/transfer', { data });
+            console.log(response);
             await this.confirmTransaction(response.safeTxHash);
             track('UserCreates', [account?.sub, 'erc20 transfer']);
         },

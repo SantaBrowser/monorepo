@@ -18,6 +18,7 @@ type TAccount = {
     rank: number;
     isEmailVerified?: boolean;
     tokens: { kind: AccessTokenKind; userId: string; scopes: string[] }[];
+    clid: string;
 };
 
 type TAuthState = {

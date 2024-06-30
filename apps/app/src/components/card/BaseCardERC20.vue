@@ -3,9 +3,7 @@
         <div v-if="token.erc20" class="pe-3">
             <img height="20" :src="token.erc20.logoImgUrl" />
         </div>
-        <div class="flex-grow-1">
-            {{ token.erc20.symbol }}
-        </div>
+        <div class="flex-grow-1">{{ token.erc20.symbol }}</div>
         <div class="text-success">{{ token.walletBalance }}</div>
         <div>
             <b-dropdown variant="link" size="sm" no-caret end toggle-class="py-0">
