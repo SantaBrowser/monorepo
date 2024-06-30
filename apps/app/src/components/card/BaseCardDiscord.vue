@@ -25,11 +25,11 @@
             size="2rem"
             :badge-variant="member.isOnline ? 'success' : 'warning'"
         />
-        <b-link :href="inviteURL">
-            <b-avatar size="2rem" variant="primary" class="m-1">
-                <i class="fas fa-ellipsis-h mt-1 text-opaque" />
-            </b-avatar>
-        </b-link>
+        <!--        <b-link :href="inviteURL">-->
+        <!--            <b-avatar size="2rem" variant="primary" class="m-1">-->
+        <!--                <i class="fas fa-ellipsis-h mt-1 text-opaque" />-->
+        <!--            </b-avatar>-->
+        <!--        </b-link>-->
     </b-card>
 </template>
 

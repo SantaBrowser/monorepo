@@ -79,6 +79,7 @@ type TAccountState = {
     subscription: TSubscription | null;
     participants: TParticipant[];
     leaderboard: { rank: number; score: number; questEntryCount: number; account: TAccount }[];
+    leaderboardPrimary: { rank: number; score: number; questEntryCount: number; account: TAccount }[];
 };
 
 type TWidgetTheme = {

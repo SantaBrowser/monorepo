@@ -48,7 +48,7 @@
         </p>
         <template #footer>
             <b-button class="w-100" :to="`/c/${quest.poolId}`" variant="primary">
-                Earn <strong>{{ quest.amount }}</strong> points!
+                Earn <strong>{{ quest.amount }} </strong> points!
             </b-button>
             <BaseModalExternalURL
                 :show="isModalCampaignDomainShown"
