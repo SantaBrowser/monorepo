@@ -60,9 +60,9 @@ export default defineComponent({
             if (!account) return;
 
             // If an e-mail is set, but not verified then show the account modal
-            if (account.email && !account.isEmailVerified) {
-                this.accountStore.isModalAccountShown = true;
-            }
+            // if (account.email && !account.isEmailVerified) {
+            //     this.accountStore.isModalAccountShown = true;
+            // }
         },
     },
     async created() {

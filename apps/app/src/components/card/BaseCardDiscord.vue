@@ -69,10 +69,14 @@ export default defineComponent({
         },
     },
     async mounted() {
-        const { data } = await axios('https://discord.com/api/guilds/836147176270856243/widget.json');
-        this.presenceCount = data.presence_count;
-        this.members = data.members;
-        this.inviteURL = data.instant_invite;
+        // const { data } = await axios('https://discord.com/api/guilds/836147176270856243/widget.json');
+        // this.presenceCount = data.presence_count;
+        // this.members = data.members;
+        // this.inviteURL = data.instant_invite;
+        // const { data } = await axios('https://discord.com/api/guilds/836147176270856243/widget.json');
+        this.presenceCount = 1219432;
+        this.members = [];
+        this.inviteURL = 'data.instant_invite';
     },
 });
 </script>
