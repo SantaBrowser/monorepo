@@ -64,10 +64,10 @@
             >
                 Close
             </b-button>
-            <b-button variant="link" class="w-100 text-white" @click="onClickSignout">
-                <b-spinner v-if="isLoadingReset" small variant="light" />
-                <template v-else> Sign out </template>
-            </b-button>
+            <!--            <b-button variant="link" class="w-100 text-white" @click="onClickSignout">-->
+            <!--                <b-spinner v-if="isLoadingReset" small variant="light" />-->
+            <!--                <template v-else> Sign out </template>-->
+            <!--            </b-button>-->
         </template>
     </b-modal>
 </template>
@@ -114,7 +114,8 @@ export default defineComponent({
         },
         isDisabled() {
             if (!this.accountStore.account) return true;
-            return !this.isEmailVerified || !this.accountStore.account.username || this.isProfileImgPlaceholder;
+            // return !this.isEmailVerified || !this.accountStore.account.username || this.isProfileImgPlaceholder;
+            return false;
         },
     },
     methods: {

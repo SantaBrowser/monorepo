@@ -3,9 +3,9 @@
         <!--        <BaseNavbarTicker />-->
         <BaseNavbar />
         <router-view />
-        <div class="bg-dark mt-auto">
-            <BaseFooter />
-        </div>
+        <!--        <div class="bg-dark mt-auto">-->
+        <!--            <BaseFooter />-->
+        <!--        </div>-->
     </div>
 </template>
 

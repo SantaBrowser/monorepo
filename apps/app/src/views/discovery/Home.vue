@@ -28,7 +28,7 @@
                 <BaseCardCampaign v-for="campaign of campaigns.results" class="mt-3" :campaign="campaign" />
             </b-col>
         </b-row>
-        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />
+        <!--        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />-->
     </b-container>
     <b-container class="mb-5">
         <b-row class="mt-5 mb-3">
@@ -42,33 +42,33 @@
             </b-col>
         </b-row>
     </b-container>
-    <BaseCardHeader row-class="py-md-0" class="my-5">
-        <template #primary>
-            <b-img :src="imgHeader" fluid />
-        </template>
-        <template #secondary>
-            <div class="py-lg-5 pe-lg-5">
-                <h1 class="mt-lg-3">
-                    Quest<br />
-                    Campaigns
-                </h1>
-                <p class="lead mb-4">
-                    Give back to your community while increasing engagement with effective Quest Campaigns.
-                </p>
-                <b-button :href="`${publicURL}/pricing`" variant="primary" class="me-3 px-5" target="_blank">
-                    Campaign Pricing
-                </b-button>
-                <b-button
-                    href="https://discord.com/invite/TzbbSmkE7Y"
-                    target="_blank"
-                    variant="link"
-                    class="text-white"
-                >
-                    Reach out! We don't bite😉
-                </b-button>
-            </div>
-        </template>
-    </BaseCardHeader>
+    <!--    <BaseCardHeader row-class="py-md-0" class="my-5">-->
+    <!--        <template #primary>-->
+    <!--            <b-img :src="imgHeader" fluid />-->
+    <!--        </template>-->
+    <!--        <template #secondary>-->
+    <!--            <div class="py-lg-5 pe-lg-5">-->
+    <!--                <h1 class="mt-lg-3">-->
+    <!--                    Quest<br />-->
+    <!--                    Campaigns-->
+    <!--                </h1>-->
+    <!--                <p class="lead mb-4">-->
+    <!--                    Give back to your community while increasing engagement with effective Quest Campaigns.-->
+    <!--                </p>-->
+    <!--                <b-button :href="`${publicURL}/pricing`" variant="primary" class="me-3 px-5" target="_blank">-->
+    <!--                    Campaign Pricing-->
+    <!--                </b-button>-->
+    <!--                <b-button-->
+    <!--                    href="https://discord.com/invite/TzbbSmkE7Y"-->
+    <!--                    target="_blank"-->
+    <!--                    variant="link"-->
+    <!--                    class="text-white"-->
+    <!--                >-->
+    <!--                    Reach out! We don't bite😉-->
+    <!--                </b-button>-->
+    <!--            </div>-->
+    <!--        </template>-->
+    <!--    </BaseCardHeader>-->
 </template>
 
 <script lang="ts">
