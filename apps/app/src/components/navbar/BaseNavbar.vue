@@ -8,45 +8,43 @@
         :container="true"
         class="navbar-menu px-3 py-1"
     >
-        <b-navbar-brand href="#">
-            <b-link to="/">
-                <b-img :src="imgLogo" height="50" alt="" />
-            </b-link>
+        <b-navbar-brand href="#" class="dashboard-heading">
+            <b-link to="/"> Rewards Dashboard </b-link>
         </b-navbar-brand>
         <BaseDropdownWallets v-if="accountStore.isAuthenticated" class="d-block d-lg-none ms-auto" />
         <b-button variant="link" class="d-block d-lg-none" @click="isNavbarOffcanvasShown = true">
             <i class="fas fa-bars text-white"></i>
         </b-button>
         <b-collapse id="nav-collapse" is-nav>
-            <b-button
-                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"
-                variant="link"
-                to="/learn"
-            >
-                Learn
-            </b-button>
-            <b-button
-                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"
-                variant="link"
-                to="/earn"
-            >
-                Earn
-            </b-button>
-            <b-button
-                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"
-                variant="link"
-                to="/community"
-            >
-                Community
-            </b-button>
-            <b-button
-                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"
-                variant="link"
-                to="/members"
-            >
-                Members
-                <sup><i class="fas fa-circle text-danger" /></sup>
-            </b-button>
+            <!--            <b-button-->
+            <!--                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"-->
+            <!--                variant="link"-->
+            <!--                to="/learn"-->
+            <!--            >-->
+            <!--                Learn-->
+            <!--            </b-button>-->
+            <!--            <b-button-->
+            <!--                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"-->
+            <!--                variant="link"-->
+            <!--                to="/earn"-->
+            <!--            >-->
+            <!--                Earn-->
+            <!--            </b-button>-->
+            <!--            <b-button-->
+            <!--                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"-->
+            <!--                variant="link"-->
+            <!--                to="/community"-->
+            <!--            >-->
+            <!--                Community-->
+            <!--            </b-button>-->
+            <!--            <b-button-->
+            <!--                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"-->
+            <!--                variant="link"-->
+            <!--                to="/members"-->
+            <!--            >-->
+            <!--                Members-->
+            <!--                <sup><i class="fas fa-circle text-danger" /></sup>-->
+            <!--            </b-button>-->
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0 justify-content-end align-items-center">
                 <b-button
                     v-if="accountStore.isMobile"
@@ -66,12 +64,12 @@
                         <i class="fas fa-sign-in-alt ms-2" />
                     </b-button>
                 </template>
-                <template v-else>
-                    <b-button class="px-4 rounded py-2 ms-2" variant="primary" @click="accountStore.signout()">
-                        Sign out
-                        <i class="fas fa-sign-out-alt ms-2"></i>
-                    </b-button>
-                </template>
+                <!--                <template v-else>-->
+                <!--                    <b-button class="px-4 rounded py-2 ms-2" variant="primary" @click="accountStore.signout()">-->
+                <!--                        Sign out-->
+                <!--                        <i class="fas fa-sign-out-alt ms-2"></i>-->
+                <!--                    </b-button>-->
+                <!--                </template>-->
             </b-navbar-nav>
         </b-collapse>
     </b-navbar>
@@ -162,6 +160,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.dashboard-heading a {
+    font-size: 2rem;
+    text-decoration: none;
+    color: #fff !important;
+}
 .offcanvas {
     background: var(--bs-body-bg);
     border-right: 3px solid var(--thx-navbar-bg);

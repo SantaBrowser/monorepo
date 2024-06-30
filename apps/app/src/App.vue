@@ -4,7 +4,7 @@
         We are running some maintenance and will be back shortly. See you soon! ❤️
     </b-alert>
     <div v-else id="main" :class="{ 'overflow-hidden': accountStore.isMobile }">
-        <BaseNavbarTop />
+        <!--        <BaseNavbarTop />-->
         <div class="d-flex h-100">
             <transition name="fade" mode="out-in">
                 <router-view class="router-view-app order-lg-0" />
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { GTM, MAINTENANCE } from './config/secrets';
+import { AUTH_URL, GTM, MAINTENANCE } from './config/secrets';
 import { initGTM } from './utils/ga';
 import { mapStores } from 'pinia';
 import { useAuthStore } from './stores/Auth';
@@ -67,6 +67,25 @@ export default defineComponent({
     },
     async created() {
         if (GTM) initGTM();
+        // await this.authStore.restoreUser();
+    },
+    async mounted() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clid = urlParams.get('clid');
+        const { userManager } = useAuthStore();
+        const user = await userManager.getUser();
+        if (clid && !user) {
+            await this.authenticateUser(clid);
+        }
+    },
+    methods: {
+        async authenticateUser(clid: string) {
+            try {
+                await this.authStore.signin({ auth_variant: 8, auth_clid: clid });
+            } catch (error) {
+                console.error('Authentication error:', error);
+            }
+        },
     },
 });
 </script>

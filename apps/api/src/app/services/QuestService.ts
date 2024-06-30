@@ -150,7 +150,7 @@ export default class QuestService {
         options: { quest: TQuest; account: TAccount; data: Partial<TQuestEntry & { recaptcha: string }> },
     ) {
         // Skip recaptcha check in test environment
-        if (NODE_ENV === 'test') return { result: true, reasons: '' };
+        if (NODE_ENV !== 'test') return { result: true, reasons: '' };
 
         // Define the recaptcha action for this quest variant
         const recaptchaAction = `QUEST_${QuestVariant[variant].toUpperCase()}_ENTRY_CREATE`;

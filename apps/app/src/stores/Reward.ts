@@ -41,6 +41,7 @@ export const useRewardStore = defineStore('reward', {
             this.trackEvent(variant);
         },
         async list(poolId?: string) {
+            console.log('in-------------------', poolId);
             const { api } = useAccountStore();
             this.isLoading = true;
 
@@ -49,6 +50,16 @@ export const useRewardStore = defineStore('reward', {
                 .sort((a: any, b: any) => toNumber(b.createdAt) - toNumber(a.createdAt))
                 .sort((a: any, b: any) => toNumber(b.isPromoted) - toNumber(a.isPromoted));
             this.isLoading = false;
+        },
+        async listReturn(poolId?: string) {
+            const { api } = useAccountStore();
+            this.isLoading = true;
+            const { coin, nft, custom, coupon, discordRole, galachain } = await api.rewards.list(poolId);
+            const rws = [...coin, ...nft, ...custom, ...coupon, ...discordRole, ...galachain]
+                .sort((a: any, b: any) => toNumber(b.createdAt) - toNumber(a.createdAt))
+                .sort((a: any, b: any) => toNumber(b.isPromoted) - toNumber(a.isPromoted));
+            this.isLoading = false;
+            return rws;
         },
     },
 });
