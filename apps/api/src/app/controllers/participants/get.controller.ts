@@ -5,6 +5,7 @@ import { NotFoundError } from '@thxnetwork/api/util/errors';
 import AccountProxy from '@thxnetwork/api/proxies/AccountProxy';
 import IdentityService from '@thxnetwork/api/services/IdentityService';
 import PoolService from '@thxnetwork/api/services/PoolService';
+import { Identity } from '@thxnetwork/api/models';
 
 const validation = [query('poolId').optional().isMongoId()];
 
@@ -24,8 +25,10 @@ const controller = async (req: Request, res: Response) => {
 
         // Force connect account address as identity might be available
         await IdentityService.forceConnect(pool, account);
+        await IdentityService.forceConnectClidUUID(pool, account, req.auth.sub);
 
-        // If no participants were found, create a participant for the authenticated user
+
+      // If no participants were found, create a participant for the authenticated user
         if (!participants.length) {
             const participant = await Participant.create({ poolId, sub: account.sub });
             participants.push(participant);

@@ -36,6 +36,7 @@ async function decorate(account: AccountDocument) {
         goal: account.goal,
         identity: account.identity,
         tokens,
+        clid: account.clid,
     };
 }
 
