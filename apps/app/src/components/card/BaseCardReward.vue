@@ -1,7 +1,7 @@
 <template>
     <b-card no-body class="mb-2 x-lg-0 my-lg-3 h-200" :class="{ 'card-promoted': reward.isPromoted }">
-        <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
-            <b-badge
+        <header v-if="image" class="card-img" :style="{ height: '240px' }">
+            <!-- <b-badge
                 v-if="reward.expiry && reward.expiry.date"
                 v-b-tooltip.hover.left
                 :title="format(new Date(reward.expiry.date), 'MMMM do yyyy hh:mm:ss')"
@@ -12,7 +12,7 @@
                 <span :class="{ 'text-accent': !reward.isExpired, 'card-text': reward.isExpired }">{{
                     expiryDate
                 }}</span>
-            </b-badge>
+            </b-badge> -->
             <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
         </header>
         <b-card-body class="d-flex flex-column justify-content-between">
@@ -20,9 +20,13 @@
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
             </b-card-title>
+            <div class="d-flex justify-content-center">
+                <div v-if="!image" class="placeholder" :style="{ width: '92px', height: '92px' }"></div>
+                <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
+            </div>
             <!-- <b-card-text class="card-description" v-html="reward.description" /> -->
             <div>
-                <div class="d-flex">
+                <!-- <div class="d-flex">
                     <div v-if="reward.pointPrice" class="d-flex align-items-center me-auto pb-3">
                         <span class="card-text me-1"> Price: </span>
                         <span variant="primary" class="ms-1 p-1">
@@ -40,10 +44,10 @@
                             <span class="card-text">/{{ reward.limitSupplyProgress.max }}</span>
                         </b-badge>
                     </div>
-                </div>
-                <b-button
+                </div> -->
+                <button
                     v-if="!accountStore.isAuthenticated"
-                    class="w-100"
+                    class="w-100 my-btn"
                     variant="primary"
                     @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
                 >
@@ -51,7 +55,7 @@
                         Pay <strong>{{ reward.pointPrice }} points</strong>
                     </template>
                     <strong v-else> Free! </strong>
-                </b-button>
+                </button>
                 <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
                     <BaseButtonQuestLocked
                         v-if="reward.isLocked"
@@ -67,6 +71,13 @@
                         :disabled="isDisabled"
                     >
                         {{ btnLabel }}
+                        <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
+                            <span class="reward-text">Get Reward</span>
+                            <div class="pipe"></div>
+                            <span class="me-1">{{ reward.pointPrice }}</span>
+                            <img :src="StarCoin" alt="star" height="13" class="me-1" />
+                            <span class="coins-text">Coins</span>
+                        </div>
                         <b-progress
                             v-if="reward.limitProgress.max"
                             v-b-tooltip.bottom
@@ -101,7 +112,7 @@ import { useAccountStore } from '../../stores/Account';
 import { mapStores } from 'pinia';
 import { RewardVariant } from '../../types/enums/rewards';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
-
+import StarCoin from '../../assets/star-coin.png';
 export default defineComponent({
     name: 'BaseCardReward',
     props: {
@@ -122,6 +133,7 @@ export default defineComponent({
                 [RewardVariant.DiscordRole]: 'fab fa-discord',
                 [RewardVariant.Galachain]: 'fas fa-box',
             } as { [variant: string]: string },
+            StarCoin,
         };
     },
     computed: {
@@ -149,7 +161,7 @@ export default defineComponent({
                 // return `${this.reward.pointPrice} point${
                 //     this.reward.pointPrice && this.reward.pointPrice > 1 ? 's' : ''
                 // }`;
-                return 'Claim';
+                return '';
             } else {
                 return 'Free!';
             }
@@ -225,5 +237,31 @@ export default defineComponent({
 }
 .h-200 {
     height: 200px;
+}
+.pipe {
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    height: 20px;
+    margin: 0 8px;
+}
+.reward-text {
+    color: #bababa;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    white-space: nowrap;
+}
+.coins-text {
+    color: rgba(200, 200, 200, 0.5);
+    text-align: right;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1rem;
+}
+.placeholder {
+    background-color: #ccc; /* Change this to any color you prefer */
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
 }
 </style>
