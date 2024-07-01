@@ -1,7 +1,7 @@
 <template>
     <b-navbar
         variant="primary"
-        style="background: rgba(0, 0, 0, 0.35) !important"
+        style="background: rgba(0, 0, 0, 0) !important"
         fluid
         toggleable="lg"
         type="dark"
@@ -9,7 +9,8 @@
         class="navbar-menu px-3 py-1"
     >
         <b-navbar-brand href="#" class="dashboard-heading">
-            <b-link to="/"> Rewards Dashboard </b-link>
+            <!-- <b-link to="/"> Rewards Dashboard </b-link> -->
+            <b-link to="/"> <img :src="earningsIcon" alt="Earnings Icon" class="me-2" height="40" />Earnings </b-link>
         </b-navbar-brand>
         <BaseDropdownWallets v-if="accountStore.isAuthenticated" class="d-block d-lg-none ms-auto" />
         <b-button variant="link" class="d-block d-lg-none" @click="isNavbarOffcanvasShown = true">
@@ -55,7 +56,7 @@
                     <i class="fas fa-wallet me-1"></i>
                     Wallet
                 </b-button>
-                <template v-if="!authStore.user">
+                <!-- <template v-if="!authStore.user">
                     <b-button v-b-modal="'modalLogin'" class="px-4 ms-2 rounded py-2" variant="outline-light">
                         Sign up
                     </b-button>
@@ -63,7 +64,7 @@
                         Sign in
                         <i class="fas fa-sign-in-alt ms-2" />
                     </b-button>
-                </template>
+                </template> -->
                 <!--                <template v-else>-->
                 <!--                    <b-button class="px-4 rounded py-2 ms-2" variant="primary" @click="accountStore.signout()">-->
                 <!--                        Sign out-->
@@ -137,7 +138,7 @@ import imgLogo from '../../assets/logo.png';
 import { mapStores } from 'pinia';
 import { useAccountStore } from '../../stores/Account';
 import { useAuthStore } from '../../stores/Auth';
-
+import earningsIcon from '../../assets/earnings-logo.png';
 export default defineComponent({
     name: 'BaseNavbar',
     data() {
@@ -145,6 +146,7 @@ export default defineComponent({
             isAlertTopShown: true,
             isNavbarOffcanvasShown: false,
             imgLogo,
+            earningsIcon,
         };
     },
     computed: {
@@ -161,9 +163,11 @@ export default defineComponent({
 
 <style lang="scss">
 .dashboard-heading a {
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-decoration: none;
     color: #fff !important;
+    font-weight: 600;
+    line-height: 1.25rem;
 }
 .offcanvas {
     background: var(--bs-body-bg);

@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body class="mb-2 x-lg-0 my-lg-3" :class="{ 'card-promoted': reward.isPromoted }">
+    <b-card no-body class="mb-2 x-lg-0 my-lg-3 h-200" :class="{ 'card-promoted': reward.isPromoted }">
         <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
             <b-badge
                 v-if="reward.expiry && reward.expiry.date"
@@ -15,78 +15,80 @@
             </b-badge>
             <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
         </header>
-        <b-card-body class="pb-0">
+        <b-card-body class="d-flex flex-column justify-content-between">
             <b-card-title class="d-flex align-items-center">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
             </b-card-title>
-            <b-card-text class="card-description" v-html="reward.description" />
-            <div class="d-flex">
-                <div v-if="reward.pointPrice" class="d-flex align-items-center me-auto pb-3">
-                    <span class="card-text me-1"> Price: </span>
-                    <b-badge variant="primary" class="ms-1 p-1 bg-primary">
-                        <span class="text-accent">
-                            {{ reward.pointPrice }}
+            <!-- <b-card-text class="card-description" v-html="reward.description" /> -->
+            <div>
+                <div class="d-flex">
+                    <div v-if="reward.pointPrice" class="d-flex align-items-center me-auto pb-3">
+                        <span class="card-text me-1"> Price: </span>
+                        <span variant="primary" class="ms-1 p-1">
+                            <span class="">
+                                {{ '$' + (reward.pointPrice / 100).toFixed(2) }}
+                            </span>
                         </span>
-                    </b-badge>
+                    </div>
+                    <div v-if="reward.limitSupplyProgress.max" class="d-flex align-items-center pb-3">
+                        <span class="card-text me-1"> Supply: </span>
+                        <b-badge variant="primary" class="ms-1 p-1 px-2 bg-primary">
+                            <span :class="limitSupplyVariant">
+                                {{ reward.limitSupplyProgress.max - reward.limitSupplyProgress.count }}
+                            </span>
+                            <span class="card-text">/{{ reward.limitSupplyProgress.max }}</span>
+                        </b-badge>
+                    </div>
                 </div>
-                <div v-if="reward.limitSupplyProgress.max" class="d-flex align-items-center pb-3">
-                    <span class="card-text me-1"> Supply: </span>
-                    <b-badge variant="primary" class="ms-1 p-1 px-2 bg-primary">
-                        <span :class="limitSupplyVariant">
-                            {{ reward.limitSupplyProgress.max - reward.limitSupplyProgress.count }}
-                        </span>
-                        <span class="card-text">/{{ reward.limitSupplyProgress.max }}</span>
-                    </b-badge>
-                </div>
-            </div>
-            <b-button
-                v-if="!accountStore.isAuthenticated"
-                class="w-100"
-                variant="primary"
-                @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
-            >
-                <template v-if="reward.pointPrice">
-                    Pay <strong>{{ reward.pointPrice }} points</strong>
-                </template>
-                <strong v-else> Free! </strong>
-            </b-button>
-            <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
-                <BaseButtonQuestLocked
-                    v-if="reward.isLocked"
-                    :id="`modalQuestLock${reward._id}`"
-                    :locks="reward.locks"
-                />
                 <b-button
-                    v-else
-                    v-b-modal="`modalRewardPayment${reward._id}`"
+                    v-if="!accountStore.isAuthenticated"
+                    class="w-100"
                     variant="primary"
-                    block
-                    class="w-100 position-relative mb-0"
-                    :disabled="isDisabled"
+                    @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
                 >
-                    {{ btnLabel }}
-                    <b-progress
-                        v-if="reward.limitProgress.max"
-                        v-b-tooltip.bottom
-                        :variant="limitVariant"
-                        :title="`You can purchase this reward ${reward.limitProgress.max} times.`"
-                        :value="reward.limitProgress.count"
-                        :max="reward.limitProgress.max"
-                        style="height: 6px"
-                    />
+                    <template v-if="reward.pointPrice">
+                        Pay <strong>{{ reward.pointPrice }} points</strong>
+                    </template>
+                    <strong v-else> Free! </strong>
                 </b-button>
-            </span>
-            <!--            <div class="d-flex align-items-center justify-content-between pb-2 mt-2" style="opacity: 0.5">-->
-            <!--                <div class="d-flex align-items-center text-opaque small">-->
-            <!--                    <span v-if="reward.author" class="text-white me-1"> {{ reward.author.username }} &CenterDot; </span>-->
-            <!--                    <span v-if="reward.createdAt">{{ format(new Date(reward.createdAt), 'MMMM do') }} </span>-->
-            <!--                </div>-->
-            <!--                <div v-if="reward.paymentCount" class="d-flex align-items-center text-opaque small">-->
-            <!--                    <i class="fas fa-users me-1" />-->
-            <!--                    {{ reward.paymentCount }}-->
-            <!--                </div>-->
-            <!--            </div>-->
+                <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
+                    <BaseButtonQuestLocked
+                        v-if="reward.isLocked"
+                        :id="`modalQuestLock${reward._id}`"
+                        :locks="reward.locks"
+                    />
+                    <button
+                        v-else
+                        v-b-modal="`modalRewardPayment${reward._id}`"
+                        variant="primary"
+                        block
+                        class="w-100 position-relative mb-0 my-btn"
+                        :disabled="isDisabled"
+                    >
+                        {{ btnLabel }}
+                        <b-progress
+                            v-if="reward.limitProgress.max"
+                            v-b-tooltip.bottom
+                            :variant="limitVariant"
+                            :title="`You can purchase this reward ${reward.limitProgress.max} times.`"
+                            :value="reward.limitProgress.count"
+                            :max="reward.limitProgress.max"
+                            style="height: 6px"
+                        />
+                    </button>
+                </span>
+                <!--            <div class="d-flex align-items-center justify-content-between pb-2 mt-2" style="opacity: 0.5">-->
+                <!--                <div class="d-flex align-items-center text-opaque small">-->
+                <!--                    <span v-if="reward.author" class="text-white me-1"> {{ reward.author.username }} &CenterDot; </span>-->
+                <!--                    <span v-if="reward.createdAt">{{ format(new Date(reward.createdAt), 'MMMM do') }} </span>-->
+                <!--                </div>-->
+                <!--                <div v-if="reward.paymentCount" class="d-flex align-items-center text-opaque small">-->
+                <!--                    <i class="fas fa-users me-1" />-->
+                <!--                    {{ reward.paymentCount }}-->
+                <!--                </div>-->
+                <!--            </div>-->
+            </div>
         </b-card-body>
     </b-card>
     <BaseModalRewardPayment :id="`modalRewardPayment${reward._id}`" :reward="reward" />
@@ -144,9 +146,10 @@ export default defineComponent({
             } else if (this.reward.isDisabled) {
                 return 'Not available';
             } else if (this.reward.pointPrice) {
-                return `${this.reward.pointPrice} point${
-                    this.reward.pointPrice && this.reward.pointPrice > 1 ? 's' : ''
-                }`;
+                // return `${this.reward.pointPrice} point${
+                //     this.reward.pointPrice && this.reward.pointPrice > 1 ? 's' : ''
+                // }`;
+                return 'Claim';
             } else {
                 return 'Free!';
             }
@@ -212,5 +215,15 @@ export default defineComponent({
         right: 0;
         background: rgba(0, 0, 0, 0.25);
     }
+}
+
+.my-btn {
+    border-radius: 20px;
+    border: 1px solid #1a1a1a;
+    background: linear-gradient(90deg, #0f0d0d 0%, #1c1c1c 100%);
+    padding: 5px 0;
+}
+.h-200 {
+    height: 200px;
 }
 </style>

@@ -13,7 +13,9 @@
 
 .gradient-bg-opacity {
     //background: var(--thx-linear-gradient-bg-opacity);
-    background: #1e0101;
+    background-image: url('../assets/bg-mosaic.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .gradient-border-xl {
