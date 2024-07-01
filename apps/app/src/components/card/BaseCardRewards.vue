@@ -3,7 +3,7 @@
         <template #tabs-end>
             <b-button
                 v-if="accountStore.isAuthenticated"
-                class="text-primary ms-auto"
+                class="text-primary ms-auto refresh-color"
                 size="sm"
                 variant="link"
                 @click="onClickRefresh"
@@ -103,3 +103,21 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.tabs-rewards {
+}
+
+.tabs-rewards .nav-tabs {
+    border-color: #232323;
+}
+
+.tabs-rewards .nav-link.active {
+    --bs-nav-tabs-link-active-bg: #111113 !important;
+    --bs-nav-tabs-link-active-border-color: #232323 !important;
+}
+
+.refresh-color {
+    --bs-primary-rgb: #515151 !important;
+}
+</style>
