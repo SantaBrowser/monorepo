@@ -250,12 +250,12 @@ export const useVeStore = defineStore('ve', {
                 },
             ];
 
-            const { RewardDistributor, BAL, BPT } = contractNetworks[wallet.chainId];
-            const call = useWalletStore().encodeContractCall(RewardDistributor, abi, 'claimTokens', [
-                wallet.address,
-                [BAL, BPT],
-            ]);
-            await sendTransaction(wallet.address, call.to, call.data);
+            // const { RewardDistributor, BAL, BPT } = contractNetworks[wallet.chainId];
+            // const call = useWalletStore().encodeContractCall(RewardDistributor, abi, 'claimTokens', [
+            //     wallet.address,
+            //     [BAL, BPT],
+            // ]);
+            // await sendTransaction(wallet.address, call.to, call.data);
         },
         async withdraw(wallet: TWallet, isEarlyAttempt: boolean) {
             const map: { [variant: string]: (wallet: TWallet, isEarlyAttempt: boolean) => Promise<void> } = {

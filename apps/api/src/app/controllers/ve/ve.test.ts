@@ -48,9 +48,12 @@ describe('VESytem', () => {
             signer,
         );
         rdthx = new ethers.Contract(
-            contractNetworks[chainId].RewardDistributor,
-            contractArtifacts['RewardDistributor'].abi,
+            contractNetworks[chainId].VotingEscrow,
+            contractArtifacts['VotingEscrow'].abi,
             signer,
+            // contractNetworks[chainId].RewardDistributor,
+            // contractArtifacts['RewardDistributor'].abi,
+            // signer,
         );
         rfthx = new ethers.Contract(
             contractNetworks[chainId].RewardFaucet,

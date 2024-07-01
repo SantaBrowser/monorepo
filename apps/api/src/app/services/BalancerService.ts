@@ -216,7 +216,7 @@ class BalancerService {
             [ChainId.Hardhat]: HARDHAT_RPC,
             [ChainId.Polygon]: POLYGON_RPC,
         };
-        const { BAL, BPT, RewardFaucet, RewardDistributor } = contractNetworks[chainId];
+        const { BAL, BPT, RewardFaucet } = contractNetworks[chainId];
         const provider = new ethers.providers.JsonRpcProvider(rpcMap[chainId]);
         const rewardFaucet = new ethers.Contract(RewardFaucet, contractArtifacts['RewardFaucet'].abi, provider);
         const amountOfWeeks = '4';
@@ -233,14 +233,15 @@ class BalancerService {
         // Add reward distributor BAL balance to the current week
         const balContract = new ethers.Contract(BAL, contractArtifacts['BAL'].abi, provider);
         const bptContract = new ethers.Contract(BPT, contractArtifacts['BPT'].abi, provider);
-        const balBalance = await balContract.balanceOf(RewardDistributor);
-        balSchedule[0] = BigNumber.from(balSchedule[0]).add(balBalance).toString();
-        const bptBalance = await bptContract.balanceOf(RewardDistributor);
-        bptSchedule[0] = BigNumber.from(bptSchedule[0]).add(bptBalance).toString();
+        // const balBalance = await balContract.balanceOf(RewardDistributor);
+        // balSchedule[0] = BigNumber.from(balSch/edule[0]).add(balBalance).toString();
+        // const bptBalance = await bptContract.balanceOf(RewardDistributor);
+        // bptSchedule[0] = BigNumber.from(bptSchedule[0]).add(bptBalance).toString();
 
         return {
             schedule: { bal: balSchedule, bpt: bptSchedule },
-            rewards: { bal: balTotal.add(balBalance).toString(), bpt: bptTotal.add(bptBalance).toString() },
+            rewards: {bal: '10', bpt: '0'}
+            // rewards: { bal: balTotal.add(balBalance).toString(), bpt: bptTotal.add(bptBalance).toString() },
         };
     }
 }

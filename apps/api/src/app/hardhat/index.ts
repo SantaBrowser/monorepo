@@ -24,10 +24,9 @@ import THXERC20_UnlimitedSupply from './export/THXERC20_UnlimitedSupply.json';
 import THXERC721 from './export/THXERC721.json';
 import THXERC1155 from './export/THXERC1155.json';
 // Protocol
-import THXPaymentSplitter from './export/THXPaymentSplitter.json';
-import THXRegistry from './export/THXRegistry.json';
+// import THXPaymentSplitter from './export/THXPaymentSplitter.json';
 import VotingEscrow from './export/VotingEscrow.json';
-import RewardDistributor from './export/RewardDistributor.json';
+// import RewardDistributor from './export/RewardDistributor.json';
 import RewardFaucet from './export/RewardFaucet.json';
 import SmartWalletWhitelist from './export/SmartWalletWhitelist.json';
 import LensReward from './export/LensReward.json';
@@ -61,13 +60,12 @@ export const contractNetworks = {
 
         // veTHX
         VotingEscrow: '0x1280809d06C42E68063305235813e52c8Bb03a58',
-        RewardDistributor: '0xd0507c5363AeCfe8231FF4110e05AFf611d7F7B6',
+        // RewardDistributor: '0xd0507c5363AeCfe8231FF4110e05AFf611d7F7B6',
         RewardFaucet: '0x33599eaec2752DB3242323483A7313bA3b1111cd',
         SmartWalletWhitelist: '0xb3B2b0fc5ce12aE58EEb13E19547Eb2Dd61A79D5',
         LensReward: '0x774442713f32fa98bf27bEc78c96fb7186f7C223',
 
         // Company
-        THXRegistry: '0x0Bb5Cb54566cEEf9dF1F60d8D7d2Fd01eA88279e',
         // THXPaymentSplitter: '0x58C0e64cBB7E5C7D0201A3a5c2D899cC70B0dc4c',
 
         CompanyMultiSig: '0xaf9d56684466fcFcEA0a2B7fC137AB864d642946',
@@ -83,13 +81,12 @@ export const contractNetworks = {
 
         // veTHX
         VotingEscrow: '0xE3B8E734e7BCcB64B63e032795896CC57012A51D',
-        RewardDistributor: '0xCc62c812EfF9cA4c35623103B2Bb63E22f465E09',
+        // RewardDistributor: '0xCc62c812EfF9cA4c35623103B2Bb63E22f465E09',
         RewardFaucet: '0xA1D7671f73FbcB5e079d4dC4Cffb7dDD0967EA7E',
         SmartWalletWhitelist: '0x876625a92cEAa7f1Bddd40908B8eb5C6080cB83C',
         LensReward: '0xE8D9624E0B7f839540E7c13577550E3Eff3FC8aA',
 
         // Company
-        THXRegistry: '',
         // THXPaymentSplitter: '',
         CompanyMultiSig: '0x0b8e0aAF940cc99EDA5DA5Ab0a8d6Ed798eDc08A',
     },
@@ -127,10 +124,9 @@ export const contractArtifacts: { [contractName: string]: { abi: any; bytecode: 
     THXERC721,
     THXERC1155,
     // Protocol
-    THXPaymentSplitter,
-    THXRegistry,
+    // THXPaymentSplitter,
     VotingEscrow,
-    RewardDistributor,
+    // RewardDistributor,
     RewardFaucet,
     SmartWalletWhitelist,
     LensReward,
@@ -162,10 +158,9 @@ export const contractNames = [
     'THXERC721',
     'THXERC1155',
     // Protocol
-    'THXPaymentSplitter',
-    'THXRegistry',
+    // 'THXPaymentSplitter',
     'VotingEscrow',
-    'RewardDistributor',
+    // 'RewardDistributor',
     'RewardFaucet',
     'SmartWalletWhitelist',
     'LensReward',

@@ -117,7 +117,8 @@ async function listRewards(wallet: WalletDocument) {
     // Call static on rewards
     const rewards = await callStatic(
         lr.methods.getUserClaimableRewardsAll(
-            contractNetworks[wallet.chainId].RewardDistributor,
+            '0',
+            // contractNetworks[wallet.chainId].RewardDistributor,
             toChecksumAddress(wallet.address),
             rewardTokens,
         ),
@@ -144,20 +145,20 @@ async function listRewards(wallet: WalletDocument) {
 }
 
 async function claimTokens(wallet: WalletDocument) {
-    const { web3 } = getProvider(wallet.chainId);
-    const rewardDistributor = new web3.eth.Contract(
-        contractArtifacts['RewardDistributor'].abi,
-        contractNetworks[wallet.chainId].RewardDistributor,
-    );
+    // const { web3 } = getProvider(wallet.chainId);
+    // const rewardDistributor = new web3.eth.Contract(
+    //     contractArtifacts['RewardDistributor'].abi,
+    //     contractNetworks[wallet.chainId].RewardDistributor,
+    // );
 
-    // List reward tokens and build function call
-    const rewardTokens = await rewardDistributor.methods.getAllowedRewardTokens().call();
-    const fn = rewardDistributor.methods.claimTokens(wallet.address, rewardTokens);
+    // // List reward tokens and build function call
+    // const rewardTokens = await rewardDistributor.methods.getAllowedRewardTokens().call();
+    // const fn = rewardDistributor.methods.claimTokens(wallet.address, rewardTokens);
 
-    // Propose tx data to relayer and return safeTxHash to client to sign
-    const tx = await TransactionService.sendSafeAsync(wallet, rewardDistributor.options.address, fn);
+    // // Propose tx data to relayer and return safeTxHash to client to sign
+    // const tx = await TransactionService.sendSafeAsync(wallet, rewardDistributor.options.address, fn);
 
-    return [tx];
+    // return [tx];
 }
 
 async function claimExternalRewardsJob() {
