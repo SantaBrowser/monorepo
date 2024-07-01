@@ -1,5 +1,5 @@
 <template>
-    <b-card class="bg-splash" style="border-radius: 0">
+    <div class="" style="border-radius: 0">
         <div
             class="d-flex justify-content-start align-items-center p-3 cursor-pointer"
             style="border-radius: 5px; background-color: rgba(0, 0, 0, 0.35); width: 100%"
@@ -11,7 +11,14 @@
                         variant="primary"
                         size="sm"
                         class="d-flex align-items-center justify-content-center position-absolute rounded-circle"
-                        style="width: 19px; height: 19px; top: 35px; right: -5px"
+                        style="
+                            width: 19px;
+                            height: 19px;
+                            top: 35px;
+                            right: -5px;
+                            background-color: #2c2c2c !important;
+                            border: none !important;
+                        "
                     >
                         <i class="fas fa-pencil" style="font-size: 0.6rem" />
                     </b-button>
@@ -27,7 +34,7 @@
             </template>
             <b-spinner v-else small class="text-opaque" />
         </div>
-    </b-card>
+    </div>
 </template>
 
 <script lang="ts">
