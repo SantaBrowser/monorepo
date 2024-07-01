@@ -6,7 +6,7 @@
                     <b-spinner variant="primary" small />
                 </div>
                 <b-row v-else>
-                    <b-col v-for="(reward, key) of rewardsList" :key="key" lg="4">
+                    <b-col v-for="(reward, key) of rewardsList" :key="key" lg="3">
                         <component :is="componentMap[reward.variant]" :reward="reward" class="mb-2" />
                     </b-col>
                 </b-row>

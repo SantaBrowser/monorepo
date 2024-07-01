@@ -12,7 +12,8 @@
 }
 
 .gradient-bg-opacity {
-    background: var(--thx-linear-gradient-bg-opacity);
+    //background: var(--thx-linear-gradient-bg-opacity);
+    background: #1e0101;
 }
 
 .gradient-border-xl {
@@ -21,7 +22,7 @@
     background: #000;
     background-clip: padding-box; /* !importanté */
     border: $border solid transparent; /* !importanté */
-    
+
     &:before {
         content: '';
         position: absolute;
