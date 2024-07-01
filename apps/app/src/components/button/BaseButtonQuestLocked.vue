@@ -1,8 +1,8 @@
 <template>
-    <b-button variant="primary" block class="w-100" @click="isModalShown = true">
+    <button variant="primary" block class="w-100 my-btn" @click="isModalShown = true">
         <i class="fas fa-lock me-1" />
         Locked
-    </b-button>
+    </button>
     <b-modal :id="`modalQuestLock${id}`" v-model="isModalShown" title="Locked!" centered no-close-on-backdrop>
         <p class="text-opaque">To unlock this quest, complete these quests:</p>
         <template v-for="lock of locked">
@@ -49,3 +49,12 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.my-btn {
+    border-radius: 20px;
+    border: 1px solid #1a1a1a;
+    background: linear-gradient(90deg, #0f0d0d 0%, #1c1c1c 100%);
+    padding: 5px 0;
+}
+</style>

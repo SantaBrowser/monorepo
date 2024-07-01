@@ -3,7 +3,8 @@ import Color from 'color';
 export const DEFAULT_ELEMENTS = {
     btnBg: {
         label: 'Button',
-        color: '#5942c1',
+        // color: '#5942c1',
+        color: '#232323',
     },
     btnText: {
         label: 'Button Text',
@@ -15,11 +16,13 @@ export const DEFAULT_ELEMENTS = {
     },
     bodyBg: {
         label: 'Background',
-        color: '#241956',
+        // color: '#241956',
+        color: '#09080A',
     },
     cardBg: {
         label: 'Card',
-        color: '#31236d',
+        // color: '#31236d',
+        color: '#111213',
     },
     cardText: {
         label: 'Card Text',

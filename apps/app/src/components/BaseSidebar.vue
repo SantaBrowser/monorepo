@@ -45,8 +45,8 @@ export default defineComponent({
         flex-direction: column;
         width: 400px;
         max-width: 400px;
-        background: var(--bs-body-bg);
-        border-left: 3px solid var(--thx-navbar-bg);
+        background: #111213;
+        border-left: 3px solid #232323;
         overflow-x: hidden;
         overflow-y: auto;
 

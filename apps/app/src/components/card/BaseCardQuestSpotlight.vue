@@ -1,30 +1,30 @@
 <template>
-    <b-card v-if="quest" header-class="p-0" body-class="justify-content-start" class="w-100">
-        <template #header>
-            <div
-                class="d-flex bg-dark rounded"
-                :class="{
-                    'justify-content-end align-items-end': !!backgroundImage,
-                    'justify-content-center align-items-center': !backgroundImage,
-                }"
-                :style="{
-                    height: '180px',
-                    backgroundImage: `url(${backgroundImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center center',
-                }"
-            >
-                <BImg
-                    lazy
-                    :src="logoImage"
-                    class="m-3 rounded"
-                    style="width: auto; height: auto; max-width: 150px; max-height: 50px"
-                />
-            </div>
-        </template>
-        <div class="d-flex justify-content-between">
-            <strong class="text-success">{{ quest.title }} </strong>
-            <div class="flex-shrink-0">
+    <div v-if="quest" class="w-100 my-card" @click="navigateToPool">
+        <!-- <template #header> -->
+        <div
+            class="d-flex bg-dark rounded m-2"
+            :class="{
+                'justify-content-end align-items-end': !!backgroundImage,
+                'justify-content-center align-items-center': !backgroundImage,
+            }"
+            :style="{
+                height: '165px',
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center center',
+            }"
+        >
+            <BImg
+                lazy
+                :src="logoImage"
+                class="m-3 rounded"
+                style="width: auto; height: auto; max-width: 150px; max-height: 50px"
+            />
+        </div>
+        <!-- </template> -->
+        <div class="d-flex justify-content-center">
+            <strong class="quest-title">{{ quest.title }} </strong>
+            <!-- <div class="flex-shrink-0">
                 <b-badge
                     v-b-tooltip
                     variant="primary"
@@ -41,9 +41,9 @@
                         <i class="fas fa-external-link-alt text-opaque me-0" />
                     </b-link>
                 </b-badge>
-            </div>
+            </div> -->
         </div>
-        <p class="pt-2 mb-0 d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+        <!-- <p class="pt-2 mb-0 d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
             {{ quest.description }}
         </p>
         <template #footer>
@@ -55,8 +55,11 @@
                 :url="quest ? quest.domain : ''"
                 @hidden="isModalCampaignDomainShown = false"
             />
-        </template>
-    </b-card>
+        </template> -->
+        <!-- <b-button class="w-100" :to="`/c/${quest.poolId}`" variant="primary">
+            Earn <strong>{{ quest.amount }} </strong> points!
+        </b-button> -->
+    </div>
 </template>
 
 <script lang="ts">
@@ -85,11 +88,36 @@ export default defineComponent({
             return this.quest && this.quest.brand && this.quest.brand.logoImgUrl;
         },
     },
+    methods: {
+        navigateToPool() {
+            this.$router.push(`/c/${this.quest.poolId}`);
+        },
+    },
 });
 </script>
 <style>
+.my-card {
+    border-radius: 8px;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0) -2.13%, rgba(0, 0, 0, 0.15) 136.58%);
+    box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
+    backdrop-filter: blur(12.5px);
+    width: 205px !important;
+    height: 245px !important;
+    cursor: pointer;
+}
 .card-quest-header {
     background-size: cover;
     background-repeat: no-repeat;
+}
+.desc-cont {
+    background: transparent;
+}
+.quest-title {
+    color: #eee;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 22px;
+    text-align: center;
 }
 </style>

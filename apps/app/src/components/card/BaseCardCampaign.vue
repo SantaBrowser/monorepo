@@ -5,6 +5,7 @@
         :style="{ opacity: isLoading ? 0.5 : 1 }"
         @click="goTo(`/c/${campaign.slug}`)"
     >
+        <img :src="Ellipse" alt="Ellipse" class="ellipse" height="300" width="300" />
         <b-spinner
             v-if="isLoading"
             small
@@ -15,7 +16,7 @@
         <div class="bd-filter">
             <b-row>
                 <b-col md="2">
-                    <b-row>
+                    <b-row class="h-100">
                         <!--                    <b-col md="2">-->
                         <!--                        <div-->
                         <!--                            class="d-flex bg-dark rounded justify-content-center align-items-center"-->
@@ -36,17 +37,28 @@
                         <!--                        </div>-->
                         <!--                    </b-col>-->
                         <b-col md="12">
-                            <div class="p-2 pt-1 p-md-0">
-                                <div class="d-flex w-100 mb-2">
-                                    <div class="d-flexs align-items-center">
+                            <div class="p-2 pt-1 p-md-0 h-100">
+                                <div class="d-flex w-100 mb-2 h-100">
+                                    <div class="d-flex flex-column justify-content-between">
                                         <div class="text-white text-decoration-none lead">
-                                            <h3>{{ campaign.title }}</h3>
+                                            <h5 class="camp-title">{{ campaign.title }}</h5>
+                                            <h2 class="camp-title-grad">Quests</h2>
+                                            <h8 class="balance">Total earnings:</h8>
+                                            <h6 class="score">{{ score }}</h6>
                                         </div>
-                                        <div class="text-white text-decoration-none lead">
-                                            <h8 class="balance">Total earnings</h8>
-                                            <h6>{{ score }}</h6>
-                                            <h5 class="balance">Balance</h5>
-                                            <h3>{{ balance }} coins</h3>
+                                        <div class="d-flex flex-column">
+                                            <!-- <h5 class="balance">Balance</h5> -->
+                                            <div
+                                                class="d-flex align-items-center text-white text-decoration-none lead coins"
+                                            >
+                                                <h3>
+                                                    {{ balance }}
+                                                </h3>
+                                                <img :src="StarCoin" alt="star coin" height="24" />
+                                            </div>
+                                            <div class="quest-btn d-flex align-items-center justify-content-center">
+                                                <h6>More Quests</h6>
+                                            </div>
                                         </div>
                                         <!--                                    <b-button-->
                                         <!--                                        :disabled="!accountStore.isAuthenticated"-->
@@ -129,7 +141,8 @@ import { mapStores } from 'pinia';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { useRewardStore } from '../../stores/Reward';
 import RewardsSmall from '@thxnetwork/app/views/campaign/RewardSmall.vue';
-
+import Ellipse from '../../assets/ellipse.png';
+import StarCoin from '../../assets/star-coin.png';
 type TCampaignProps = {
     _id: string;
     title: string;
@@ -159,6 +172,8 @@ export default defineComponent({
             isLoading: false,
             isModalExternalURLShown: false,
             rewardList: {},
+            Ellipse,
+            StarCoin,
         };
     },
     computed: {
@@ -223,29 +238,99 @@ export default defineComponent({
 
 <style lang="scss">
 .balance {
+    color: rgba(200, 200, 200, 0.5);
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1rem;
     margin-top: 35px;
     margin-bottom: 0;
-    font-size: 11px;
+}
+.score {
+    color: #c8c8c8;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1rem;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.coins {
+    height: 40px;
+    margin: 1.5rem 0;
+}
+.coins h3 {
+    color: #f5f5f5;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1rem;
+    margin-bottom: 0;
 }
 .bd-filter {
-    background: #ff000024;
+    // background: #ff000024;
     padding: 15px;
 }
 .card-campaign {
-    background: url('src/assets/thx_header_learn.jpg');
-    backdrop-filter: blur(40);
-    border-radius: 15px;
+    position: relative;
+    // background: url('src/assets/thx_header_learn.jpg');
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.47);
+    background: linear-gradient(216deg, rgba(30, 30, 30, 0.58) 59.53%, rgba(24, 24, 24, 0.65) 79.11%);
+
+    /* Glass Morph Button */
+    box-shadow: 10px 14px 47.7px 0px rgba(103, 103, 103, 0.05) inset, 11px 11px 29.4px 0px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(2.5px);
     //padding: 10px;
     //min-height: 200px;
     &:before {
         transition: opacity 0.2s;
         opacity: 0;
     }
-    &:hover:before {
-        opacity: 0.15;
-    }
+    //&:hover:before {
+    //  opacity: 0.15;
+    //}
+    overflow: hidden;
+}
+.ellipse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-50%);
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 .btn .fa-star:hover {
     color: var(--bs-warning) !important;
+}
+.camp-title {
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.75rem;
+    margin-bottom: 0;
+    line-height: 1;
+}
+.camp-title-grad {
+    background: linear-gradient(90deg, #4365ff 8.09%, #fe8888 42.46%, #c64343 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 0;
+}
+.quest-btn {
+    background-color: rgba(0, 0, 0, 0.48);
+    border: 1px solid #5a76f3;
+    border-radius: 6px;
+    padding: 15px 25px;
+}
+.quest-btn h6 {
+    margin-bottom: 0;
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 0px;
 }
 </style>

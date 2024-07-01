@@ -25,7 +25,13 @@
                 <p v-if="!isLoading && !campaigns.results.length" class="text-opaque">
                     Could not find a campaign with that name...
                 </p>
-                <BaseCardCampaign v-for="campaign of campaigns.results" class="mt-3" :campaign="campaign" />
+                <div v-for="(campaign, index) in campaigns.results" :key="campaign.id" class="mt-3">
+                    <BaseCardCampaign :campaign="campaign" />
+                    <!-- Show a custom div after the first BaseCardCampaign -->
+                    <div v-if="index === 0">
+                        <BaseReferral />
+                    </div>
+                </div>
             </b-col>
         </b-row>
         <!--        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />-->
@@ -37,8 +43,8 @@
             </b-col>
         </b-row>
         <b-row>
-            <b-col v-for="quest of questLists" lg="3" :quest="quest">
-                <BaseCardQuestSpotlight :quest="quest" class="mb-2" />
+            <b-col v-for="quest of questLists" lg="2" :quest="quest">
+                <BaseCardQuestSpotlight :quest="quest" />
             </b-col>
         </b-row>
     </b-container>
@@ -82,6 +88,7 @@ import imgJumbotron from '../../assets/thx_token_governance.png';
 import imgLogo from '../../assets/logo.png';
 import imgHeader from '../../assets/thx_token_governance.png';
 import * as html from 'html-entities';
+import BaseReferral from '@thxnetwork/app/components/BaseReferral.vue';
 
 export default defineComponent({
     name: 'Home',
@@ -146,6 +153,7 @@ export default defineComponent({
             }
             const res = await fetch(url);
             const campaigns = await res.json();
+            console.log('Campaigns: ', campaigns);
             this.campaigns = campaigns;
             this.campaigns.results = this.campaigns.results.map((campaign: any) => ({
                 ...campaign,
