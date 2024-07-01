@@ -2,7 +2,7 @@
     <BaseCardReward :reward="reward" :image="reward.image">
         <template #title>
             <div class="flex-grow-1">{{ reward.title }}</div>
-            <div class="fw-bold bg-opacity">{{ reward.amount }} {{ reward.erc20 && reward.erc20.symbol }}</div>
+            <!-- <div class="fw-bold bg-opacity">{{ reward.amount }} {{ reward.erc20 && reward.erc20.symbol }}</div> -->
         </template>
     </BaseCardReward>
 </template>
