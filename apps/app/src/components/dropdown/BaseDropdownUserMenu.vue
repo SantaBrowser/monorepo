@@ -8,25 +8,25 @@
             <i class="fas fa-ellipsis-v" />
         </template>
         <b-dropdown-item @click="accountStore.isModalAccountShown = true"> Account </b-dropdown-item>
-        <b-dropdown-item
-            v-if="questStore.quests.length"
-            size="sm"
-            @click="$router.push(`/c/${accountStore.config.slug}/w`)"
-        >
-            Identities
-        </b-dropdown-item>
+        <!--        <b-dropdown-item-->
+        <!--            v-if="questStore.quests.length"-->
+        <!--            size="sm"-->
+        <!--            @click="$router.push(`/c/${accountStore.config.slug}/w`)"-->
+        <!--        >-->
+        <!--            Identities-->
+        <!--        </b-dropdown-item>-->
         <b-dropdown-divider />
-        <b-dropdown-item @click="$router.push(`/c/${accountStore.config.slug}/about`)"> About </b-dropdown-item>
+        <!--        <b-dropdown-item @click="$router.push(`/c/${accountStore.config.slug}/about`)"> About </b-dropdown-item>-->
         <b-dropdown-item href="https://discord.com/invite/TzbbSmkE7Y" target="_blank"> Support </b-dropdown-item>
         <b-dropdown-divider />
-        <b-dropdown-item
-            size="sm"
-            link-class="d-flex align-items-center justify-content-between"
-            @click="onClickSignout"
-        >
-            Sign out
-            <i class="fas fa-sign-out-alt ml-auto" />
-        </b-dropdown-item>
+        <!--        <b-dropdown-item-->
+        <!--            size="sm"-->
+        <!--            link-class="d-flex align-items-center justify-content-between"-->
+        <!--            @click="onClickSignout"-->
+        <!--        >-->
+        <!--            Sign out-->
+        <!--            <i class="fas fa-sign-out-alt ml-auto" />-->
+        <!--        </b-dropdown-item>-->
     </b-dropdown>
 </template>
 

@@ -1,10 +1,10 @@
 <template>
-    <aside class="sidebar">
+    <aside v-if="isShown" class="sidebar">
         <div class="sidebar-panel h-100">
-            <BaseCardAccount v-if="isShown" />
+            <BaseCardAccount />
             <BaseCardRewards v-if="isShown" />
             <BaseQuestLeaderboardSmall v-if="isShown" />
-            <BaseCardDiscord class="mt-auto" />
+            <BaseCardDiscord v-if="isShown" class="mt-auto" />
         </div>
     </aside>
 </template>

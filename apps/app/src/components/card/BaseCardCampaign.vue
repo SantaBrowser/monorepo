@@ -12,104 +12,113 @@
             class="position-absolute"
             style="top: 50%; left: 50%; margin-left: -8px; margin-top: -8px"
         />
-        <b-row>
-            <b-col md="3">
-                <b-row>
-                    <!--                    <b-col md="2">-->
-                    <!--                        <div-->
-                    <!--                            class="d-flex bg-dark rounded justify-content-center align-items-center"-->
-                    <!--                            :style="{-->
-                    <!--                                height: '90px',-->
-                    <!--                                width: '100%',-->
-                    <!--                                backgroundImage: `url(${backgroundImage})`,-->
-                    <!--                                backgroundSize: 'cover',-->
-                    <!--                                backgroundPosition: 'center center',-->
-                    <!--                            }"-->
-                    <!--                        >-->
-                    <!--                            <BImg-->
-                    <!--                                lazy-->
-                    <!--                                :src="logoImage"-->
-                    <!--                                class="m-3 rounded"-->
-                    <!--                                style="width: auto; height: auto; max-width: 150px; max-height: 60px"-->
-                    <!--                            />-->
-                    <!--                        </div>-->
-                    <!--                    </b-col>-->
-                    <b-col md="12">
-                        <div class="p-2 pt-1 p-md-0">
-                            <div class="d-flex w-100 mb-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="text-white text-decoration-none lead">{{ campaign.title }}</div>
-                                    <div class="text-white text-decoration-none lead">{{ balance }}</div>
-                                    <!--                                    <b-button-->
-                                    <!--                                        :disabled="!accountStore.isAuthenticated"-->
-                                    <!--                                        size="sm"-->
-                                    <!--                                        variant="link"-->
-                                    <!--                                        class="px-0 ms-1"-->
-                                    <!--                                        @click.stop="onClickSubscribe"-->
-                                    <!--                                    >-->
-                                    <!--                                        <i-->
-                                    <!--                                            class="fa-star text-opaque text-white"-->
-                                    <!--                                            :class="{ fas: isSubscribed, far: !isSubscribed }"-->
-                                    <!--                                        />-->
-                                    <!--                                    </b-button>-->
+        <div class="bd-filter">
+            <b-row>
+                <b-col md="2">
+                    <b-row>
+                        <!--                    <b-col md="2">-->
+                        <!--                        <div-->
+                        <!--                            class="d-flex bg-dark rounded justify-content-center align-items-center"-->
+                        <!--                            :style="{-->
+                        <!--                                height: '90px',-->
+                        <!--                                width: '100%',-->
+                        <!--                                backgroundImage: `url(${backgroundImage})`,-->
+                        <!--                                backgroundSize: 'cover',-->
+                        <!--                                backgroundPosition: 'center center',-->
+                        <!--                            }"-->
+                        <!--                        >-->
+                        <!--                            <BImg-->
+                        <!--                                lazy-->
+                        <!--                                :src="logoImage"-->
+                        <!--                                class="m-3 rounded"-->
+                        <!--                                style="width: auto; height: auto; max-width: 150px; max-height: 60px"-->
+                        <!--                            />-->
+                        <!--                        </div>-->
+                        <!--                    </b-col>-->
+                        <b-col md="12">
+                            <div class="p-2 pt-1 p-md-0">
+                                <div class="d-flex w-100 mb-2">
+                                    <div class="d-flexs align-items-center">
+                                        <div class="text-white text-decoration-none lead">
+                                            <h3>{{ campaign.title }}</h3>
+                                        </div>
+                                        <div class="text-white text-decoration-none lead">
+                                            <h8 class="balance">Total earnings</h8>
+                                            <h6>{{ score }}</h6>
+                                            <h5 class="balance">Balance</h5>
+                                            <h3>{{ balance }} coins</h3>
+                                        </div>
+                                        <!--                                    <b-button-->
+                                        <!--                                        :disabled="!accountStore.isAuthenticated"-->
+                                        <!--                                        size="sm"-->
+                                        <!--                                        variant="link"-->
+                                        <!--                                        class="px-0 ms-1"-->
+                                        <!--                                        @click.stop="onClickSubscribe"-->
+                                        <!--                                    >-->
+                                        <!--                                        <i-->
+                                        <!--                                            class="fa-star text-opaque text-white"-->
+                                        <!--                                            :class="{ fas: isSubscribed, far: !isSubscribed }"-->
+                                        <!--                                        />-->
+                                        <!--                                    </b-button>-->
+                                    </div>
+                                    <!--                                <div class="ms-auto p-2 text-opaque me-md-3">-->
+                                    <!--                                    <i class="fas fa-hashtag me-1" />-->
+                                    <!--                                    {{ campaign.rank }}-->
+                                    <!--                                </div>-->
                                 </div>
-                                <!--                                <div class="ms-auto p-2 text-opaque me-md-3">-->
-                                <!--                                    <i class="fas fa-hashtag me-1" />-->
-                                <!--                                    {{ campaign.rank }}-->
-                                <!--                                </div>-->
                             </div>
-                        </div>
-                    </b-col>
-                </b-row>
-            </b-col>
-            <b-col md="9">
-                <div class="d-flex w-100 align-items-center">
-                    <RewardsSmall :message="campaign._id"></RewardsSmall>
-                    <!--                                <b-button-->
-                    <!--                                    size="sm"-->
-                    <!--                                    variant="primary"-->
-                    <!--                                    class="me-2"-->
-                    <!--                                    @click.stop="goTo(`/c/${campaign.slug}/quests`)"-->
-                    <!--                                >-->
-                    <!--                                    <i class="fas fa-tasks text-opaque me-2" />-->
-                    <!--                                    <span>{{ campaign.questCount }}</span>-->
-                    <!--                                </b-button>-->
-                    <!--                                <b-button-->
-                    <!--                                    size="sm"-->
-                    <!--                                    variant="primary"-->
-                    <!--                                    class="me-2"-->
-                    <!--                                    @click.stop="goTo(`/c/${campaign.slug}/rewards`)"-->
-                    <!--                                >-->
-                    <!--                                    <i class="fas fa-gift text-opaque me-2" />-->
-                    <!--                                    <span>{{ campaign.rewardCount }}</span>-->
-                    <!--                                </b-button>-->
-                    <!--                                <b-button-->
-                    <!--                                    size="sm"-->
-                    <!--                                    variant="primary"-->
-                    <!--                                    class="me-2"-->
-                    <!--                                    @click.stop="goTo(`/c/${campaign.slug}/ranking`)"-->
-                    <!--                                >-->
-                    <!--                                    <i class="fas fa-users text-opaque me-2" />-->
-                    <!--                                    <span>{{ campaign.participantCount }}</span>-->
-                    <!--                                </b-button>-->
-                    <!--                                <b-button-->
-                    <!--                                    v-if="campaignDomain"-->
-                    <!--                                    size="sm"-->
-                    <!--                                    variant="primary"-->
-                    <!--                                    class="ms-auto me-md-3"-->
-                    <!--                                    @click.stop="isModalExternalURLShown = true"-->
-                    <!--                                >-->
-                    <!--                                    <i class="fas fa-external-link-alt text-opaque me-1" />-->
-                    <!--                                    {{ campaignDomain }}-->
-                    <!--                                </b-button>-->
-                    <!--                                <BaseModalExternalURL-->
-                    <!--                                    :show="isModalExternalURLShown"-->
-                    <!--                                    :url="campaign.domain"-->
-                    <!--                                    @hidden="isModalExternalURLShown = false"-->
-                    <!--                                />-->
-                </div>
-            </b-col>
-        </b-row>
+                        </b-col>
+                    </b-row>
+                </b-col>
+                <b-col md="10">
+                    <div class="d-flex w-100 align-items-center">
+                        <RewardsSmall :message="campaign._id"></RewardsSmall>
+                        <!--                                <b-button-->
+                        <!--                                    size="sm"-->
+                        <!--                                    variant="primary"-->
+                        <!--                                    class="me-2"-->
+                        <!--                                    @click.stop="goTo(`/c/${campaign.slug}/quests`)"-->
+                        <!--                                >-->
+                        <!--                                    <i class="fas fa-tasks text-opaque me-2" />-->
+                        <!--                                    <span>{{ campaign.questCount }}</span>-->
+                        <!--                                </b-button>-->
+                        <!--                                <b-button-->
+                        <!--                                    size="sm"-->
+                        <!--                                    variant="primary"-->
+                        <!--                                    class="me-2"-->
+                        <!--                                    @click.stop="goTo(`/c/${campaign.slug}/rewards`)"-->
+                        <!--                                >-->
+                        <!--                                    <i class="fas fa-gift text-opaque me-2" />-->
+                        <!--                                    <span>{{ campaign.rewardCount }}</span>-->
+                        <!--                                </b-button>-->
+                        <!--                                <b-button-->
+                        <!--                                    size="sm"-->
+                        <!--                                    variant="primary"-->
+                        <!--                                    class="me-2"-->
+                        <!--                                    @click.stop="goTo(`/c/${campaign.slug}/ranking`)"-->
+                        <!--                                >-->
+                        <!--                                    <i class="fas fa-users text-opaque me-2" />-->
+                        <!--                                    <span>{{ campaign.participantCount }}</span>-->
+                        <!--                                </b-button>-->
+                        <!--                                <b-button-->
+                        <!--                                    v-if="campaignDomain"-->
+                        <!--                                    size="sm"-->
+                        <!--                                    variant="primary"-->
+                        <!--                                    class="ms-auto me-md-3"-->
+                        <!--                                    @click.stop="isModalExternalURLShown = true"-->
+                        <!--                                >-->
+                        <!--                                    <i class="fas fa-external-link-alt text-opaque me-1" />-->
+                        <!--                                    {{ campaignDomain }}-->
+                        <!--                                </b-button>-->
+                        <!--                                <BaseModalExternalURL-->
+                        <!--                                    :show="isModalExternalURLShown"-->
+                        <!--                                    :url="campaign.domain"-->
+                        <!--                                    @hidden="isModalExternalURLShown = false"-->
+                        <!--                                />-->
+                    </div>
+                </b-col>
+            </b-row>
+        </div>
     </b-card>
 </template>
 
@@ -156,12 +165,16 @@ export default defineComponent({
         ...mapStores(useAccountStore, useRewardStore),
         participant() {
             return this.accountStore.participants.find(
-                (p) => p.sub === this.accountStore.account?.sub && p.poolId === this.campaign.slug,
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === this.campaign._id,
             );
         },
         balance() {
             if (!this.participant) return 0;
             return Number(this.participant.balance);
+        },
+        score() {
+            if (!this.participant) return 0;
+            return Number(this.participant.score);
         },
         backgroundImage() {
             return this.campaign.backgroundImgUrl;
@@ -209,9 +222,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.balance {
+    margin-top: 35px;
+    margin-bottom: 0;
+    font-size: 11px;
+}
+.bd-filter {
+    background: #ff000024;
+    padding: 15px;
+}
 .card-campaign {
-    padding: 10px;
-    min-height: 200px;
+    background: url('src/assets/thx_header_learn.jpg');
+    backdrop-filter: blur(40);
+    border-radius: 15px;
+    //padding: 10px;
+    //min-height: 200px;
     &:before {
         transition: opacity 0.2s;
         opacity: 0;

@@ -1,3 +1,8 @@
+
+
+.card-campaign .card {
+  background: #0a0c0d !important;
+}
 .card-header {
     transition: background-color ease .15s;
     border: 0;
@@ -27,9 +32,9 @@
 }
 
 .card-promoted {
-    border: 5px solid $orange;
-    border-radius: 10px;
-    box-shadow: 0 0 10px $orange;
+    //border: 5px solid $orange;
+    //border-radius: 10px;
+    //box-shadow: 0 0 10px $orange;
 
     .card-title {
         color: $orange;

@@ -13,7 +13,7 @@
             <i v-if="!accountStore.config.active" class="fas fa-check-circle text-success" />
         </b-link>
         <BaseModalExternalURL
-            :show="isModalExternalURLShown"
+            :show="false"
             :url="accountStore.config.domain"
             @hidden="isModalExternalURLShown = false"
         />
