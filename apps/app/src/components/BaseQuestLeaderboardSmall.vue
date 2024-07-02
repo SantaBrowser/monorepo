@@ -55,12 +55,12 @@ export default defineComponent({
         ...mapStores(useQuestStore),
     },
     mounted() {
-        this.accountStore.getLeaderboard('66800ec153dfedcb4cc70e58');
+        this.accountStore.getLeaderboard('6683e2c6848afe51b2dbb4f3');
     },
     methods: {
         async onClickRefresh() {
             this.isLoading = true;
-            await this.accountStore.getLeaderboard('66800ec153dfedcb4cc70e58');
+            await this.accountStore.getLeaderboard('6683e2c6848afe51b2dbb4f3');
             this.isLoading = false;
         },
     },
