@@ -10,7 +10,7 @@
                 <i v-else class="fas fa-sync-alt" />
             </b-button>
         </b-card-title>
-        <!-- <b-list-group>
+        <b-list-group class="my-list d-flex flex-column">
             <b-list-group-item
                 v-for="(entry, key) of accountStore.leaderboardPrimary"
                 :key="key"
@@ -33,26 +33,6 @@
                 </span>
                 <strong class="list-item-field-score">{{ entry.score }}</strong>
             </b-list-group-item>
-        </b-list-group> -->
-        <b-list-group class="my-list d-flex flex-column">
-            <b-list-group-item v-for="(entry, key) of leaderboard" :key="key" class="d-flex px-0 pe-3">
-                <span class="list-item-field-rank">{{ entry.rank }}</span>
-                <span class="list-item-field-address flex-grow-1 ps-2">
-                    <b-avatar
-                        size="sm"
-                        variant="primary"
-                        :src="entry.profileImg"
-                        :alt="`Profile picture of ${entry.username}`"
-                        class="me-1"
-                    />
-                    {{ entry.username }}
-                </span>
-                <span class="list-item-field-questcount flex-grow-1 text-opaque pe-3">
-                    {{ entry.questEntryCount }}
-                    <i class="fas fa-tasks ms-1" />
-                </span>
-                <strong class="list-item-field-score">{{ entry.score }}</strong>
-            </b-list-group-item>
         </b-list-group>
     </div>
 </template>
@@ -68,29 +48,6 @@ export default defineComponent({
     data() {
         return {
             isLoading: false,
-            leaderboard: [
-                {
-                    rank: 1,
-                    username: 'User1',
-                    profileImg: 'https://example.com/user1.jpg',
-                    questEntryCount: 10,
-                    score: 1500,
-                },
-                {
-                    rank: 2,
-                    username: 'User2',
-                    profileImg: 'https://example.com/user2.jpg',
-                    questEntryCount: 8,
-                    score: 1200,
-                },
-                {
-                    rank: 3,
-                    username: 'User3',
-                    profileImg: 'https://example.com/user3.jpg',
-                    questEntryCount: 6,
-                    score: 900,
-                },
-            ],
         };
     },
     computed: {
