@@ -238,11 +238,26 @@ export default defineComponent({
 }
 
 .my-btn {
+    position: relative;
     border-radius: 20px;
     border: 1px solid #1a1a1a;
     background: linear-gradient(90deg, #0f0d0d 0%, #1c1c1c 100%);
     padding: 5px 0;
     transition: background 0.3s ease;
+    z-index: 0;
+}
+.my-btn::before {
+    content: '';
+    position: absolute;
+    border-radius: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #5b6aef 6.47%, #c64444 99.64%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: -1; /* Ensure it stays behind the button content */
 }
 .h-200 {
     height: 200px;
@@ -270,31 +285,46 @@ export default defineComponent({
     line-height: 1rem;
 }
 .placeholder {
-    background-color: #ccc; /* Change this to any color you prefer */
+    background-color: #ccc;
     width: 92px;
     height: 92px;
     border-radius: 50%;
 }
 .card-wrapper {
     position: relative;
-    border-radius: 0.375rem; /* Adjust as needed */
+    border-radius: 0.375rem;
     overflow: hidden;
     background: none;
-    padding: 1px; /* Adjust padding to show the gradient border */
-    transition: background 0.3s ease;
+    padding: 1px;
+    transition: background 0.3s ease, opacity 0.3s ease;
 }
-.card-wrapper:hover {
+.card-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(90deg, #5b6aef 6.47%, #c64444 99.64%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: -1;
 }
-.card-wrapper:hover .my-btn {
-    background: linear-gradient(90deg, #5b6aef 6.47%, #c64444 99.64%);
+
+.card-wrapper:hover::before {
+    opacity: 1;
+}
+.card-wrapper:hover .my-btn::before {
+    opacity: 1;
 }
 
 .card-wrapper:hover .reward-text {
     color: #fff;
+    transition: color 0.6s ease;
 }
 
 .card-wrapper:hover .coins-text {
     color: #e8e8e8;
+    transition: color 0.6s ease;
 }
 </style>

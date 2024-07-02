@@ -1,30 +1,37 @@
 <template>
-    <div v-if="quest" class="w-100 my-card" @click="navigateToPool">
+    <div v-if="quest" class="w-100 my-card d-flex flex-column justify-content-between align-items-center">
         <!-- <template #header> -->
         <div
-            class="d-flex bg-dark rounded m-2"
-            :class="{
-                'justify-content-end align-items-end': !!backgroundImage,
-                'justify-content-center align-items-center': !backgroundImage,
-            }"
             :style="{
-                height: '165px',
-                backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center center',
+                width: '100%',
+                padding: '0.7rem',
             }"
         >
-            <BImg
-                lazy
-                :src="logoImage"
-                class="m-3 rounded"
-                style="width: auto; height: auto; max-width: 150px; max-height: 50px"
-            />
-        </div>
-        <!-- </template> -->
-        <div class="d-flex justify-content-center">
-            <strong class="quest-title">{{ quest.title }} </strong>
-            <!-- <div class="flex-shrink-0">
+            <div
+                class="d-flex bg-dark rounded"
+                :class="{
+                    'justify-content-end align-items-end': !!backgroundImage,
+                    'justify-content-center align-items-center': !backgroundImage,
+                }"
+                :style="{
+                    width: '100%',
+                    height: '165px',
+                    backgroundImage: `url(${backgroundImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center center',
+                }"
+            >
+                <BImg
+                    lazy
+                    :src="logoImage"
+                    class="m-3 rounded"
+                    style="width: 100%; height: auto; max-width: 150px; max-height: 50px"
+                />
+            </div>
+            <!-- </template> -->
+            <div class="d-flex justify-content-center">
+                <strong class="quest-title">{{ quest.title }} </strong>
+                <!-- <div class="flex-shrink-0">
                 <b-badge
                     v-b-tooltip
                     variant="primary"
@@ -42,11 +49,19 @@
                     </b-link>
                 </b-badge>
             </div> -->
+            </div>
         </div>
         <!-- <p class="pt-2 mb-0 d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
             {{ quest.description }}
-        </p>
-        <template #footer>
+        </p>  -->
+        <div
+            :style="{
+                width: '100%',
+                padding: '0 0.7rem',
+                paddingBottom: '0.7rem',
+            }"
+            class="d-flex justify-content-center align-items-center"
+        >
             <b-button class="w-100" :to="`/c/${quest.poolId}`" variant="primary">
                 Earn <strong>{{ quest.amount }} </strong> points!
             </b-button>
@@ -55,10 +70,7 @@
                 :url="quest ? quest.domain : ''"
                 @hidden="isModalCampaignDomainShown = false"
             />
-        </template> -->
-        <!-- <b-button class="w-100" :to="`/c/${quest.poolId}`" variant="primary">
-            Earn <strong>{{ quest.amount }} </strong> points!
-        </b-button> -->
+        </div>
     </div>
 </template>
 
@@ -88,11 +100,6 @@ export default defineComponent({
             return this.quest && this.quest.brand && this.quest.brand.logoImgUrl;
         },
     },
-    methods: {
-        navigateToPool() {
-            this.$router.push(`/c/${this.quest.poolId}`);
-        },
-    },
 });
 </script>
 <style>
@@ -103,8 +110,7 @@ export default defineComponent({
     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
     backdrop-filter: blur(12.5px);
     width: 205px !important;
-    height: 245px !important;
-    cursor: pointer;
+    height: 270px !important;
 }
 .card-quest-header {
     background-size: cover;
@@ -119,5 +125,6 @@ export default defineComponent({
     font-weight: 500;
     line-height: 22px;
     text-align: center;
+    margin-top: 0.5rem;
 }
 </style>

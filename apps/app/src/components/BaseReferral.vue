@@ -62,7 +62,7 @@ export default {
 .link-container {
     display: flex;
     align-items: center;
-    border-radius: 8px;
+    border-radius: 8px !important;
     padding: 3px;
     color: #ccc;
     border-radius: 12px;
@@ -79,9 +79,14 @@ export default {
 }
 .copy-button {
     padding: 8.973px 19.577px;
-    margin: 3px;
-    border-radius: 12px;
+    border-radius: 5px;
     border: 0.5px solid #3f1d74;
-    background: #2b0966;
+    background: linear-gradient(90deg, #c19846 0%, #916409 100%);
+    color: #1a1a1a;
+    text-align: center;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14.683px;
 }
 </style>

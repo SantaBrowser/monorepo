@@ -256,7 +256,7 @@ export default defineComponent({
 }
 .coins {
     height: 40px;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
 }
 .coins h3 {
     color: #f5f5f5;
@@ -304,20 +304,21 @@ export default defineComponent({
     color: var(--bs-warning) !important;
 }
 .camp-title {
-    font-size: 1rem !important;
-    font-weight: 400 !important;
-    line-height: 1.75rem;
+    color: #f5f5f5;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 30px;
+    text-transform: uppercase;
     margin-bottom: 0;
-    line-height: 1;
 }
 .camp-title-grad {
-    background: linear-gradient(90deg, #4365ff 8.09%, #fe8888 42.46%, #c64343 50%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent;
+    color: #f5f5f5;
+    font-size: 30px;
+    font-style: italic;
     font-weight: 700;
-    letter-spacing: 1px;
+    line-height: 40px;
+    text-transform: uppercase;
     margin-bottom: 0;
 }
 .quest-btn {

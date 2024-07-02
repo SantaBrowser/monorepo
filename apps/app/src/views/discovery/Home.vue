@@ -37,15 +37,16 @@
         <!--        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />-->
     </b-container>
     <b-container class="mb-5">
-        <b-row class="mt-5 mb-3">
+        <div class="mt-5 mb-3">
             <b-col xs="12" md="6">
-                <h2>Quest Spotlight</h2>
+                <h2 class="trending-title">Trending</h2>
             </b-col>
-        </b-row>
-        <b-row>
-            <b-col v-for="quest of questLists" lg="2" :quest="quest">
+            <span class="trending-grad">Quests</span>
+        </div>
+        <b-row class="d-flex flex-wrap">
+            <div v-for="quest of questLists" :quest="quest" :style="{ width: 'unset' }">
                 <BaseCardQuestSpotlight :quest="quest" />
-            </b-col>
+            </div>
         </b-row>
     </b-container>
     <!--    <BaseCardHeader row-class="py-md-0" class="my-5">-->
@@ -153,6 +154,7 @@ export default defineComponent({
             }
             const res = await fetch(url);
             const campaigns = await res.json();
+
             console.log('Campaigns: ', campaigns);
             this.campaigns = campaigns;
             this.campaigns.results = this.campaigns.results.map((campaign: any) => ({
@@ -266,5 +268,26 @@ export default defineComponent({
         height: 10px;
         border-radius: 50%;
     }
+}
+.trending-title {
+    display: flex;
+    flex-direction: column;
+    color: #e9e3e3;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px;
+}
+
+.trending-grad {
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 0px;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #4365ff 8.09%, #fe8888 42.46%, #c64343 50%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 </style>
