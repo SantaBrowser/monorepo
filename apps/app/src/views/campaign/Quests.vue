@@ -5,7 +5,7 @@
                 <div v-if="questStore.isLoading" class="d-flex justify-content-center py-5">
                     <b-spinner variant="primary" small />
                 </div>
-                <b-tabs v-else content-class="mt-3" justified>
+                <b-tabs v-else class="my-nav" content-class="mt-3" justified>
                     <b-tab active>
                         <template #title>
                             Available
@@ -41,7 +41,7 @@
                 </b-tabs>
             </b-col>
             <b-col lg="5" xl="4">
-                <BaseQuestLeaderboard class="d-none d-lg-block mb-2 mx-lg-0 mb-lg-3" />
+                <BaseQuestLeaderboard class="d-none d-lg-block mb-2 mx-lg-0 mb-lg-3 my-leader" />
             </b-col>
         </b-row>
     </b-container>
@@ -127,3 +127,57 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.my-nav .nav-link.active {
+    --bs-nav-tabs-link-active-color: rgba(255, 255, 255, 0.7) !important;
+    background: linear-gradient(180deg, #202023 0%, #000 84%) !important;
+    --bs-nav-tabs-link-active-border-color: #232323 !important;
+    --bs-nav-tabs-link-active-bg: #232323 !important;
+}
+
+.my-nav .nav-tabs {
+    --bs-nav-tabs-border-color: #232323 !important;
+}
+
+.tab-content {
+    position: relative;
+}
+
+.my-nav .card {
+    border-radius: 5px;
+    border: 1px solid #262424;
+    background-color: #151515;
+}
+
+.my-nav .card-header {
+    background: #0b0b0b;
+    border-radius: 5px !important;
+}
+
+.my-nav .fa-calendar {
+    color: #515151 !important;
+}
+
+.my-nav .btn {
+    background: linear-gradient(90deg, #3b4383 6.47%, #9a3d3d 99.64%);
+}
+
+.my-nav .badge.bg-primary {
+    color: rgba(238, 238, 238, 0.7) !important;
+    background: #000 !important;
+}
+
+.my-leader {
+    background-color: #151515;
+}
+
+.my-leader .text-primary {
+    color: #515151 !important;
+}
+
+.my-leader .list-group-item {
+    background-color: #1c1b1b;
+    border-color: #262424;
+}
+</style>

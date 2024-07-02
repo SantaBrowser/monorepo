@@ -1,5 +1,9 @@
 <template>
-    <b-navbar v-if="isQuestCampaign" :container="false" class="navbar-bottom mb-lg-3 px-lg-3 order-lg-0">
+    <b-navbar
+        v-if="isQuestCampaign"
+        :container="false"
+        class="navbar-bottom mb-lg-3 px-lg-3 order-lg-0 nav-campaign justify-content-start"
+    >
         <!--        <div-->
         <!--            v-if="accountStore.config"-->
         <!--            style="width: 120px"-->
@@ -31,7 +35,11 @@
             <i class="fas fa-wallet mr-lg-3" />
             <div>Wallet</div>
         </router-link>
-        <BaseNavbarSecondary v-if="!accountStore.isMobile" class="ms-auto" />
+        <!-- <BaseNavbarSecondary
+            v-if="!accountStore.isMobile"
+            class="ms-auto"
+            :style="{ backgroundColor: 'transparent !important' }"
+        /> -->
     </b-navbar>
 </template>
 
@@ -57,3 +65,13 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.nav-campaign {
+    background-color: #151515;
+}
+
+.nav-campaign .router-link-exact-active {
+    background-color: rgba(229, 229, 229, 0.11) !important;
+}
+</style>
