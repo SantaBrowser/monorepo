@@ -9,12 +9,13 @@
                         minHeight: `${height}px`,
                         backgroundImage:
                             accountStore.config.backgroundUrl && `url('${accountStore.config.backgroundUrl}')`,
+                        backgroundColor: '#000 !important',
                     }"
                 >
                     <div
                         v-if="accountStore.isAuthenticated && participant"
                         class="d-flex justify-content-center align-items-center p-3"
-                        style="border-radius: 5px; background: rgba(0, 0, 0, 0.35)"
+                        style="border-radius: 5px; background: rgba(238, 238, 238, 0.1)"
                     >
                         <b-avatar size="80" :src="accountStore.account?.profileImg" class="gradient-border-xl" />
                         <div class="px-3" style="min-width: 200px">

@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex flex-column h-100 p-0 h-vertical">
+    <div class="d-flex flex-column h-100 p-0 h-vertical my-campaign">
         <BaseNavbarSecondary v-if="accountStore.isMobile" />
         <b-container
             v-if="accountStore.isAuthenticated === false"
@@ -127,7 +127,15 @@ export default defineComponent({
     height: 100% !important;
 
     @media (min-width: 991px) {
-        height: calc(100% - 30px) !important;
+        // height: calc(100% - 30px) !important;
     }
+}
+
+.my-campaign {
+    background-color: #000 !important;
+}
+
+.my-campaign .bg-splash:before {
+    background: none;
 }
 </style>

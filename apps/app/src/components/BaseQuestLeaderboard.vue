@@ -1,5 +1,5 @@
 <template>
-    <b-card header-class="p-0" body-class="d-flex flex-column p-2 pt-0">
+    <b-card header-class="p-0" body-class="d-flex flex-column p-2 pt-0" class="my-leaderboard">
         <b-card-title class="d-flex px-1 py-1 m-0 align-items-center">
             <div class="d-flex align-items-center justify-content-center" style="width: 25px">
                 <i class="fa fa-trophy me-2 text-opaque" />
@@ -94,5 +94,17 @@ export default defineComponent({
 .list-item-field-score {
     width: 50px;
     text-align: right;
+}
+.my-leaderboard {
+    background-color: #151515;
+}
+
+.my-leaderboard .list-group-item {
+    background-color: #1c1b1b;
+    border-color: #232323;
+}
+
+.my-leaderboard .text-primary {
+    color: #515151 !important;
 }
 </style>
