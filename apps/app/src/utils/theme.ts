@@ -22,7 +22,7 @@ export const DEFAULT_ELEMENTS = {
     cardBg: {
         label: 'Card',
         // color: '#31236d',
-        color: '#111213',
+        color: '#000',
     },
     cardText: {
         label: 'Card Text',

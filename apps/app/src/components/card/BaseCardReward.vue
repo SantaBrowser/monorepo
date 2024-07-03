@@ -21,7 +21,7 @@
                 <slot name="title" />
             </b-card-title>
             <div class="d-flex justify-content-center">
-                <div v-if="!image" class="placeholder" :style="{ width: '92px', height: '92px' }"></div>
+                <img v-if="!image" :src="randomPlaceholderImage" class="" :style="{ width: '92px', height: '92px' }" />
                 <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
             </div>
             <!-- <b-card-text class="card-description" v-html="reward.description" /> -->
@@ -138,6 +138,10 @@ export default defineComponent({
     },
     computed: {
         ...mapStores(useAccountStore, useAuthStore),
+        randomPlaceholderImage(): string {
+            const images = ['src/assets/logo-coin-1.png', 'src/assets/logo-coin-2.png', 'src/assets/logo-coin-3.png'];
+            return images[Math.floor(Math.random() * images.length)];
+        },
         limitSupplyVariant() {
             if (this.limitSupplyPerct >= 0.9) return 'text-danger';
             if (this.limitSupplyPerct > 0.75 && this.limitSupplyPerct < 0.9) return 'text-warning';
@@ -231,7 +235,7 @@ export default defineComponent({
 
 .my-btn {
     position: relative;
-    border-radius: 20px;
+    border-radius: 15px;
     border: 1px solid #1a1a1a;
     background: linear-gradient(90deg, #0f0d0d 0%, #1c1c1c 100%);
     padding: 5px 0;
