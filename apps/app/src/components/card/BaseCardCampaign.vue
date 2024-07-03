@@ -56,7 +56,7 @@
                                                 <img :src="StarCoin" alt="star coin" height="24" />
                                             </div>
                                             <div class="quest-btn d-flex align-items-center justify-content-center">
-                                                <h6>More Quests</h6>
+                                                <h6>Browse Quests</h6>
                                             </div>
                                         </div>
                                         <!--                                    <b-button-->
@@ -272,7 +272,6 @@ export default defineComponent({
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.47);
 
     /* Glass Morph Button */
     box-shadow: 10px 14px 47.7px 0px rgba(103, 103, 103, 0.05) inset, 11px 11px 29.4px 0px rgba(0, 0, 0, 0.15);

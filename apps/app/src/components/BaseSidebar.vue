@@ -40,12 +40,16 @@ export default defineComponent({
 </script>
 <style lang="scss">
 .sidebar {
+    background-color: #111213;
     .sidebar-panel {
         display: flex;
         flex-direction: column;
         width: 400px;
         max-width: 400px;
-        background: #111213;
+        border-radius: 8px;
+        background-color: #111213;
+        box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
+        backdrop-filter: blur(5px);
         border-left: 3px solid #232323;
         overflow-x: hidden;
         overflow-y: auto;

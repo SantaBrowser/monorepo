@@ -99,7 +99,8 @@ export default defineComponent({
         backgroundImage() {
             return (
                 (this.quest && this.quest.image) ||
-                (this.quest && this.quest.brand && this.quest.brand.backgroundImgUrl)
+                (this.quest && this.quest.brand && this.quest.brand.backgroundImgUrl) ||
+                'src/assets/santa.png'
             );
         },
         logoImage() {

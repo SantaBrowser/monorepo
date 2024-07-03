@@ -145,9 +145,11 @@ export default defineComponent({
 }
 
 .my-nav .card {
+    background-color: #000;
     border-radius: 5px;
     border: 1px solid #262424;
-    background-color: #151515;
+    background-image: url('../../assets/bg-mosaic.png');
+    background-size: cover;
 }
 
 .my-nav .card-header {
@@ -160,7 +162,8 @@ export default defineComponent({
 }
 
 .my-nav .btn {
-    background: linear-gradient(90deg, #3b4383 6.47%, #9a3d3d 99.64%);
+    border-color: #af4545;
+    background: linear-gradient(90deg, rgba(177, 70, 70, 0.75) 0%, rgba(114, 33, 33, 0.75) 100%);
 }
 
 .my-nav .badge.bg-primary {

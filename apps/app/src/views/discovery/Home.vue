@@ -28,8 +28,18 @@
                 <div v-for="(campaign, index) in campaigns.results" :key="campaign.id" class="mt-3">
                     <BaseCardCampaign :campaign="campaign" />
                     <!-- Show a custom div after the first BaseCardCampaign -->
-                    <div v-if="index === 0">
+                    <div v-if="index === 0" class="d-flex gap-2">
                         <BaseReferral />
+                        <div
+                            :style="{
+                                backgroundImage: 'url(src/assets/bg-rare-quest.png)',
+                                backgroundSize: 'cover',
+                                borderRadius: '5px',
+                            }"
+                            class="w-50 mb-3 mt-3 d-flex align-items-center justify-content-center"
+                        >
+                            <span class="rare-quest-title">SUPER RARE QUESTS</span>
+                        </div>
                     </div>
                 </div>
             </b-col>
@@ -287,5 +297,17 @@ export default defineComponent({
     font-weight: 700;
     text-transform: uppercase;
     line-height: 28px;
+}
+
+.rare-quest-title {
+    text-align: center;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 120%;
+    background: linear-gradient(90deg, #016db0 1.29%, #01ffca 99.94%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 </style>
