@@ -62,8 +62,14 @@
             }"
             class="d-flex justify-content-center align-items-center"
         >
-            <b-button class="w-100" :to="`/c/${quest.poolId}`" variant="primary">
-                Earn <strong>{{ quest.amount }} </strong> points!
+            <b-button
+                class="w-100 my-earn-btn d-flex align-items-center justify-content-center"
+                :to="`/c/${quest.poolId}`"
+                variant="primary"
+            >
+                <p>Earn</p>
+                <div class="earn-pipe"></div>
+                <strong>{{ quest.amount }} </strong> <span>points!</span>
             </b-button>
             <BaseModalExternalURL
                 :show="isModalCampaignDomainShown"
@@ -126,5 +132,66 @@ export default defineComponent({
     line-height: 22px;
     text-align: center;
     margin-top: 0.5rem;
+}
+
+.my-earn-btn {
+    padding: 6px 12px;
+    border-radius: 15px;
+    border: 1px solid rgba(78, 78, 78, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.05), 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    position: relative;
+    overflow: hidden;
+}
+
+.my-earn-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #b14646 0%, #722121 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.my-earn-btn:hover::before {
+    opacity: 1;
+}
+
+.my-earn-btn * {
+    position: relative;
+    z-index: 1;
+}
+.earn-pipe {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 10px;
+}
+
+.my-earn-btn strong {
+    margin-right: 6px;
+}
+
+.my-earn-btn span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 0px;
+    text-transform: capitalize;
+}
+
+.my-earn-btn p {
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 0px;
 }
 </style>

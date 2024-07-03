@@ -277,17 +277,15 @@ export default defineComponent({
     font-style: normal;
     font-weight: 400;
     line-height: 28px;
+    margin-bottom: 0;
 }
 
 .trending-grad {
-    font-size: 32px;
-    font-style: normal;
+    color: #f5f5f5;
+    font-size: 30px;
+    font-style: italic;
     font-weight: 700;
-    line-height: 0px;
-    letter-spacing: 1px;
-    background: linear-gradient(90deg, #4365ff 8.09%, #fe8888 42.46%, #c64343 50%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    line-height: 28px;
 }
 </style>

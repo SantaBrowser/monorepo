@@ -5,7 +5,6 @@
         :style="{ opacity: isLoading ? 0.5 : 1 }"
         @click="goTo(`/c/${campaign.slug}`)"
     >
-        <img :src="Ellipse" alt="Ellipse" class="ellipse" height="300" width="300" />
         <b-spinner
             v-if="isLoading"
             small
@@ -141,7 +140,6 @@ import { mapStores } from 'pinia';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { useRewardStore } from '../../stores/Reward';
 import RewardsSmall from '@thxnetwork/app/views/campaign/RewardSmall.vue';
-import Ellipse from '../../assets/ellipse.png';
 import StarCoin from '../../assets/star-coin.png';
 type TCampaignProps = {
     _id: string;
@@ -172,7 +170,6 @@ export default defineComponent({
             isLoading: false,
             isModalExternalURLShown: false,
             rewardList: {},
-            Ellipse,
             StarCoin,
         };
     },
@@ -238,7 +235,7 @@ export default defineComponent({
 
 <style lang="scss">
 .balance {
-    color: rgba(200, 200, 200, 0.5);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.75rem;
     font-style: normal;
     font-weight: 400;
@@ -247,7 +244,7 @@ export default defineComponent({
     margin-bottom: 0;
 }
 .score {
-    color: #c8c8c8;
+    color: #fff;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1rem;
@@ -271,10 +268,11 @@ export default defineComponent({
 }
 .card-campaign {
     position: relative;
-    // background: url('src/assets/thx_header_learn.jpg');
+    background: url('src/assets/bg-campaign.png');
+    background-size: cover;
+    background-repeat: no-repeat;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.47);
-    background: linear-gradient(216deg, rgba(30, 30, 30, 0.58) 59.53%, rgba(24, 24, 24, 0.65) 79.11%);
 
     /* Glass Morph Button */
     box-shadow: 10px 14px 47.7px 0px rgba(103, 103, 103, 0.05) inset, 11px 11px 29.4px 0px rgba(0, 0, 0, 0.15);
@@ -289,16 +287,6 @@ export default defineComponent({
     //  opacity: 0.15;
     //}
     overflow: hidden;
-}
-.ellipse {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateX(-50%);
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
 }
 .btn .fa-star:hover {
     color: var(--bs-warning) !important;
@@ -322,14 +310,14 @@ export default defineComponent({
     margin-bottom: 0;
 }
 .quest-btn {
-    background-color: rgba(0, 0, 0, 0.48);
-    border: 1px solid #5a76f3;
-    border-radius: 6px;
-    padding: 15px 25px;
+    background: linear-gradient(180deg, #2f0707 0%, #300b0b 54.94%);
+    border: 1px solid #4f0000;
+    border-radius: 1rem;
+    padding: 1rem 2rem;
 }
 .quest-btn h6 {
     margin-bottom: 0;
-    color: #f5f5f5;
+    color: #ffdcdc;
     font-size: 14px;
     font-weight: 400;
     line-height: 0px;
