@@ -1,8 +1,7 @@
 <template>
-    <div class="card-wrapper">
-        <b-card no-body class="x-lg-0 my-lg-3 h-200" :class="{ 'card-promoted': reward.isPromoted }">
-            <header v-if="image" class="card-img" :style="{ height: '240px' }">
-                <!-- <b-badge
+    <b-card no-body class="x-lg-0 my-lg-3 h-200 card-wrapper" :class="{ 'card-promoted': reward.isPromoted }">
+        <header v-if="image" class="card-img" :style="{ height: '240px' }">
+            <!-- <b-badge
                 v-if="reward.expiry && reward.expiry.date"
                 v-b-tooltip.hover.left
                 :title="format(new Date(reward.expiry.date), 'MMMM do yyyy hh:mm:ss')"
@@ -14,26 +13,20 @@
                     expiryDate
                 }}</span>
             </b-badge> -->
-                <b-img
-                    v-if="!image"
-                    class="card-img-logo"
-                    :src="accountStore.config.logoUrl"
-                    widht="auto"
-                    height="100"
-                />
-            </header>
-            <b-card-body class="d-flex flex-column justify-content-between">
-                <b-card-title class="d-flex align-items-center">
-                    <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
-                    <slot name="title" />
-                </b-card-title>
-                <div class="d-flex justify-content-center">
-                    <div v-if="!image" class="placeholder" :style="{ width: '92px', height: '92px' }"></div>
-                    <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
-                </div>
-                <!-- <b-card-text class="card-description" v-html="reward.description" /> -->
-                <div>
-                    <!-- <div class="d-flex">
+            <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
+        </header>
+        <b-card-body class="d-flex flex-column justify-content-between" :style="{ padding: '10px' }">
+            <b-card-title class="d-flex align-items-center c-quest-title">
+                <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
+                <slot name="title" />
+            </b-card-title>
+            <div class="d-flex justify-content-center">
+                <div v-if="!image" class="placeholder" :style="{ width: '92px', height: '92px' }"></div>
+                <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
+            </div>
+            <!-- <b-card-text class="card-description" v-html="reward.description" /> -->
+            <div>
+                <!-- <div class="d-flex">
                     <div v-if="reward.pointPrice" class="d-flex align-items-center me-auto pb-3">
                         <span class="card-text me-1"> Price: </span>
                         <span variant="primary" class="ms-1 p-1">
@@ -52,64 +45,63 @@
                         </b-badge>
                     </div>
                 </div> -->
+                <button
+                    v-if="!accountStore.isAuthenticated"
+                    class="w-100 my-btn"
+                    variant="primary"
+                    @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
+                >
+                    <template v-if="reward.pointPrice">
+                        Pay <strong>{{ reward.pointPrice }} points</strong>
+                    </template>
+                    <strong v-else> Free! </strong>
+                </button>
+                <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
+                    <BaseButtonQuestLocked
+                        v-if="reward.isLocked"
+                        :id="`modalQuestLock${reward._id}`"
+                        :locks="reward.locks"
+                    />
                     <button
-                        v-if="!accountStore.isAuthenticated"
-                        class="w-100 my-btn"
+                        v-else
+                        v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
-                        @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
+                        block
+                        class="w-100 position-relative mb-0 my-btn"
+                        :disabled="isDisabled"
                     >
-                        <template v-if="reward.pointPrice">
-                            Pay <strong>{{ reward.pointPrice }} points</strong>
-                        </template>
-                        <strong v-else> Free! </strong>
-                    </button>
-                    <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
-                        <BaseButtonQuestLocked
-                            v-if="reward.isLocked"
-                            :id="`modalQuestLock${reward._id}`"
-                            :locks="reward.locks"
+                        {{ btnLabel }}
+                        <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
+                            <span class="reward-text">Get Reward</span>
+                            <div class="pipe"></div>
+                            <span class="point me-1">{{ reward.pointPrice }}</span>
+                            <img :src="StarCoin" alt="star" height="13" class="me-1" />
+                            <span class="coins-text">Coins</span>
+                        </div>
+                        <b-progress
+                            v-if="reward.limitProgress.max"
+                            v-b-tooltip.bottom
+                            :variant="limitVariant"
+                            :title="`You can purchase this reward ${reward.limitProgress.max} times.`"
+                            :value="reward.limitProgress.count"
+                            :max="reward.limitProgress.max"
+                            style="height: 6px"
                         />
-                        <button
-                            v-else
-                            v-b-modal="`modalRewardPayment${reward._id}`"
-                            variant="primary"
-                            block
-                            class="w-100 position-relative mb-0 my-btn"
-                            :disabled="isDisabled"
-                        >
-                            {{ btnLabel }}
-                            <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
-                                <span class="reward-text">Get Reward</span>
-                                <div class="pipe"></div>
-                                <span class="me-1">{{ reward.pointPrice }}</span>
-                                <img :src="StarCoin" alt="star" height="13" class="me-1" />
-                                <span class="coins-text">Coins</span>
-                            </div>
-                            <b-progress
-                                v-if="reward.limitProgress.max"
-                                v-b-tooltip.bottom
-                                :variant="limitVariant"
-                                :title="`You can purchase this reward ${reward.limitProgress.max} times.`"
-                                :value="reward.limitProgress.count"
-                                :max="reward.limitProgress.max"
-                                style="height: 6px"
-                            />
-                        </button>
-                    </span>
-                    <!--            <div class="d-flex align-items-center justify-content-between pb-2 mt-2" style="opacity: 0.5">-->
-                    <!--                <div class="d-flex align-items-center text-opaque small">-->
-                    <!--                    <span v-if="reward.author" class="text-white me-1"> {{ reward.author.username }} &CenterDot; </span>-->
-                    <!--                    <span v-if="reward.createdAt">{{ format(new Date(reward.createdAt), 'MMMM do') }} </span>-->
-                    <!--                </div>-->
-                    <!--                <div v-if="reward.paymentCount" class="d-flex align-items-center text-opaque small">-->
-                    <!--                    <i class="fas fa-users me-1" />-->
-                    <!--                    {{ reward.paymentCount }}-->
-                    <!--                </div>-->
-                    <!--            </div>-->
-                </div>
-            </b-card-body>
-        </b-card>
-    </div>
+                    </button>
+                </span>
+                <!--            <div class="d-flex align-items-center justify-content-between pb-2 mt-2" style="opacity: 0.5">-->
+                <!--                <div class="d-flex align-items-center text-opaque small">-->
+                <!--                    <span v-if="reward.author" class="text-white me-1"> {{ reward.author.username }} &CenterDot; </span>-->
+                <!--                    <span v-if="reward.createdAt">{{ format(new Date(reward.createdAt), 'MMMM do') }} </span>-->
+                <!--                </div>-->
+                <!--                <div v-if="reward.paymentCount" class="d-flex align-items-center text-opaque small">-->
+                <!--                    <i class="fas fa-users me-1" />-->
+                <!--                    {{ reward.paymentCount }}-->
+                <!--                </div>-->
+                <!--            </div>-->
+            </div>
+        </b-card-body>
+    </b-card>
     <BaseModalRewardPayment :id="`modalRewardPayment${reward._id}`" :reward="reward" />
 </template>
 
@@ -254,10 +246,10 @@ export default defineComponent({
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, #5b6aef 6.47%, #c64444 99.64%);
+    background: linear-gradient(90deg, #b14646 0%, #722121 100%);
     opacity: 0;
     transition: opacity 0.6s ease;
-    z-index: -1; /* Ensure it stays behind the button content */
+    z-index: -1;
 }
 .h-200 {
     height: 200px;
@@ -276,6 +268,12 @@ export default defineComponent({
     font-weight: 400;
     white-space: nowrap;
 }
+.point {
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22px;
+}
 .coins-text {
     color: rgba(200, 200, 200, 0.5);
     text-align: right;
@@ -291,28 +289,7 @@ export default defineComponent({
     border-radius: 50%;
 }
 .card-wrapper {
-    position: relative;
-    border-radius: 0.375rem;
-    overflow: hidden;
-    background: none;
-    padding: 1px;
-    transition: background 0.3s ease, opacity 0.3s ease;
-}
-.card-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, #5b6aef 6.47%, #c64444 99.64%);
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    z-index: -1;
-}
-
-.card-wrapper:hover::before {
-    opacity: 1;
+    background: transparent !important;
 }
 .card-wrapper:hover .my-btn::before {
     opacity: 1;
@@ -324,7 +301,30 @@ export default defineComponent({
 }
 
 .card-wrapper:hover .coins-text {
-    color: #e8e8e8;
+    color: #c8c8c8;
     transition: color 0.6s ease;
+}
+.card-wrapper .card-body {
+    border-radius: 8px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+
+    background: transparent !important;
+
+    box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
+    backdrop-filter: blur(12.5px);
+}
+
+.c-quest-title div {
+    background: linear-gradient(90deg, #f5f5f5 0%, #8f8f8f 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 14px !important;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 22px;
+}
+.c-quest-title .fas {
+    color: rgba(217, 217, 217, 0.2);
 }
 </style>
