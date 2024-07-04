@@ -161,25 +161,26 @@ async function claimTokens(wallet: WalletDocument) {
 }
 
 async function claimExternalRewardsJob() {
-    for (const chainId of [ChainId.Hardhat, ChainId.Sepolia]) {
-        try {
-            if (NODE_ENV === 'production' && chainId === ChainId.Hardhat) continue;
-            const { web3 } = getProvider(chainId);
-            const ve = new web3.eth.Contract(
-                contractArtifacts['VotingEscrow'].abi,
-                contractNetworks[chainId].VotingEscrow,
-            );
+    try {
+        let chainId;
+        if (NODE_ENV === 'production') chainId = ChainId.Polygon;
+        else if(NODE_ENV === 'sepolia') chainId = ChainId.Sepolia;
+        else chainId = ChainId.Hardhat;
+        const { web3 } = getProvider(chainId);
+        const ve = new web3.eth.Contract(
+            contractArtifacts['VotingEscrow'].abi,
+            contractNetworks[chainId].VotingEscrow,
+        );
 
-            // Execute directly using the relayer
-            const receipt = await TransactionService.send(
-                ve.options.address,
-                ve.methods.claimExternalRewards(),
-                chainId,
-            );
-            logger.info(`ClaimExternalRewards: ${receipt.transactionHash}`);
-        } catch (error) {
-            logger.error(`ClaimExternalRewards: ${error && error.message}`);
-        }
+        // Execute directly using the relayer
+        const receipt = await TransactionService.send(
+            ve.options.address,
+            ve.methods.claimExternalRewards(),
+            chainId,
+        );
+        logger.info(`ClaimExternalRewards: ${receipt.transactionHash}`);
+    } catch (error) {
+        logger.error(`ClaimExternalRewards: ${error && error.message}`);
     }
 }
 

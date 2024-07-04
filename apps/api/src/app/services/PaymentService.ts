@@ -33,9 +33,9 @@ export default class PaymentService {
     }
 
     static async balanceOf(wallet: WalletDocument) {
-        // TODO Deploy Sepolia PaymentSplitter before using this middleware
+        // TODO Deploy Sepolia || Polygon PaymentSplitter before using this middleware
         const { THXPaymentSplitter } = contractNetworks[wallet.chainId];
-        if (!THXPaymentSplitter && wallet.chainId === ChainId.Sepolia) {
+        if (!THXPaymentSplitter && (wallet.chainId === ChainId.Polygon || wallet.chainId === ChainId.Sepolia)) {
             return '0';
         }
 

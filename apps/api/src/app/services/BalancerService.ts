@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
-import { BALANCER_POOL_ID, ETHEREUM_RPC, HARDHAT_RPC, NODE_ENV, SEPOLIA_RPC } from '../config/secrets';
+import { BALANCER_POOL_ID, ETHEREUM_RPC, HARDHAT_RPC, NODE_ENV, POLYGON_RPC, SEPOLIA_RPC } from '../config/secrets';
 import { logger } from '../util/logger';
 import { WalletDocument } from '../models';
 import { ChainId } from '@thxnetwork/common/enums';
@@ -27,23 +27,41 @@ class BalancerService {
             },
             thx: 0,
         },
+        [ChainId.Polygon]: {
+            balancer: {
+                min: 0,
+                max: 0,
+                swapFees: 0,
+            },
+            thx: 0,
+        },
     };
     tvl = {
         [ChainId.Hardhat]: { liquidity: '0', staked: '0', tvl: '0' },
         [ChainId.Sepolia]: { liquidity: '0', staked: '0', tvl: '0' },
+        [ChainId.Polygon]: { liquidity: '0', staked: '0', tvl: '0' },
     };
     rewards = {
         [ChainId.Hardhat]: { bal: '0', bpt: '0' },
         [ChainId.Sepolia]: { bal: '0', bpt: '0' },
+        [ChainId.Polygon]: { bal: '0', bpt: '0' },
     };
     schedule = {
         [ChainId.Hardhat]: { bal: [], bpt: [] },
         [ChainId.Sepolia]: { bal: [], bpt: [] },
+        [ChainId.Polygon]: { bal: [], bpt: [] },
     };
-    balancer = new BalancerSDK({
-        network: Network.SEPOLIA,
-        rpcUrl: SEPOLIA_RPC,
-    });
+    balancer = new BalancerSDK(
+        NODE_ENV === 'production' ? 
+            {
+                network: Network.POLYGON,
+                rpcUrl: POLYGON_RPC,
+            } :
+            {
+                network: Network.SEPOLIA,
+                rpcUrl: SEPOLIA_RPC,
+            }
+        );
 
     constructor() {
         this.updatePricesJob().then(() => {
@@ -225,6 +243,7 @@ class BalancerService {
         const rpcMap = {
             [ChainId.Hardhat]: HARDHAT_RPC,
             [ChainId.Sepolia]: SEPOLIA_RPC,
+            [ChainId.Polygon]: POLYGON_RPC,
         };
         const { BAL, BPT, RewardFaucet, RewardDistributor } = contractNetworks[chainId];
         const provider = new ethers.providers.JsonRpcProvider(rpcMap[chainId]);

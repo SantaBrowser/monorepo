@@ -20,7 +20,7 @@ const matchTitle = (search) => {
 export const paginatedResults = async (page: number, limit: number, search: string) => {
     const startIndex = (page - 1) * limit;
     const $match = {
-        'rank': { $exists: true },
+        // 'rank': { $exists: true },
         'settings.isPublished': true,
         ...(search && { 'settings.title': matchTitle(search) }),
     };

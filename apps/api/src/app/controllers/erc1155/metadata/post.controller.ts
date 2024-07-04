@@ -21,7 +21,7 @@ const controller = async (req: Request, res: Response) => {
 
     let image = req.body.imageUrl;
 
-    if (req.body.imageUrl && NODE_ENV === 'production') {
+    if (req.body.imageUrl && (NODE_ENV === 'production' || NODE_ENV === 'sepolia')) {
         const cid = await IPFSService.addUrlSource(req.body.imageUrl);
         image = IPFS_BASE_URL + cid;
     }

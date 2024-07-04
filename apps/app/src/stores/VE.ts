@@ -10,7 +10,7 @@ import { track } from '@thxnetwork/common/mixpanel';
 import poll from 'promise-poller';
 
 export function getChainId() {
-    return MODE !== 'production' ? ChainId.Hardhat : ChainId.Polygon;
+    return MODE === 'production' ? ChainId.Polygon : MODE === 'sepolia' ? ChainId.Sepolia : ChainId.Hardhat;
 }
 
 export const useVeStore = defineStore('ve', {
