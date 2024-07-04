@@ -36,6 +36,7 @@ export default class GalachainService {
         const methodMap = {
             development: this.evaluateTransactionLocal.bind(this),
             production: this.submitTransactonREST.bind(this),
+            sepolia: this.submitTransactonREST.bind(this),
         };
         return methodMap[NODE_ENV](methodName, contract, dto, privateKey);
     }
@@ -44,6 +45,7 @@ export default class GalachainService {
         const methodMap = {
             development: this.submitTransactionLocal.bind(this),
             production: this.submitTransactonREST.bind(this),
+            sepolia: this.submitTransactonREST.bind(this),
         };
         return methodMap[NODE_ENV](methodName, contract, dto, privateKey);
     }

@@ -68,7 +68,7 @@ const chainList: { [chainId: number]: ChainInfo } = {
     },
 };
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'sepolia') {
     chainList[ChainId.Hardhat] = {
         chainId: ChainId.Hardhat,
         name: 'Hardhat',
