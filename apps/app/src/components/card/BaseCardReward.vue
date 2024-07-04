@@ -72,11 +72,19 @@
                     >
                         {{ btnLabel }}
                         <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
-                            <span class="reward-text">Get Reward</span>
+                            <span class="reward-text">
+                                {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
+                            </span>
                             <div class="pipe"></div>
-                            <span class="point me-1">{{ reward.pointPrice }}</span>
-                            <img :src="StarCoin" alt="star" height="13" class="me-1" />
-                            <span class="coins-text">Coins</span>
+                            <span class="point me-1">{{ formattedPrice }}</span>
+                            <img
+                                v-if="reward.poolId === SANTA_CAMPAIGN"
+                                :src="StarCoin"
+                                alt="star"
+                                height="13"
+                                class="me-1"
+                            />
+                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Coins</span>
                         </div>
                         <b-progress
                             v-if="reward.limitProgress.max"
@@ -113,6 +121,7 @@ import { mapStores } from 'pinia';
 import { RewardVariant } from '../../types/enums/rewards';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import StarCoin from '../../assets/star-coin.png';
+import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 export default defineComponent({
     name: 'BaseCardReward',
     props: {
@@ -134,6 +143,8 @@ export default defineComponent({
                 [RewardVariant.Galachain]: 'fas fa-box',
             } as { [variant: string]: string },
             StarCoin,
+            SANTA_CAMPAIGN,
+            CP_CAMPAIGN,
         };
     },
     computed: {
@@ -153,6 +164,7 @@ export default defineComponent({
             if (this.limitPerct >= 0 && this.limitPerct <= 0.5) return 'success';
         },
         btnLabel() {
+            console.log('reward', this.reward);
             if (this.reward.isLimitSupplyReached) {
                 return 'Sold out';
             } else if (this.reward.isLimitReached) {
@@ -187,6 +199,14 @@ export default defineComponent({
                       addSuffix: false,
                   })
                 : 'expired';
+        },
+        formattedPrice() {
+            if (this.reward.poolId === CP_CAMPAIGN) {
+                const price = this.reward.pointPrice / 100;
+                return Number.isInteger(price) ? `${price} $` : `${price.toFixed(2)} $`;
+            } else {
+                return this.reward.pointPrice;
+            }
         },
     },
 });
