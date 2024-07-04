@@ -1,5 +1,5 @@
 <template>
-    <b-card class="rounded-0 target-body" header-class="py-3 d-flex align-items-center disc-black">
+    <b-card class="rounded-0 target-body disc-black" header-class="py-3 d-flex align-items-center">
         <template #header>
             <i class="fab fa-discord text-white me-3" style="font-size: 1.8rem" />
             <div>
@@ -95,17 +95,17 @@ export default defineComponent({
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.disc-black {
+.disc-black .card-header {
     background-color: #000 !important;
     margin: 0 1rem;
     border-radius: 0.5rem !important;
 }
 
 .target-body {
-    background-color: #111213 !important;
+    background-color: transparent !important;
 }
 
 .target-body .card-body {
-    background-color: #111213 !important;
+    background-color: transparent !important;
 }
 </style>

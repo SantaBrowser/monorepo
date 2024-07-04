@@ -1,14 +1,15 @@
 <template>
     <div header-class="p-0" body-class="d-flex flex-column p-2 pt-0" class="leaderboard-wrapper">
-        <b-card-title class="d-flex px-1 py-1 m-0 align-items-center">
-            <div class="d-flex align-items-center justify-content-center" style="width: 25px">
-                <i class="fa fa-trophy me-2 text-opaque" />
+        <b-card-title class="d-flex py-1 m-0 align-items-center">
+            <div class="d-flex align-items-center justify-content-center" style="">
+                <!-- <i class="fa fa-trophy me-2 text-opaque" /> -->
+                <img :src="`src/assets/trophy.png`" alt="" width="17" height="17" class="me-2" />
             </div>
             <div class="flex-grow-1 pe-2">Leaderboard</div>
-            <b-button class="text-primary refresh-color" variant="link" @click="onClickRefresh">
+            <!-- <b-button class="text-primary refresh-color" variant="link" @click="onClickRefresh">
                 <b-spinner v-if="isLoading" small />
                 <i v-else class="fas fa-sync-alt" />
-            </b-button>
+            </b-button> -->
         </b-card-title>
         <b-list-group class="my-list d-flex flex-column">
             <b-list-group-item
@@ -114,7 +115,7 @@ export default defineComponent({
 .my-list .list-group-item {
     border-radius: 5px;
     border: 0.2px solid rgba(255, 255, 255, 0.1);
-    background: linear-gradient(155deg, rgba(255, 255, 255, 0) -2.13%, rgba(0, 0, 0, 0.15) 136.58%);
+    background: rgba($color: #000000, $alpha: 0.5);
 
     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.05);
 }
