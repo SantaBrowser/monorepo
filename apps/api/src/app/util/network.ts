@@ -1,9 +1,10 @@
 import {
     HARDHAT_RPC,
-    POLYGON_RELAYER,
-    POLYGON_RELAYER_API_KEY,
-    POLYGON_RELAYER_API_SECRET,
-    POLYGON_RPC,
+    SEPOLIA_RPC,
+    // POLYGON_RELAYER,
+    // POLYGON_RELAYER_API_KEY,
+    // POLYGON_RELAYER_API_SECRET,
+    // POLYGON_RPC,
     PRIVATE_KEY,
     RELAYER_SPEED,
     SAFE_TXS_SERVICE,
@@ -52,29 +53,43 @@ if (HARDHAT_RPC) {
     })();
 }
 
-if (POLYGON_RELAYER) {
-    networks[ChainId.Polygon] = (() => {
-        const provider = new DefenderRelayProvider(
-            { apiKey: POLYGON_RELAYER_API_KEY, apiSecret: POLYGON_RELAYER_API_SECRET },
-            { speed: RELAYER_SPEED },
-        );
-        const relayer = new Relayer({ apiKey: POLYGON_RELAYER_API_KEY, apiSecret: POLYGON_RELAYER_API_SECRET });
-        const signer = new DefenderRelaySigner(
-            { apiKey: POLYGON_RELAYER_API_KEY, apiSecret: POLYGON_RELAYER_API_SECRET },
-            new ethers.providers.JsonRpcProvider(POLYGON_RPC),
-            { speed: RELAYER_SPEED },
-        ) as unknown as Signer;
+// if (POLYGON_RELAYER) {
+//     networks[ChainId.Polygon] = (() => {
+//         const provider = new DefenderRelayProvider(
+//             { apiKey: POLYGON_RELAYER_API_KEY, apiSecret: POLYGON_RELAYER_API_SECRET },
+//             { speed: RELAYER_SPEED },
+//         );
+//         const relayer = new Relayer({ apiKey: POLYGON_RELAYER_API_KEY, apiSecret: POLYGON_RELAYER_API_SECRET });
+//         const signer = new DefenderRelaySigner(
+//             { apiKey: POLYGON_RELAYER_API_KEY, apiSecret: POLYGON_RELAYER_API_SECRET },
+//             new ethers.providers.JsonRpcProvider(POLYGON_RPC),
+//             { speed: RELAYER_SPEED },
+//         ) as unknown as Signer;
 
+//         return {
+//             web3: new Web3(provider),
+//             txServiceUrl: SAFE_TXS_SERVICE,
+//             ethAdapter: new EthersAdapter({
+//                 ethers,
+//                 signerOrProvider: signer as any,
+//             }),
+//             signer,
+//             relayer,
+//             defaultAccount: POLYGON_RELAYER,
+//         };
+//     })();
+// }
+
+if (SEPOLIA_RPC) {
+    networks[ChainId.Sepolia] = (() => {
+        const web3 = new Web3(SEPOLIA_RPC);
+        const signer = new Wallet(PRIVATE_KEY, new ethers.providers.JsonRpcProvider(SEPOLIA_RPC));
         return {
-            web3: new Web3(provider),
+            web3,
             txServiceUrl: SAFE_TXS_SERVICE,
-            ethAdapter: new EthersAdapter({
-                ethers,
-                signerOrProvider: signer as any,
-            }),
+            ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer as any }),
             signer,
-            relayer,
-            defaultAccount: POLYGON_RELAYER,
+            defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
         };
     })();
 }

@@ -3,6 +3,7 @@ export enum ChainId {
     Arbitrum = 42161,
     BNBChain = 56,
     Hardhat = 31337,
+    Sepolia = 11155111,
     Polygon = 137,
     PolygonZK = 1101,
     Linea = 59144,

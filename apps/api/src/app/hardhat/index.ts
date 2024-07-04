@@ -72,6 +72,17 @@ export const contractNetworks = {
 
         CompanyMultiSig: '0xaf9d56684466fcFcEA0a2B7fC137AB864d642946',
     },
+    '11155111': {
+        // Safe
+        safeSingletonAddress: '0x69f4D1788e39c87893C980c06EdF4b7f686e2938',
+        simulateTxAccessorAddress: '0x727a77a074D1E6c4530e814F89E618a3298FC044',
+        safeProxyFactoryAddress: '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC',
+        fallbackHandlerAddress: '0x017062a1dE2FE6b99BE3d9d37841FeD19F573804',
+        createCallAddress: '0xB19D6FFc2182150F8Eb585b79D4ABcd7C5640A9d',
+        multiSendAddress: '0x998739BFdAAdde7C933B942a68053933098f9EDa',
+        multiSendCallOnlyAddress: '0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B',
+        signMessageLibAddress: '0x98FFBBF51bb33A056B08ddf711f289936AafF717',
+    },
     '137': {
         // Tokens
         BPT: '0xb204BF10bc3a5435017D3db247f56dA601dFe08A',
