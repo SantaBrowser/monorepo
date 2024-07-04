@@ -11,7 +11,7 @@
             </b-button>
         </b-card-title>
         <b-list-group>
-            <b-list-group-item v-for="(entry, key) of accountStore.leaderboard" :key="key" class="d-flex px-0 pe-3">
+            <b-list-group-item v-for="(entry, key) of formattedLeaderboard" :key="key" class="d-flex px-0 pe-3">
                 <span class="list-item-field-rank">{{ entry.rank }}</span>
                 <span class="list-item-field-address flex-grow-1 ps-2">
                     <b-avatar
@@ -27,7 +27,7 @@
                     {{ entry.questEntryCount }}
                     <i class="fas fa-tasks ms-1" />
                 </span>
-                <strong class="list-item-field-score">{{ entry.score }}</strong>
+                <strong class="list-item-field-score">{{ entry.formattedScore }}</strong>
             </b-list-group-item>
         </b-list-group>
     </b-card>
@@ -38,7 +38,7 @@ import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
 import { useAccountStore } from '../stores/Account';
 import { useQuestStore } from '../stores/Quest';
-
+import { CP_CAMPAIGN } from '../config/secrets';
 export default defineComponent({
     name: 'BaseQuestLeaderboard',
     data() {
@@ -49,9 +49,25 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore),
         ...mapStores(useQuestStore),
+        formattedLeaderboard() {
+            return this.accountStore.leaderboard.map((entry) => {
+                if (this.accountStore.poolId === CP_CAMPAIGN) {
+                    return {
+                        ...entry,
+                        formattedScore: `$${(entry.score / 100).toFixed(2)}`,
+                    };
+                } else {
+                    return {
+                        ...entry,
+                        formattedScore: entry.score,
+                    };
+                }
+            });
+        },
     },
     mounted() {
         this.accountStore.getLeaderboard();
+        console.log('entry', this.accountStore.poolId);
     },
     methods: {
         async onClickRefresh() {

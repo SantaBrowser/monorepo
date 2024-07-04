@@ -42,6 +42,7 @@ import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
 import { useAccountStore } from '../stores/Account';
 import { useQuestStore } from '../stores/Quest';
+import { SANTA_CAMPAIGN } from '../config/secrets';
 
 export default defineComponent({
     name: 'BaseQuestLeaderboardSmall',
@@ -55,12 +56,12 @@ export default defineComponent({
         ...mapStores(useQuestStore),
     },
     mounted() {
-        this.accountStore.getLeaderboard('6683e2c6848afe51b2dbb4f3');
+        this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
     },
     methods: {
         async onClickRefresh() {
             this.isLoading = true;
-            await this.accountStore.getLeaderboard('6683e2c6848afe51b2dbb4f3');
+            await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
             this.isLoading = false;
         },
     },
