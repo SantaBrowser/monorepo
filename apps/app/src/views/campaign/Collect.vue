@@ -52,7 +52,7 @@
                         <span>Contract</span>
                         <b-link
                             class="ms-auto text-accent"
-                            :href="`https://polygonscan.com/address/${qrcodeStore.erc721.address}`"
+                            :href="`https://sepolia.etherscan.io/address/${qrcodeStore.erc721.address}`"
                             target="_blank"
                         >
                             <strong v-b-tooltip :title="qrcodeStore.erc721.description" class="ms-auto">

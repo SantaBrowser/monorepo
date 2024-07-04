@@ -7,9 +7,10 @@ dotenv.config();
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID || '';
 const POLYGON_PRIVATE_KEY = process.env.POLYGON_PRIVATE_KEY || '';
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || '';
+const SEPOLIA_PRIVATE_KEY = process.env.SEPOLIA_PRIVATE_KEY || '';
 
 const config: HardhatUserConfig = {
-    defaultNetwork: 'hardhat',
+    defaultNetwork: 'sepolia',
     networks: {
         hardhat: {
             accounts: [
@@ -30,6 +31,11 @@ const config: HardhatUserConfig = {
                     privateKey: 'eea0247bd059ac4d2528adb36bb0de003d62ba568e3197984b61c41d9a132df0',
                 },
             ],
+        },
+        sepolia: {
+            url: "https://ethereum-sepolia-rpc.publicnode.com",
+            accounts: SEPOLIA_PRIVATE_KEY ? [SEPOLIA_PRIVATE_KEY]: [],
+            chainId: 11155111,
         },
     },
     paths: {

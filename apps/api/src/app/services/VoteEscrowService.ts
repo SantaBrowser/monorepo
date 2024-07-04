@@ -161,7 +161,7 @@ async function claimTokens(wallet: WalletDocument) {
 }
 
 async function claimExternalRewardsJob() {
-    for (const chainId of [ChainId.Hardhat, ChainId.Polygon]) {
+    for (const chainId of [ChainId.Hardhat, ChainId.Sepolia]) {
         try {
             if (NODE_ENV === 'production' && chainId === ChainId.Hardhat) continue;
             const { web3 } = getProvider(chainId);

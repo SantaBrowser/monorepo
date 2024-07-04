@@ -21,6 +21,12 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://arbiscan.io',
         rpc: 'https://arb1.arbitrum.io/rpc',
     },
+    [ChainId.Sepolia]: {
+        chainId: ChainId.Sepolia,
+        name: 'Sepolia',
+        blockExplorer: 'https://sepolia.etherscan.io',
+        rpc: 'https://ethereum-sepolia-rpc.publicnode.com',
+    },
     [ChainId.Polygon]: {
         chainId: ChainId.Polygon,
         name: 'Polygon',
