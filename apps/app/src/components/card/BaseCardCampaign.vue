@@ -60,7 +60,10 @@
                                                     height="24"
                                                 />
                                             </div>
-                                            <div class="quest-btn d-flex align-items-center justify-content-center">
+                                            <div
+                                                v-if="campaign._id === SANTA_CAMPAIGN"
+                                                class="quest-btn d-flex align-items-center justify-content-center"
+                                            >
                                                 <h6>Browse Quests</h6>
                                             </div>
                                         </div>
