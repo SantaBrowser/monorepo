@@ -1,7 +1,7 @@
 <template>
     <b-container>
         <b-row>
-            <b-col lg="7" xl="6" offset-xl="1">
+            <b-col lg="7" xl="6" offset-xl="1" style="width: 90%">
                 <div v-if="questStore.isLoading" class="d-flex justify-content-center py-5">
                     <b-spinner variant="primary" small />
                 </div>
@@ -40,9 +40,9 @@
                     </b-tab>
                 </b-tabs>
             </b-col>
-            <b-col lg="5" xl="4">
+            <!-- <b-col lg="5" xl="4">
                 <BaseQuestLeaderboard class="d-none d-lg-block mb-2 mx-lg-0 mb-lg-3 my-leader" />
-            </b-col>
+            </b-col> -->
         </b-row>
     </b-container>
 </template>
@@ -138,6 +138,7 @@ export default defineComponent({
 
 .my-nav .nav-tabs {
     --bs-nav-tabs-border-color: #232323 !important;
+    width: 50%;
 }
 
 .tab-content {
@@ -182,5 +183,11 @@ export default defineComponent({
 .my-leader .list-group-item {
     background-color: #1c1b1b;
     border-color: #262424;
+}
+
+.my-nav .tab-pane {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
 }
 </style>

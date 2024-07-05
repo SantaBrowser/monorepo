@@ -32,7 +32,7 @@
                     {{ entry.questEntryCount }}
                     <i class="fas fa-tasks ms-1" />
                 </span>
-                <strong class="list-item-field-score">{{ entry.score }}</strong>
+                <strong class="list-item-field-score">{{ formatScore(entry.score) }}</strong>
             </b-list-group-item>
         </b-list-group>
     </div>
@@ -43,7 +43,7 @@ import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
 import { useAccountStore } from '../stores/Account';
 import { useQuestStore } from '../stores/Quest';
-import { SANTA_CAMPAIGN } from '../config/secrets';
+import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '../config/secrets';
 
 export default defineComponent({
     name: 'BaseQuestLeaderboardSmall',
@@ -56,14 +56,36 @@ export default defineComponent({
         ...mapStores(useAccountStore),
         ...mapStores(useQuestStore),
     },
+    watch: {
+        $route(to, from) {
+            this.updateLeaderboard();
+        },
+    },
     mounted() {
-        this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
+        this.updateLeaderboard();
     },
     methods: {
+        async updateLeaderboard() {
+            const url = window.location.href;
+            const poolIdMatch = url.match(/\/c\/([a-f0-9]{24})\//);
+
+            if (poolIdMatch) {
+                await this.accountStore.getLeaderboard(poolIdMatch[1]);
+            } else {
+                await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
+            }
+        },
         async onClickRefresh() {
             this.isLoading = true;
             await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
             this.isLoading = false;
+        },
+        formatScore(score: number) {
+            if (this.accountStore.poolId === CP_CAMPAIGN) {
+                const dollars = score / 100;
+                return `$${dollars.toFixed(dollars % 1 === 0 ? 0 : 2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+            }
+            return `${score}`;
         },
     },
 });
