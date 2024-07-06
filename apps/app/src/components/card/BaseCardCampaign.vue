@@ -41,9 +41,13 @@
                                     <div class="d-flex flex-column justify-content-between">
                                         <div class="text-white text-decoration-none lead">
                                             <h5 class="camp-title">{{ campaign.title }}</h5>
-                                            <h2 class="camp-title-grad">Quests</h2>
-                                            <h8 class="balance">Total earnings:</h8>
-                                            <h6 class="score">{{ formattedScore }}</h6>
+                                            <h2 class="camp-title-grad">
+                                                {{ campaign._id === CP_CAMPAIGN ? 'Rewards' : 'Quests' }}
+                                            </h2>
+                                            <div v-if="score !== 0">
+                                                <h8 class="balance">Total earnings:</h8>
+                                                <h6 class="score">{{ formattedScore }}</h6>
+                                            </div>
                                         </div>
                                         <div class="d-flex flex-column">
                                             <!-- <h5 class="balance">Balance</h5> -->
@@ -91,7 +95,7 @@
                 </b-col>
                 <b-col md="10" class="d-flex flex-column">
                     <div class="d-flex w-100 align-items-center">
-                        <RewardsSmall :message="campaign._id"></RewardsSmall>
+                        <RewardsSmall :message="campaign._id" :score="score"></RewardsSmall>
                         <!--                                <b-button-->
                         <!--                                    size="sm"-->
                         <!--                                    variant="primary"-->
@@ -351,5 +355,11 @@ export default defineComponent({
     font-size: 14px;
     font-weight: 400;
     line-height: 0px;
+}
+.notif {
+    position: absolute;
+    top: 0;
+    width: 30%;
+    right: 0;
 }
 </style>

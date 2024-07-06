@@ -3,8 +3,8 @@
         <div class="sidebar-panel h-100">
             <BaseCardAccount />
             <BaseCardRewards v-if="isShown" />
-            <BaseQuestLeaderboardSmall v-if="isShown" />
-            <BaseCardDiscord v-if="isShown" class="mt-auto" />
+            <BaseQuestLeaderboardSmall v-if="isShown" class="mt-auto" />
+            <BaseCardDiscord v-if="isShown" />
         </div>
     </aside>
 </template>
@@ -43,10 +43,10 @@ export default defineComponent({
     .sidebar-panel {
         display: flex;
         flex-direction: column;
-        width: 400px;
-        max-width: 400px;
+        width: 350px;
+        max-width: 350px;
         border-radius: 8px;
-        background-color: transparent;
+        //background-color: red;
         box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
         backdrop-filter: blur(5px);
         border-left: 3px solid #232323;

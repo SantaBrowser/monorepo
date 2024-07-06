@@ -1,6 +1,6 @@
 <template>
     <!-- <BaseCardHeaderHome /> -->
-    <b-container>
+    <b-container class="containers">
         <!--        <b-row class="mt-5 mb-3">-->
         <!--            <b-col xs="12" md="6">-->
         <!--                <h2>Earnings Dashboard</h2>-->
@@ -46,7 +46,7 @@
         </b-row>
         <!--        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />-->
     </b-container>
-    <b-container class="mb-5">
+    <b-container class="mb-5 containers">
         <div class="mt-5 mb-3">
             <b-col xs="12" md="6">
                 <h2 class="trending-title">Trending</h2>
@@ -319,5 +319,10 @@ export default defineComponent({
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.containers {
+    max-width: 98% !important;
+    padding: 10px 28px;
 }
 </style>
