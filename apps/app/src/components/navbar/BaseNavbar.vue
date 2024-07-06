@@ -6,7 +6,7 @@
         toggleable="lg"
         type="dark"
         :container="true"
-        class="navbar-menu px-3 py-1"
+        class="navbar-menu px-3 py-1 containers"
     >
         <b-navbar-brand href="#" class="dashboard-heading">
             <!-- <b-link to="/"> Rewards Dashboard </b-link> -->
@@ -183,5 +183,8 @@ export default defineComponent({
 }
 .navbar-menu .router-link-active.active {
     background: rgba(0, 0, 0, 0.4);
+}
+.containers .container {
+    max-width: 98% !important;
 }
 </style>

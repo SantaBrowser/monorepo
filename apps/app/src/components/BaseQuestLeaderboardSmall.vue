@@ -128,7 +128,8 @@ export default defineComponent({
 }
 .leaderboard-wrapper {
     background: transparent;
-    padding: 0 16px !important;
+    padding: 16px !important;
+    background: brown;
 }
 .my-list {
     gap: 0.5rem;
