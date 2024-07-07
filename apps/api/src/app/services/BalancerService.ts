@@ -125,26 +125,26 @@ class BalancerService {
     }
 
     async updatePricesJob() {
-        const pool = await this.fetchPool();
-        if (!pool) return;
+        // const pool = await this.fetchPool();
+        // if (!pool) return;
 
-        const [usdc, thx] = pool.tokens as unknown as {
-            symbol: string;
-            balance: number;
-            token: { latestUSDPrice: number };
-        }[];
-        const totalShares = pool.totalShares as unknown as number;
-        const thxValue = thx.balance * thx.token.latestUSDPrice;
-        const usdcValue = usdc.balance * usdc.token.latestUSDPrice;
-        const btpPrice = (thxValue + usdcValue) / totalShares;
-        const balPrice = await this.fetchPrice('BAL', 'USDC');
+        // const [usdc, thx] = pool.tokens as unknown as {
+        //     symbol: string;
+        //     balance: number;
+        //     token: { latestUSDPrice: number };
+        // }[];
+        // const totalShares = pool.totalShares as unknown as number;
+        // const thxValue = thx.balance * thx.token.latestUSDPrice;
+        // const usdcValue = usdc.balance * usdc.token.latestUSDPrice;
+        // const btpPrice = (thxValue + usdcValue) / totalShares;
+        // const balPrice = await this.fetchPrice('BAL', 'USDC');
 
-        this.pricing = {
-            'BAL': Number(balPrice),
-            '20USDC-80THX': btpPrice,
-            'USDC': Number(usdc.token.latestUSDPrice),
-            'THX': Number(thx.token.latestUSDPrice),
-        };
+        // this.pricing = {
+        //     'BAL': Number(balPrice),
+        //     '20USDC-80THX': btpPrice,
+        //     'USDC': Number(usdc.token.latestUSDPrice),
+        //     'THX': Number(thx.token.latestUSDPrice),
+        // };
     }
 
     async updateMetricsJob() {

@@ -95,7 +95,7 @@ async function createJob(job: Job) {
 
     // If campaign safe we provide a nonce based on the timestamp in the MongoID the pool (poolId value)
     const nonce = wallet.poolId && String(convertObjectIdToNumber(wallet.poolId));
-    const config = { safeAccountConfig, options: { gasLimit: '3000000' } };
+    const config = { safeAccountConfig, options: { gasPrice: '50000000000' } };
     if (nonce) config['saltNonce'] = nonce;
 
     await safeFactory.deploySafe(config);
@@ -215,8 +215,10 @@ async function executeTransaction(wallet: WalletDocument, safeTxHash: string) {
         contractNetworks,
     });
     const safeTransaction = await apiKit.getTransaction(safeTxHash);
-    const executeTxResponse = await safe.executeTransaction(safeTransaction as any);
+    const options = { gasPrice: '50000000000' };
+    const executeTxResponse = await safe.executeTransaction(safeTransaction as any, options );
     const receipt = await executeTxResponse.transactionResponse?.wait();
+    logger.debug("Executed Transaction");
     const tx = await Transaction.findOne({ safeTxHash });
 
     await TransactionService.executeCallback(tx, receipt as any);
