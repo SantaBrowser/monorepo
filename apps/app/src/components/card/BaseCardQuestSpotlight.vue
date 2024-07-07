@@ -1,12 +1,6 @@
 <template>
-    <div v-if="quest" class="w-100 my-card d-flex flex-column justify-content-between align-items-center">
-        <!-- <template #header> -->
-        <div
-            :style="{
-                width: '100%',
-                padding: '0.7rem',
-            }"
-        >
+    <b-card v-if="quest" header-class="p-0" body-class="justify-content-start" class="w-100">
+        <template #header>
             <div
                 class="d-flex bg-dark rounded"
                 :class="{
@@ -14,24 +8,23 @@
                     'justify-content-center align-items-center': !backgroundImage,
                 }"
                 :style="{
-                    width: '100%',
-                    height: '165px',
+                    height: '180px',
                     backgroundImage: `url(${backgroundImage})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center center',
                 }"
             >
-                <BImg
+                <b-img
                     lazy
                     :src="logoImage"
                     class="m-3 rounded"
-                    style="width: 100%; height: auto; max-width: 150px; max-height: 50px"
+                    style="width: auto; height: auto; max-width: 150px; max-height: 50px"
                 />
             </div>
-            <!-- </template> -->
-            <div class="d-flex justify-content-center">
-                <strong class="quest-title">{{ quest.title }} </strong>
-                <!-- <div class="flex-shrink-0">
+        </template>
+        <div class="d-flex justify-content-between">
+            <strong class="text-success">{{ quest.title }} </strong>
+            <div class="flex-shrink-0">
                 <b-badge
                     v-b-tooltip
                     variant="primary"
@@ -48,36 +41,22 @@
                         <i class="fas fa-external-link-alt text-opaque me-0" />
                     </b-link>
                 </b-badge>
-            </div> -->
             </div>
         </div>
-        <!-- <p class="pt-2 mb-0 d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+        <p class="pt-2 mb-0 d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
             {{ quest.description }}
-        </p>  -->
-        <div
-            :style="{
-                width: '100%',
-                padding: '0 0.7rem',
-                paddingBottom: '0.7rem',
-            }"
-            class="d-flex justify-content-center align-items-center"
-        >
-            <b-button
-                class="w-100 my-earn-btn d-flex align-items-center justify-content-center"
-                :to="`/c/${quest.poolId}`"
-                variant="primary"
-            >
-                <p>Earn</p>
-                <div class="earn-pipe"></div>
-                <strong>{{ formattedAmount }} </strong> <span v-if="quest.poolId !== CP_CAMPAIGN">points!</span>
+        </p>
+        <template #footer>
+            <b-button class="w-100" :to="`/c/${quest.poolId}`" variant="primary">
+                Earn <strong>{{ quest.amount }}</strong> points!
             </b-button>
             <BaseModalExternalURL
                 :show="isModalCampaignDomainShown"
                 :url="quest ? quest.domain : ''"
                 @hidden="isModalCampaignDomainShown = false"
             />
-        </div>
-    </div>
+        </template>
+    </b-card>
 </template>
 
 <script lang="ts">
@@ -93,14 +72,13 @@ export default defineComponent({
         },
     },
     data() {
-        return { format, isModalCampaignDomainShown: false, CP_CAMPAIGN };
+        return { format, isModalCampaignDomainShown: false };
     },
     computed: {
         backgroundImage() {
             return (
                 (this.quest && this.quest.image) ||
-                (this.quest && this.quest.brand && this.quest.brand.backgroundImgUrl) ||
-                'src/assets/santa.png'
+                (this.quest && this.quest.brand && this.quest.brand.backgroundImgUrl)
             );
         },
         logoImage() {

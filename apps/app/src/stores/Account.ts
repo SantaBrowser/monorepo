@@ -68,6 +68,7 @@ export const useAccountStore = defineStore('account', {
         },
         reset() {
             this.poolId = '';
+            this.participants = [];
             this.api.setCampaignId('');
             this.setTheme({
                 title: 'THX Network',

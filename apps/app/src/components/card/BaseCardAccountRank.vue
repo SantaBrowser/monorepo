@@ -1,41 +1,34 @@
 <template>
-    <b-container v-if="questStore.quests.length" class="order-lg-1" :class="{ 'd-none d-lg-block': isRouteRanking }">
-        <b-row>
-            <b-col xl="10" offset-xl="1">
-                <b-card
-                    class="bg-splash mx-auto"
-                    body-class="d-flex justify-content-center align-items-center py-5"
-                    :style="{
-                        minHeight: `${height}px`,
-                        backgroundImage:
-                            accountStore.config.backgroundUrl && `url('${accountStore.config.backgroundUrl}')`,
-                        backgroundColor: '#000 !important',
-                    }"
-                >
-                    <div
-                        v-if="accountStore.isAuthenticated && participant"
-                        class="d-flex justify-content-center align-items-center p-3"
-                        style="border-radius: 5px; background: rgba(238, 238, 238, 0.1)"
-                    >
-                        <b-avatar size="80" :src="accountStore.account?.profileImg" class="gradient-border-xl" />
-                        <div class="px-3" style="min-width: 200px">
-                            <h3 class="text-white mb-0">
-                                {{ accountStore.account?.username }}
-                            </h3>
-                            <div class="text-white text-opaque mb-1">Rank: #{{ participant.rank }}</div>
-                            <b-progress style="height: 13px" :max="balance + Number(questStore.availablePoints)">
-                                <b-progress-bar
-                                    variant="success"
-                                    :value="balance"
-                                    :label="`${balance}/${balance + Number(questStore.availablePoints)}`"
-                                />
-                            </b-progress>
-                        </div>
-                    </div>
-                </b-card>
-            </b-col>
-        </b-row>
-    </b-container>
+    <div class="p-2 cursor-pointer" @click="accountStore.isModalAccountShown = true">
+        <div class="d-flex align-items-center">
+            <h3 class="text-white m-0">
+                {{ accountStore.account?.username }}
+            </h3>
+            <div
+                v-if="accountStore.config.slug && participant"
+                v-b-tooltip
+                class="rounded bg-primary py-1 p-2 ms-auto"
+                title="Your all time rank in this campaign."
+            >
+                <i class="fas fa-hashtag small text-opaque" />
+                <strong class="ms-1">
+                    {{ participant.rank }}
+                </strong>
+            </div>
+        </div>
+        <b-progress
+            v-if="accountStore.config.slug && participant"
+            class="w-100 mt-2"
+            style="height: 13px"
+            :max="balance + Number(questStore.availablePoints)"
+        >
+            <b-progress-bar
+                variant="success"
+                :value="balance"
+                :label="`${balance}/${balance + Number(questStore.availablePoints)}`"
+            />
+        </b-progress>
+    </div>
 </template>
 
 <script lang="ts">

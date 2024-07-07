@@ -206,6 +206,15 @@ import { RewardVariant } from '../../types/enums/rewards';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import StarCoin from '../../assets/star-coin.png';
 import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
+export const iconMap = {
+    [RewardVariant.Coin]: 'fas fa-coins',
+    [RewardVariant.NFT]: 'fas fa-palette',
+    [RewardVariant.Coupon]: 'fas fa-tags',
+    [RewardVariant.Custom]: 'fas fa-gift',
+    [RewardVariant.DiscordRole]: 'fab fa-discord',
+    [RewardVariant.Galachain]: 'fas fa-box',
+} as { [variant: string]: string };
+
 export default defineComponent({
     name: 'BaseCardReward',
     props: {
