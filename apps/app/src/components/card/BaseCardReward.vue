@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body class="x-lg-0 my-lg-3 h-200 card-wrapper" :class="{ 'card-promoted': reward.isPromoted }">
+    <b-card no-body class="x-lg-0 card-wrapper" :class="{ 'card-promoted': reward.isPromoted }">
         <header v-if="image" class="card-img" :style="{ height: '240px' }">
             <!-- <b-badge
                 v-if="reward.expiry && reward.expiry.date"
@@ -15,7 +15,11 @@
             </b-badge> -->
             <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
         </header>
-        <b-card-body class="d-flex flex-column justify-content-between" :style="{ padding: '10px' }">
+        <b-card-body
+            v-if="reward.poolId === SANTA_CAMPAIGN"
+            class="d-flex flex-column justify-content-between h-200"
+            :style="{ padding: '10px' }"
+        >
             <b-card-title class="d-flex align-items-center c-quest-title">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
@@ -72,11 +76,19 @@
                     >
                         {{ btnLabel }}
                         <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
-                            <span class="reward-text">Get Reward</span>
+                            <span class="reward-text">
+                                {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
+                            </span>
                             <div class="pipe"></div>
-                            <span class="point me-1">{{ reward.pointPrice }}</span>
-                            <img :src="StarCoin" alt="star" height="13" class="me-1" />
-                            <span class="coins-text">Coins</span>
+                            <span class="point me-1">{{ formattedPrice }}</span>
+                            <img
+                                v-if="reward.poolId === SANTA_CAMPAIGN"
+                                :src="StarCoin"
+                                alt="star"
+                                height="13"
+                                class="me-1"
+                            />
+                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Coins</span>
                         </div>
                         <b-progress
                             v-if="reward.limitProgress.max"
@@ -101,6 +113,86 @@
                 <!--            </div>-->
             </div>
         </b-card-body>
+
+        <b-card-body
+            v-if="reward.poolId === CP_CAMPAIGN"
+            class="d-flex flex-column justify-content-between"
+            :style="{ padding: '0', height: '280px', overflow: 'hidden' }"
+        >
+            <div class="d-flex justify-content-center">
+                <img
+                    v-if="!image"
+                    :src="randomPlaywallPlaceholderImage"
+                    class=""
+                    :style="{ width: '100%', height: '167px' }"
+                />
+                <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
+            </div>
+            <b-card-title class="d-flex align-items-center c-quest-title">
+                <!-- <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" /> -->
+                <slot name="title" />
+            </b-card-title>
+            <div>
+                <button
+                    v-if="!accountStore.isAuthenticated"
+                    class="w-100 my-btn"
+                    variant="primary"
+                    @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
+                >
+                    <template v-if="reward.pointPrice">
+                        Pay <strong>{{ reward.pointPrice }} points</strong>
+                    </template>
+                    <strong v-else> Free! </strong>
+                </button>
+                <span
+                    v-else
+                    id="disabled-wrapper"
+                    class="d-block"
+                    tabindex="0"
+                    :style="{ margin: '0px 26px 15px 26px' }"
+                >
+                    <BaseButtonQuestLocked
+                        v-if="reward.isLocked"
+                        :id="`modalQuestLock${reward._id}`"
+                        :locks="reward.locks"
+                    />
+                    <button
+                        v-else
+                        v-b-modal="`modalRewardPayment${reward._id}`"
+                        variant="primary"
+                        block
+                        class="w-100 position-relative mb-0 my-btn"
+                        :disabled="isDisabled"
+                    >
+                        {{ btnLabel }}
+                        <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
+                            <span class="reward-text">
+                                {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
+                            </span>
+                            <div class="pipe"></div>
+                            <span class="point me-1">{{ formattedPrice }}</span>
+                            <img
+                                v-if="reward.poolId === SANTA_CAMPAIGN"
+                                :src="StarCoin"
+                                alt="star"
+                                height="13"
+                                class="me-1"
+                            />
+                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Coins</span>
+                        </div>
+                        <b-progress
+                            v-if="reward.limitProgress.max"
+                            v-b-tooltip.bottom
+                            :variant="limitVariant"
+                            :title="`You can purchase this reward ${reward.limitProgress.max} times.`"
+                            :value="reward.limitProgress.count"
+                            :max="reward.limitProgress.max"
+                            style="height: 6px"
+                        />
+                    </button>
+                </span>
+            </div>
+        </b-card-body>
     </b-card>
     <BaseModalRewardPayment :id="`modalRewardPayment${reward._id}`" :reward="reward" />
 </template>
@@ -113,6 +205,7 @@ import { mapStores } from 'pinia';
 import { RewardVariant } from '../../types/enums/rewards';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import StarCoin from '../../assets/star-coin.png';
+import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 export default defineComponent({
     name: 'BaseCardReward',
     props: {
@@ -134,6 +227,8 @@ export default defineComponent({
                 [RewardVariant.Galachain]: 'fas fa-box',
             } as { [variant: string]: string },
             StarCoin,
+            SANTA_CAMPAIGN,
+            CP_CAMPAIGN,
         };
     },
     computed: {
@@ -142,6 +237,11 @@ export default defineComponent({
             const images = ['src/assets/logo-coin-1.png', 'src/assets/logo-coin-2.png', 'src/assets/logo-coin-3.png'];
             return images[Math.floor(Math.random() * images.length)];
         },
+        randomPlaywallPlaceholderImage(): string {
+            const images = ['src/assets/playwall_1.png', 'src/assets/playwall_1.png', 'src/assets/playwall_3.png'];
+            return images[Math.floor(Math.random() * images.length)];
+        },
+
         limitSupplyVariant() {
             if (this.limitSupplyPerct >= 0.9) return 'text-danger';
             if (this.limitSupplyPerct > 0.75 && this.limitSupplyPerct < 0.9) return 'text-warning';
@@ -187,6 +287,14 @@ export default defineComponent({
                       addSuffix: false,
                   })
                 : 'expired';
+        },
+        formattedPrice() {
+            if (this.reward.poolId === CP_CAMPAIGN) {
+                const price = this.reward.pointPrice / 100;
+                return Number.isInteger(price) ? `${price} $` : `${price.toFixed(2)} $`;
+            } else {
+                return this.reward.pointPrice;
+            }
         },
     },
 });
@@ -319,6 +427,7 @@ export default defineComponent({
 }
 
 .c-quest-title div {
+    margin-left: 10px;
     background: linear-gradient(90deg, #f5f5f5 0%, #8f8f8f 100%);
     background-clip: text;
     -webkit-background-clip: text;

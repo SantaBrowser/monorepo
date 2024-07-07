@@ -1,6 +1,6 @@
 <template>
     <!-- <BaseCardHeaderHome /> -->
-    <b-container>
+    <b-container class="containers">
         <!--        <b-row class="mt-5 mb-3">-->
         <!--            <b-col xs="12" md="6">-->
         <!--                <h2>Earnings Dashboard</h2>-->
@@ -22,10 +22,10 @@
                 <div v-if="isLoading" class="justify-content-center d-flex">
                     <b-spinner small variant="primary" />
                 </div>
-                <p v-if="!isLoading && !campaigns.results.length" class="text-opaque">
+                <p v-if="!isLoading && !filteredCampaigns.length" class="text-opaque">
                     Could not find a campaign with that name...
                 </p>
-                <div v-for="(campaign, index) in campaigns.results" :key="campaign.id" class="mt-3">
+                <div v-for="(campaign, index) in filteredCampaigns" :key="campaign.id" class="mt-3">
                     <BaseCardCampaign :campaign="campaign" />
                     <!-- Show a custom div after the first BaseCardCampaign -->
                     <div v-if="index === 0" class="d-flex gap-2">
@@ -46,7 +46,7 @@
         </b-row>
         <!--        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />-->
     </b-container>
-    <b-container class="mb-5">
+    <b-container class="mb-5 containers">
         <div class="mt-5 mb-3">
             <b-col xs="12" md="6">
                 <h2 class="trending-title">Trending</h2>
@@ -90,7 +90,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { API_URL, DASHBOARD_URL, PUBLIC_URL } from '../../config/secrets';
+import { API_URL, CP_CAMPAIGN, DASHBOARD_URL, PUBLIC_URL, SANTA_CAMPAIGN } from '../../config/secrets';
 import { useAccountStore } from '../../stores/Account';
 import { useAuthStore } from '../../stores/Auth';
 import { mapStores } from 'pinia';
@@ -123,6 +123,7 @@ export default defineComponent({
             screenWidth: window.innerWidth,
             campaigns: { results: [], total: 0 },
             isModalCampaignDomainShown: false,
+            filteredCampaigns: [],
         };
     },
     computed: {
@@ -165,9 +166,18 @@ export default defineComponent({
             const res = await fetch(url);
             const campaigns = await res.json();
 
-            console.log('Campaigns: ', campaigns);
-            this.campaigns = campaigns;
-            this.campaigns.results = this.campaigns.results.map((campaign: any) => ({
+            // this.campaigns = campaigns;
+            // this.campaigns.results = this.campaigns.results.map((campaign: any) => ({
+            //     ...campaign,
+            //     title: html.decode(campaign.title),
+            //     description: html.decode(campaign.description),
+            // }));
+            this.filteredCampaigns = campaigns.results.filter((campaign: any) =>
+                [SANTA_CAMPAIGN, CP_CAMPAIGN].includes(campaign._id),
+            );
+
+            // Decode HTML entities
+            this.filteredCampaigns = this.filteredCampaigns.map((campaign: any) => ({
                 ...campaign,
                 title: html.decode(campaign.title),
                 description: html.decode(campaign.description),
@@ -309,5 +319,10 @@ export default defineComponent({
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.containers {
+    max-width: 98% !important;
+    padding: 10px 28px;
 }
 </style>

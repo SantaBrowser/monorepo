@@ -69,7 +69,7 @@
             >
                 <p>Earn</p>
                 <div class="earn-pipe"></div>
-                <strong>{{ quest.amount }} </strong> <span>points!</span>
+                <strong>{{ formattedAmount }} </strong> <span v-if="quest.poolId !== CP_CAMPAIGN">points!</span>
             </b-button>
             <BaseModalExternalURL
                 :show="isModalCampaignDomainShown"
@@ -83,7 +83,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { format } from 'date-fns';
-
+import { CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 export default defineComponent({
     name: 'BaseCardQuestSpotlight',
     props: {
@@ -93,7 +93,7 @@ export default defineComponent({
         },
     },
     data() {
-        return { format, isModalCampaignDomainShown: false };
+        return { format, isModalCampaignDomainShown: false, CP_CAMPAIGN };
     },
     computed: {
         backgroundImage() {
@@ -106,6 +106,13 @@ export default defineComponent({
         logoImage() {
             return this.quest && this.quest.brand && this.quest.brand.logoImgUrl;
         },
+        formattedAmount() {
+            if (this.quest.poolId === CP_CAMPAIGN) {
+                const amount = this.quest.amount / 100;
+                return amount % 1 === 0 ? `$${amount.toFixed(0)}` : `$${amount.toFixed(2)}`;
+            }
+            return `${this.quest.amount}`;
+        },
     },
 });
 </script>
@@ -113,7 +120,7 @@ export default defineComponent({
 .my-card {
     border-radius: 8px;
     border: 1.5px solid rgba(255, 255, 255, 0.15);
-    background: linear-gradient(155deg, rgba(255, 255, 255, 0) -2.13%, rgba(0, 0, 0, 0.15) 136.58%);
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0) -2.13%, rgba(0, 0, 0, 0.15) 136.58%) !important;
     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
     backdrop-filter: blur(12.5px);
     width: 205px !important;
@@ -153,6 +160,7 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, #b14646 0%, #722121 100%);
+    box-shadow: 0px 7px 12px 0px rgba(173, 40, 40, 0.14);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 0;
