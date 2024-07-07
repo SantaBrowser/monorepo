@@ -23,7 +23,7 @@
                     Claim
                     <strong>
                         {{ `${pendingCount} x` }}
-                        {{ quest.amount }} points
+                        {{ formattedAmount }}
                     </strong>
                 </template>
                 <template v-else>Complete Quest</template>
@@ -38,6 +38,7 @@ import { defineComponent, PropType } from 'vue';
 import { useAccountStore } from '../../stores/Account';
 import { useQuestStore } from '../../stores/Quest';
 import { useAuthStore } from '../../stores/Auth';
+import { CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseCardQuestCustom',
@@ -59,6 +60,13 @@ export default defineComponent({
             const pending = this.quest.events.length - this.quest.entries.length;
             // In case it's less than 0 return 0
             return pending < 0 ? 0 : pending;
+        },
+        formattedAmount() {
+            if (this.quest.poolId === CP_CAMPAIGN) {
+                const amount = this.quest.amount / 100;
+                return amount % 1 === 0 ? `$${amount.toFixed(0)}` : `$${amount.toFixed(2)}`;
+            }
+            return `${this.quest.amount} points`;
         },
     },
     methods: {

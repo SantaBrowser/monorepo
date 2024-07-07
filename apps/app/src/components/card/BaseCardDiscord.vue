@@ -1,5 +1,5 @@
 <template>
-    <b-card class="rounded-0 target-body" header-class="py-3 d-flex align-items-center disc-black">
+    <b-card class="rounded-0 target-body disc-black" header-class="py-3 d-flex align-items-center">
         <template #header>
             <i class="fab fa-discord text-white me-3" style="font-size: 1.8rem" />
             <div>
@@ -14,17 +14,17 @@
             </b-button>
         </template>
 
-        <b-avatar
-            v-for="member of membersTruncated"
-            v-b-tooltip
-            :title="member.username"
-            variant="primary"
-            class="m-1"
-            :src="member.avatar_url"
-            badge
-            size="2rem"
-            :badge-variant="member.isOnline ? 'success' : 'warning'"
-        />
+        <!--        <b-avatar-->
+        <!--            v-for="member of membersTruncated"-->
+        <!--            v-b-tooltip-->
+        <!--            :title="member.username"-->
+        <!--            variant="primary"-->
+        <!--            class="m-1"-->
+        <!--            :src="member.avatar_url"-->
+        <!--            badge-->
+        <!--            size="2rem"-->
+        <!--            :badge-variant="member.isOnline ? 'success' : 'warning'"-->
+        <!--        />-->
         <!--        <b-link :href="inviteURL">-->
         <!--            <b-avatar size="2rem" variant="primary" class="m-1">-->
         <!--                <i class="fas fa-ellipsis-h mt-1 text-opaque" />-->
@@ -87,6 +87,9 @@ export default defineComponent({
     white-space: nowrap;
     overflow: hidden;
 }
+.disc-black .card-body {
+    display: none;
+}
 
 .truncate-text-ellipsis {
     display: inline-block;
@@ -95,17 +98,18 @@ export default defineComponent({
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.disc-black {
+.disc-black .card-header {
     background-color: #000 !important;
-    margin: 0 1rem;
+    width: 100%;
+    margin: 0;
     border-radius: 0.5rem !important;
 }
 
 .target-body {
-    background-color: #111213 !important;
+    background-color: transparent !important;
 }
 
 .target-body .card-body {
-    background-color: #111213 !important;
+    background-color: transparent !important;
 }
 </style>

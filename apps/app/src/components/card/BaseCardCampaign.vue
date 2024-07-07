@@ -2,7 +2,7 @@
     <b-card
         no-body
         class="cursor-pointer gradient-shadow card-campaign"
-        :style="{ opacity: isLoading ? 0.5 : 1 }"
+        :style="{ opacity: isLoading ? 0.5 : 1, backgroundImage: `url(${backgroundImage})` }"
         @click="goTo(`/c/${campaign.slug}`)"
     >
         <b-spinner
@@ -41,9 +41,13 @@
                                     <div class="d-flex flex-column justify-content-between">
                                         <div class="text-white text-decoration-none lead">
                                             <h5 class="camp-title">{{ campaign.title }}</h5>
-                                            <h2 class="camp-title-grad">Quests</h2>
-                                            <h8 class="balance">Total earnings:</h8>
-                                            <h6 class="score">{{ score }}</h6>
+                                            <h2 class="camp-title-grad">
+                                                {{ campaign._id === CP_CAMPAIGN ? 'Rewards' : 'Quests' }}
+                                            </h2>
+                                            <div v-if="score !== 0">
+                                                <h8 class="balance">Total earnings:</h8>
+                                                <h6 class="score">{{ formattedScore }}</h6>
+                                            </div>
                                         </div>
                                         <div class="d-flex flex-column">
                                             <!-- <h5 class="balance">Balance</h5> -->
@@ -51,11 +55,19 @@
                                                 class="d-flex align-items-center text-white text-decoration-none lead coins"
                                             >
                                                 <h3>
-                                                    {{ balance }}
+                                                    {{ formattedBalance }}
                                                 </h3>
-                                                <img :src="StarCoin" alt="star coin" height="24" />
+                                                <img
+                                                    v-if="campaign._id === SANTA_CAMPAIGN"
+                                                    :src="StarCoin"
+                                                    alt="star coin"
+                                                    height="24"
+                                                />
                                             </div>
-                                            <div class="quest-btn d-flex align-items-center justify-content-center">
+                                            <div
+                                                v-if="campaign._id === SANTA_CAMPAIGN"
+                                                class="quest-btn d-flex align-items-center justify-content-center"
+                                            >
                                                 <h6>Browse Quests</h6>
                                             </div>
                                         </div>
@@ -81,9 +93,9 @@
                         </b-col>
                     </b-row>
                 </b-col>
-                <b-col md="10" class="d-flex flex-column justify-content-center">
+                <b-col md="10" class="d-flex flex-column">
                     <div class="d-flex w-100 align-items-center">
-                        <RewardsSmall :message="campaign._id"></RewardsSmall>
+                        <RewardsSmall :message="campaign._id" :score="score"></RewardsSmall>
                         <!--                                <b-button-->
                         <!--                                    size="sm"-->
                         <!--                                    variant="primary"-->
@@ -141,6 +153,7 @@ import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { useRewardStore } from '../../stores/Reward';
 import RewardsSmall from '@thxnetwork/app/views/campaign/RewardSmall.vue';
 import StarCoin from '../../assets/star-coin.png';
+import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 type TCampaignProps = {
     _id: string;
     title: string;
@@ -171,6 +184,8 @@ export default defineComponent({
             isModalExternalURLShown: false,
             rewardList: {},
             StarCoin,
+            SANTA_CAMPAIGN,
+            CP_CAMPAIGN,
         };
     },
     computed: {
@@ -188,8 +203,28 @@ export default defineComponent({
             if (!this.participant) return 0;
             return Number(this.participant.score);
         },
+        formattedScore() {
+            if (this.campaign._id === CP_CAMPAIGN) {
+                const score = this.score / 100;
+                return Number.isInteger(score) ? `$${score}` : `$${score.toFixed(2)}`;
+            }
+            return this.score;
+        },
+        formattedBalance() {
+            if (this.campaign._id === CP_CAMPAIGN) {
+                const balance = this.balance / 100;
+                return Number.isInteger(balance) ? `$${balance}` : `$${balance.toFixed(2)}`;
+            }
+            return this.balance;
+        },
         backgroundImage() {
-            return this.campaign.backgroundImgUrl;
+            if (this.campaign._id === SANTA_CAMPAIGN) {
+                return 'src/assets/bg_campaign_1.png';
+            } else if (this.campaign._id === CP_CAMPAIGN) {
+                return 'src/assets/bg_campaign_2.png';
+            } else {
+                return 'src/assets/bg_campaign_1.png'; // Default background image if no match
+            }
         },
         logoImage() {
             return this.campaign.logoImgUrl;
@@ -268,7 +303,7 @@ export default defineComponent({
 }
 .card-campaign {
     position: relative;
-    background: url('src/assets/bg-campaign.png');
+    //background: url('src/assets/bg-campaign.png');
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 12px;
@@ -320,5 +355,11 @@ export default defineComponent({
     font-size: 14px;
     font-weight: 400;
     line-height: 0px;
+}
+.notif {
+    position: absolute;
+    top: 0;
+    width: 30%;
+    right: 0;
 }
 </style>

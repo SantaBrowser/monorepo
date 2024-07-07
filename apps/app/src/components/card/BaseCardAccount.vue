@@ -1,8 +1,8 @@
 <template>
-    <div class="" style="border-radius: 0">
+    <div class="" style="border-radius: 0; margin: 5px">
         <div
             class="d-flex justify-content-start align-items-center p-3 cursor-pointer"
-            style="border-radius: 5px; background-color: rgba(0, 0, 0, 0.35); width: 100%"
+            style="border-top-right-radius: 7px; border-top-left-radius: 7px; background: rgba(0, 0, 0, 1); width: 100%"
         >
             <template v-if="accountStore.account">
                 <b-link class="rounded-circle position-relative" @click="accountStore.isModalAccountShown = true">

@@ -17,7 +17,7 @@
                 :class="key < quest.entries.length ? 'bg-success text-white' : 'bg-primary text-white'"
             >
                 <small>Day {{ key + 1 }}</small>
-                <strong class="h5 mb-0">{{ amount }}</strong>
+                <strong class="h5 mb-0">{{ formatAmount(amount) }} </strong>
             </b-badge>
         </div>
 
@@ -35,7 +35,8 @@
                 <template v-else-if="!quest.isAvailable && !waitDuration"> Not available </template>
                 <template v-else-if="isSubmitting"><b-spinner small></b-spinner> Adding points...</template>
                 <template v-else-if="quest.amount">
-                    Claim <strong>{{ quest.amount }} points </strong>
+                    Claim
+                    <strong>{{ formatAmount(quest.amount) + (quest.poolId !== CP_CAMPAIGN ? ' points' : '') }} </strong>
                 </template>
                 <template v-else>Complete Quest</template>
             </b-button>
@@ -50,7 +51,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useQuestStore } from '../../stores/Quest';
 import { useAuthStore } from '../../stores/Auth';
 import { intervalToDuration, sub } from 'date-fns';
-
+import { CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 export default defineComponent({
     name: 'BaseCardQuestDaily',
     props: {
@@ -69,6 +70,7 @@ export default defineComponent({
         secondsToSubtract: number;
         now: number;
         isModalQuestEntryShown: boolean;
+        CP_CAMPAIGN: string;
     } {
         return {
             interval: null,
@@ -77,6 +79,7 @@ export default defineComponent({
             secondsToSubtract: 0,
             now: Math.floor(Date.now() / 1000),
             isModalQuestEntryShown: false,
+            CP_CAMPAIGN,
         };
     },
     computed: {
@@ -106,6 +109,13 @@ export default defineComponent({
         clearInterval(this.interval);
     },
     methods: {
+        formatAmount(amount: number): string {
+            if (this.quest.poolId === CP_CAMPAIGN) {
+                const formattedAmount = (amount / 100).toFixed(2);
+                return `$${formattedAmount}`;
+            }
+            return `${amount}`;
+        },
         onClickSignin: function () {
             this.accountStore.signin();
         },
