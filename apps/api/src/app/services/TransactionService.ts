@@ -117,7 +117,7 @@ async function sendAsync(
         if (forceSync) {
             await poll(
                 async () => {
-                    const transaction = await getById(tx._id as string);
+                    const transaction = await getById(tx._id);
                     return queryTransactionStatusReceipt(transaction);
                 },
                 (state: TransactionState) => state === TransactionState.Sent,

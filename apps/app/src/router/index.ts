@@ -46,14 +46,15 @@ const routes: Array<RouteRecordRaw> = [
 
             {
                 path: '/earn',
-                name: 'earn',
-                component: () => import(/* webpackChunkName: "earn" */ '../views/discovery/Earn.vue'),
+                redirect: '/members',
+                // name: 'earn',
+                // component: () => import(/* webpackChunkName: "earn" */ '../views/discovery/Earn.vue'),
             },
-            {
-                path: '/community',
-                name: 'community',
-                component: () => import(/* webpackChunkName: "earn" */ '../views/discovery/Community.vue'),
-            },
+            // {
+            //     path: '/governance',
+            //     name: 'governance',
+            //     component: () => import(/* webpackChunkName: "earn" */ '../views/discovery/Governance.vue'),
+            // },
             {
                 path: '/members',
                 name: 'members',
