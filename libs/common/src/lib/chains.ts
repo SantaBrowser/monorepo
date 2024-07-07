@@ -31,7 +31,7 @@ const chainList: { [chainId: number]: ChainInfo } = {
         chainId: ChainId.Polygon,
         name: 'Polygon',
         blockExplorer: 'https://polygonscan.com',
-        rpc: 'https://polygon-rpc.com',
+        rpc: 'https://polygon-pokt.nodies.app',
     },
     [ChainId.PolygonZK]: {
         chainId: ChainId.PolygonZK,
