@@ -1,5 +1,5 @@
 <template>
-    <b-card class="mb-3 mt-3">
+    <b-card class="">
         <b-row class="align-items-center">
             <b-col>
                 <div class="referral-text">
@@ -44,6 +44,7 @@ export default {
     background: url('../assets/bg-referral.png') no-repeat center center;
     background-size: cover;
     color: #fff;
+    border-radius: 15px;
 }
 .referral-text h4 {
     color: #fff;

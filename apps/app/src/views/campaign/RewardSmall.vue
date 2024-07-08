@@ -1,12 +1,12 @@
 <template>
-    <b-container>
-        <b-row>
-            <b-col lg="12" offset-lg="1">
+    <b-container class="h-100">
+        <b-row class="h-100">
+            <b-col lg="12" offset-lg="1" class="h-100">
                 <div v-if="rewardStore.isLoading" class="d-flex justify-content-center py-5">
                     <b-spinner variant="primary" small />
                 </div>
 
-                <b-row v-else style="display: flex; gap: 15px">
+                <b-row v-else style="display: flex; gap: 15px" class="h-100">
                     <b-col
                         v-if="(score === 0 || Number.isNaN(score)) && message !== CP_CAMPAIGN"
                         lg="4"
