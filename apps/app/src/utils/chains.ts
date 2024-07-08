@@ -6,7 +6,18 @@ import ImgLogoHardhat from '../assets/thx_logo_hardhat.svg';
 import ImgLogoLinea from '../assets/thx_logo_linea.svg';
 import ImgLogoMetis from '../assets/thx_logo_metis.svg';
 import ImgLogoBase from '../assets/thx_logo_base.svg';
-import { arbitrum, mainnet, bsc, polygon, hardhat, polygonZkEvm, linea, metis, base } from '@wagmi/core/chains';
+import {
+    arbitrum,
+    mainnet,
+    bsc,
+    polygon,
+    hardhat,
+    polygonZkEvm,
+    linea,
+    metis,
+    base,
+    sepolia,
+} from '@wagmi/core/chains';
 import { ChainId } from '@thxnetwork/common/enums';
 
 const chainList: { [chainId: number]: ChainInfo } = {
@@ -30,6 +41,13 @@ const chainList: { [chainId: number]: ChainInfo } = {
         logo: ImgLogoArbitrum,
         blockExplorer: 'https://arbiscan.io',
         chain: arbitrum,
+    },
+    [ChainId.Sepolia]: {
+        chainId: ChainId.Sepolia,
+        name: 'Sepolia',
+        blockExplorer: 'https://sepolia.etherscan.io',
+        logo: ImgLogoArbitrum,
+        chain: sepolia,
     },
     [ChainId.Polygon]: {
         chainId: ChainId.Polygon,
