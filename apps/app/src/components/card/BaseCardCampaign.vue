@@ -321,6 +321,7 @@ export default defineComponent({
     //  opacity: 0.15;
     //}
     overflow: hidden;
+    background-position: center;
 }
 .btn .fa-star:hover {
     color: var(--bs-warning) !important;

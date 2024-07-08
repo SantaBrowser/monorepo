@@ -1,6 +1,9 @@
 <template>
-    <div header-class="p-0" body-class="d-flex flex-column p-2 pt-0" class="leaderboard-wrapper">
-        <b-card-title class="d-flex py-1 m-0 align-items-center">
+    <div header-class="p-0" body-class="d-flex flex-column pt-0" class="leaderboard-wrapper">
+        <b-card-title
+            class="d-flex m-0 align-items-center"
+            :style="{ backgroundImage: `url('src/assets/bg_leaderboard.png')` }"
+        >
             <div class="d-flex align-items-center justify-content-center" style="">
                 <!-- <i class="fa fa-trophy me-2 text-opaque" /> -->
                 <img :src="`src/assets/trophy.png`" alt="" width="17" height="17" class="me-2" />
@@ -18,7 +21,7 @@
                 class="d-flex px-0 pe-3"
             >
                 <span class="list-item-field-rank">{{ entry.rank }}</span>
-                <span class="list-item-field-address flex-grow-1 ps-2">
+                <span class="list-item-field-address flex-grow-1 ps-2 d-flex">
                     <b-avatar
                         size="sm"
                         variant="primary"
@@ -26,7 +29,7 @@
                         :alt="`Profile picture of ${entry.account.username}`"
                         class="me-1"
                     />
-                    {{ entry.account.username }}
+                    <span class="username-text" :title="entry.account.username">{{ entry.account.username }}</span>
                 </span>
                 <span class="list-item-field-questcount flex-grow-1 text-opaque pe-3">
                     {{ entry.questEntryCount }}
@@ -128,8 +131,10 @@ export default defineComponent({
 }
 .leaderboard-wrapper {
     background: transparent;
-    padding: 16px !important;
-    background: brown;
+    background-color: #06020d;
+    margin: 0 15px;
+    border-radius: 10px;
+    border: 0.5px solid rgba(76, 46, 115, 0.4);
 }
 .my-list {
     gap: 0.5rem;
@@ -141,5 +146,22 @@ export default defineComponent({
     background: rgba($color: #000000, $alpha: 0.5);
 
     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.05);
+}
+.username-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+.leaderboard-wrapper .card-title {
+    border-radius: 10px 10px 0 0;
+    padding-top: 19px;
+    padding-left: 15px;
+    padding-bottom: 18px;
+}
+
+.leaderboard-wrapper .list-group {
+    padding: 13.5px 7.5px;
 }
 </style>

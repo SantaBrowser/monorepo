@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body class="mb-2 x-lg-0 card-wrapper" :class="{ 'card-promoted': reward.isPromoted }">
+    <b-card no-body class="x-lg-0 card-wrapper h-100" :class="{ 'card-promoted': reward.isPromoted }">
         <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
             <b-badge
                 v-if="reward.expiry && reward.expiry.date"
@@ -18,7 +18,7 @@
         <b-card-body
             v-if="reward.poolId === SANTA_CAMPAIGN"
             class="d-flex flex-column justify-content-between h-200"
-            :style="{ padding: '10px' }"
+            :style="{ padding: '20px 15px 15px 15px', height: '210px' }"
         >
             <b-card-title class="d-flex align-items-center c-quest-title">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
@@ -51,12 +51,13 @@
                 </div> -->
                 <button
                     v-if="!accountStore.isAuthenticated"
-                    class="w-100 my-btn"
+                    class="w-100 my-btn s"
                     variant="primary"
                     @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
                 >
                     <template v-if="reward.pointPrice">
-                        Pay <strong>{{ reward.pointPrice }} points</strong>
+                        Pay
+                        <strong>{{ formattedPrice }} <span v-if="reward.poolId !== CP_CAMPAIGN">points</span></strong>
                     </template>
                     <strong v-else> Free! </strong>
                 </button>
@@ -117,16 +118,16 @@
         <b-card-body
             v-if="reward.poolId === CP_CAMPAIGN"
             class="d-flex flex-column justify-content-between"
-            :style="{ padding: '0', height: '280px', overflow: 'hidden' }"
+            :style="{ padding: '0', height: '275px', overflow: 'hidden' }"
         >
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center" style="padding: 3px">
                 <img
                     v-if="!image"
                     :src="randomPlaywallPlaceholderImage"
                     class=""
-                    :style="{ width: '100%', height: '167px' }"
+                    :style="{ width: '100%', height: '167px', borderRadius: '4px' }"
                 />
-                <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
+                <img v-else :src="image" alt="Image" :style="{ width: '100%', height: '167px', borderRadius: '4px' }" />
             </div>
             <b-card-title class="d-flex align-items-center c-quest-title">
                 <!-- <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" /> -->
@@ -351,10 +352,11 @@ export default defineComponent({
 }
 
 .my-btn {
+    height: 32px;
     position: relative;
     border-radius: 15px;
-    border: 1px solid #1a1a1a;
-    background: linear-gradient(90deg, #0f0d0d 0%, #1c1c1c 100%);
+    border: 1px solid rgba(78, 78, 78, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
     padding: 5px 0;
     transition: background 0.3s ease;
     z-index: 0;
@@ -362,7 +364,7 @@ export default defineComponent({
 .my-btn::before {
     content: '';
     position: absolute;
-    border-radius: 20px;
+    border-radius: 15px;
     top: 0;
     left: 0;
     right: 0;
@@ -414,6 +416,11 @@ export default defineComponent({
 }
 .card-wrapper:hover .my-btn::before {
     opacity: 1;
+}
+
+.card-wrapper:hover .my-btn {
+    box-shadow: 0px 7px 12px 0px rgba(173, 40, 40, 0.14);
+    border-color: #722121;
 }
 
 .card-wrapper:hover .reward-text {

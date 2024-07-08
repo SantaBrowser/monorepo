@@ -314,7 +314,7 @@ export default defineComponent({
     font-style: normal;
     font-weight: 800;
     line-height: 120%;
-    background: linear-gradient(90deg, #016db0 1.29%, #01ffca 99.94%);
+    background: linear-gradient(90deg, #fff 1.29%, #f3bcbc 99.94%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

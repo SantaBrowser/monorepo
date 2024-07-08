@@ -9,7 +9,7 @@
                     >
                 </div>
             </b-col>
-            <b-col>
+            <b-col class="ref-btn">
                 <div class="link-container">
                     <div readonly class="no-outline">{{ referralLink }}</div>
                     <button class="copy-button" @click="copyLink">Copy Link</button>
@@ -40,6 +40,7 @@ export default {
 
 <style scoped>
 .card {
+    flex: 1 1 50%;
     background: url('../assets/bg-referral.png') no-repeat center center;
     background-size: cover;
     color: #fff;
@@ -60,13 +61,12 @@ export default {
     line-height: normal;
 }
 .link-container {
+    background: rgba(3, 3, 3, 0.6);
     display: flex;
     align-items: center;
-    border-radius: 8px !important;
     padding: 3px;
     color: #ccc;
-    border-radius: 12px;
-    border: 1px solid #685489;
+    border-radius: 20px;
 }
 .no-outline {
     flex-grow: 1;
@@ -78,15 +78,31 @@ export default {
     padding: 5px 15px;
 }
 .copy-button {
-    padding: 8.973px 19.577px;
-    border-radius: 5px;
-    border: 0.5px solid #3f1d74;
-    background: linear-gradient(90deg, #c19846 0%, #916409 100%);
+    width: 85px;
+    padding: 5px 0;
+    white-space: nowrap;
+    border-radius: 15px;
+    border: 1px solid rgba(210, 179, 89, 0.4);
+    background: linear-gradient(
+        94deg,
+        rgba(221, 174, 65, 0.9) 0%,
+        rgba(255, 195, 90, 0.9) 13.29%,
+        rgba(255, 205, 56, 0.9) 30.34%,
+        rgba(255, 207, 112, 0.9) 73.17%,
+        rgba(255, 206, 120, 0.9) 83.8%,
+        rgba(255, 205, 56, 0.9) 96.43%,
+        rgba(221, 147, 26, 0.9) 100.4%
+    );
+
     color: #1a1a1a;
     text-align: center;
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
     line-height: 14.683px;
+}
+
+.ref-btn {
+    flex: 0;
 }
 </style>
