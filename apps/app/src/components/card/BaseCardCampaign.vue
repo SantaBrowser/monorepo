@@ -44,7 +44,7 @@
                                             <h2 class="camp-title-grad">
                                                 {{ campaign._id === CP_CAMPAIGN ? 'Rewards' : 'Quests' }}
                                             </h2>
-                                            <div v-if="score !== 0">
+                                            <div v-if="score !== 0 && !Number.isNaN(score)">
                                                 <h8 class="balance">Total earnings:</h8>
                                                 <h6 class="score">{{ formattedScore }}</h6>
                                             </div>
@@ -303,10 +303,10 @@ export default defineComponent({
 }
 .card-campaign {
     position: relative;
-    //background: url('src/assets/bg-campaign.png');
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 12px;
+    border: 1px solid #3e2c2c9e;
 
     /* Glass Morph Button */
     box-shadow: 10px 14px 47.7px 0px rgba(103, 103, 103, 0.05) inset, 11px 11px 29.4px 0px rgba(0, 0, 0, 0.15);
@@ -331,16 +331,18 @@ export default defineComponent({
     font-size: 20px;
     font-style: italic;
     font-weight: 700;
-    line-height: 30px;
+    line-height: 20px;
     text-transform: uppercase;
     margin-bottom: 0;
+    display: inline;
+    background: #000;
 }
 .camp-title-grad {
     color: #f5f5f5;
-    font-size: 30px;
+    font-size: 35px;
     font-style: italic;
     font-weight: 700;
-    line-height: 40px;
+    line-height: 35px;
     text-transform: uppercase;
     margin-bottom: 0;
 }

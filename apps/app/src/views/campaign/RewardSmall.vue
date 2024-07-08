@@ -8,7 +8,7 @@
 
                 <b-row v-else style="display: flex; gap: 15px">
                     <b-col
-                        v-if="score === 0 && message !== CP_CAMPAIGN"
+                        v-if="(score === 0 || Number.isNaN(score)) && message !== CP_CAMPAIGN"
                         lg="4"
                         style="
                             background: linear-gradient(
@@ -37,7 +37,7 @@
                         </div>
                     </b-col>
                     <b-col
-                        v-if="score === 0 && message === CP_CAMPAIGN"
+                        v-if="(score === 0 || Number.isNaN(score)) && message === CP_CAMPAIGN"
                         lg="4"
                         class="quest-card"
                         style="
@@ -73,7 +73,7 @@
                         </div>
                     </b-col>
                     <b-col
-                        v-if="score === 0 && message === CP_CAMPAIGN"
+                        v-if="(score === 0 || Number.isNaN(score)) && message === CP_CAMPAIGN"
                         lg="4"
                         class="quest-card"
                         style="
