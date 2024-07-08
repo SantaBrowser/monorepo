@@ -99,7 +99,6 @@ import imgJumbotron from '../../assets/thx_token_governance.png';
 import imgLogo from '../../assets/logo.png';
 import imgHeader from '../../assets/thx_token_governance.png';
 import * as html from 'html-entities';
-import BaseReferral from '@thxnetwork/app/components/BaseReferral.vue';
 
 export default defineComponent({
     name: 'Home',
@@ -109,7 +108,7 @@ export default defineComponent({
             decodeHTML,
             publicURL: PUBLIC_URL,
             dashboardURL: DASHBOARD_URL,
-            questLists: { daily: [], invite: [], social: [], custom: [], web3: [], gitcoin: [] },
+            questLists: [],
             isLoadingSearch: false,
             isLoadingPage: false,
             isAlertShown: true,
@@ -191,8 +190,8 @@ export default defineComponent({
 
             this.questLists = questLists.map((quest: TBaseQuest) => ({
                 ...quest,
-                title: html.decode(quest.title),
-                description: html.decode(quest.description),
+                title: quest.title && html.decode(quest.title),
+                description: quest.description && html.decode(quest.description),
             }));
         },
         onInputSearch() {

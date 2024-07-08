@@ -13,7 +13,7 @@
                 ],
             },
             {
-                label: 'THX Network APR',
+                label: 'SANTA Browser APR',
                 url: 'https://docs.thx.network',
                 badge: '',
                 data: [{ label: 'VeTHX APR', value: `${aprMetric.thx}%` }],

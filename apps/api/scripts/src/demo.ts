@@ -38,7 +38,7 @@ const collaborators = [
 // const chainId = ChainId.Hardhat;
 const chainId = ChainId.Polygon;
 // const erc20Id = '64d3a4149f7e6d78c9366982'; // Local
-const erc20Id = '6464c665633c1cf385d8cc2b'; // THX Network (POS) on Prod
+const erc20Id = '6464c665633c1cf385d8cc2b'; // SANTA Browser (POS) on Prod
 
 export default async function main() {
     const start = Date.now();
@@ -127,8 +127,27 @@ export default async function main() {
                     }),
                     isPublished: true,
                 };
-                await QuestSocial.create(socialQuestFollow);
+                const followQuest = await QuestSocial.create(socialQuestFollow);
 
+                // Create invite quest
+                await QuestInvite.create({
+                    poolId,
+                    index: 1,
+                    uuid: db.createUUID(),
+                    title: `Invite your friends!`,
+                    description:
+                        'You and the invitee will receive 500 points and the invitee 250 additional points for completing the required quest.',
+                    amount: 500,
+                    amountInvitee: 250,
+                    requiredQuest: {
+                        questId: followQuest.id,
+                        variant: QuestVariant.Invite,
+                    },
+                    variant: QuestVariant.Invite,
+                    isPublished: true,
+                });
+
+                // Create repost quest
                 const tweetId = tweetUrl.match(/\/(\d+)(?:\?|$)/)[1];
                 const [tweet] = await getTwitterTWeet(tweetId);
                 const socialQuestRetweet = {
@@ -151,7 +170,7 @@ export default async function main() {
                 await QuestSocial.create(socialQuestRetweet);
             }
 
-            // Create social quest twitter retweet
+            // Create social quest discord join
             if (serverId && serverId !== 'N/A') {
                 const inviteURL = sql['Discord Invite URL'];
                 const socialQuestJoin = {
@@ -175,7 +194,7 @@ export default async function main() {
                 poolId,
                 uuid: db.createUUID(),
                 title: `Small bag of $THX`,
-                description: 'A token of appreciation offered to you by THX Network. Could also be your own token!',
+                description: 'A token of appreciation offered to you by SANTA Browser. Could also be your own token!',
                 image: 'https://thx-storage-bucket.s3.eu-west-3.amazonaws.com/widget-referral-xmzfznsqschvqxzvgn47qo-xtencq4fmgjg7qgwewmybj-(1)-8EHr7ckbrEZLqUyxqJK1LG.png',
                 pointPrice: 1000,
                 limit: 1000,

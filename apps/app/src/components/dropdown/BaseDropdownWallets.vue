@@ -1,10 +1,15 @@
 <template>
-    <div class="d-flex" style="height: 30px">
+    <div v-if="accountStore.isAuthenticated" class="d-flex">
         <b-dropdown
             v-model="isOpenWallet"
             variant="link"
-            class="w-100"
-            toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none px-0 "
+            class="w-100 rounded"
+            :style="{
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                borderTopRightRadius: '0 !important',
+                borderBottomRightRadius: '0 !important',
+            }"
+            toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none p-2"
             auto-close="outside"
             menu-class="bg-body"
             no-caret
@@ -18,7 +23,9 @@
                     }"
                     class="fas fa-circle me-2"
                 />
-                <div>{{ walletStore.wallet ? walletStore.wallet.short : 'No Wallet' }}</div>
+                <div>
+                    {{ walletStore.wallet ? walletStore.wallet.short : 'Connect' }}
+                </div>
             </template>
             <b-dropdown-text v-if="walletStore.wallet" text-class="bg-dark">
                 <b-form-group label-class="d-flex align-items-center mb-1 ">
@@ -116,9 +123,22 @@
                 </b-form-group>
             </b-dropdown-text>
         </b-dropdown>
-        <b-dropdown v-model="isOpen" variant="link" menu-class="w-100" no-caret end toggle-class="py-0">
+        <b-dropdown
+            v-model="isOpen"
+            variant="link"
+            menu-class="w-100"
+            no-caret
+            end
+            toggle-class="p-2"
+            :disabled="!accountStore.isAuthenticated"
+            :style="{
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                borderTopLeftRadius: '0 !important',
+                borderBottomLeftRadius: '0 !important',
+            }"
+        >
             <template #button-content>
-                <i class="fas fa-caret-down text-white" />
+                <i class="fas fa-caret-down text-white me-2" />
             </template>
             <b-dropdown-item
                 v-for="wallet of walletStore.wallets"

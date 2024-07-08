@@ -41,7 +41,6 @@ export const useRewardStore = defineStore('reward', {
             this.trackEvent(variant);
         },
         async list(poolId?: string) {
-            console.log('in-------------------', poolId);
             const { api } = useAccountStore();
             this.isLoading = true;
 

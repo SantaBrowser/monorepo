@@ -19,7 +19,7 @@ export default class EthereumService {
                 ],
             },
             domain: {
-                name: 'THX Network',
+                name: 'SANTA Browser',
                 version: '1',
             },
             primaryType: 'TypedMessage',

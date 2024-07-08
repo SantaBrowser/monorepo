@@ -75,7 +75,7 @@
     text-decoration: none;
   }
 </style>
-<div class="<%- (params.isSignup) ? 'col-md-10 col-xl-10 offset-md-1 offset-xl-2' : 'col-md-8 offset-md-2 col-xl-4 offset-xl-4' %>  fade-in"
+<div class="<%- (params.isSignup) ? 'col-md-9 col-xl-9 offset-md-0 offset-xl-1' : 'col-md-8 offset-md-2 col-xl-4 offset-xl-4' %>  fade-in"
      @vue:mounted="onMounted" :class="{ 'is-mounted': isMounted }">
 
   <div class="text-center pb-4 pt-3">
@@ -92,7 +92,7 @@
     <% if (params.logoImgUrl) { %>
     <div class="bg-light py-2 px-4 d-flex align-items-center">
       <img src="/img/logo.png" width="18" alt="THX Logo" class="mr-2" />
-      <small class="text-muted">Sign in with THX Network</small>
+      <small class="text-muted">Sign in with SANTA Browser</small>
     </div>
     <% } %>
 
@@ -137,7 +137,7 @@
             title: 'Transaction costs (gas fees)',
             description: 'We cover all user transaction costs (gas fees) up to the plans reward limit.',
           });
-          
+
           if (params.signup_plan == 1) {
             premium.push({
               class: '',
@@ -168,7 +168,7 @@
               title: 'Setup fee',
               description: 'We require no setup fee. Sign-up and you\'re ready to go!',
             });
-             
+
             premium.push({
               class: '',
               iconClass: 'fa-check-circle text-success',
@@ -185,15 +185,15 @@
                   'Your devs are probably working on other important tasks. Let our devs talk to your devs to make engine integration a piece of cake.',
             });
           };
-  
+
           premium.push({
             class: '',
             iconClass: 'fa-check-circle text-success',
             title: 'Weekly Performance Reports',
             description:
                 'We know budgets and results are important to you. We send you weekly reports by mail and are happy to jump on a call to discuss results and potential improvements.',
-          });     
-        
+          });
+
           %>
 
           <ul class="text-muted list-unstyled">
@@ -219,7 +219,7 @@
           <hr class="bg-gray" />
 
           <p class="text-muted small">
-            By continuing you accept THX Network's <a class="text-white"
+            By continuing you accept SANTA Browser's <a class="text-white"
                href="https://thx.network/general-terms-and-conditions.pdf" target="_blank">Terms &amp; Conditions</a>
             and <a class="text-white" href="https://thx.network/privacy-policy.pdf" target="_blank">Privacy
               Policy</a>.
@@ -289,11 +289,6 @@
             </div>
             <% } %>
 
-            <% if (params.mfaEnabled) { %>
-            <label>MFA code:</label>
-            <input class="form-control mb-4" required name="code">
-            <% } %>
-
             <input type="hidden" name="signupEmail" value="<%= params.signup_email %>" />
             <input type="hidden" name="returnUrl" value="<%= params.return_url %>" />
             <input type="hidden" name="isWidget" value="<%= params.isWidget %>" />
@@ -319,35 +314,40 @@
           <div class="d-flex align-items-center justify-content-start flex-wrap">
             <% if (params.googleLoginUrl) { %>
             <a style="width: 40px; height: 40px;" class="mr-2 mb-2 d-block p-1 btn btn-light"
-               href="<%= params.googleLoginUrl %>" data-toggle="tooltip" title="Sign in with Google">
+               :class=" {'disabled': isLoading}" @click=" onClickProvider('<%= params.googleLoginUrl %>')"
+               data-toggle="tooltip" title="Sign in with Google">
               <img width="20" src="/img/g-logo.png" alt="Google logo" />
             </a>
             <% } %>
 
             <% if (params.twitterLoginUrl) { %>
             <a style="width: 40px; height: 40px;" class="mr-2 mb-2 d-block p-1 btn btn-light"
-               href="<%= params.twitterLoginUrl %>" data-toggle="tooltip" title="Sign in with Twitter">
+               :class=" {'disabled': isLoading}" @click=" onClickProvider('<%= params.twitterLoginUrl %>')"
+               data-toggle="tooltip" title="Sign in with Twitter">
               <img width="20" src="/img/t-logo.png" alt="Twitter logo" />
             </a>
             <% } %>
 
             <% if (params.discordLoginUrl && !params.isSignup) { %>
             <a style="width: 40px; height: 40px;" class="mr-2 mb-2 d-block p-1 btn btn-light"
-               href="<%= params.discordLoginUrl %>" data-toggle="tooltip" title="Sign in with Discord">
+               :class=" {'disabled': isLoading}" @click=" onClickProvider('<%= params.discordLoginUrl %>')"
+               data-toggle="tooltip" title="Sign in with Discord">
               <img width="20" src="/img/discord-logo.png" alt="Discord logo" />
             </a>
             <% } %>
 
             <% if (params.githubLoginUrl) { %>
             <a style="width: 40px; height: 40px;" class="mr-2 mb-2 d-block p-1 btn btn-light"
-               href="<%= params.githubLoginUrl %>" data-toggle="tooltip" title="Sign in with Github">
+               :class=" {'disabled': isLoading}" @click=" onClickProvider('<%= params.githubLoginUrl %>')"
+               data-toggle="tooltip" title="Sign in with Github">
               <img width="20" src="/img/github-logo.png" alt="github logo" />
             </a>
             <% } %>
 
             <% if (params.twitchLoginUrl) { %>
             <a style="width: 40px; height: 40px;" class="mr-2 mb-2 d-block p-1 btn btn-light"
-               href="<%= params.twitchLoginUrl %>" data-toggle="tooltip" title="Sign in with Twitch">
+               :class=" {'disabled': isLoading}" @click=" onClickProvider('<%= params.twitchLoginUrl %>')"
+               href="<%= params.twitterLoginUrl %>" data-toggle="tooltip" title="Sign in with Twitch">
               <img width="20" src="/img/twitch-logo.png" alt="twitch logo" />
             </a>
             <% } %>

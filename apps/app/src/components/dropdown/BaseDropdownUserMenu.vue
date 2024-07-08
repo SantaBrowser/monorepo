@@ -1,32 +1,38 @@
 <template>
-    <b-button v-if="!accountStore.isAuthenticated" v-b-modal="'modalLogin'" variant="link">
-        <b-spinner v-if="accountStore.isAuthenticated === false" small />
-        <template v-else> Sign in </template>
-    </b-button>
-    <b-dropdown v-else variant="link" no-caret end>
+    <!-- <div v-if="!accountStore.isAuthenticated" class="d-flex align-items-center">
+        <b-button v-b-modal="'modalLogin'" variant="link" class="text-white text-decoration-none">
+            <b-spinner v-if="accountStore.isAuthenticated === false" small />
+            <template v-else> Sign up </template>
+        </b-button>
+        <b-button v-b-modal="'modalLogin'" variant="primary">
+            <b-spinner v-if="accountStore.isAuthenticated === false" small />
+            <template v-else> Sign in </template>
+        </b-button>
+    </div> -->
+    <b-dropdown v-if="accountStore.account" variant="link" toggle-class="p-0" no-caret end>
         <template #button-content>
-            <i class="fas fa-ellipsis-v" />
+            <div :style="{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }" class="p-1 rounded-circle">
+                <b-avatar size="35" :src="accountStore.account.profileImg" variant="dark" />
+            </div>
         </template>
         <b-dropdown-item @click="accountStore.isModalAccountShown = true"> Account </b-dropdown-item>
-        <!--        <b-dropdown-item-->
-        <!--            v-if="questStore.quests.length"-->
-        <!--            size="sm"-->
-        <!--            @click="$router.push(`/c/${accountStore.config.slug}/w`)"-->
-        <!--        >-->
-        <!--            Identities-->
-        <!--        </b-dropdown-item>-->
+        <template v-if="accountStore.config.slug">
+            <b-dropdown-item size="sm" @click="$router.push(`/c/${accountStore.config.slug}/w`)">
+                Identities
+            </b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item @click="$router.push(`/c/${accountStore.config.slug}/about`)"> About </b-dropdown-item>
+        </template>
+        <b-dropdown-item href="https://discord.com/invite/uHHheeEJ" target="_blank"> Support </b-dropdown-item>
         <b-dropdown-divider />
-        <!--        <b-dropdown-item @click="$router.push(`/c/${accountStore.config.slug}/about`)"> About </b-dropdown-item>-->
-        <b-dropdown-item href="https://discord.com/invite/TzbbSmkE7Y" target="_blank"> Support </b-dropdown-item>
-        <b-dropdown-divider />
-        <!--        <b-dropdown-item-->
-        <!--            size="sm"-->
-        <!--            link-class="d-flex align-items-center justify-content-between"-->
-        <!--            @click="onClickSignout"-->
-        <!--        >-->
-        <!--            Sign out-->
-        <!--            <i class="fas fa-sign-out-alt ml-auto" />-->
-        <!--        </b-dropdown-item>-->
+        <b-dropdown-item
+            size="sm"
+            link-class="d-flex align-items-center justify-content-between"
+            @click="onClickSignout"
+        >
+            Sign out
+            <i class="fas fa-sign-out-alt ml-auto" />
+        </b-dropdown-item>
     </b-dropdown>
 </template>
 

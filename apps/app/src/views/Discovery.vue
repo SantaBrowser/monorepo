@@ -1,11 +1,11 @@
 <template>
     <div :style="{ minHeight: '100%' }" class="gradient-bg-opacity">
-        <!--        <BaseNavbarTicker />-->
+        <BaseNavbarTicker />
         <BaseNavbar />
         <router-view />
-        <!--        <div class="bg-dark mt-auto">-->
-        <!--            <BaseFooter />-->
-        <!--        </div>-->
+        <div class="bg-dark mt-auto">
+            <!--            <BaseFooter />-->
+        </div>
     </div>
 </template>
 
@@ -24,9 +24,9 @@ export default defineComponent({
     watch: {
         'walletStore.wallet': {
             handler(wallet) {
-                // this.liquidityStore.listMetrics(wallet);
+                this.liquidityStore.listMetrics(wallet);
                 if (!wallet) return;
-                // this.veStore.getLocks(wallet);
+                this.veStore.getLocks(wallet);
             },
             immediate: true,
         },

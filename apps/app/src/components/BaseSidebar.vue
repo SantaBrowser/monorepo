@@ -1,10 +1,11 @@
 <template>
-    <aside v-if="isShown" class="sidebar" :style="{ backgroundImage: `url(src/assets/bg-mosaic.png)` }">
+    <aside v-if="isShown" class="sidebar">
         <div class="sidebar-panel h-100">
-            <BaseCardAccount />
-            <BaseCardRewards v-if="isShown" />
-            <BaseQuestLeaderboardSmall v-if="isShown" class="mt-auto" />
-            <BaseCardDiscord v-if="isShown" />
+            <BaseCardAccountRank />
+            <hr class="mt-2 mb-0" style="opacity: 0.1" />
+            <BaseCardLeaderboard />
+            <BaseCardRewards />
+            <BaseCardDiscord class="mt-auto" />
         </div>
     </aside>
 </template>
@@ -13,6 +14,7 @@
 import { defineComponent } from 'vue';
 import { useAccountStore } from '../stores/Account';
 import { mapStores } from 'pinia';
+
 export default defineComponent({
     data() {
         return {

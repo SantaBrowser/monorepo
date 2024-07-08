@@ -30,7 +30,7 @@ const config: Configuration = {
         });
 
         grant.addOIDCScope('openid offline_access');
-        grant.addOIDCClaims(['sub', 'email']);
+        grant.addOIDCClaims(['sub', 'email', 'clid']);
         grant.addResourceScope(API_URL, ctx.oidc.client.scope);
         await grant.save();
         return grant;
@@ -150,7 +150,7 @@ const config: Configuration = {
         'events:read',
     ],
     claims: {
-        openid: ['sub', 'email', 'variant', 'address'],
+        openid: ['sub', 'email', 'variant', 'address', 'clid'],
     },
     ttl: {
         Interaction: 24 * 60 * 60, // 24 hours in seconds
