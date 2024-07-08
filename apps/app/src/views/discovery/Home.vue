@@ -36,9 +36,9 @@
                                 backgroundSize: 'cover',
                                 borderRadius: '5px',
                             }"
-                            class="w-50 mb-3 mt-3 d-flex align-items-center justify-content-center"
+                            class="w-50 mb-3 mt-3 d-flex"
                         >
-                            <span class="rare-quest-title">SUPER RARE QUESTS</span>
+                            <span class="rare-quest-title">Purchase from top brands and get rewarded in crypto</span>
                         </div>
                     </div>
                 </div>
@@ -309,9 +309,12 @@ export default defineComponent({
 }
 
 .rare-quest-title {
-    text-align: center;
-    font-size: 36px;
-    font-style: normal;
+    text-align: left;
+    font-size: 18px;
+    padding: 5px;
+    font-style: italic;
+    text-transform: uppercase;
+    width: 35% !important;
     font-weight: 800;
     line-height: 120%;
     background: linear-gradient(90deg, #fff 1.29%, #f3bcbc 99.94%);
