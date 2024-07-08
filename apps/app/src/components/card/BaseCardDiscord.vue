@@ -1,5 +1,5 @@
 <template>
-    <b-card class="rounded-0" header-class="p-2 ps-3 d-flex align-items-center " body-class="p-1">
+    <b-card class="rounded-0 target-body disc-black" header-class="py-3 d-flex align-items-center " body-class="p-1">
         <template #header>
             <i class="fab fa-discord text-opaque mt-1 me-3" style="font-size: 1.3rem" />
             <div>
@@ -111,5 +111,9 @@ export default defineComponent({
 
 .target-body .card-body {
     background-color: transparent !important;
+}
+
+.disc-black {
+    margin: 0 15px 10px;
 }
 </style>

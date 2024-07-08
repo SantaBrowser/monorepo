@@ -1,6 +1,11 @@
 <template>
-    <b-card v-if="quest" header-class="p-0" body-class="justify-content-start" class="w-100">
-        <template #header>
+    <div
+        v-if="quest"
+        header-class="p-0"
+        body-class="justify-content-start"
+        class="w-100 my-card d-flex flex-column justify-content-between align-items-center"
+    >
+        <div class="w-100">
             <div
                 class="d-flex bg-dark rounded"
                 :class="{
@@ -8,7 +13,8 @@
                     'justify-content-center align-items-center': !backgroundImage,
                 }"
                 :style="{
-                    height: '180px',
+                    width: '100%',
+                    height: '140px',
                     backgroundImage: `url(${backgroundImage})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center center',
@@ -21,42 +27,49 @@
                     style="width: auto; height: auto; max-width: 150px; max-height: 50px"
                 />
             </div>
-        </template>
-        <div class="d-flex justify-content-between">
-            <strong class="text-success">{{ quest.title }} </strong>
-            <div class="flex-shrink-0">
-                <b-badge
-                    v-b-tooltip
-                    variant="primary"
-                    class="p-2"
-                    :title="`Created: ${quest.createdAt && format(new Date(quest.createdAt), 'dd-MM-yyyy HH:mm')}`"
-                >
-                    <i class="fas fa-clock text-opaque me-0" />
-                </b-badge>
-                <b-badge v-b-tooltip variant="primary" class="p-2 ms-1" title="Twitter Quest">
-                    <i class="fab fa-twitter text-opaque me-0" />
-                </b-badge>
-                <b-badge v-b-tooltip variant="primary" class="p-2 ms-1" :title="`Visit ${quest.domain}`">
-                    <b-link class="text-white" @click.stop="isModalCampaignDomainShown = true">
-                        <i class="fas fa-external-link-alt text-opaque me-0" />
-                    </b-link>
-                </b-badge>
+
+            <div class="d-flex justify-content-end mt-1">
+                <div class="flex-shrink-0">
+                    <b-badge
+                        v-b-tooltip
+                        variant="primary"
+                        class="p-2"
+                        :title="`Created: ${quest.createdAt && format(new Date(quest.createdAt), 'dd-MM-yyyy HH:mm')}`"
+                    >
+                        <i class="fas fa-clock text-opaque me-0" />
+                    </b-badge>
+                    <b-badge v-b-tooltip variant="primary" class="p-2 ms-1" title="Twitter Quest">
+                        <i class="fab fa-twitter text-opaque me-0" />
+                    </b-badge>
+                    <b-badge v-b-tooltip variant="primary" class="p-2 ms-1" :title="`Visit ${quest.domain}`">
+                        <b-link class="text-white" @click.stop="isModalCampaignDomainShown = true">
+                            <i class="fas fa-external-link-alt text-opaque me-0" />
+                        </b-link>
+                    </b-badge>
+                </div>
             </div>
-        </div>
-        <p class="pt-2 mb-0 d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+            <!-- <p class="pt-2 mb-0 d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
             {{ quest.description }}
-        </p>
-        <template #footer>
-            <b-button class="w-100" :to="`/c/${quest.poolId}`" variant="primary">
-                Earn <strong>{{ quest.amount }}</strong> points!
+        </p> -->
+            <strong class="quest-title mt-1">{{ quest.title }} </strong>
+        </div>
+        <div class="w-100 d-flex justify-content-center align-items-center">
+            <b-button
+                class="w-100 my-earn-btn d-flex align-items-center justify-content-center"
+                :to="`/c/${quest.poolId}`"
+                variant="primary"
+            >
+                <p>Earn</p>
+                <div class="earn-pipe"></div>
+                <strong>{{ formattedAmount }} </strong> <span v-if="quest.poolId !== CP_CAMPAIGN">points!</span>
             </b-button>
             <BaseModalExternalURL
                 :show="isModalCampaignDomainShown"
                 :url="quest ? quest.domain : ''"
                 @hidden="isModalCampaignDomainShown = false"
             />
-        </template>
-    </b-card>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -72,13 +85,14 @@ export default defineComponent({
         },
     },
     data() {
-        return { format, isModalCampaignDomainShown: false };
+        return { format, isModalCampaignDomainShown: false, CP_CAMPAIGN };
     },
     computed: {
         backgroundImage() {
             return (
                 (this.quest && this.quest.image) ||
-                (this.quest && this.quest.brand && this.quest.brand.backgroundImgUrl)
+                (this.quest && this.quest.brand && this.quest.brand.backgroundImgUrl) ||
+                'src/assets/santa.png'
             );
         },
         logoImage() {
@@ -101,8 +115,9 @@ export default defineComponent({
     background: linear-gradient(155deg, rgba(255, 255, 255, 0) -2.13%, rgba(0, 0, 0, 0.15) 136.58%) !important;
     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
     backdrop-filter: blur(12.5px);
-    width: 205px !important;
-    height: 270px !important;
+    width: 220px !important;
+    height: 280px !important;
+    padding: 10px;
 }
 .card-quest-header {
     background-size: cover;
@@ -121,12 +136,12 @@ export default defineComponent({
 }
 
 .my-earn-btn {
+    height: 32px;
     padding: 6px 12px;
     border-radius: 15px;
     border: 1px solid rgba(78, 78, 78, 0.2);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.05), 0px 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0);
-    position: relative;
     overflow: hidden;
 }
 
@@ -138,7 +153,7 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, #b14646 0%, #722121 100%);
-    box-shadow: 0px 7px 12px 0px rgba(173, 40, 40, 0.14);
+
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 0;
@@ -148,6 +163,9 @@ export default defineComponent({
     opacity: 1;
 }
 
+.my-earn-btn:hover {
+    box-shadow: 0px 7px 12px 0px rgba(173, 40, 40, 0.14);
+}
 .my-earn-btn * {
     position: relative;
     z-index: 1;
@@ -180,5 +198,9 @@ export default defineComponent({
     font-style: normal;
     font-weight: 400;
     line-height: 0px;
+}
+
+.my-card .badge {
+    background-color: #2d2d2d !important;
 }
 </style>
