@@ -25,20 +25,26 @@
                 <p v-if="!isLoading && !filteredCampaigns.length" class="text-opaque">
                     Could not find a campaign with that name...
                 </p>
-                <div v-for="(campaign, index) in filteredCampaigns" :key="campaign.id" class="mt-3">
+                <div v-for="(campaign, index) in filteredCampaigns" :key="campaign.id">
                     <BaseCardCampaign :campaign="campaign" />
                     <!-- Show a custom div after the first BaseCardCampaign -->
-                    <div v-if="index === 0" class="d-flex gap-2">
+                    <div v-if="index === 0" class="d-flex gap-2" style="margin: 35px 0">
                         <BaseReferral />
                         <div
                             :style="{
                                 backgroundImage: 'url(src/assets/bg-rare-quest.png)',
                                 backgroundSize: 'cover',
-                                borderRadius: '5px',
+                                borderRadius: '15px',
+                                paddingLeft: '15px',
                             }"
-                            class="w-50 mb-3 mt-3 d-flex"
+                            class="w-50 d-flex align-items-center justify-content-start"
                         >
                             <span class="rare-quest-title">Purchase from top brands and get rewarded in crypto</span>
+                            <b-row class="d-flex flex-wrap justify-content-center">
+                                <b-col v-for="logo in logos" :key="logo" class="p-2">
+                                    <img :src="logo" alt="Brand Logo" class="brand-logo" />
+                                </b-col>
+                            </b-row>
                         </div>
                     </div>
                 </div>
@@ -46,8 +52,8 @@
         </b-row>
         <!--        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />-->
     </b-container>
-    <b-container class="mb-5 containers">
-        <div class="mt-5 mb-3">
+    <b-container class="mb-5 containers" style="margin-top: 35px">
+        <div class="mb-3">
             <b-col xs="12" md="6">
                 <h2 class="trending-title">Trending</h2>
             </b-col>
@@ -123,6 +129,7 @@ export default defineComponent({
             campaigns: { results: [], total: 0 },
             isModalCampaignDomainShown: false,
             filteredCampaigns: [],
+            logos: [],
         };
     },
     computed: {
@@ -146,6 +153,7 @@ export default defineComponent({
     async mounted() {
         await this.getCampaigns();
         await this.getQuests();
+        await this.getStoreLogos();
         this.isLoading = false;
     },
     methods: {
@@ -194,6 +202,20 @@ export default defineComponent({
                 description: quest.description && html.decode(quest.description),
             }));
         },
+        // async getStoreLogos() {
+        //     const res = await fetch('https://cbapi.santabrowser.com/home/stores');
+        //     const data = await res.json();
+        //     const logos = data.data[0].stores.map((store: any) => store.logo);
+
+        //     this.logos = this.shuffleArray(logos).slice(0, 8);
+        // },
+        // shuffleArray(array: any[]) {
+        //     for (let i = array.length - 1; i > 0; i--) {
+        //         const j = Math.floor(Math.random() * (i + 1));
+        //         [array[i], array[j]] = [array[j], array[i]];
+        //     }
+        //     return array;
+        // },
         onInputSearch() {
             this.isLoadingSearch = true;
             clearTimeout(this.debouncedSearch);
@@ -326,5 +348,10 @@ export default defineComponent({
 .containers {
     max-width: 98% !important;
     padding: 10px 28px;
+}
+
+.brand-logo {
+    width: 110px;
+    border-radius: 5px;
 }
 </style>

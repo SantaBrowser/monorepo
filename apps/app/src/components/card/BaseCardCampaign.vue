@@ -1,9 +1,8 @@
 <template>
     <b-card
         no-body
-        class="cursor-pointer gradient-shadow card-campaign"
+        class="gradient-shadow card-campaign"
         :style="{ opacity: isLoading ? 0.5 : 1, backgroundImage: `url(${backgroundImage})` }"
-        @click="goTo(`/c/${campaign.slug}`)"
     >
         <b-spinner
             v-if="isLoading"
@@ -66,7 +65,8 @@
                                             </div>
                                             <div
                                                 v-if="campaign._id === SANTA_CAMPAIGN"
-                                                class="quest-btn d-flex align-items-center justify-content-center"
+                                                class="cursor-pointer quest-btn d-flex align-items-center justify-content-center"
+                                                @click="goTo(`/c/${campaign.slug}`)"
                                             >
                                                 <h6>Browse Quests</h6>
                                             </div>
@@ -94,7 +94,7 @@
                     </b-row>
                 </b-col>
                 <b-col md="10" class="d-flex flex-column">
-                    <div class="d-flex w-100 align-items-center">
+                    <div class="d-flex w-100 align-items-center h-100" style="flex: 1">
                         <RewardsSmall :message="campaign._id" :score="score"></RewardsSmall>
                         <!--                                <b-button-->
                         <!--                                    size="sm"-->
@@ -302,6 +302,7 @@ export default defineComponent({
     padding: 15px;
 }
 .card-campaign {
+    height: 100%;
     position: relative;
     background-size: cover;
     background-repeat: no-repeat;
@@ -347,10 +348,12 @@ export default defineComponent({
     margin-bottom: 0;
 }
 .quest-btn {
+    width: 170px;
     background: linear-gradient(180deg, #2f0707 0%, #300b0b 54.94%);
     border: 1px solid #4f0000;
     border-radius: 1rem;
     padding: 1rem 2rem;
+    margin-bottom: 15px;
 }
 .quest-btn h6 {
     margin-bottom: 0;
