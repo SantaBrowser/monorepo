@@ -4,4 +4,5 @@ export enum TransactionState {
     Failed = 2,
     Sent = 3,
     Confirmed = 4,
+    Executed = 5,
 }
