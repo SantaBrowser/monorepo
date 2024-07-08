@@ -86,7 +86,7 @@
         <template #title>
             <b-link to="/" class="d-flex align-items-center font-weight-bold text-decoration-none text-white">
                 <b-img :src="imgLogo" height="30" alt="" class="me-3" />
-                THX Network
+                SANTA Browser
             </b-link>
         </template>
         <BaseCardAccount v-if="accountStore.isAuthenticated" />

@@ -31,6 +31,7 @@ import { useWalletStore } from '../../stores/Wallet';
 import { useAccountStore } from '../../stores/Account';
 import { toast } from '../../utils/toast';
 import { fromWei } from 'web3-utils';
+import { RewardVariant } from '@thxnetwork/common/enums';
 
 export default defineComponent({
     name: 'BaseCardERC20',

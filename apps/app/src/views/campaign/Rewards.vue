@@ -6,7 +6,7 @@
                     <b-spinner variant="primary" small />
                 </div>
                 <b-row v-else>
-                    <b-col v-for="(reward, key) of rewardStore.rewards" :key="key" lg="4" class="my-reward">
+                    <b-col v-for="(reward, key) of rewardStore.rewards" :key="key" lg="4">
                         <component :is="componentMap[reward.variant]" :reward="reward" class="mb-2" />
                     </b-col>
                 </b-row>
@@ -59,9 +59,3 @@ export default defineComponent({
     },
 });
 </script>
-
-<style>
-.my-reward .card {
-    background-color: #151515;
-}
-</style>

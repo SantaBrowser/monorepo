@@ -1,7 +1,7 @@
 <template>
-    <b-card no-body class="x-lg-0 card-wrapper" :class="{ 'card-promoted': reward.isPromoted }">
-        <header v-if="image" class="card-img" :style="{ height: '240px' }">
-            <!-- <b-badge
+    <b-card no-body class="mb-2 x-lg-0 card-wrapper" :class="{ 'card-promoted': reward.isPromoted }">
+        <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
+            <b-badge
                 v-if="reward.expiry && reward.expiry.date"
                 v-b-tooltip.hover.left
                 :title="format(new Date(reward.expiry.date), 'MMMM do yyyy hh:mm:ss')"
@@ -12,7 +12,7 @@
                 <span :class="{ 'text-accent': !reward.isExpired, 'card-text': reward.isExpired }">{{
                     expiryDate
                 }}</span>
-            </b-badge> -->
+            </b-badge>
             <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
         </header>
         <b-card-body

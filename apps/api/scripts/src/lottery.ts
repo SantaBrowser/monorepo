@@ -33,8 +33,8 @@ export default async function main() {
         try {
             const code = codes.find((code) => code && code.code === winner);
             if (!code) continue;
-
-            const account = accounts.find((account) => String(account._id) === code.sub);
+            const account = accounts.find((account) => String(account._id) == code.sub);
+            console.log(account);
             const tokens = await db
                 .collection('tokens')
                 .find({ sub: String(account._id) })

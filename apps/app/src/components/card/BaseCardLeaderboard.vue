@@ -40,8 +40,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
-import { useAccountStore } from '../stores/Account';
-import { useQuestStore } from '../stores/Quest';
+import { useAccountStore } from '../../stores/Account';
+import { useQuestStore } from '../../stores/Quest';
 import { subWeeks, format } from 'date-fns';
 
 export default defineComponent({
@@ -87,7 +87,6 @@ export default defineComponent({
     left: 1px;
     bottom: 1px;
     width: 40px;
-    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -105,17 +104,5 @@ export default defineComponent({
 .list-item-field-score {
     width: 50px;
     text-align: right;
-}
-.my-leaderboard {
-    background-color: #151515;
-}
-
-.my-leaderboard .list-group-item {
-    background-color: #1c1b1b;
-    border-color: #232323;
-}
-
-.my-leaderboard .text-primary {
-    color: #515151 !important;
 }
 </style>

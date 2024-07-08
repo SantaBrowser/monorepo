@@ -44,6 +44,7 @@ const kindAccountVariantMap: { [kind: string]: number } = {
 const interactionComponentMap: { [req: number]: string } = {
     [QuestSocialRequirement.YouTubeLike]: 'BaseBlockquoteVideo',
     [QuestSocialRequirement.YouTubeSubscribe]: 'BaseBlockquoteYoutubeChannelSubscription',
+    [QuestSocialRequirement.TwitterReply]: 'BaseBlockquoteTwitterTweet',
     [QuestSocialRequirement.TwitterRetweet]: 'BaseBlockquoteTwitterTweet',
     [QuestSocialRequirement.TwitterFollow]: 'BaseBlockquoteTwitterUser',
     [QuestSocialRequirement.TwitterQuery]: 'BaseBlockquoteTwitterQuery',

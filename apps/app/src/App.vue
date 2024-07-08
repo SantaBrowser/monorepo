@@ -4,7 +4,7 @@
         We are running some maintenance and will be back shortly. See you soon! ❤️
     </b-alert>
     <div v-else id="main" :class="{ 'overflow-hidden': accountStore.isMobile }">
-        <!--        <BaseNavbarTop />-->
+        <BaseNavbarTop />
         <div class="d-flex h-100">
             <transition name="fade" mode="out-in">
                 <router-view class="router-view-app order-lg-0" />
@@ -74,7 +74,12 @@ export default defineComponent({
         const clid = urlParams.get('clid');
         const { userManager } = useAuthStore();
         const user = await userManager.getUser();
+        console.log('sadsadasdsadasdsadsadsad', user);
+        // if (!clid) {
+        // this.refreshUser();
+        // }
         if (clid && !user) {
+            console.log('clidclid');
             await this.authenticateUser(clid);
         }
     },
@@ -85,6 +90,14 @@ export default defineComponent({
             } catch (error) {
                 console.error('Authentication error:', error);
             }
+        },
+        async refreshUser() {
+            // await this.authStore.requestOAuthShareRefresh();
+            //     try {
+            //         await this.authStore.waitForUser();
+            //     } catch (error) {
+            //         console.error('Authentication error:', error);
+            //     }
         },
     },
 });

@@ -33,31 +33,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { decodeHTML } from '../../utils/decode-html';
 import { mapStores } from 'pinia';
 import { useAccountStore } from '../../stores/Account';
 import { useQuestStore } from '../../stores/Quest';
 
 export default defineComponent({
-    props: {
-        height: Number,
-    },
-    data() {
-        return {
-            decodeHTML,
-            isModalPoolSubscriptionShown: false,
-            isModalWalletAccessShown: false,
-            isRefreshing: false,
-            isIframe: window.self !== window.top,
-            error: '',
-            screenWidth: window.innerWidth,
-        };
-    },
     computed: {
         ...mapStores(useAccountStore, useQuestStore),
-        isRouteRanking() {
-            return !['ranking'].includes(this.$route.name as string);
-        },
         participant() {
             return this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
         },

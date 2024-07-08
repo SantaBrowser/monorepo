@@ -1,24 +1,20 @@
 <template>
     <b-navbar
-        v-if="isQuestCampaign"
+        v-if="!accountStore.config.isQRCodeCampaign"
         :container="false"
-        class="navbar-bottom mb-lg-3 px-lg-3 order-lg-0 nav-campaign justify-content-start"
+        class="navbar-bottom shadow px-lg-3 order-lg-0"
     >
-        <!--        <div-->
-        <!--            v-if="accountStore.config"-->
-        <!--            style="width: 120px"-->
-        <!--            class="pl-3 py-2 text-decoration-none d-none d-lg-block me-auto"-->
-        <!--        >-->
-        <!--            <b-img-->
-        <!--                v-b-tooltip.hover.bottom="{ title: decodeHTML(accountStore.config.title) }"-->
-        <!--                :src="accountStore.config.logoUrl"-->
-        <!--                class="navbar-logo"-->
-        <!--            />-->
-        <!--        </div>-->
-        <router-link :to="`/`">
-            <i class="fas fa-tasks me-lg-3" />
-            <div>Home</div>
-        </router-link>
+        <div
+            v-if="accountStore.config"
+            style="width: 120px"
+            class="pl-3 py-2 text-decoration-none d-none d-lg-block me-auto"
+        >
+            <b-img
+                v-b-tooltip.hover.bottom="{ title: decodeHTML(accountStore.config.title) }"
+                :src="accountStore.config.logoUrl"
+                class="navbar-logo"
+            />
+        </div>
         <router-link :to="`/c/${accountStore.config.slug}/quests`">
             <i class="fas fa-tasks me-lg-3" />
             <div>Quests</div>
@@ -35,11 +31,7 @@
             <i class="fas fa-wallet mr-lg-3" />
             <div>Wallet</div>
         </router-link>
-        <!-- <BaseNavbarSecondary
-            v-if="!accountStore.isMobile"
-            class="ms-auto"
-            :style="{ backgroundColor: 'transparent !important' }"
-        /> -->
+        <BaseNavbarSecondary v-if="!accountStore.isMobile" class="ms-auto" />
     </b-navbar>
 </template>
 
