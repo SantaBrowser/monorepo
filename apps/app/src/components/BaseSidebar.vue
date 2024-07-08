@@ -1,10 +1,11 @@
 <template>
-    <aside v-if="isShown" class="sidebar">
+    <aside v-if="isShown" class="sidebar" :style="{ backgroundImage: `url(src/assets/bg-mosaic.png)` }">
         <div class="sidebar-panel h-100">
-            <BaseCardAccountRank />
-            <hr class="mt-2 mb-0" style="opacity: 0.1" />
-            <BaseCardLeaderboard />
-            <BaseCardRewards />
+            <BaseCardAccount />
+            <div style="height: 10px"></div>
+            <!-- <hr class="mt-2 mb-0" style="opacity: 0.1" /> -->
+            <!-- <BaseCardRewards /> -->
+            <BaseQuestLeaderboardSmall />
             <BaseCardDiscord class="mt-auto" />
         </div>
     </aside>
@@ -61,5 +62,10 @@ export default defineComponent({
             width: 90%;
         }
     }
+}
+
+.sidebar .bg-splash {
+    background-color: transparent;
+    border-radius: 0;
 }
 </style>

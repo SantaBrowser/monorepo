@@ -152,14 +152,12 @@ async function createSwapOwnerTransaction(wallet: WalletDocument, oldOwnerAddres
 }
 
 async function proposeTransaction(wallet: WalletDocument, safeTransactionData: SafeTransactionDataPartial) {
-    console.log("###1");
     const { ethAdapter, signer } = getProvider(wallet.chainId);
     const safe = await Safe.create({
         ethAdapter,
         safeAddress: wallet.address,
         contractNetworks,
     });
-    console.log("###2");
 
     // Get nonce for this Safes transaction
     const nonce = await safe.getNonce();
@@ -167,15 +165,11 @@ async function proposeTransaction(wallet: WalletDocument, safeTransactionData: S
         safeTransactionData,
         options: { nonce: nonce + 1 },
     });
-    console.log("###3");
 
     // Create hash for this transaction
     const safeTxHash = await safe.getTransactionHash(safeTransaction);
-    console.log("###4");
     const signature = await safe.signTransactionHash(safeTxHash);
-    console.log("###5");
     const apiKit = getSafeApiKit(wallet.chainId);
-    console.log("###6");
 
     logger.info({ safeTxHash, nonce });
 
@@ -221,7 +215,7 @@ async function executeTransaction(wallet: WalletDocument, safeTxHash: string) {
         contractNetworks,
     });
     const safeTransaction = await apiKit.getTransaction(safeTxHash);
-    const options = { gasPrice: '50000000000' };
+    const options = { gasPrice: '100000000000' };
     const executeTxResponse = await safe.executeTransaction(safeTransaction as any, options );
     const receipt = await executeTxResponse.transactionResponse?.wait();
     logger.debug("Executed Transaction");
