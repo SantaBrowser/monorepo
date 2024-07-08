@@ -1,18 +1,21 @@
 <template>
-    <b-card header-class="p-0" body-class="d-flex flex-column p-2 pt-0" class="my-leaderboard">
-        <b-card-title class="d-flex px-1 py-1 m-0 align-items-center">
-            <div class="d-flex align-items-center justify-content-center" style="width: 25px">
-                <i class="fa fa-trophy me-2 text-opaque" />
+    <div v-if="accountStore.config.slug && participant" class="d-flex flex-column">
+        <div class="d-flex p-2 m-0 align-items-center">
+            <div class="flex-grow-1 pe-2">
+                Leaderboard
+                <i v-b-tooltip class="fas fa-info-circle small text-opaque" :title="`Since ${leaderboardStart}`" />
             </div>
-            <div class="flex-grow-1 pe-2">Leaderboard</div>
-            <b-button class="text-primary" variant="link" @click="onClickRefresh">
+            <b-button size="sm" variant="primary" @click="onClickRefresh">
                 <b-spinner v-if="isLoading" small />
-                <i v-else class="fas fa-sync-alt" />
+                <i v-else class="fas small fa-sync-alt" />
             </b-button>
-        </b-card-title>
+        </div>
         <b-list-group>
-            <b-list-group-item v-for="(entry, key) of formattedLeaderboard" :key="key" class="d-flex px-0 pe-3">
-                <span class="list-item-field-rank">{{ entry.rank }}</span>
+            <b-list-group-item v-for="(entry, key) of accountStore.leaderboard" :key="key" class="d-flex px-0 pe-3">
+                <span class="list-item-field-rank">
+                    <i class="fas fa-hashtag me-1 text-opaque" />
+                    {{ entry.rank }}
+                </span>
                 <span class="list-item-field-address flex-grow-1 ps-2">
                     <b-avatar
                         size="sm"
@@ -27,20 +30,22 @@
                     {{ entry.questEntryCount }}
                     <i class="fas fa-tasks ms-1" />
                 </span>
-                <strong class="list-item-field-score">{{ entry.formattedScore }}</strong>
+                <strong class="list-item-field-score">{{ entry.score }}</strong>
             </b-list-group-item>
         </b-list-group>
-    </b-card>
+        <hr class="mt-2 mb-0" style="opacity: 0.1" />
+    </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
-import { useAccountStore } from '../stores/Account';
-import { useQuestStore } from '../stores/Quest';
-import { CP_CAMPAIGN } from '../config/secrets';
+import { useAccountStore } from '../../stores/Account';
+import { useQuestStore } from '../../stores/Quest';
+import { subWeeks, format } from 'date-fns';
+
 export default defineComponent({
-    name: 'BaseQuestLeaderboard',
+    name: 'BaseCardLeaderboard',
     data() {
         return {
             isLoading: false,
@@ -49,25 +54,15 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore),
         ...mapStores(useQuestStore),
-        formattedLeaderboard() {
-            return this.accountStore.leaderboard.map((entry) => {
-                if (this.accountStore.poolId === CP_CAMPAIGN) {
-                    return {
-                        ...entry,
-                        formattedScore: `$${(entry.score / 100).toFixed(2)}`,
-                    };
-                } else {
-                    return {
-                        ...entry,
-                        formattedScore: entry.score,
-                    };
-                }
-            });
+        participant() {
+            return this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
+        },
+        leaderboardStart() {
+            return format(subWeeks(new Date(), this.accountStore.config.leaderboardInWeeks), 'MMMM dd, yyyy');
         },
     },
     mounted() {
         this.accountStore.getLeaderboard();
-        console.log('entry', this.accountStore.poolId);
     },
     methods: {
         async onClickRefresh() {
@@ -92,7 +87,6 @@ export default defineComponent({
     left: 1px;
     bottom: 1px;
     width: 40px;
-    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -110,17 +104,5 @@ export default defineComponent({
 .list-item-field-score {
     width: 50px;
     text-align: right;
-}
-.my-leaderboard {
-    background-color: #151515;
-}
-
-.my-leaderboard .list-group-item {
-    background-color: #1c1b1b;
-    border-color: #232323;
-}
-
-.my-leaderboard .text-primary {
-    color: #515151 !important;
 }
 </style>

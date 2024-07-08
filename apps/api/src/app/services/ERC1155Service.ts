@@ -60,7 +60,7 @@ export async function queryDeployTransaction(erc1155: ERC1155Document): Promise<
         const tx = await Transaction.findById(erc1155.transactions[0]);
         const txResult = await TransactionService.queryTransactionStatusReceipt(tx);
         if (txResult === TransactionState.Mined) {
-            erc1155 = await findById(erc1155._id as string);
+            erc1155 = await findById(erc1155._id);
         }
     }
 

@@ -51,8 +51,8 @@ const wagmiConfig = defaultWagmiConfig({
     chains: [mainnet, ...Object.values(chainList).map((item) => item.chain)],
     projectId: WALLET_CONNECT_PROJECT_ID,
     metadata: {
-        name: 'THX Network',
-        description: 'THX Network Campaign Discovery',
+        name: 'SANTA Browser',
+        description: 'SANTA Browser Campaign Discovery',
         url: WIDGET_URL,
         icons: [AUTH_URL + '/img/logo.png'],
     },
@@ -240,9 +240,27 @@ export const useWalletStore = defineStore('wallet', {
             ];
 
             const [payments, erc20, erc721, erc1155] = await Promise.all(promises);
-            this.erc20 = erc20 ? erc20.map((t: TERC20Token) => ({ ...t, component: 'BaseCardERC20' })) : [];
-            this.erc721 = erc721 ? erc721.map((t: TERC721Token) => ({ ...t, component: 'BaseCardERC721' })) : [];
-            this.erc1155 = erc1155 ? erc1155.map((t: TERC721Token) => ({ ...t, component: 'BaseCardERC721' })) : [];
+            this.erc20 = erc20
+                ? erc20.map((t: TERC20Token) => ({
+                      ...t,
+                      rewardVariant: RewardVariant.Coin,
+                      component: 'BaseCardERC20',
+                  }))
+                : [];
+            this.erc721 = erc721
+                ? erc721.map((t: TERC721Token) => ({
+                      ...t,
+                      rewardVariant: RewardVariant.NFT,
+                      component: 'BaseCardERC721',
+                  }))
+                : [];
+            this.erc1155 = erc1155
+                ? erc1155.map((t: TERC721Token) => ({
+                      ...t,
+                      rewardVariant: RewardVariant.NFT,
+                      component: 'BaseCardERC721',
+                  }))
+                : [];
             this.couponCodes = payments
                 .filter((p: { rewardVariant: RewardVariant }) => p.rewardVariant === RewardVariant.Coupon)
                 .map((t: TRewardCouponPayment[]) => ({
@@ -269,10 +287,7 @@ export const useWalletStore = defineStore('wallet', {
 
             const { api, account } = useAccountStore();
             const data = { walletId: this.wallet._id, ...config };
-            console.log(data, '02312130140124184198492142142149');
-
             const response = await api.request.post('/v1/erc20/transfer', { data });
-            console.log(response);
             await this.confirmTransaction(response.safeTxHash);
             track('UserCreates', [account?.sub, 'erc20 transfer']);
         },

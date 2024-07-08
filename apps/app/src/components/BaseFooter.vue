@@ -2,7 +2,7 @@
     <b-container class="py-5">
         <b-row>
             <b-col md="4">
-                <div class="text-opaque my-3">THX Network</div>
+                <div class="text-opaque my-3">SANTA Browser</div>
                 <b-nav>
                     <b-nav-item href="https://thx.network" target="_blank" link-class="px-0" class="w-100">
                         Company
@@ -97,7 +97,7 @@
                         class="w-100"
                         link-class="text-white text-opaque px-0"
                     >
-                        &copy; 2024 THX Network
+                        &copy; 2024 SANTA Browser
                     </b-nav-item>
                 </b-nav>
             </b-col>

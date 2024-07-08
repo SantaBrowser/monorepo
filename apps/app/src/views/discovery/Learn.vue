@@ -1,7 +1,7 @@
 <template>
     <BaseCardHeader :img-src="imgTreasury">
         <template #primary>
-            <h1 class="">Learn about <br /><strong>THX Network</strong></h1>
+            <h1 class="">Learn about <br /><strong>SANTA Browser</strong></h1>
             <p class="lead">
                 Get lottery tickets for NFT's at a discount and claim the Discord Role for your membership rank.
             </p>

@@ -8,11 +8,12 @@ import {
     QuestCustom,
     QuestWeb3,
     QuestGitcoin,
+    QuestWebhook,
 } from '@thxnetwork/api/models';
 const validation = [query('page').isInt(), query('limit').isInt(), query('search').optional().isString()];
 
 const controller = async (req: Request, res: Response) => {
-    const questModels = [QuestDaily, QuestInvite, QuestSocial, QuestCustom, QuestWeb3, QuestGitcoin];
+    const questModels = [QuestDaily, QuestInvite, QuestSocial, QuestCustom, QuestWeb3, QuestGitcoin, QuestWebhook];
     const questLookupStages = questModels.map((model) => {
         return {
             $lookup: {

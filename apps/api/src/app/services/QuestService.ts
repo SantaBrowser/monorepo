@@ -116,8 +116,8 @@ export default class QuestService {
         return Quest.findByIdAndUpdate(questId, options, { new: true });
     }
 
-    static getAmount(variant: QuestVariant, quest: TQuest, account: TAccount) {
-        return serviceMap[variant].getAmount({ quest, account });
+    static getAmount(variant: QuestVariant, quest: TQuest, account: TAccount, data?: { metadata: any }) {
+        return serviceMap[variant].getAmount({ quest, account, data });
     }
 
     static isExpired(quest: TQuest) {
@@ -200,7 +200,7 @@ export default class QuestService {
             const account = await AccountProxy.findById(sub);
             const quest = await this.findById(variant, questId);
             const pool = await PoolService.getById(quest.poolId);
-            const amount = await this.getAmount(variant, quest, account);
+            const amount = await this.getAmount(variant, quest, account, data);
 
             // Test availabily of quest once more as it could be completed by a job that was scheduled already
             // if the jobs were created in parallel.
