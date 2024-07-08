@@ -71,7 +71,7 @@ export const useAccountStore = defineStore('account', {
             this.participants = [];
             this.api.setCampaignId('');
             this.setTheme({
-                title: 'THX Network',
+                title: 'SANTA Browser',
                 theme: JSON.stringify({ elements: DEFAULT_ELEMENTS, colors: DEFAULT_COLORS }),
             } as TWidgetConfig);
             this.config = {};

@@ -33,7 +33,7 @@
         >
             <i class="fas me-2 mt-1" :class="isAccepted ? 'fa-check-square' : 'fa-square'" />
             <div>
-                I agree to THX Network
+                I agree to SANTA Browser
                 <b-link class="text-accent" @click.stop="openURL('https://thx.network/terms-of-use-app.pdf')">
                     Terms
                 </b-link>

@@ -7,9 +7,9 @@
             backgroundImage: accountStore.config.backgroundUrl && `url('${accountStore.config.backgroundUrl}')`,
         }"
     >
-        <b-container>
+        <b-container class="container-fluid-s">
             <b-row>
-                <b-col lg="7" offset-lg="1">
+                <b-col lg="9">
                     <div class="d-flex py-3 py-lg-5">
                         <b-img :src="accountStore.config.logoUrl" height="50" alt="logo" class="rounded me-3" />
                         <div>

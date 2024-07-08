@@ -4,7 +4,7 @@
         <BaseNavbar />
         <router-view />
         <div class="bg-dark mt-auto">
-            <BaseFooter />
+            <!--            <BaseFooter />-->
         </div>
     </div>
 </template>
@@ -12,21 +12,21 @@
 <script lang="ts">
 import { mapStores } from 'pinia';
 import { defineComponent } from 'vue';
-// import { useLiquidityStore } from '@thxnetwork/app/stores/Liquidity';
+import { useLiquidityStore } from '@thxnetwork/app/stores/Liquidity';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
-// import { useVeStore } from '@thxnetwork/app/stores/VE';
+import { useVeStore } from '@thxnetwork/app/stores/VE';
 
 export default defineComponent({
     name: 'Discovery',
     computed: {
-        ...mapStores(useWalletStore),
+        ...mapStores(useLiquidityStore, useWalletStore, useVeStore),
     },
     watch: {
         'walletStore.wallet': {
             handler(wallet) {
-                // this.liquidityStore.listMetrics(wallet);
+                this.liquidityStore.listMetrics(wallet);
                 if (!wallet) return;
-                // this.veStore.getLocks(wallet);
+                this.veStore.getLocks(wallet);
             },
             immediate: true,
         },

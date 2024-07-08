@@ -21,7 +21,7 @@ const userManager = new UserManager({
     popup_post_logout_redirect_uri: WIDGET_URL + '/signout-popup.html',
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
-    automaticSilentRenew: false,
+    automaticSilentRenew: true,
     loadUserInfo: false,
     prompt: 'consent',
     scope: 'openid offline_access account:read account:write erc20:read erc721:read erc1155:read point_balances:read referral_rewards:read point_rewards:read wallets:read wallets:write pool_subscription:read pool_subscription:write claims:read',
