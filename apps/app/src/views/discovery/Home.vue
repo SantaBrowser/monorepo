@@ -106,6 +106,8 @@ import imgLogo from '../../assets/logo.png';
 import imgHeader from '../../assets/thx_token_governance.png';
 import * as html from 'html-entities';
 
+const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
+
 export default defineComponent({
     name: 'Home',
     data(): any {
@@ -202,20 +204,32 @@ export default defineComponent({
                 description: quest.description && html.decode(quest.description),
             }));
         },
-        // async getStoreLogos() {
-        //     const res = await fetch('https://cbapi.santabrowser.com/home/stores');
-        //     const data = await res.json();
-        //     const logos = data.data[0].stores.map((store: any) => store.logo);
+        async getStoreLogos() {
+            const cachedData = localStorage.getItem('storeLogos');
+            const cachedTime = localStorage.getItem('storeLogos_timestamp');
+            const now = Date.now();
 
-        //     this.logos = this.shuffleArray(logos).slice(0, 8);
-        // },
-        // shuffleArray(array: any[]) {
-        //     for (let i = array.length - 1; i > 0; i--) {
-        //         const j = Math.floor(Math.random() * (i + 1));
-        //         [array[i], array[j]] = [array[j], array[i]];
-        //     }
-        //     return array;
-        // },
+            if (cachedData && cachedTime && now - parseInt(cachedTime) < CACHE_EXPIRY) {
+                const logos = JSON.parse(cachedData);
+                this.logos = logos;
+            } else {
+                const res = await fetch('https://cbapi.santabrowser.com/home/stores');
+                const data = await res.json();
+                const logos = data.data[0].stores.map((store: any) => store.logo);
+
+                localStorage.setItem('storeLogos', JSON.stringify(logos));
+                localStorage.setItem('storeLogos_timestamp', now.toString());
+
+                this.logos = this.shuffleArray(logos).slice(0, 8);
+            }
+        },
+        shuffleArray(array: any[]) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        },
         onInputSearch() {
             this.isLoadingSearch = true;
             clearTimeout(this.debouncedSearch);
