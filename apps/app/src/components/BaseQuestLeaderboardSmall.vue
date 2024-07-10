@@ -151,7 +151,7 @@ export default defineComponent({
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 120px;
+    width: 110px;
 }
 
 .leaderboard-wrapper .card-title {

@@ -1,6 +1,6 @@
 <template>
     <b-card no-body class="x-lg-0 card-wrapper h-100" :class="{ 'card-promoted': reward.isPromoted }">
-        <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
+        <!-- <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
             <b-badge
                 v-if="reward.expiry && reward.expiry.date"
                 v-b-tooltip.hover.left
@@ -14,17 +14,17 @@
                 }}</span>
             </b-badge>
             <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
-        </header>
+        </header> -->
         <b-card-body
             v-if="reward.poolId === SANTA_CAMPAIGN"
-            class="d-flex flex-column justify-content-between h-200"
-            :style="{ padding: '20px 15px 15px 15px', height: '210px' }"
+            class="d-flex flex-column justify-content-between h-100"
+            :style="{ padding: '20px 15px 15px 15px' }"
         >
             <b-card-title class="d-flex align-items-center c-quest-title">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
             </b-card-title>
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center" :style="{ marginBottom: '5px' }">
                 <img v-if="!image" :src="randomPlaceholderImage" class="" :style="{ width: '92px', height: '92px' }" />
                 <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
             </div>
@@ -62,21 +62,22 @@
                     <strong v-else> Free! </strong>
                 </button>
                 <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
-                    <BaseButtonQuestLocked
+                    <!-- <BaseButtonQuestLocked
                         v-if="reward.isLocked"
                         :id="`modalQuestLock${reward._id}`"
                         :locks="reward.locks"
-                    />
+                    /> -->
                     <button
-                        v-else
-                        v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
                         block
-                        class="w-100 position-relative mb-0 my-btn"
+                        :class="`w-100 position-relative mb-0 ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
                         :disabled="isDisabled"
                     >
-                        {{ btnLabel }}
-                        <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
+                        <div v-if="isInsufficientPoints">Locked</div>
+                        <div
+                            v-if="reward.pointPrice && !isInsufficientPoints"
+                            class="d-flex align-items-center justify-content-center"
+                        >
                             <span class="reward-text">
                                 {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
                             </span>
@@ -152,21 +153,22 @@
                     tabindex="0"
                     :style="{ margin: '0px 26px 15px 26px' }"
                 >
-                    <BaseButtonQuestLocked
-                        v-if="reward.isLocked"
+                    <!-- <BaseButtonQuestLocked
+                        v-if="reward.isLocked || isInsufficientPoints"
                         :id="`modalQuestLock${reward._id}`"
                         :locks="reward.locks"
-                    />
+                    /> -->
                     <button
-                        v-else
-                        v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
                         block
-                        class="w-100 position-relative mb-0 my-btn"
+                        :class="`w-100 position-relative mb-0 ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
                         :disabled="isDisabled"
                     >
-                        {{ btnLabel }}
-                        <div v-if="reward.pointPrice" class="d-flex align-items-center justify-content-center">
+                        <div v-if="isInsufficientPoints">Locked</div>
+                        <div
+                            v-if="reward.pointPrice && !isInsufficientPoints"
+                            class="d-flex align-items-center justify-content-center"
+                        >
                             <span class="reward-text">
                                 {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
                             </span>
@@ -207,6 +209,8 @@ import { RewardVariant } from '../../types/enums/rewards';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import StarCoin from '../../assets/star-coin.png';
 import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
+import { getApprovalBasedPaymasterInput } from 'viem/zksync';
+import { is } from 'date-fns/locale';
 export const iconMap = {
     [RewardVariant.Coin]: 'fas fa-coins',
     [RewardVariant.NFT]: 'fas fa-palette',
@@ -251,7 +255,14 @@ export default defineComponent({
             const images = ['src/assets/playwall_1.png', 'src/assets/playwall_1.png', 'src/assets/playwall_3.png'];
             return images[Math.floor(Math.random() * images.length)];
         },
-
+        participantBalance() {
+            const participant = this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
+            if (!participant) return 0;
+            return participant.balance;
+        },
+        isInsufficientPoints() {
+            return this.participantBalance < this.reward.pointPrice;
+        },
         limitSupplyVariant() {
             if (this.limitSupplyPerct >= 0.9) return 'text-danger';
             if (this.limitSupplyPerct > 0.75 && this.limitSupplyPerct < 0.9) return 'text-warning';
@@ -351,7 +362,8 @@ export default defineComponent({
     }
 }
 
-.my-btn {
+.my-btn,
+.locked {
     height: 32px;
     position: relative;
     border-radius: 15px;
@@ -418,7 +430,7 @@ export default defineComponent({
     opacity: 1;
 }
 
-.card-wrapper:hover .my-btn {
+.card-wrapper:hover .my-btn:not(.locked) {
     box-shadow: 0px 7px 12px 0px rgba(173, 40, 40, 0.14);
     border-color: #722121;
 }
@@ -455,5 +467,10 @@ export default defineComponent({
 }
 .c-quest-title .fas {
     color: rgba(217, 217, 217, 0.2);
+}
+
+.locked {
+    background: #4444444f;
+    color: #ff6b6b;
 }
 </style>
