@@ -1,9 +1,8 @@
 <template>
     <b-card
         no-body
-        class="cursor-pointer gradient-shadow card-campaign"
+        class="gradient-shadow card-campaign"
         :style="{ opacity: isLoading ? 0.5 : 1, backgroundImage: `url(${backgroundImage})` }"
-        @click="goTo(`/c/${campaign.slug}`)"
     >
         <b-spinner
             v-if="isLoading"
@@ -44,7 +43,7 @@
                                             <h2 class="camp-title-grad">
                                                 {{ campaign._id === CP_CAMPAIGN ? 'Rewards' : 'Quests' }}
                                             </h2>
-                                            <div v-if="score !== 0">
+                                            <div v-if="score !== 0 && !Number.isNaN(score)">
                                                 <h8 class="balance">Total earnings:</h8>
                                                 <h6 class="score">{{ formattedScore }}</h6>
                                             </div>
@@ -66,7 +65,8 @@
                                             </div>
                                             <div
                                                 v-if="campaign._id === SANTA_CAMPAIGN"
-                                                class="quest-btn d-flex align-items-center justify-content-center"
+                                                class="cursor-pointer quest-btn d-flex align-items-center justify-content-center"
+                                                @click="goTo(`/c/${campaign.slug}`)"
                                             >
                                                 <h6>Browse Quests</h6>
                                             </div>
@@ -94,7 +94,7 @@
                     </b-row>
                 </b-col>
                 <b-col md="10" class="d-flex flex-column">
-                    <div class="d-flex w-100 align-items-center">
+                    <div class="d-flex w-100 align-items-center h-100" style="flex: 1">
                         <RewardsSmall :message="campaign._id" :score="score"></RewardsSmall>
                         <!--                                <b-button-->
                         <!--                                    size="sm"-->
@@ -302,11 +302,12 @@ export default defineComponent({
     padding: 15px;
 }
 .card-campaign {
+    height: 100%;
     position: relative;
-    //background: url('src/assets/bg-campaign.png');
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 12px;
+    border: 1px solid #3e2c2c9e;
 
     /* Glass Morph Button */
     box-shadow: 10px 14px 47.7px 0px rgba(103, 103, 103, 0.05) inset, 11px 11px 29.4px 0px rgba(0, 0, 0, 0.15);
@@ -331,24 +332,28 @@ export default defineComponent({
     font-size: 20px;
     font-style: italic;
     font-weight: 700;
-    line-height: 30px;
+    line-height: 20px;
     text-transform: uppercase;
     margin-bottom: 0;
+    display: inline;
+    background: #000;
 }
 .camp-title-grad {
     color: #f5f5f5;
-    font-size: 30px;
+    font-size: 35px;
     font-style: italic;
     font-weight: 700;
-    line-height: 40px;
+    line-height: 35px;
     text-transform: uppercase;
     margin-bottom: 0;
 }
 .quest-btn {
+    width: 170px;
     background: linear-gradient(180deg, #2f0707 0%, #300b0b 54.94%);
     border: 1px solid #4f0000;
     border-radius: 1rem;
     padding: 1rem 2rem;
+    margin-bottom: 15px;
 }
 .quest-btn h6 {
     margin-bottom: 0;

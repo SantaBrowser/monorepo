@@ -21,7 +21,7 @@
                         {{ accountStore.account.username }}
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
-                        <BaseDropdownWallets />
+                        <!-- <BaseDropdownWallets /> -->
                     </div>
                 </div>
             </template>
