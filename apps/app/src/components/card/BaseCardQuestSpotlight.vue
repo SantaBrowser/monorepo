@@ -136,6 +136,7 @@ export default defineComponent({
 }
 
 .my-earn-btn {
+    position: relative;
     height: 32px;
     padding: 6px 12px;
     border-radius: 15px;

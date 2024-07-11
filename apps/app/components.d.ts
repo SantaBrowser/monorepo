@@ -180,8 +180,10 @@ declare module 'vue' {
     BTab: typeof import('bootstrap-vue-next')['BTab']
     BTabs: typeof import('bootstrap-vue-next')['BTabs']
     copy: typeof import('./src/components/card/BaseCardLotteryWinner copy.vue')['default']
+    QuestsCarousel: typeof import('./src/components/homepage/QuestsCarousel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TopBrands: typeof import('./src/components/homepage/TopBrands.vue')['default']
   }
   export interface ComponentCustomProperties {
     vBModal: typeof import('bootstrap-vue-next')['vBModal']
