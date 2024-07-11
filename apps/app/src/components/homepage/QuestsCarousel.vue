@@ -183,9 +183,6 @@ export default defineComponent({
     transform: scale(1.1);
     z-index: 3;
     border-radius: 20px;
-    border: 1px solid #a33d3d;
-    background: linear-gradient(155deg, #000 -2.13%, #6a2c2c 136.58%);
-    box-shadow: 0px 4px 53px 0px rgba(212, 70, 70, 0.47);
     backdrop-filter: blur(12.5px);
 }
 .active-slide .quest-title {
@@ -207,7 +204,7 @@ export default defineComponent({
     opacity: 1;
     z-index: 1;
     border-radius: 20px;
-    border: 1.5px solid #333;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
     background: linear-gradient(155deg, rgba(255, 255, 255, 0) -2.13%, rgba(0, 0, 0, 0.15) 136.58%);
     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
     backdrop-filter: blur(12.5px);
@@ -216,9 +213,6 @@ export default defineComponent({
     transform: scale(1.1);
     z-index: 3;
     border-radius: 20px;
-    border: 1px solid #a33d3d;
-    background: linear-gradient(155deg, #000 -2.13%, #6a2c2c 136.58%);
-    box-shadow: 0px 4px 53px 0px rgba(212, 70, 70, 0.47);
     backdrop-filter: blur(12.5px);
 }
 .carousel-control {
