@@ -1,27 +1,34 @@
 <template>
-    <div style="height: 100vh" class="landing-page w-100">
-        <div
-            :style="{
-                opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
-                margin: 0,
-            }"
-            class="d-flex justify-content-center align-items-center flex-column h-100"
-        >
-            <div class="d-flex flex-column gap-4 landing-top">
-                <h1>Santa <span>Rewards</span></h1>
-                <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>
-            </div>
-            <div class="d-flex gap-4">
-                <div v-for="campaign in filteredCampaigns" :key="campaign._id">
-                    <CampaignCard :campaign="campaign" />
+    <div ref="mainComponent" class="snap-container">
+        <div ref="firstDiv" class="snap-item landing-page w-100">
+            <div
+                :style="{
+                    opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
+                    margin: 0,
+                }"
+                class="d-flex justify-content-center align-items-center flex-column h-100"
+            >
+                <div class="d-flex flex-column gap-4 landing-top">
+                    <h1>Santa <span>Rewards</span></h1>
+                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>
                 </div>
-            </div>
+                <div class="d-flex gap-4" style="margin-top: 75px">
+                    <div v-for="campaign in filteredCampaigns" :key="campaign._id">
+                        <CampaignCard :campaign="campaign" @scrollToSecondDiv="scrollToSecondDiv" />
+                    </div>
+                </div>
 
-            <div class="d-flex flex-wrap">
-                <QuestsCarousel :quest-lists="questLists" />
+                <div class="d-flex flex-wrap" style="margin-top: 100px">
+                    <QuestsCarousel :quest-lists="questLists" />
+                </div>
+                <div style="height: 100px"></div>
+                <!-- <BaseCardCampaign :campaign="campaign" /> -->
             </div>
+        </div>
 
-            <!-- <BaseCardCampaign :campaign="campaign" /> -->
+        <div ref="secondDiv" class="snap-item d-flex">
+            <Quests />
+            <BaseSidebar />
         </div>
     </div>
 </template>
@@ -112,6 +119,7 @@ import earningsIcon from '../../assets/earnings-logo.png';
 import * as html from 'html-entities';
 import CampaignCard from '@thxnetwork/app/components/CampaignCard.vue';
 import QuestsCarousel from '@thxnetwork/app/components/homepage/QuestsCarousel.vue';
+import Quests from '../campaign/Quests.vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
@@ -120,6 +128,7 @@ export default defineComponent({
     components: {
         QuestsCarousel,
         CampaignCard,
+        Quests,
     },
     data(): any {
         return {
@@ -255,6 +264,10 @@ export default defineComponent({
                 this.isLoadingSearch = false;
             }, 1000);
         },
+        scrollToSecondDiv() {
+            const secondDiv = this.$refs.secondDiv as HTMLElement;
+            secondDiv.scrollIntoView({ behavior: 'smooth' });
+        },
     },
 });
 </script>
@@ -265,6 +278,7 @@ export default defineComponent({
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    transition: transform 0.5s ease;
 }
 
 .landing-top h1 {
@@ -287,6 +301,17 @@ export default defineComponent({
     font-weight: 400;
     line-height: 16px;
     text-align: center;
+}
+.snap-container {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+.snap-item {
+    scroll-snap-align: start;
+    height: 100vh;
+    background-color: #0c0d15;
 }
 .pagination {
     --bs-pagination-focus-bg: var(--bs-purple-dark);
