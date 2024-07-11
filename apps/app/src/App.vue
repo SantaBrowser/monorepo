@@ -9,7 +9,7 @@
             <transition name="fade" mode="out-in">
                 <router-view class="router-view-app order-lg-0" />
             </transition>
-            <BaseSidebar />
+            <!-- <BaseSidebar /> -->
         </div>
         <BaseModalLogin />
         <BaseModalAccount size="lg" />
