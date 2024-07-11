@@ -68,6 +68,7 @@
                         :locks="reward.locks"
                     /> -->
                     <button
+                        v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
                         block
                         :class="`w-100 position-relative mb-0 ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
@@ -159,6 +160,7 @@
                         :locks="reward.locks"
                     /> -->
                     <button
+                        v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
                         block
                         :class="`w-100 position-relative mb-0 ${isInsufficientPoints ? 'locked' : 'my-btn'}`"

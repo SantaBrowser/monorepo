@@ -1,5 +1,6 @@
 import { Speed } from '@openzeppelin/defender-relay-client';
 import path from 'path';
+import 'dotenv/config';
 
 const required = [
     'AUTH_URL',
