@@ -179,10 +179,12 @@ declare module 'vue' {
     BSpinner: typeof import('bootstrap-vue-next')['BSpinner']
     BTab: typeof import('bootstrap-vue-next')['BTab']
     BTabs: typeof import('bootstrap-vue-next')['BTabs']
+    CampaignCard: typeof import('./src/components/CampaignCard.vue')['default']
     copy: typeof import('./src/components/card/BaseCardLotteryWinner copy.vue')['default']
     QuestsCarousel: typeof import('./src/components/homepage/QuestsCarousel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SocialQuests: typeof import('./src/components/homepage/SocialQuests.vue')['default']
     TopBrands: typeof import('./src/components/homepage/TopBrands.vue')['default']
   }
   export interface ComponentCustomProperties {
