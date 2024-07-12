@@ -1,7 +1,18 @@
 <template>
-    <b-container>
+    <b-container class="mt-4">
         <b-row>
-            <b-col lg="7" xl="6" offset-xl="1">
+            <b-col
+                lg="7"
+                xl="6"
+                offset-xl="1"
+                style="
+                    background: rgba(44, 44, 44, 0.3);
+                    box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
+                    backdrop-filter: blur(12.5px);
+                    margin-right: 20px;
+                    border-radius: 7px;
+                "
+            >
                 <div v-if="!accountStore.isMobile" class="mb-2 ps-3 d-flex align-items-center bg-primary rounded p-2">
                     <div>
                         <strong>Quests</strong>
@@ -47,7 +58,13 @@
                     </b-tab>
                 </b-tabs>
             </b-col>
-            <b-col v-if="!accountStore.isMobile" lg="5" xl="4">
+            <b-col
+                v-if="!accountStore.isMobile"
+                lg="5"
+                xl="4"
+                class="h-100"
+                style="background: rgba(44, 44, 44, 0.3); border-radius: 7px"
+            >
                 <div class="mb-2 ps-3 d-flex align-items-center bg-primary rounded p-2">
                     <div>
                         <strong>Rewards</strong>
@@ -89,6 +106,7 @@ import BaseCardRewardCustom from '../../components/card/BaseCardRewardCustom.vue
 import BaseCardRewardCoupon from '../../components/card/BaseCardRewardCoupon.vue';
 import BaseCardRewardDiscordRole from '../../components/card/BaseCardRewardDiscordRole.vue';
 import BaseCardRewardGalachain from '../../components/card/BaseCardRewardGalachain.vue';
+import { SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 
 const componentMap: { [variant: string]: string } = {
     [RewardVariant.Coin]: 'BaseCardRewardCoin',
@@ -139,6 +157,7 @@ export default defineComponent({
             return !this.availableQuestCount;
         },
         availableQuestCount() {
+            console.log('availableQuestCount', this.questStore);
             return this.questStore.quests.filter((q: TBaseQuest) => q.isAvailable).length;
         },
         quests() {
@@ -153,9 +172,9 @@ export default defineComponent({
                 if (!this.accountStore.account) {
                     await this.accountStore.getAccount();
                 }
-                this.questStore.list();
-                this.rewardStore.list();
-                this.accountStore.getParticipants();
+                this.questStore.list(SANTA_CAMPAIGN);
+                this.rewardStore.list(SANTA_CAMPAIGN);
+                this.accountStore.getParticipants(SANTA_CAMPAIGN);
             },
             immediate: true,
         },

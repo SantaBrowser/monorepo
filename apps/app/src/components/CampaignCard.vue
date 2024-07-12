@@ -14,7 +14,7 @@
                     <img v-if="campaign._id === SANTA_CAMPAIGN" :src="imgStarCoin" alt="Star Coin" width="24" />
                 </p>
 
-                <button @click="goTo(`/c/${campaign.slug}`)">Browse Quests</button>
+                <button @click="goToSecondDiv">Browse Quests</button>
             </div>
         </div>
     </div>
@@ -27,6 +27,7 @@ import { decodeHTML } from '../utils/decode-html';
 import { mapStores } from 'pinia';
 import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '../config/secrets';
 import imgStarCoin from '../assets/star-coin.png';
+import { useQuestStore } from '../stores/Quest';
 type TCampaignProps = {
     _id: string;
     title: string;
@@ -57,7 +58,7 @@ export default {
         };
     },
     computed: {
-        ...mapStores(useAccountStore, useRewardStore),
+        ...mapStores(useAccountStore, useRewardStore, useQuestStore),
         participant() {
             return this.accountStore.participants.find(
                 (p) => p.sub === this.accountStore.account?.sub && p.poolId === this.campaign._id,
@@ -87,9 +88,11 @@ export default {
         },
     },
     methods: {
-        goTo(path: string) {
-            this.isLoading = true;
-            this.$router.push(path);
+        async goToSecondDiv() {
+            this.$emit('scrollToSecondDiv');
+            await this.questStore.list(this.campaign._id);
+            await this.rewardStore.list(this.campaign._id);
+            await this.accountStore.getParticipants(this.campaign._id);
         },
     },
 };

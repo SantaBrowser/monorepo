@@ -4,22 +4,32 @@
         header-class="p-0"
         body-class="d-flex flex-column p-0"
         :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted }"
+        style="background: transparent"
     >
         <template #header>
             <b-card-title
                 class="d-flex p-3 m-0 align-items-center"
-                style="cursor: pointer"
+                style="cursor: pointer; background-color: #0e0f19"
                 @click="isVisible = !isVisible"
             >
                 <div class="d-flex align-items-center justify-content-center" style="width: 25px">
                     <i class="me-2 text-primary" :class="iconMap[quest.variant]"></i>
                 </div>
                 <div class="flex-grow-1 pe-2">{{ decodeHTML(quest.title) }}</div>
-                <div v-if="quest.amount" class="text-accent fw-bold">{{ quest.amount }}</div>
+                <div v-if="quest.amount" class="text-primary fw-bold">{{ quest.amount }}</div>
             </b-card-title>
         </template>
 
-        <b-collapse v-model="isVisible">
+        <b-collapse
+            v-model="isVisible"
+            style="
+                background: linear-gradient(
+                    155deg,
+                    rgba(255, 255, 255, 0.02) -2.13%,
+                    rgba(42, 42, 42, 0.11) 136.58%
+                ) !important;
+            "
+        >
             <img v-if="quest.image" class="img-fluid" :src="quest.image" alt="header image" />
 
             <div class="px-3 mt-3">

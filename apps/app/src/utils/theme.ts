@@ -4,7 +4,7 @@ export const DEFAULT_ELEMENTS = {
     btnBg: {
         label: 'Button',
         // color: '#5942c1',
-        color: '#232323',
+        color: '#B14F42',
     },
     btnText: {
         label: 'Button Text',
@@ -108,7 +108,8 @@ export function getStyles(elements: any, colors: any) {
             '--thx-accent': theme.colors.accent,
         },
         '.text-primary': {
-            '--bs-primary-rgb': theme.elements.btnBg,
+            // '--bs-primary-rgb': theme.elements.btnBg,
+            '--bs-primary-rgb': theme.elements.text,
         },
         'body,.bg-splash,.card-header-bg': {
             '--bs-secondary-bg': theme.elements.bodyBg,

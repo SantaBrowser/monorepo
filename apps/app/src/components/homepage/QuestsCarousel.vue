@@ -27,7 +27,7 @@
                         <img :src="getQuestImage(quest)" class="quest-image" />
                         <h3 class="quest-title">{{ quest.title }}</h3>
                         <div class="quest-info">
-                            <span class="quest-description">{{ quest.description }}</span>
+                            <span class="quest-description">{{ formattedAmount(quest) }}</span>
                         </div>
                     </div>
                 </div>
@@ -229,12 +229,12 @@ export default defineComponent({
     z-index: 10;
 }
 .carousel-control.prev {
-    left: 25%;
-    transform: translateX(-25%);
+    left: 20%;
+    transform: translateX(-20%);
 }
 .carousel-control.next {
-    right: 25%;
-    transform: translateX(-25%);
+    right: 20%;
+    transform: translateX(20%);
 }
 .blurred-slide {
     filter: blur(5px);

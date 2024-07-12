@@ -108,8 +108,8 @@ export default defineComponent({
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: auto;
+    // overflow-x: hidden;
+    // overflow-y: auto;
     height: 100% !important;
 }
 </style>
