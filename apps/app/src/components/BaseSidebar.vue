@@ -1,5 +1,5 @@
 <template>
-    <aside v-if="isShown" class="sidebar" :style="{ backgroundImage: `url(src/assets/bg-mosaic.png)` }">
+    <aside v-if="isShown" class="sidebar">
         <div class="sidebar-panel h-100">
             <BaseCardAccount />
             <div style="height: 10px"></div>
@@ -42,7 +42,7 @@ export default defineComponent({
 </script>
 <style lang="scss">
 .sidebar {
-    background-color: transparent;
+    background: rgba(44, 44, 44, 0.3);
     .sidebar-panel {
         display: flex;
         flex-direction: column;
