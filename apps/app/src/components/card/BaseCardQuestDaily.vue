@@ -24,7 +24,7 @@
                 style="width: 50px; height: 50px"
                 class="my-1 me-3 d-flex flex-column align-items-center justify-content-center"
                 :variant="key < quest.entries.length ? 'success' : 'primary'"
-                :class="key < quest.entries.length ? 'bg-success text-white' : 'bg-primary text-white'"
+                :class="key < quest.entries.length ? 'bg-success text-white bg-purple' : 'bg-primary text-white'"
             >
                 <small>Day {{ key + 1 }}</small>
                 <strong class="h5 mb-0">{{ formatAmount(amount) }} </strong>
@@ -33,7 +33,7 @@
 
         <template #button>
             <b-button
-                class="w-100"
+                class="w-100 bg-purple"
                 block
                 variant="primary"
                 :disabled="isSubmitting || !quest.isAvailable"
@@ -41,7 +41,7 @@
             >
                 <b-spinner v-if="isSubmitting" small />
                 <template v-else-if="quest.amount">
-                    Earn <strong>{{ quest.amount }} points</strong>
+                    Claim <strong>{{ quest.amount }} points</strong>
                 </template>
                 <template v-else>Complete Quest</template>
             </b-button>
@@ -142,3 +142,10 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.bg-purple {
+    background-color: #642a9f !important;
+    border-color: #642a9f !important;
+}
+</style>

@@ -13,7 +13,7 @@
                     border-radius: 7px;
                 "
             >
-                <div v-if="!accountStore.isMobile" class="mb-2 ps-3 d-flex align-items-center bg-primary rounded p-2">
+                <div v-if="!accountStore.isMobile" class="mb-2 ps-3 d-flex align-items-center bg-quests rounded p-2">
                     <div>
                         <strong>Quests</strong>
                         <div class="text-opaque">Earn points with tasks</div>
@@ -65,19 +65,38 @@
                 class="h-100"
                 style="background: rgba(44, 44, 44, 0.3); border-radius: 7px"
             >
-                <div class="mb-2 ps-3 d-flex align-items-center bg-primary rounded p-2">
+                <div
+                    class="mb-2 ps-3 d-flex align-items-center bg-rewards rounded p-2"
+                    style="justify-content: space-between"
+                >
                     <div>
                         <strong>Rewards</strong>
-                        <div class="text-opaque">Spend your points!</div>
+                        <div class="text-opaque">Spend your points to redeem</div>
                     </div>
-                    <i class="fas fa-gift text-opaque ms-auto me-3" style="font-size: 1.2rem" />
+                    <select v-model="selectedValue" style="width: 30%; background-color: rgba(10, 10, 10, 0.5)">
+                        <option>All</option>
+                        <option>Santa</option>
+                        <option>Playwall</option>
+                    </select>
                 </div>
-                <component
-                    :is="componentMap[reward.variant]"
-                    v-for="reward of rewardStore.rewards"
-                    :reward="reward"
-                    class="mb-2"
-                />
+                <div v-if="selectedValue == 'All' || selectedValue == 'Santa'">
+                    <component
+                        :is="componentMap[reward.variant]"
+                        v-for="reward of reward2Store.rewards"
+                        :reward="reward"
+                        class="mb-2 gr-2"
+                        style="width: 50%"
+                    />
+                </div>
+                <div v-if="selectedValue == 'All' || selectedValue == 'Playwall'">
+                    <component
+                        :is="componentMap[reward.variant]"
+                        v-for="reward of rewardStore.rewards"
+                        :reward="reward"
+                        class="mb-2 gr-2"
+                        style="width: 50%"
+                    />
+                </div>
             </b-col>
         </b-row>
     </b-container>
@@ -90,6 +109,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useWalletStore } from '../../stores/Wallet';
 import { useQuestStore } from '../../stores/Quest';
 import { useRewardStore } from '../../stores/Reward';
+import { useReward2Store } from '../../stores/Reward';
 import { RewardSortVariant } from '../../types/enums/rewards';
 import { questComponentMap, sortMap } from '../../utils/quests';
 import BaseCardQuestInvite from '../../components/card/BaseCardQuestInvite.vue';
@@ -106,8 +126,11 @@ import BaseCardRewardCustom from '../../components/card/BaseCardRewardCustom.vue
 import BaseCardRewardCoupon from '../../components/card/BaseCardRewardCoupon.vue';
 import BaseCardRewardDiscordRole from '../../components/card/BaseCardRewardDiscordRole.vue';
 import BaseCardRewardGalachain from '../../components/card/BaseCardRewardGalachain.vue';
-import { SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
+import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
+import { ref } from 'vue';
+import { SelectOption } from 'bootstrap-vue-next/dist/src/types';
 
+const selectedValue = ref<string>('All');
 const componentMap: { [variant: string]: string } = {
     [RewardVariant.Coin]: 'BaseCardRewardCoin',
     [RewardVariant.NFT]: 'BaseCardRewardNFT',
@@ -136,6 +159,7 @@ export default defineComponent({
     },
     data() {
         return {
+            selectedValue,
             componentMap,
             questComponentMap,
             isLgScreen: window.innerWidth > 1000,
@@ -148,6 +172,7 @@ export default defineComponent({
         ...mapStores(useAccountStore),
         ...mapStores(useQuestStore),
         ...mapStores(useRewardStore),
+        ...mapStores(useReward2Store),
         ...mapStores(useWalletStore),
         isSubscribed() {
             const { subscription } = useAccountStore();
@@ -173,7 +198,8 @@ export default defineComponent({
                     await this.accountStore.getAccount();
                 }
                 this.questStore.list(SANTA_CAMPAIGN);
-                this.rewardStore.list(SANTA_CAMPAIGN);
+                this.rewardStore.list(CP_CAMPAIGN);
+                this.reward2Store.list(SANTA_CAMPAIGN);
                 this.accountStore.getParticipants(SANTA_CAMPAIGN);
             },
             immediate: true,
@@ -216,6 +242,20 @@ export default defineComponent({
     background-size: cover;
 }
 
+.bg-quests {
+    background-image: url('/src/assets/bg-quests.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.bg-rewards {
+    background-image: url('/src/assets/bg-rewards.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 .my-nav .card-header {
     background: #0b0b0b;
     border-radius: 5px !important;
@@ -252,5 +292,10 @@ export default defineComponent({
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+}
+
+.gr-2 {
+    width: 50% !important;
+    display: inline-block !important;
 }
 </style>

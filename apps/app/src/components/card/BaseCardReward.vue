@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body class="x-lg-0 card-wrapper h-100" :class="{ 'card-promoted': reward.isPromoted }">
+    <b-card no-body class="gr-2 x-lg-0 card-wrapper h-100" :class="{ 'card-promoted': reward.isPromoted }">
         <!-- <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
             <b-badge
                 v-if="reward.expiry && reward.expiry.date"
@@ -71,7 +71,7 @@
                         v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
                         block
-                        :class="`w-100 position-relative mb-0 ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
+                        :class="`w-100 position-relative mb-0 bg-red ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
                         :disabled="isDisabled"
                     >
                         <div v-if="isInsufficientPoints">Locked</div>
@@ -79,10 +79,10 @@
                             v-if="reward.pointPrice && !isInsufficientPoints"
                             class="d-flex align-items-center justify-content-center"
                         >
-                            <span class="reward-text">
+                            <!-- <span class="reward-text">
                                 {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
-                            </span>
-                            <div class="pipe"></div>
+                            </span> -->
+                            <!-- <div class="pipe"></div> -->
                             <span class="point me-1">{{ formattedPrice }}</span>
                             <img
                                 v-if="reward.poolId === SANTA_CAMPAIGN"
@@ -163,7 +163,7 @@
                         v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
                         block
-                        :class="`w-100 position-relative mb-0 ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
+                        :class="`w-100 position-relative mb-0 bg-red ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
                         :disabled="isDisabled"
                     >
                         <div v-if="isInsufficientPoints">Locked</div>
@@ -171,10 +171,10 @@
                             v-if="reward.pointPrice && !isInsufficientPoints"
                             class="d-flex align-items-center justify-content-center"
                         >
-                            <span class="reward-text">
+                            <!-- <span class="reward-text">
                                 {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
                             </span>
-                            <div class="pipe"></div>
+                            <div class="pipe"></div> -->
                             <span class="point me-1">{{ formattedPrice }}</span>
                             <img
                                 v-if="reward.poolId === SANTA_CAMPAIGN"
@@ -466,6 +466,7 @@ export default defineComponent({
     font-style: normal;
     font-weight: 500;
     line-height: 22px;
+    // height: 60px;
 }
 .c-quest-title .fas {
     color: rgba(217, 217, 217, 0.2);
@@ -474,5 +475,14 @@ export default defineComponent({
 .locked {
     background: #4444444f;
     color: #ff6b6b;
+}
+
+.gr-2 {
+    width: 50% !important;
+    display: inline-block !important;
+}
+
+.bg-red {
+    background-color: #972e2e !important;
 }
 </style>
