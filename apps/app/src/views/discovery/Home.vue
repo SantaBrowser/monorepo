@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <div ref="secondDiv" class="snap-item d-flex">
+        <div ref="secondDiv" class="snap-item d-flex bg-secondDiv">
             <Quests />
             <BaseSidebar />
         </div>
@@ -305,7 +305,7 @@ export default defineComponent({
 .snap-container {
     height: 100vh;
     overflow-y: scroll;
-    scroll-snap-type: y mandatory;
+    // scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
 }
 .snap-item {
@@ -450,6 +450,14 @@ export default defineComponent({
 
 #left-sidebar {
     background-image: url('/src/assets/bg-mosaic.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 0;
+    margin: 0;
+}
+
+.bg-secondDiv {
+    background-image: url('/src/assets/bg-secondDiv.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     padding: 0;
