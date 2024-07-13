@@ -81,6 +81,7 @@ const controller = async (req: Request, res: Response) => {
                 ...result[QuestCustom.collection.name].map(mapper).sort(sortByDate),
                 ...result[QuestWeb3.collection.name].map(mapper).sort(sortByDate),
                 ...result[QuestGitcoin.collection.name].map(mapper).sort(sortByDate),
+                ...result[QuestWebhook.collection.name].map(mapper).sort(sortByDate),
             ];
 
             return {

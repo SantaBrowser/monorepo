@@ -1,11 +1,12 @@
 <template>
     <aside v-if="isShown" class="sidebar">
         <div class="sidebar-panel h-100">
-            <BaseCardAccount />
-            <div style="height: 10px"></div>
+            <!-- <BaseCardAccount /> -->
+            <BaseReferral />
             <!-- <hr class="mt-2 mb-0" style="opacity: 0.1" /> -->
             <!-- <BaseCardRewards /> -->
             <BaseQuestLeaderboardSmall />
+            <div style="height: 10px"></div>
             <BaseCardDiscord class="mt-auto" />
         </div>
     </aside>
@@ -44,8 +45,8 @@ export default defineComponent({
 .sidebar {
     background: rgba(44, 44, 44, 0.3);
     .sidebar-panel {
-        display: flex;
-        flex-direction: column;
+        // display: flex;
+        // flex-direction: column;
         width: 350px;
         max-width: 350px;
         border-radius: 8px;
@@ -67,5 +68,13 @@ export default defineComponent({
 .sidebar .bg-splash {
     background-color: transparent;
     border-radius: 0;
+}
+
+.bg-referral {
+    background-color: #cdc40c;
+    color: black;
+    margin: 15px;
+    border-radius: 10px;
+    border: 0.5px solid rgba(76, 46, 115, 0.4);
 }
 </style>

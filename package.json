@@ -90,8 +90,6 @@
         "promise-poller": "^1.9.1",
         "protobufjs": "^7.2.4",
         "puppeteer": "21.3.4",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
         "sharp": "^0.33.4",
         "short-uuid": "^5.2.0",
         "tslib": "^2.3.0",

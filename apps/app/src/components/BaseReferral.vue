@@ -1,5 +1,5 @@
 <template>
-    <b-card class="">
+    <b-card class="bg-referral">
         <b-row class="align-items-center">
             <b-col>
                 <div class="referral-text">
@@ -41,22 +41,22 @@ export default {
 <style scoped>
 .card {
     flex: 1 1 50%;
-    background: url('../assets/bg-referral.png') no-repeat center center;
-    background-size: cover;
-    color: #fff;
+    /* background: url('../assets/bg-referral.png') no-repeat center center; */
+    /* background-size: cover; */
+    color: black;
     border-radius: 15px;
 }
 .referral-text h4 {
-    color: #fff;
-    font-size: 20px;
+    color: black;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
 }
 
 .referral-text span {
-    color: #ffc041;
-    font-size: 14px;
+    color: black;
+    font-size: 13px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -67,7 +67,7 @@ export default {
     align-items: center;
     padding: 3px;
     color: #ccc;
-    border-radius: 20px;
+    border-radius: 5px;
 }
 .no-outline {
     flex-grow: 1;
@@ -82,7 +82,7 @@ export default {
     width: 85px;
     padding: 5px 0;
     white-space: nowrap;
-    border-radius: 15px;
+    border-radius: 5px;
     border: 1px solid rgba(210, 179, 89, 0.4);
     background: linear-gradient(
         94deg,
@@ -105,5 +105,14 @@ export default {
 
 .ref-btn {
     flex: 0;
+}
+
+.bg-referral {
+    background-color: #cdc40c;
+    color: black;
+    margin: 15px;
+    border-radius: 10px;
+    border: 0.5px solid rgba(76, 46, 115, 0.4);
+    display: block;
 }
 </style>
