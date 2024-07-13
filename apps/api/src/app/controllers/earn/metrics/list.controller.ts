@@ -1,3 +1,4 @@
+import { NODE_ENV } from '@thxnetwork/api/config/secrets';
 import BalancerService from '@thxnetwork/api/services/BalancerService';
 import WalletService from '@thxnetwork/api/services/WalletService';
 import { ChainId } from '@thxnetwork/common/enums';
@@ -8,7 +9,7 @@ const validation = [query('walletId').optional().isMongoId()];
 
 const controller = async (req: Request, res: Response) => {
     const wallet = await WalletService.findById(req.query.walletId as string);
-    const result = BalancerService.getMetrics(wallet ? wallet.chainId : ChainId.Polygon);
+    const result = BalancerService.getMetrics(wallet ? wallet.chainId : (NODE_ENV === 'production' ? ChainId.Polygon : ChainId.Sepolia));
 
     res.json(result);
 };

@@ -7,7 +7,7 @@ import https from 'https';
 
 const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_API_JWT });
 
-if (NODE_ENV !== 'production') {
+if (NODE_ENV !== 'production' && NODE_ENV !== 'sepolia') {
     const httpsAgent = new https.Agent({
         rejectUnauthorized: false,
     });

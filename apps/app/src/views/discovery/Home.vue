@@ -528,4 +528,12 @@ export default defineComponent({
     padding: 0;
     margin: 0;
 }
+
+.bg-secondDiv {
+    background-image: url('/src/assets/bg-secondDiv.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 0;
+    margin: 0;
+}
 </style>

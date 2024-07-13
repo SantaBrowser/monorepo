@@ -8,7 +8,7 @@ export const safeVersion: SafeVersion = '1.3.0';
 
 export default class ContractService {
     static getChainId() {
-        return process.env.NODE_ENV !== 'production' ? ChainId.Hardhat : ChainId.Polygon;
+        return process.env.NODE_ENV === 'production' ? ChainId.Polygon : (process.env.NODE_ENV === 'sepolia' ? ChainId.Sepolia : ChainId.Hardhat);
     }
 
     static getContract(contractName: TContractName, chainId: ChainId, address: string) {

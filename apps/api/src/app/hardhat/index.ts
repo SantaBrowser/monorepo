@@ -72,7 +72,28 @@ export const contractNetworks = {
 
         CompanyMultiSig: '0xaf9d56684466fcFcEA0a2B7fC137AB864d642946',
     },
+    '11155111': {
+        // Safe
+        safeSingletonAddress: '0x69f4D1788e39c87893C980c06EdF4b7f686e2938',
+        simulateTxAccessorAddress: '0x727a77a074D1E6c4530e814F89E618a3298FC044',
+        safeProxyFactoryAddress: '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC',
+        fallbackHandlerAddress: '0x017062a1dE2FE6b99BE3d9d37841FeD19F573804',
+        createCallAddress: '0xB19D6FFc2182150F8Eb585b79D4ABcd7C5640A9d',
+        multiSendAddress: '0x998739BFdAAdde7C933B942a68053933098f9EDa',
+        multiSendCallOnlyAddress: '0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B',
+        signMessageLibAddress: '0x98FFBBF51bb33A056B08ddf711f289936AafF717',
+    },
     '137': {
+        //Safe
+        safeMasterCopyAddress: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
+        safeSingletonAddress: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
+        simulateTxAccessorAddress: '0x59AD6735bCd8152B84860Cb256dD9e96b85F69Da',
+        safeProxyFactoryAddress: '0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2',
+        fallbackHandlerAddress: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+        createCallAddress: '0x7cbB62EaA69F79e6873cD1ecB2392971036cFAa4',
+        multiSendAddress: '0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761',
+        multiSendCallOnlyAddress: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+        signMessageLibAddress: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
         // Tokens
         BPT: '0xb204BF10bc3a5435017D3db247f56dA601dFe08A',
         BPTGauge: '0xf16BECC1Bcaf0fF0b865024a644a4da1A2f8585c',

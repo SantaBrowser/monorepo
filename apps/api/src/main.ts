@@ -21,15 +21,17 @@ if (LOCAL_CERT && LOCAL_CERT_KEY) {
         cert: fs.readFileSync(path.resolve(path.dirname(__dirname), LOCAL_CERT)),
     };
     server = https.createServer(ssl, app);
-    httpProxy
-        .createProxyServer({
-            target: {
-                host: '127.0.0.1',
-                port: 8545,
-            },
-            ssl,
-        })
-        .listen(8547);
+    if(NODE_ENV == 'development'){
+        httpProxy
+            .createProxyServer({
+                target: {
+                    host: '127.0.0.1',
+                    port: 8545,
+                },
+                ssl,
+            })
+            .listen(8547);
+    }
 } else {
     server = http.createServer(app);
 }
