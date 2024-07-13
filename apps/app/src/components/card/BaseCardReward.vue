@@ -421,8 +421,8 @@ export default defineComponent({
 }
 .placeholder {
     background-color: #ccc;
-    width: 92px;
-    height: 92px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
 }
 .card-wrapper {

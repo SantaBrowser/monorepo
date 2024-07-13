@@ -30,7 +30,10 @@
 
         <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
             <HeaderNav :is-visible="isHeaderVisible" />
-            <div class="d-flex h-100"><Quests /> <BaseSidebar /></div>
+            <div class="d-flex h-100">
+                <Quests />
+                <BaseSidebar />
+            </div>
         </div>
     </div>
 </template>
