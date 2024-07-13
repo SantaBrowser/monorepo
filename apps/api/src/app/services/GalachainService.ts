@@ -36,6 +36,7 @@ export default class GalachainService {
         const methodMap = {
             development: this.evaluateTransactionLocal.bind(this),
             production: this.submitTransactonREST.bind(this),
+            sepolia: this.submitTransactonREST.bind(this),
         };
         return methodMap[NODE_ENV](methodName, contract, dto, privateKey);
     }
@@ -44,6 +45,7 @@ export default class GalachainService {
         const methodMap = {
             development: this.submitTransactionLocal.bind(this),
             production: this.submitTransactonREST.bind(this),
+            sepolia: this.submitTransactonREST.bind(this),
         };
         return methodMap[NODE_ENV](methodName, contract, dto, privateKey);
     }
@@ -54,14 +56,14 @@ export default class GalachainService {
         dto: ChainCallDTO,
         privateKey: string,
     ) {
-        const client = getClient(GalachainRole.Curator); // TODO Make this dynamic
-        const response = await client.forContract(contract).evaluateTransaction(methodName, dto.signed(privateKey));
+        // const client = getClient(GalachainRole.Curator); // TODO Make this dynamic
+        // const response = await client.forContract(contract).evaluateTransaction(methodName, dto.signed(privateKey));
 
-        if (GalaChainResponse.isError(response)) {
-            throw new Error(`${response.Message} (${response.ErrorKey})`);
-        } else {
-            return response.Data;
-        }
+        // if (GalaChainResponse.isError(response)) {
+        //     throw new Error(`${response.Message} (${response.ErrorKey})`);
+        // } else {
+        //     return response.Data;
+        // }
     }
 
     static async submitTransactionLocal(
@@ -70,14 +72,14 @@ export default class GalachainService {
         dto: ChainCallDTO,
         privateKey: string,
     ) {
-        const client = getClient(GalachainRole.Curator); // TODO Make this dynamic
-        const response = await client.forContract(contract).submitTransaction(methodName, dto.signed(privateKey));
+        // const client = getClient(GalachainRole.Curator); // TODO Make this dynamic
+        // const response = await client.forContract(contract).submitTransaction(methodName, dto.signed(privateKey));
 
-        if (GalaChainResponse.isError(response)) {
-            throw new BadRequestError(`${response.Message} (${response.ErrorKey})`);
-        } else {
-            return response.Data;
-        }
+        // if (GalaChainResponse.isError(response)) {
+        //     throw new BadRequestError(`${response.Message} (${response.ErrorKey})`);
+        // } else {
+        //     return response.Data;
+        // }
     }
 
     static async submitTransactonREST(

@@ -19,7 +19,7 @@ declare global {
 const pinia = createPinia();
 const app = createApp(App);
 
-if (MODE === 'production') {
+if (MODE === 'production' || MODE === 'sepolia') {
     Sentry.init(app, router, [WIDGET_URL, API_URL, AUTH_URL]);
 }
 // Create the Mixpanel instance

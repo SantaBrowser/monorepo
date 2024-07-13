@@ -5,12 +5,13 @@ import '@nomicfoundation/hardhat-toolbox';
 dotenv.config();
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY || '';
-const POLYGON_PRIVATE_KEY = process.env.POLYGON_PRIVATE_KEY || '';
+const POLYGON_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 const ETHERSCAN_POLYGON_API_KEY = process.env.ETHERSCAN_POLYGON_API_KEY || '';
 const ETHERSCAN_BASE_API_KEY = process.env.ETHERSCAN_BASE_API_KEY || '';
+const SEPOLIA_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 
 const config: HardhatUserConfig = {
-    defaultNetwork: 'hardhat',
+    defaultNetwork: 'polygon',
     networks: {
         hardhat: {
             accounts: [
@@ -31,6 +32,16 @@ const config: HardhatUserConfig = {
                     privateKey: 'eea0247bd059ac4d2528adb36bb0de003d62ba568e3197984b61c41d9a132df0',
                 },
             ],
+        },
+        sepolia: {
+            url: "https://ethereum-sepolia-rpc.publicnode.com",
+            accounts: SEPOLIA_PRIVATE_KEY ? [SEPOLIA_PRIVATE_KEY]: [],
+            chainId: 11155111,
+        },
+        polygon: {
+            url: "https://rpc.ankr.com/polygon",
+            accounts: POLYGON_PRIVATE_KEY ? [POLYGON_PRIVATE_KEY]: [],
+            chainId: 137,
         },
     },
     paths: {

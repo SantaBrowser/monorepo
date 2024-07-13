@@ -7,7 +7,7 @@ import { NODE_ENV } from '@thxnetwork/api/config/secrets';
 const validation = [query('chainId').optional().isNumeric(), query('poolId').optional().isString()];
 
 const controller = async (req: Request, res: Response) => {
-    const chainId = NODE_ENV === 'production' ? ChainId.Polygon : ChainId.Hardhat;
+    const chainId = NODE_ENV === 'production' ? ChainId.Polygon : (NODE_ENV === 'sepolia' ? ChainId.Sepolia : ChainId.Hardhat);
     const wallets = await Wallet.find({
         sub: req.auth.sub,
         chainId,

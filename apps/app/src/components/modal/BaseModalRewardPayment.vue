@@ -127,6 +127,7 @@ export default defineComponent({
                 walletStore.list();
                 this.isAlertSuccessShown = true;
             } catch (res) {
+                console.log('error');
                 console.error(res);
                 const { error } = res as { error: { message: string } };
                 this.error = error ? error.message : 'An error occurred. Please try again.';

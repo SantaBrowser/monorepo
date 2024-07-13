@@ -186,10 +186,24 @@ export const addTokenForWallet = async (erc20: ERC20Document, wallet: WalletDocu
 };
 
 export const importToken = async (chainId: number, address: string, sub: string, logoImgUrl: string) => {
+    console.log({
+        chainId,
+        address,
+        sub,
+    });
     const { web3 } = getProvider(chainId);
     const { abi } = getArtifact('THXERC20_LimitedSupply');
-    const contract = new web3.eth.Contract(abi);
+    const contract = new web3.eth.Contract(abi, address);
     const [name, symbol] = await Promise.all([contract.methods.name().call(), contract.methods.symbol().call()]);
+    console.log({
+        name,
+        symbol,
+        address: toChecksumAddress(address),
+        chainId,
+        type: ERC20Type.Unknown,
+        sub,
+        logoImgUrl,
+    });
     const erc20 = await ERC20.create({
         name,
         symbol,

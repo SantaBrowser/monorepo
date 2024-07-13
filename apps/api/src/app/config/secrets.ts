@@ -1,5 +1,6 @@
 import { Speed } from '@openzeppelin/defender-relay-client';
 import path from 'path';
+import 'dotenv/config';
 
 const required = [
     'AUTH_URL',
@@ -35,6 +36,16 @@ if (process.env.NODE_ENV === 'production') {
             'TWITTER_API_TOKEN',
         ],
     );
+} else if (process.env.NODE_ENV === 'sepolia') {
+    required.push(
+        ...[
+            'GCLOUD_RECAPTCHA_API_KEY',
+            'SEPOLIA_RPC',
+            'INFURA_IPFS_PROJECT_ID',
+            'INFURA_IPFS_PROJECT_SECRET',
+            'TWITTER_API_TOKEN',
+        ],
+    );
 } else if (process.env.NODE_ENV === 'development') {
     required.push(...['PRIVATE_KEY', 'HARDHAT_RPC', 'LOCAL_CERT', 'LOCAL_CERT_KEY', 'TWITTER_API_TOKEN']);
 }
@@ -64,7 +75,8 @@ export const DASHBOARD_URL = process.env.DASHBOARD_URL || '';
 export const WIDGET_URL = process.env.WIDGET_URL || '';
 export const PUBLIC_URL = process.env.PUBLIC_URL || '';
 export const HARDHAT_RPC = process.env.HARDHAT_RPC || '';
-export const POLYGON_RPC = process.env.POLYGON_RPC || 'https://rpc.ankr.com/polygon';
+export const POLYGON_RPC = process.env.POLYGON_RPC;
+export const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
 export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth';
 export const MONGODB_URI = String(process.env.MONGODB_URI) || '';
 export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
@@ -104,7 +116,7 @@ export const TWITTER_API_TOKEN = process.env.TWITTER_API_TOKEN || '';
 export const IPFS_BASE_URL = 'https://ipfs.io/ipfs/';
 export const WEBHOOK_REFERRAL = process.env.WEBHOOK_REFERRAL || '';
 export const WEBHOOK_MILESTONE = process.env.WEBHOOK_MILESTONE || '';
-export const SAFE_TXS_SERVICE = process.env.SAFE_TXS_SERVICE || 'https://safe-transaction-polygon.safe.global';
+export const SAFE_TXS_SERVICE = process.env.NODE_ENV === 'production' ? 'https://safe-transaction-polygon.safe.global' : 'https://safe-transaction-sepolia.safe.global';
 export const BOT_TOKEN = process.env.BOT_TOKEN || '';
 export const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '';
 export const GITCOIN_API_KEY = process.env.GITCOIN_API_KEY || '';

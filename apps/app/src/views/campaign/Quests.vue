@@ -130,7 +130,6 @@ import BaseCardRewardDiscordRole from '../../components/card/BaseCardRewardDisco
 import BaseCardRewardGalachain from '../../components/card/BaseCardRewardGalachain.vue';
 import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 import { ref } from 'vue';
-import { SelectOption } from 'bootstrap-vue-next/dist/src/types';
 
 const selectedValue = ref<string>('All');
 const componentMap: { [variant: string]: string } = {
