@@ -4,7 +4,7 @@
             <b-col
                 lg="7"
                 xl="6"
-                offset-xl="1"
+                offset-xl="0"
                 style="
                     background: rgba(44, 44, 44, 0.3);
                     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
@@ -61,8 +61,10 @@
             <b-col
                 v-if="!accountStore.isMobile"
                 lg="5"
-                xl="4"
+                xl="5"
+                xxl="4"
                 class="h-100"
+                offset-xl="0"
                 style="background: rgba(44, 44, 44, 0.3); border-radius: 7px"
             >
                 <div
@@ -79,7 +81,7 @@
                         <option>Playwall</option>
                     </select>
                 </div>
-                <div v-if="selectedValue == 'All' || selectedValue == 'Santa'">
+                <div v-if="selectedValue == 'All' || selectedValue == 'Santa'" class="rewards-container">
                     <component
                         :is="componentMap[reward.variant]"
                         v-for="reward of reward2Store.rewards"
@@ -295,7 +297,21 @@ export default defineComponent({
 }
 
 .gr-2 {
-    width: 50% !important;
-    display: inline-block !important;
+    width: 48% !important;
+    .card-body {
+        height: 230px;
+        min-height: 230px !important;
+        max-height: 230px !important;
+    }
+}
+
+.rewards-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    padding: 0px;
+    gap: 15px;
 }
 </style>
