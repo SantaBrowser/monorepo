@@ -50,7 +50,7 @@ export default class GalachainService {
 
     static async evaluateTransactionLocal(
         methodName: string,
-        contract: TGalachainContract | any,
+        contract: TGalachainContract,
         dto: ChainCallDTO,
         privateKey: string,
     ) {
@@ -66,7 +66,7 @@ export default class GalachainService {
 
     static async submitTransactionLocal(
         methodName: string,
-        contract: TGalachainContract | any,
+        contract: TGalachainContract,
         dto: ChainCallDTO,
         privateKey: string,
     ) {

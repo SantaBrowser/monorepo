@@ -27,7 +27,7 @@
             </template>
             <b-spinner v-else small class="text-opaque" />
         </div>
-    </b-card>
+    </div>
 </template>
 
 <script lang="ts">
