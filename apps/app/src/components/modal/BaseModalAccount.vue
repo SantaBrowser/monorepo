@@ -2,6 +2,7 @@
     <b-modal
         v-model="accountStore.isModalAccountShown"
         centered
+        class="account-modal"
         @hidden="accountStore.isModalAccountShown = false"
         @show="onShow"
     >

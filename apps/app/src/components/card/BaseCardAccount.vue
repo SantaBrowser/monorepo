@@ -6,7 +6,7 @@
         >
             <template v-if="accountStore.account">
                 <b-link class="rounded-circle position-relative" @click="accountStore.isModalAccountShown = true">
-                    <b-avatar size="50" :src="accountStore.account.profileImg" variant="dark" />
+                    <b-avatar class="b-avatar-img-icon" size="50" :src="accountStore.account.profileImg" variant="dark" />
                     <b-button
                         variant="primary"
                         size="sm"

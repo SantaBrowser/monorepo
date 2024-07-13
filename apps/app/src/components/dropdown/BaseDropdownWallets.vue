@@ -1,5 +1,5 @@
 <template>
-    <div v-if="accountStore.isAuthenticated" class="d-flex">
+    <div v-if="accountStore.isAuthenticated" class="d-flex h-wallet">
         <b-dropdown
             v-model="isOpenWallet"
             variant="link"
@@ -267,5 +267,16 @@ export default defineComponent({
 <style>
 .dropdown-toggle .fa-ellipsis-v {
     color: var(--bs-body-color);
+}
+
+.h-wallet {
+    border-radius: 22px;
+    border: 1px dotted #4baec0;
+    overflow: hidden;
+}
+
+.h-wallet button div {
+    font-size: 13px;
+    font-weight: 500;
 }
 </style>

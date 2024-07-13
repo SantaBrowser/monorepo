@@ -16,8 +16,18 @@
                 <p>{{ formattedBalance(participantCP, CP_CAMPAIGN) }}</p>
             </div>
         </div>
+        <div class="d-flex gap-2"></div>
         <div class="d-flex gap-2">
-            <BaseDropdownWallets /><b-avatar size="50" :src="accountStore?.account?.profileImg" variant="dark" />
+            <BaseDropdownWallets />
+            <div
+                class="d-flex align-items-center justify-content-between equal-divs name-avatar"
+                @click="accountStore.isModalAccountShown = true"
+            >
+                <h2>
+                    <span style="display: block">{{ accountStore?.account?.username }}</span>
+                </h2>
+                <b-avatar class="b-avatar-header" size="40" :src="accountStore?.account?.profileImg" variant="dark" />
+            </div>
         </div>
     </nav>
 </template>
@@ -115,7 +125,26 @@ export default defineComponent({
     flex: 1;
     min-width: 0;
     min-height: 0;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 7px 20px;
+    border-radius: 22px;
+    border: 1px dotted #4b4bc0;
+}
+.b-avatar-header {
+    border: 2px dotted #064f17;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 14px;
+}
+
+.name-avatar h2 {
+    margin-right: 50px;
+}
+.name-avatar:hover h2 {
+    text-decoration: underline;
+    cursor: pointer;
+}
+.name-avatar {
+    padding-right: 2px !important;
 }
 </style>
