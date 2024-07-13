@@ -1,20 +1,21 @@
 <template>
-    <div class="campaign-card">
-        <div class="d-flex justify-content-between h-100">
-            <div class="card-header">
+    <div class="campaign-card cursor-pointer" @click="goToSecondDiv">
+        <div class="d-flex flex-column justify-content-between h-100">
+            <div class="cp-card-header d-flex align-items-center justify-content-between">
                 <h3>{{ campaign.title }}</h3>
 
-                <p v-if="campaign._id === SANTA_CAMPAIGN && score !== 0 && !Number.isNaN(score)">
-                    Total Earnings: {{ formattedScore }}
-                </p>
+                <img v-if="campaign._id === SANTA_CAMPAIGN" :src="imgSantaHat" alt="Santa Hat" width="40" />
+                <img v-if="campaign._id === CP_CAMPAIGN" :src="imgDiamond" alt="Santa Hat" width="40" />
             </div>
-            <div class="card-body d-flex flex-column align-items-end justify-content-between">
-                <p class="d-flex align-items-center">
+            <div class="cp-card-body d-flex align-items-center justify-content-between">
+                <h4 class="d-flex align-items-center">
                     {{ formattedBalance }}
                     <img v-if="campaign._id === SANTA_CAMPAIGN" :src="imgStarCoin" alt="Star Coin" width="24" />
+                </h4>
+                <p v-if="campaign._id === SANTA_CAMPAIGN && score !== 0 && !Number.isNaN(score)">
+                    {{ formattedScore }} <span>Total Earnings</span>
                 </p>
-
-                <button @click="goToSecondDiv">Browse Quests</button>
+                <!-- <button @click="goToSecondDiv">Browse Quests</button> -->
             </div>
         </div>
     </div>
@@ -28,6 +29,8 @@ import { mapStores } from 'pinia';
 import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '../config/secrets';
 import imgStarCoin from '../assets/star-coin.png';
 import { useQuestStore } from '../stores/Quest';
+import imgSantaHat from '../assets/santa-hat.png';
+import imgDiamond from '../assets/diamond.png';
 type TCampaignProps = {
     _id: string;
     title: string;
@@ -53,16 +56,17 @@ export default {
         return {
             decodeHTML,
             SANTA_CAMPAIGN,
+            CP_CAMPAIGN,
             isLoading: false,
             imgStarCoin,
+            imgSantaHat,
+            imgDiamond,
         };
     },
     computed: {
         ...mapStores(useAccountStore, useRewardStore, useQuestStore),
         participant() {
-            return this.accountStore.participants.find(
-                (p) => p.sub === this.accountStore.account?.sub && p.poolId === this.campaign._id,
-            );
+            return this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
         },
         balance() {
             if (!this.participant) return 0;
@@ -103,13 +107,12 @@ export default {
     width: 373px;
     height: 200px;
     border-radius: 12px;
-    border: 1px solid rgba(96, 165, 250, 0.25);
-    background: rgba(0, 0, 0, 0.32);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.4) 100%);
     backdrop-filter: blur(6px);
     padding: 50px 20px 20px;
 }
 
-.card-header h3 {
+.cp-card-header h3 {
     color: #f5f5f5;
     font-feature-settings: 'clig' off, 'liga' off;
     font-size: 23px;
@@ -119,16 +122,39 @@ export default {
     text-transform: uppercase;
 }
 
-.card-body p {
+.cp-card-body h4 {
     color: #f5f5f5;
     font-feature-settings: 'clig' off, 'liga' off;
     font-size: 30px;
     font-style: normal;
     font-weight: 600;
     line-height: 16px;
+    margin: 0;
 }
 
-.card-body button {
+.cp-card-body p {
+    text-align: right;
+    color: #fff;
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+    margin: 0;
+}
+
+.cp-card-body span {
+    text-align: right;
+    display: block;
+    color: rgba(255, 255, 255, 0.5);
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.cp-card-body button {
     color: rgba(255, 239, 239, 0.5);
     font-feature-settings: 'clig' off, 'liga' off;
     font-size: 12px;

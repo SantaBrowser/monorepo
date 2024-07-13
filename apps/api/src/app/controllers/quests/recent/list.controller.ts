@@ -88,11 +88,11 @@ const controller = async (req: Request, res: Response) => {
             };
         })
         // Last quest per pool
-        .map((pool) => pool.quests[0])
+        // .map((pool) => pool.quests[0])
         // Sort by createdAt
         .sort(sortByDate)
         // Cut of first 4 results
-        .slice(0, 4);
+        // .slice(0, 5);
 
     res.json(result);
 };

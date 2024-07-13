@@ -24,7 +24,7 @@
                     <b-spinner variant="primary" small />
                 </div>
                 <b-tabs v-else content-class="mt-3" justified class="mt-3">
-                    <b-tab active>
+                    <b-tab active style="height: 500px; overflow: auto">
                         <template #title>
                             Available
                             <sup v-if="availableQuestCount">
@@ -157,7 +157,6 @@ export default defineComponent({
             return !this.availableQuestCount;
         },
         availableQuestCount() {
-            console.log('availableQuestCount', this.questStore);
             return this.questStore.quests.filter((q: TBaseQuest) => q.isAvailable).length;
         },
         quests() {
