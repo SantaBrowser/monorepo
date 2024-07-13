@@ -1,34 +1,36 @@
 <template>
-    <div ref="mainComponent" class="snap-container">
-        <div ref="firstDiv" class="snap-item landing-page w-100">
+    <div ref="mainComponent" @scroll="handleScroll">
+        <div ref="firstDiv" class="landing-page w-100">
             <div
+                :class="{ blurred: isBlurred, hidden: isHidden }"
                 :style="{
                     opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
                     margin: 0,
                 }"
                 class="d-flex justify-content-center align-items-center flex-column h-100"
+                @transitionend="onTransitionEnd"
             >
                 <div class="d-flex flex-column gap-4 landing-top">
                     <h1>Santa <span>Rewards</span></h1>
                     <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>
                 </div>
-                <div class="d-flex gap-4" style="margin-top: 75px">
+                <div class="d-flex gap-4 campaigns-box" style="margin-top: 75px">
                     <div v-for="campaign in filteredCampaigns" :key="campaign._id">
                         <CampaignCard :campaign="campaign" @scrollToSecondDiv="scrollToSecondDiv" />
                     </div>
                 </div>
 
                 <div class="d-flex flex-wrap" style="margin-top: 100px">
-                    <QuestsCarousel :quest-lists="questLists" />
+                    <QuestsCarousel :quest-lists="questLists" @scrollToSecondDiv="scrollToSecondDiv" />
                 </div>
                 <div style="height: 100px"></div>
                 <!-- <BaseCardCampaign :campaign="campaign" /> -->
             </div>
         </div>
 
-        <div ref="secondDiv" class="snap-item d-flex">
-            <Quests />
-            <BaseSidebar />
+        <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
+            <HeaderNav :is-visible="isHeaderVisible" />
+            <div class="d-flex h-100"><Quests /> <BaseSidebar /></div>
         </div>
     </div>
 </template>
@@ -120,12 +122,14 @@ import * as html from 'html-entities';
 import CampaignCard from '@thxnetwork/app/components/CampaignCard.vue';
 import QuestsCarousel from '@thxnetwork/app/components/homepage/QuestsCarousel.vue';
 import Quests from '../campaign/Quests.vue';
+import HeaderNav from '@thxnetwork/app/components/HeaderNav.vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
 export default defineComponent({
     name: 'Home',
     components: {
+        HeaderNav,
         QuestsCarousel,
         CampaignCard,
         Quests,
@@ -154,6 +158,9 @@ export default defineComponent({
             brands: [],
             earningsIcon,
             currentIndex: 0,
+            isSecondDivVisible: false,
+            isBlurred: false,
+            isHidden: false,
         };
     },
     computed: {
@@ -179,6 +186,10 @@ export default defineComponent({
         await this.getQuests();
         await this.getStoreLogos();
         this.isLoading = false;
+        window.addEventListener('scroll', this.handleScroll);
+    },
+    beforeUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
     },
     methods: {
         async getParticipants() {
@@ -219,8 +230,13 @@ export default defineComponent({
             url.pathname = '/v1/quests/public';
             const res = await fetch(url);
             const questLists = await res.json();
-
-            this.questLists = questLists.map((quest: TBaseQuest) => ({
+            const combinedQuests = questLists.reduce((acc: any[], item: any) => {
+                if (item.quests && Array.isArray(item.quests)) {
+                    acc.push(...item.quests);
+                }
+                return acc;
+            }, []);
+            this.questLists = combinedQuests.slice(0, 5).map((quest: TBaseQuest) => ({
                 ...quest,
                 title: quest.title && html.decode(quest.title),
                 description: quest.description && html.decode(quest.description),
@@ -268,6 +284,27 @@ export default defineComponent({
             const secondDiv = this.$refs.secondDiv as HTMLElement;
             secondDiv.scrollIntoView({ behavior: 'smooth' });
         },
+        handleScroll() {
+            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+            console.log('Scroll Position:', scrollPosition); // Add this line to log the scroll position
+            if (scrollPosition > 100) {
+                this.isSecondDivVisible = true;
+                this.isHeaderVisible = true;
+                this.isLandingPageHidden = true;
+                this.isBlurred = true;
+            } else {
+                this.isSecondDivVisible = false;
+                this.isHeaderVisible = false;
+                this.isLandingPageHidden = false;
+                this.isBlurred = false;
+                this.isHidden = false;
+            }
+        },
+        onTransitionEnd() {
+            if (this.isBlurred) {
+                this.isHidden = true;
+            }
+        },
     },
 });
 </script>
@@ -279,16 +316,35 @@ export default defineComponent({
     background-size: cover;
     background-repeat: no-repeat;
     transition: transform 0.5s ease;
+    height: 100vh;
+}
+
+.blurred {
+    filter: blur(8px);
+    transition: filter 0.5s ease;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .landing-top h1 {
-    color: #fff;
+    color: transparent;
     font-feature-settings: 'clig' off, 'liga' off;
     font-size: 61px;
     font-style: italic;
     font-weight: 600;
-    line-height: 16px;
+    text-shadow: 0px 20px 30px rgba(0, 0, 0, 0.6);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+
+    background: radial-gradient(137.13% 253.39% at 76.68% 66.67%, #602ea6 0%, #c977d6 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     span {
+        background: #fff;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         font-weight: 300;
     }
 }
@@ -302,16 +358,30 @@ export default defineComponent({
     line-height: 16px;
     text-align: center;
 }
-.snap-container {
-    height: 100vh;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-}
-.snap-item {
-    scroll-snap-align: start;
-    height: 100vh;
+.window-container {
+    height: calc(100vh - 70px);
     background-color: #0c0d15;
+    position: absolute;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    transition: bottom 0.5s ease-in-out;
+    z-index: 11;
+    overflow: hidden;
+}
+
+.slide-up {
+    bottom: -20%;
+}
+
+.campaigns-box {
+    padding: 20px;
+    border-radius: 20px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.37) 0%, rgba(0, 0, 0, 0.37) 100%),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.31) 0%, rgba(232, 232, 232, 0.08) 100%);
+    border: 1.5px solid #5f03ff3f;
+    box-shadow: drop-shadow(0px 4px 49px rgba(0, 0, 0, 0.38));
+    backdrop-filter: blur(6.5px);
 }
 .pagination {
     --bs-pagination-focus-bg: var(--bs-purple-dark);

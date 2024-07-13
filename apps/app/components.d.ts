@@ -181,6 +181,7 @@ declare module 'vue' {
     BTabs: typeof import('bootstrap-vue-next')['BTabs']
     CampaignCard: typeof import('./src/components/CampaignCard.vue')['default']
     copy: typeof import('./src/components/card/BaseCardLotteryWinner copy.vue')['default']
+    HeaderNav: typeof import('./src/components/HeaderNav.vue')['default']
     QuestsCarousel: typeof import('./src/components/homepage/QuestsCarousel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

@@ -23,7 +23,7 @@
                     :key="quest._id"
                     :class="['carousel-slide', getSlideClass(index)]"
                 >
-                    <div class="quest-card">
+                    <div class="quest-card" @click="goToSecondDiv(quest)">
                         <img :src="getQuestImage(quest)" class="quest-image" />
                         <h3 class="quest-title">{{ quest.title }}</h3>
                         <div class="quest-info">
@@ -52,7 +52,7 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props) {
+    setup(props, { emit }) {
         // const questLists = ref(mockQuests);
         const currentIndex = ref(2); // Centering the carousel initially at the third item
 
@@ -99,7 +99,9 @@ export default defineComponent({
             }
             return `${quest.amount} points`;
         };
-
+        const goToSecondDiv = async (quest: TBaseQuest) => {
+            emit('scrollToSecondDiv');
+        };
         return {
             currentIndex,
             visibleQuests,
@@ -108,6 +110,7 @@ export default defineComponent({
             prevSlide,
             nextSlide,
             formattedAmount,
+            goToSecondDiv,
         };
     },
 });
@@ -184,6 +187,7 @@ export default defineComponent({
     z-index: 3;
     border-radius: 20px;
     backdrop-filter: blur(12.5px);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
 }
 .active-slide .quest-title {
     font-size: 18px;
