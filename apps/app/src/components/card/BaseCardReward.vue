@@ -18,14 +18,14 @@
         <b-card-body
             v-if="reward.poolId === SANTA_CAMPAIGN"
             class="d-flex flex-column justify-content-between h-100"
-            :style="{ padding: '20px 15px 15px 15px' }"
+            :style="{ padding: '10px' }"
         >
             <b-card-title class="d-flex align-items-center c-quest-title">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
             </b-card-title>
             <div class="d-flex justify-content-center" :style="{ marginBottom: '5px' }">
-                <img v-if="!image" :src="randomPlaceholderImage" class="" :style="{ width: '92px', height: '92px' }" />
+                <img v-if="!image" :src="randomPlaceholderImage" class="" :style="{ width: '72px', height: '72px' }" />
                 <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
             </div>
             <!-- <b-card-text class="card-description" v-html="reward.description" /> -->
@@ -119,8 +119,8 @@
 
         <b-card-body
             v-if="reward.poolId === CP_CAMPAIGN"
-            class="d-flex flex-column justify-content-between"
-            :style="{ padding: '0', height: '275px', overflow: 'hidden' }"
+            class="d-flex flex-column justify-content-between cp-campaign-card"
+            :style="{ padding: '0', height: 'auto' }"
         >
             <div class="d-flex justify-content-center" style="padding: 3px">
                 <img
@@ -462,7 +462,7 @@ export default defineComponent({
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 14px !important;
+    //font-size: 14px !important;
     font-style: normal;
     font-weight: 500;
     line-height: 22px;
@@ -484,5 +484,10 @@ export default defineComponent({
 
 .bg-red {
     background-color: #972e2e !important;
+}
+
+.gr-2 .card-body.cp-campaign-card {
+    height: auto;
+    max-height: initial !important;
 }
 </style>
