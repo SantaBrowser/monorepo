@@ -16,8 +16,8 @@ export const DEFAULT_ELEMENTS = {
     },
     bodyBg: {
         label: 'Background',
-        // color: '#241956',
-        color: 'transparent',
+        color: '#241956',
+        // color: 'transparent',
     },
     cardBg: {
         label: 'Card',

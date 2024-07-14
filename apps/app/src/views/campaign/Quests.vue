@@ -1,24 +1,15 @@
 <template>
-    <b-container class="mt-4">
+    <b-container class="mt-2 overflow-y-scroll">
         <b-row>
-            <b-col
-                lg="7"
-                xl="6"
-                offset-xl="0"
-                style="
-                    background: rgba(44, 44, 44, 0.3);
-                    box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
-                    backdrop-filter: blur(12.5px);
-                    margin-right: 20px;
-                    border-radius: 7px;
-                "
-            >
-                <div v-if="!accountStore.isMobile" class="mb-2 ps-3 d-flex align-items-center bg-quests rounded p-2">
-                    <div>
-                        <strong>Quests</strong>
-                        <div class="text-opaque">Earn points with tasks</div>
+            <b-col lg="7" xl="6" offset-xl="0" class="quests-column">
+                <div v-if="!accountStore.isMobile" class="mb-2 align-items-center bg-quests rounded">
+                    <div class="quests-title d-flex p-2">
+                        <div>
+                            <strong class="title-q">Quests</strong>
+                            <div class="text-opaque">Earn points with tasks</div>
+                        </div>
+                        <i class="fas fa-tasks text-opaque ms-auto me-3" style="font-size: 1.2rem" />
                     </div>
-                    <i class="fas fa-tasks text-opaque ms-auto me-3" style="font-size: 1.2rem" />
                 </div>
                 <div v-if="questStore.isLoading" class="d-flex justify-content-center py-5">
                     <b-spinner variant="primary" small />
@@ -58,28 +49,19 @@
                     </b-tab>
                 </b-tabs>
             </b-col>
-            <b-col
-                v-if="!accountStore.isMobile"
-                lg="5"
-                xl="5"
-                xxl="4"
-                class="h-100"
-                offset-xl="0"
-                style="background: rgba(44, 44, 44, 0.3); border-radius: 7px"
-            >
-                <div
-                    class="mb-2 ps-3 d-flex align-items-center bg-rewards rounded p-2"
-                    style="justify-content: space-between"
-                >
-                    <div>
-                        <strong>Rewards</strong>
-                        <div class="text-opaque">Spend your points to redeem</div>
+            <b-col v-if="!accountStore.isMobile" lg="5" xl="5" xxl="4" class="h-100 rewards-column" offset-xl="0">
+                <div class="mb-2 bg-rewards rounded">
+                    <div class="align-items-center p-2 quests-title d-flex" style="justify-content: space-between">
+                        <div>
+                            <strong class="title-q">Rewards</strong>
+                            <div class="text-opaque">Spend your points to redeem</div>
+                        </div>
+                        <select v-model="selectedValue" class="rewards-select">
+                            <option>All</option>
+                            <option>Santa</option>
+                            <option>Playwall</option>
+                        </select>
                     </div>
-                    <select v-model="selectedValue" style="width: 30%; background-color: rgba(10, 10, 10, 0.5)">
-                        <option>All</option>
-                        <option>Santa</option>
-                        <option>Playwall</option>
-                    </select>
                 </div>
                 <div v-if="selectedValue == 'All' || selectedValue == 'Santa'" class="rewards-container">
                     <component
@@ -87,7 +69,7 @@
                         v-for="reward of reward2Store.rewards"
                         :reward="reward"
                         class="mb-2 gr-2"
-                        style="width: 50%"
+                        style="width: 48%"
                     />
                 </div>
                 <div v-if="selectedValue == 'All' || selectedValue == 'Playwall'">
@@ -95,8 +77,8 @@
                         :is="componentMap[reward.variant]"
                         v-for="reward of rewardStore.rewards"
                         :reward="reward"
-                        class="mb-2 gr-2"
-                        style="width: 50%"
+                        class="mb-2 gr-2 mt-5"
+                        style="width: 48%"
                     />
                 </div>
             </b-col>
@@ -243,11 +225,20 @@ export default defineComponent({
     background-size: cover;
 }
 
+.rewards-select {
+    background-color: rgb(0 16 18 / 55%);
+    padding: 2px 6px;
+    border: 1px dotted #1c609ca3;
+    border-radius: 20px;
+}
+
 .bg-quests {
     background-image: url('/src/assets/bg-quests.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    border-radius: 15px !important;
+    border: 1px dotted #f3d40760;
 }
 
 .bg-rewards {
@@ -255,6 +246,9 @@ export default defineComponent({
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    border: 1px dotted #f31a0760;
+    border-radius: 15px !important;
+    overflow: hidden;
 }
 
 .my-nav .card-header {
@@ -296,12 +290,46 @@ export default defineComponent({
 }
 
 .gr-2 {
-    width: 48% !important;
-    .card-body {
-        height: 230px;
-        min-height: 230px !important;
-        max-height: 230px !important;
-    }
+    width: 47.7% !important;
+    box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
+}
+
+.gr-2 .card-body {
+    height: 205px;
+    min-height: 205px !important;
+    max-height: 205px !important;
+}
+
+.quests-column {
+    background: rgba(44, 44, 44, 0.3);
+    box-shadow: inset rgb(182 9 153 / 15%) 0px -7px 20px 8px;
+    backdrop-filter: blur(12.5px);
+    margin-right: 20px;
+    border-radius: 7px;
+    background: rgb(54 1 83 / 20%);
+    border-radius: 15px;
+    border: 1px dotted #865c5c85;
+    padding: 6px;
+    margin-left: 12px;
+}
+
+.rewards-column {
+    background: rgba(44, 44, 44, 0.3);
+    box-shadow: inset rgb(80 7 7 / 42%) 0px -7px 20px 8px;
+    border-radius: 7px;
+    background: rgb(54 1 83 / 20%);
+    border-radius: 15px;
+    border: 1px dotted #865c5c85;
+    padding: 6px;
+}
+
+.quests-title {
+    backdrop-filter: brightness(0.5);
+    overflow: hidden;
+}
+
+.quests-title i {
+    line-height: 2;
 }
 
 .rewards-container {
@@ -312,5 +340,15 @@ export default defineComponent({
     align-content: flex-start;
     padding: 0px;
     gap: 15px;
+}
+.title-q {
+    font-size: 23px;
+    line-height: 23px;
+    color: #feff00;
+    font-weight: 400;
+}
+
+.quests-title .text-opaque {
+    font-size: 11px;
 }
 </style>
