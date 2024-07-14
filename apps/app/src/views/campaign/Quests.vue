@@ -72,7 +72,7 @@
                         style="width: 48%"
                     />
                 </div>
-                <div v-if="selectedValue == 'All' || selectedValue == 'Playwall'">
+                <div v-if="selectedValue == 'All' || selectedValue == 'Playwall'" class="rewards-container">
                     <component
                         :is="componentMap[reward.variant]"
                         v-for="reward of rewardStore.rewards"
@@ -290,8 +290,9 @@ export default defineComponent({
 }
 
 .gr-2 {
-    width: 47.7% !important;
+    width: 28.7% !important;
     box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
+    zoom: 0.75;
 }
 
 .gr-2 .card-body {
@@ -340,6 +341,7 @@ export default defineComponent({
     align-content: flex-start;
     padding: 0px;
     gap: 15px;
+    margin-bottom: 10px;
 }
 .title-q {
     font-size: 23px;
