@@ -48,7 +48,6 @@ export default {
 }
 .referral-text h4 {
     color: black;
-    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -56,7 +55,6 @@ export default {
 
 .referral-text span {
     color: black;
-    font-size: 13px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -97,7 +95,6 @@ export default {
 
     color: #1a1a1a;
     text-align: center;
-    font-size: 13px;
     font-style: normal;
     font-weight: 400;
     line-height: 14.683px;
