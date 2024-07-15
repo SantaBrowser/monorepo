@@ -45,15 +45,12 @@ export default defineComponent({
 .sidebar {
     background: rgba(44, 44, 44, 0.3);
     .sidebar-panel {
-        // display: flex;
-        // flex-direction: column;
         width: 350px;
         max-width: 350px;
-        border-radius: 8px;
-        //background-color: red;
-        box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
+        border-radius: 0;
+        box-shadow: -9px -5px 20px 20px rgb(63 77 202 / 12%);
         backdrop-filter: blur(5px);
-        border-left: 3px solid #232323;
+        border-left: 1px dotted #20af104d;
         overflow-x: hidden;
         overflow-y: auto;
 

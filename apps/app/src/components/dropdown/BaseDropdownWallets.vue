@@ -272,7 +272,7 @@ export default defineComponent({
 .h-wallet {
     border-radius: 22px;
     border: 1px dotted #4baec0;
-    overflow: hidden;
+    //overflow: hidden;
 }
 
 .h-wallet button div {

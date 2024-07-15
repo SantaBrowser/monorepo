@@ -96,8 +96,9 @@ export default defineComponent({
     width: 100%;
     background-color: rgba(37, 37, 37, 0.5);
     z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 10px;
+    box-shadow: inset 0 2px 13px 12px rgb(223 18 18 / 10%);
+    padding: 8px;
+    border-bottom: 1px dotted #dd1e1e66;
 }
 
 .header-nav h2 {

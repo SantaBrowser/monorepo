@@ -111,7 +111,6 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
 }
 .list-item-field-user {
     flex-grow: 1;
