@@ -16,7 +16,7 @@
                 </div>
             </router-link>
         </div>
-        <div v-else>
+        <div v-else class="carousel-wrapper">
             <transition-group name="carousel" tag="div" class="carousel">
                 <div
                     v-for="(quest, index) in visibleQuests"
@@ -34,6 +34,22 @@
             </transition-group>
             <img src="../../assets/leftBtn.png" class="carousel-control prev" @click="prevSlide" />
             <img src="../../assets/rightBtn.png" class="carousel-control next" @click="nextSlide" />
+        </div>
+
+        <div class="scrollable-quests">
+            <router-link
+                v-for="(quest, index) in questLists"
+                :key="index"
+                :to="`/c/${quest.poolId}`"
+                class="list-card quest-card"
+                style="height: 240px; width: 180px"
+            >
+                <img :src="getQuestImage(quest)" class="quest-image" />
+                <h3 class="quest-title">{{ quest.title }}</h3>
+                <div class="quest-info">
+                    <span class="quest-description">{{ formattedAmount(quest) }}</span>
+                </div>
+            </router-link>
         </div>
     </div>
 </template>
@@ -126,16 +142,17 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     transition: transform 0.3s ease;
+    gap: 20px;
 }
 .quest-list {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
 }
 .carousel-slide,
 .list-card {
     height: 240px;
     width: 180px;
-    margin: 0 10px;
     transition: transform 0.3s ease, opacity 0.3s ease, transform 0.3s ease-in-out;
 }
 .quest-card {
@@ -247,5 +264,46 @@ export default defineComponent({
 }
 .none-slide {
     display: none;
+}
+.scrollable-quests {
+    display: none;
+}
+
+@media (max-width: 1050px) {
+    .blurred-slide {
+        display: none;
+    }
+
+    .carousel-control.prev {
+        left: 0;
+        transform: translateX(0);
+    }
+    .carousel-control.next {
+        right: 0;
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .carousel-wrapper {
+        display: none;
+    }
+
+    .quest-list {
+        display: none;
+    }
+
+    .scrollable-quests {
+        width: 400px;
+        display: flex;
+        overflow: auto;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 424px) {
+    .scrollable-quests {
+        width: 360px;
+    }
 }
 </style>

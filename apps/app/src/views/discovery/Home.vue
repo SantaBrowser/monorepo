@@ -1,15 +1,14 @@
 <template>
-    <div ref="mainComponent" @scroll="handleScroll">
-        <HeaderNav :is-visible="isHeaderVisible" />
-
-        <div ref="firstDivs" class="landing-page w-100">
+    <div ref="mainComponent" class="mainComponent">
+        <HeaderNav :is-visible="true" />
+        <div ref="firstDiv" class="landing-page w-100">
             <div
-                :class="{ blurred: isBlurred, hidden: isHidden }"
+                :class="{ blurred: isBlurred }"
                 :style="{
                     opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
                     margin: 0,
                 }"
-                class="d-flex justify-content-center align-items-center"
+                class="h-100"
                 @transitionend="onTransitionEnd"
             >
                 <div class="unwrap">UNWRAP</div>
@@ -33,12 +32,15 @@
             </div>
         </div>
 
-        <div ref="secondDivs" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
-            <div class="d-flex h-100">
-                <Quests />
-                <BaseSidebar />
-            </div>
+        <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
+            <HeaderNav :is-visible="isHeaderVisible" />
+            <div class="d-flex h-100"><Quests :selected-part="selectedPart" /><BaseSidebar /></div>
         </div>
+        <BaseNavbarPrimary
+            v-if="accountStore.isMobile"
+            style="width: 100%; position: fixed; bottom: 0; z-index: 22"
+            @nav-clicked="handleNavClick"
+        />
     </div>
 </template>
 <!-- <BaseCardHeaderHome /> -->
@@ -130,6 +132,7 @@ import * as html from 'html-entities';
 // import QuestsCarousel from '@thxnetwork/app/components/homepage/QuestsCarousel.vue';
 import Quests from '../campaign/Quests.vue';
 import HeaderNav from '@thxnetwork/app/components/HeaderNav.vue';
+import BaseNavbarPrimary from '@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
@@ -140,6 +143,7 @@ export default defineComponent({
         // QuestsCarousel,
         // CampaignCard,
         Quests,
+        BaseNavbarPrimary,
     },
     data(): any {
         return {
@@ -168,7 +172,7 @@ export default defineComponent({
             isSecondDivVisible: false,
             isBlurred: false,
             isHidden: false,
-            isHeaderVisible: true,
+            selectedPart: 'Quests',
         };
     },
     computed: {
@@ -194,10 +198,13 @@ export default defineComponent({
         await this.getQuests();
         await this.getStoreLogos();
         this.isLoading = false;
-        // window.addEventListener('scroll', this.handleScroll);
+        window.addEventListener('scroll', this.handleScroll);
+        this.checkWidth();
+        window.addEventListener('resize', this.checkWidth);
     },
     beforeUnmount() {
-        // window.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener('resize', this.checkWidth);
     },
     methods: {
         async getParticipants() {
@@ -298,11 +305,11 @@ export default defineComponent({
             if (scrollPosition > 100) {
                 this.isSecondDivVisible = true;
                 this.isHeaderVisible = true;
-                this.isLandingPageHidden = false;
+                this.isLandingPageHidden = true;
                 this.isBlurred = true;
             } else {
-                this.isSecondDivVisible = true;
-                this.isHeaderVisible = true;
+                this.isSecondDivVisible = false;
+                this.isHeaderVisible = false;
                 this.isLandingPageHidden = false;
                 this.isBlurred = false;
                 this.isHidden = false;
@@ -313,18 +320,26 @@ export default defineComponent({
                 this.isHidden = true;
             }
         },
+        checkWidth() {
+            this.accountStore.onResize();
+        },
+        handleNavClick(item: string) {
+            this.selectedPart = item;
+        },
     },
 });
 </script>
 
 <style lang="scss" scoped>
 .landing-page {
-    background-image: url('/src/assets/bg-landing.png');
+    display: block;
+    background-image: url('/src/assets/bg-mosaic.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
     transition: transform 0.5s ease;
-    //height: 100vh;
+    height: 100vh;
+    //padding: 12px;
 }
 
 .blurred {
@@ -337,6 +352,7 @@ export default defineComponent({
 }
 
 .landing-top h1 {
+    text-align: center;
     color: transparent;
     font-feature-settings: 'clig' off, 'liga' off;
     font-size: 61px;
@@ -369,13 +385,13 @@ export default defineComponent({
 .window-container {
     height: calc(100vh - 70px);
     background-color: #0c0d15;
-    //position: absolute;
-    bottom: -100%;
+    position: absolute;
+    bottom: -60%;
     left: 0;
     width: 100%;
     transition: bottom 0.5s ease-in-out;
     z-index: 11;
-    //overflow: hidden;
+    overflow: hidden;
 }
 
 .slide-up {
@@ -543,7 +559,8 @@ export default defineComponent({
     /* margin-top: 15vh; */
     font-weight: 800;
     /* margin-bottom: -15vh; */
-    border-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     background: #ffcd07;
     top: 0;
     left: 0;
@@ -575,5 +592,35 @@ export default defineComponent({
     background-repeat: no-repeat;
     padding: 0;
     margin: 0;
+}
+
+@media (max-width: 424px) {
+    .campaigns-box {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 16px !important;
+    }
+    .carousel-cont {
+        justify-content: start !important;
+        margin-top: 32px !important;
+    }
+}
+
+@media (max-height: 900px) {
+    .landing-page {
+        height: auto;
+    }
+
+    .mainComponent {
+        height: 100%;
+        overflow: auto;
+    }
+    .window-container {
+        height: auto;
+        position: relative;
+        overflow: unset;
+        bottom: unset;
+        padding: 32px 0 100px;
+    }
 }
 </style>
