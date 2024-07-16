@@ -1,35 +1,39 @@
 <template>
     <div ref="mainComponent" @scroll="handleScroll">
-        <div ref="firstDiv" class="landing-page w-100">
+        <HeaderNav :is-visible="isHeaderVisible" />
+
+        <div ref="firstDivs" class="landing-page w-100">
             <div
                 :class="{ blurred: isBlurred, hidden: isHidden }"
                 :style="{
                     opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
                     margin: 0,
                 }"
-                class="d-flex justify-content-center align-items-center flex-column h-100"
+                class="d-flex justify-content-center align-items-center"
                 @transitionend="onTransitionEnd"
             >
-                <div class="d-flex flex-column gap-4 landing-top">
-                    <h1>Santa <span>Rewards</span></h1>
-                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>
-                </div>
-                <div class="d-flex gap-4 campaigns-box" style="margin-top: 75px">
-                    <div v-for="campaign in filteredCampaigns" :key="campaign._id">
-                        <CampaignCard :campaign="campaign" @scrollToSecondDiv="scrollToSecondDiv" />
-                    </div>
-                </div>
+                <div class="unwrap">UNWRAP</div>
+                <!--                <div class="d-flex flex-column gap-4 landing-top hidden">-->
+                <!--                    <h1>Santa <span>Rewards</span></h1>-->
+                <!--                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>-->
+                <!--                </div>-->
+                <!--                <div class="d-flex gap-4 campaigns-box" style="margin-top: 75px">-->
+                <!--                    <div v-for="campaign in filteredCampaigns" :key="campaign._id">-->
+                <!--                        <CampaignCard :campaign="campaign" @scrollToSecondDiv="scrollToSecondDiv" />-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
-                <div class="d-flex flex-wrap" style="margin-top: 100px">
-                    <QuestsCarousel :quest-lists="questLists" @scrollToSecondDiv="scrollToSecondDiv" />
-                </div>
-                <div style="height: 100px"></div>
+                <!--                <div class="d-flex flex-wrap bestofwrapper" style="margin-top: 0px">-->
+                <!--                    <div class="bestoftheweb">The Best of the Web With Santa's Rewards!</div>-->
+
+                <!--                    <QuestsCarousel :quest-lists="questLists" class="hidden" @scrollToSecondDiv="scrollToSecondDiv" />-->
+                <!--                </div>-->
+                <!--                <div style="height: 100px"></div>-->
                 <!-- <BaseCardCampaign :campaign="campaign" /> -->
             </div>
         </div>
 
-        <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
-            <HeaderNav :is-visible="isHeaderVisible" />
+        <div ref="secondDivs" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
             <div class="d-flex h-100">
                 <Quests />
                 <BaseSidebar />
@@ -122,8 +126,8 @@ import imgLogo from '../../assets/logo.png';
 import imgHeader from '../../assets/thx_token_governance.png';
 import earningsIcon from '../../assets/earnings-logo.png';
 import * as html from 'html-entities';
-import CampaignCard from '@thxnetwork/app/components/CampaignCard.vue';
-import QuestsCarousel from '@thxnetwork/app/components/homepage/QuestsCarousel.vue';
+// import CampaignCard from '@thxnetwork/app/components/CampaignCard.vue';
+// import QuestsCarousel from '@thxnetwork/app/components/homepage/QuestsCarousel.vue';
 import Quests from '../campaign/Quests.vue';
 import HeaderNav from '@thxnetwork/app/components/HeaderNav.vue';
 
@@ -133,8 +137,8 @@ export default defineComponent({
     name: 'Home',
     components: {
         HeaderNav,
-        QuestsCarousel,
-        CampaignCard,
+        // QuestsCarousel,
+        // CampaignCard,
         Quests,
     },
     data(): any {
@@ -164,6 +168,7 @@ export default defineComponent({
             isSecondDivVisible: false,
             isBlurred: false,
             isHidden: false,
+            isHeaderVisible: true,
         };
     },
     computed: {
@@ -189,10 +194,10 @@ export default defineComponent({
         await this.getQuests();
         await this.getStoreLogos();
         this.isLoading = false;
-        window.addEventListener('scroll', this.handleScroll);
+        // window.addEventListener('scroll', this.handleScroll);
     },
     beforeUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
+        // window.removeEventListener('scroll', this.handleScroll);
     },
     methods: {
         async getParticipants() {
@@ -293,11 +298,11 @@ export default defineComponent({
             if (scrollPosition > 100) {
                 this.isSecondDivVisible = true;
                 this.isHeaderVisible = true;
-                this.isLandingPageHidden = true;
+                this.isLandingPageHidden = false;
                 this.isBlurred = true;
             } else {
-                this.isSecondDivVisible = false;
-                this.isHeaderVisible = false;
+                this.isSecondDivVisible = true;
+                this.isHeaderVisible = true;
                 this.isLandingPageHidden = false;
                 this.isBlurred = false;
                 this.isHidden = false;
@@ -319,7 +324,7 @@ export default defineComponent({
     background-size: cover;
     background-repeat: no-repeat;
     transition: transform 0.5s ease;
-    height: 100vh;
+    //height: 100vh;
 }
 
 .blurred {
@@ -364,13 +369,13 @@ export default defineComponent({
 .window-container {
     height: calc(100vh - 70px);
     background-color: #0c0d15;
-    position: absolute;
+    //position: absolute;
     bottom: -100%;
     left: 0;
     width: 100%;
     transition: bottom 0.5s ease-in-out;
     z-index: 11;
-    overflow: hidden;
+    //overflow: hidden;
 }
 
 .slide-up {
@@ -527,6 +532,41 @@ export default defineComponent({
     background-repeat: no-repeat;
     padding: 0;
     margin: 0;
+}
+
+.unwrap {
+    padding: 9vh 0 0;
+    line-height: 53vh;
+    /* font-family: "Kode Mono", monospace; */
+    font-size: 21vw;
+    color: #3b3306;
+    /* margin-top: 15vh; */
+    font-weight: 800;
+    /* margin-bottom: -15vh; */
+    border-radius: 15px;
+    background: #ffcd07;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+.bestoftheweb {
+    font-family: 'Kode Mono', monospace;
+    font-size: 3vw;
+    /* color: #c53ded; */
+    line-height: 5vh;
+    /* font-weight: bold; */
+    text-transform: uppercase;
+    background: #000;
+    margin-top: -29px;
+    padding: 0 20px;
+    border: 1px solid #ffcd06;
+    border-radius: 36px;
+    height: fit-content;
+}
+.bestofwrapper {
+    height: 60vh;
+    justify-content: center;
 }
 
 .bg-secondDiv {

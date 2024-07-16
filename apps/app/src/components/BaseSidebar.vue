@@ -1,6 +1,7 @@
 <template>
     <aside v-if="isShown" class="sidebar">
         <div class="sidebar-panel h-100">
+            <!-- <BaseCardAccount /> -->
             <BaseReferral />
             <!-- <hr class="mt-2 mb-0" style="opacity: 0.1" /> -->
             <!-- <BaseCardRewards /> -->

@@ -1,5 +1,6 @@
 <template>
     <!-- <nav v-if="isVisible" class="header-nav"> -->
+
     <nav v-if="isVisible" class="header-nav d-flex justify-content-between w-100">
         <!-- Your header content -->
         <!-- <h1>Header Navigation</h1> -->
@@ -18,6 +19,7 @@
         </div>
         <div class="d-flex gap-2"></div>
         <div class="d-flex gap-2">
+            <BaseCardWalletInfo />
             <BaseDropdownWallets />
             <div
                 class="d-flex align-items-center justify-content-between equal-divs name-avatar"
@@ -93,12 +95,16 @@ export default defineComponent({
 .header-nav {
     position: fixed;
     top: 0;
-    width: 100%;
+    left: 0.5%;
+    width: 99% !important;
     background-color: rgba(37, 37, 37, 0.5);
     z-index: 1000;
     box-shadow: inset 0 2px 13px 12px rgb(223 18 18 / 10%);
     padding: 8px;
     border-bottom: 1px dotted #dd1e1e66;
+    border-radius: 15px;
+    background: #000;
+    margin: 0.1% 0.5% 0.1% 0;
 }
 
 .header-nav h2 {
@@ -128,7 +134,7 @@ export default defineComponent({
     min-height: 0;
     padding: 7px 20px;
     border-radius: 22px;
-    border: 1px dotted #a4a4da;
+    border: 1px dotted #ffcd06;
 }
 .b-avatar-header {
     border: 2px dotted #064f17;

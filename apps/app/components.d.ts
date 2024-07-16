@@ -68,6 +68,7 @@ declare module 'vue' {
     BaseCardRewards: typeof import('./src/components/card/BaseCardRewards.vue')['default']
     BaseCardSnapshotProposal: typeof import('./src/components/card/BaseCardSnapshotProposal.vue')['default']
     BaseCardStatusCheck: typeof import('./src/components/card/BaseCardStatusCheck.vue')['default']
+    BaseCardWalletInfo: typeof import('./src/components/card/BaseCardWalletInfo.vue')['default']
     BaseCardWallets: typeof import('./src/components/card/BaseCardWallets.vue')['default']
     BaseCollapseFAQ: typeof import('./src/components/collapse/BaseCollapseFAQ.vue')['default']
     BaseCollapseListItem: typeof import('./src/components/collapse/BaseCollapseListItem.vue')['default']

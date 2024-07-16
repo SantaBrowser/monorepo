@@ -275,6 +275,10 @@ export default defineComponent({
     //overflow: hidden;
 }
 
+.dropdown {
+    background: #000;
+}
+
 .h-wallet button div {
     font-size: 13px;
     font-weight: 500;
