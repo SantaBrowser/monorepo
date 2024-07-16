@@ -23,7 +23,7 @@
                 <div class="d-flex flex-grow-1 justify-content-between pe-3">
                     <slot name="header" />
                 </div>
-                <b-dropdown variant="link" size="sm" no-caret end>
+                <!-- <b-dropdown variant="link" size="sm" no-caret end>
                     <template #button-content>
                         <i class="fas fa-ellipsis-h ml-0 text-muted"></i>
                     </template>
@@ -32,7 +32,7 @@
                     <b-dropdown-text v-if="createdAt" class="text-end small text-opaque">
                         {{ format(new Date(createdAt), 'MMMM do hh:mm') }}
                     </b-dropdown-text>
-                </b-dropdown>
+                </b-dropdown> -->
             </div>
         </template>
         <b-collapse v-model="isVisible">
