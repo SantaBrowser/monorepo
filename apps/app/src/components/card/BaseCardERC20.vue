@@ -9,7 +9,7 @@
             <span class="text-opaque">{{ token.erc20.symbol }}</span>
         </template>
 
-        <template #dropdown-items>
+        <!-- <template #dropdown-items>
             <b-dropdown-item @click="isModalTransferShown = true"> Transfer </b-dropdown-item>
             <BaseModalERC20Transfer
                 :id="`modalERC20Transfer${token.erc20._id}`"
@@ -20,7 +20,7 @@
                 @hidden="onModalTransferHidden"
                 @submit="onSubmitTransfer"
             />
-        </template>
+        </template> -->
     </BaseCardPayment>
 </template>
 
