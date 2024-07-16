@@ -122,13 +122,13 @@ export default defineComponent({
 }
 
 .equal-divs {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(179 2 2 / 14%);
     flex: 1;
     min-width: 0;
     min-height: 0;
     padding: 7px 20px;
     border-radius: 22px;
-    border: 1px dotted #4b4bc0;
+    border: 1px dotted #a4a4da;
 }
 .b-avatar-header {
     border: 2px dotted #064f17;

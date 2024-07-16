@@ -226,10 +226,13 @@ export default defineComponent({
 }
 
 .rewards-select {
-    background-color: rgb(0 16 18 / 55%);
-    padding: 2px 6px;
-    border: 1px dotted #1c609ca3;
+    background-color: rgb(200 74 16 / 17%);
+    padding: 4px 16px;
     border-radius: 20px;
+    border: 0px solid black;
+    border-right-width: 10px;
+    border-color: transparent;
+    outline: solid 2px #dcc528ab;
 }
 
 .bg-quests {
@@ -239,6 +242,10 @@ export default defineComponent({
     background-repeat: no-repeat;
     border-radius: 15px !important;
     border: 1px dotted #f3d40760;
+    margin: 6px;
+}
+.nav-tabs .nav-item {
+    margin-left: 10px;
 }
 
 .bg-rewards {
@@ -307,11 +314,26 @@ export default defineComponent({
     backdrop-filter: blur(12.5px);
     margin-right: 20px;
     border-radius: 7px;
-    background: rgb(54 1 83 / 20%);
+    background: #0e0f19;
     border-radius: 15px;
     border: 1px dotted #865c5c85;
-    padding: 6px;
+    padding: 0px;
     margin-left: 12px;
+}
+
+.quests-column .nav-item .nav-link.active {
+    background-color: #0e0f19 !important;
+}
+
+.quests-column .tab-content {
+    padding: 10px;
+}
+
+.quests-column .tab-content .card {
+    border-radius: 10px;
+    border: 1px dotted #f39696a1;
+    overflow: hidden;
+    margin-bottom: 15px !important;
 }
 
 .rewards-column {
