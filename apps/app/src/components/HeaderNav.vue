@@ -18,6 +18,7 @@
         </div>
         <div class="d-flex gap-2"></div>
         <div class="d-flex gap-2">
+            <BaseCardWalletInfo />
             <BaseDropdownWallets />
             <div
                 class="d-flex align-items-center justify-content-between equal-divs name-avatar"
