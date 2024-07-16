@@ -15,7 +15,7 @@
                 class="navbar-logo"
             />
         </div>
-        <router-link :to="`/c/${accountStore.config.slug}/quests`">
+        <!-- <router-link :to="`/c/${accountStore.config.slug}/quests`">
             <i class="fas fa-tasks me-lg-3" />
             <div>Quests</div>
         </router-link>
@@ -26,7 +26,19 @@
         <router-link :to="`/c/${accountStore.config.slug}/ranking`">
             <i class="fas fa-trophy mr-lg-3" />
             <div>Rank</div>
-        </router-link>
+        </router-link> -->
+        <a @click="selectNavItem('Quests')">
+            <i class="fas fa-tasks me-lg-3" />
+            <div>Quests</div>
+        </a>
+        <a @click="selectNavItem('Rewards')">
+            <i class="fas fa-gift me-lg-3" />
+            <div>Rewards</div>
+        </a>
+        <a>
+            <i class="fas fa-trophy mr-lg-3" />
+            <div>Rank</div>
+        </a>
         <router-link v-if="accountStore.isMobile" :to="`/c/${accountStore.config.slug}/wallets`">
             <i class="fas fa-wallet mr-lg-3" />
             <div>Wallet</div>
@@ -53,6 +65,12 @@ export default defineComponent({
         ...mapStores(useRewardStore),
         isQuestCampaign() {
             return this.questStore.quests.length || this.rewardStore.rewards.length;
+        },
+    },
+    methods: {
+        selectNavItem(item: string) {
+            console.log('ASD');
+            this.$emit('nav-clicked', item);
         },
     },
 });
