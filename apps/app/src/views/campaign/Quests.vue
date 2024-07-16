@@ -370,6 +370,12 @@ export default defineComponent({
     line-height: 23px;
     color: #feff00;
     font-weight: 400;
+    font-family: 'Kode Mono', monospace;
+}
+
+.card-title {
+    font-family: 'Kode Mono', monospace;
+    font-size: 1rem;
 }
 
 .quests-title .text-opaque {
