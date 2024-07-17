@@ -1,5 +1,6 @@
 <template>
     <!-- <nav v-if="isVisible" class="header-nav"> -->
+
     <nav v-if="isVisible" class="header-nav d-flex justify-content-between w-100">
         <!-- Your header content -->
         <!-- <h1>Header Navigation</h1> -->
@@ -24,9 +25,7 @@
                 class="d-flex align-items-center justify-content-between equal-divs name-avatar"
                 @click="accountStore.isModalAccountShown = true"
             >
-                <h2>
-                    <span style="display: block">{{ accountStore?.account?.username }}</span>
-                </h2>
+                <h2 class="username">{{ accountStore?.account?.username }}</h2>
                 <b-avatar class="b-avatar-header" size="40" :src="accountStore?.account?.profileImg" variant="dark" />
             </div>
         </div>
@@ -93,13 +92,19 @@ export default defineComponent({
 <style scoped>
 .header-nav {
     position: fixed;
-    top: 0;
-    width: 100%;
+    top: 3px;
+    left: 0.5%;
+    width: 99% !important;
     background-color: rgba(37, 37, 37, 0.5);
     z-index: 1000;
-    box-shadow: inset 0 2px 13px 12px rgb(223 18 18 / 10%);
+    box-shadow: 0 2px 10px 3px rgb(24 17 17 / 44%);
     padding: 8px;
-    border-bottom: 1px dotted #dd1e1e66;
+    //border-bottom: 1px dotted #dd1e1e66;
+    border-radius: 15px;
+    background: #000;
+    margin: 0.1% 0.5% 0.1% 0;
+    border: 1px dotted #ad8b0bab;
+    padding-right: 60px;
 }
 
 .header-nav h2 {
@@ -123,20 +128,20 @@ export default defineComponent({
 }
 
 .equal-divs {
-    background: rgba(255, 255, 255, 0.03);
-    flex: 1;
+    background: rgb(179 2 2 / 14%);
+    flex: auto;
     min-width: 0;
     min-height: 0;
-    padding: 7px 20px;
+    padding: 7px 10px;
     border-radius: 22px;
-    border: 1px dotted #4b4bc0;
+    border: 1px dotted #ffcd06;
 }
 .b-avatar-header {
     border: 2px dotted #064f17;
     width: 40px;
     height: 40px;
     position: absolute;
-    right: 14px;
+    right: 64px;
 }
 
 .name-avatar h2 {
@@ -148,5 +153,11 @@ export default defineComponent({
 }
 .name-avatar {
     padding-right: 2px !important;
+}
+.username {
+    max-width: 150px; /* Adjust this value as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

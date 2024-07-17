@@ -1,11 +1,10 @@
 <template>
     <div
-        class="d-flex gap-2 dropdown-menu align-items-center justify-content-between equal-divs m-0 white-btn"
-        style="width: 300px"
+        class="d-flex gap-2 dropdown-menu wal-dropdown align-items-center justify-content-between equal-divs m-0 white-btn"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
     >
-        <div>WALLET</div>
+        <div class="fst-italic">WALLET</div>
         <div class="flex-icons">
             <div v-for="(token, key) of list">
                 <img :key="key" :src="token.erc20.logoImgUrl" alt="ERC20" class="img-circle" />
@@ -191,7 +190,11 @@ export default defineComponent({
     display: none;
     padding: 0;
     list-style-type: none;
-    background: transparent;
+    background: #000;
+    border: 1px dotted #ffcd06;
+    border-radius: 20px;
+    margin-top: -4px;
+    overflow: hidden;
 }
 
 .dropdown li {
@@ -209,11 +212,13 @@ export default defineComponent({
     position: relative;
     display: block;
     height: auto;
-    padding: 20px;
+    /* padding: 20px; */
     color: #fff;
     text-decoration: none;
     cursor: pointer;
-    background: transparent;
+    background: #000;
+    border-radius: 20px;
+    border: 1px dotted #ffcd06;
 }
 
 .dropdown-box {
@@ -224,6 +229,13 @@ export default defineComponent({
     display: flex;
     flex-direction: row;
     gap: 10px;
+}
+
+.wal-dropdown {
+    font-size: 11px;
+}
+.wal-dropdown .btn-group {
+    display: none;
 }
 
 .img-circle {

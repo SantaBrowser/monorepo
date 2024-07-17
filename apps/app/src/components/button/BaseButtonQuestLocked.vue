@@ -54,7 +54,8 @@ export default defineComponent({
 .my-btn {
     border-radius: 20px;
     border: 1px solid #1a1a1a;
-    background: linear-gradient(90deg, #0f0d0d 0%, #1c1c1c 100%);
+    background: linear-gradient(264deg, #2a0476, #3321ff);
     padding: 5px 0;
+    border: 1px solid #5a79df;
 }
 </style>

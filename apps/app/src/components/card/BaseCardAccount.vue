@@ -16,8 +16,8 @@
                         <i class="fas fa-pencil" style="font-size: 0.6rem" />
                     </b-button>
                 </b-link>
-                <div class="d-flex pt-2 align-items-center flex-wrap ps-3 flex-grow-1" style="min-width: 200px">
-                    <div class="h4 text-white w-100 mb-0">
+                <div class="ps-3 flex-grow-1" style="min-width: 200px">
+                    <h3 class="text-white mb-0">
                         {{ accountStore.account.username }}
                     </div>
                     <div class="d-flex align-items-center justify-content-between">

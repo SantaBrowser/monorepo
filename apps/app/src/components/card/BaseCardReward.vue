@@ -478,7 +478,7 @@ export default defineComponent({
 }
 
 .gr-2 {
-    width: 50% !important;
+    width: 100% !important;
     display: inline-block !important;
 }
 
