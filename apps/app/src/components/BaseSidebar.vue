@@ -68,7 +68,7 @@ export default defineComponent({
 }
 
 .bg-referral {
-    background-color: #cdc40c;
+    background: linear-gradient(129deg, #ffd014, #89c045);
     color: black;
     margin: 15px;
     border-radius: 10px;
