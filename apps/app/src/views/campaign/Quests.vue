@@ -1,7 +1,7 @@
 <template>
-    <b-container class="mt-2 overflow-y-scroll">
+    <b-container class="mt-2 overflow-y-scroll d-flex">
         <b-row>
-            <b-col lg="7" xl="6" offset-xl="0" class="quests-column">
+            <b-col lg="6" xl="7" offset-xl="0" class="quests-column">
                 <div v-if="!accountStore.isMobile" class="mb-2 align-items-center bg-quests rounded">
                     <div class="quests-title d-flex p-2">
                         <div>
@@ -297,7 +297,7 @@ export default defineComponent({
 }
 
 .gr-2 {
-    width: 28.7% !important;
+    width: 100% !important;
     box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
     zoom: 0.75;
 }
@@ -309,12 +309,10 @@ export default defineComponent({
 }
 
 .quests-column {
-    background: rgba(44, 44, 44, 0.3);
     box-shadow: inset rgb(182 9 153 / 15%) 0px -7px 20px 8px;
-    backdrop-filter: blur(12.5px);
     margin-right: 20px;
     border-radius: 7px;
-    background: #0e0f19;
+    //background: #0e0f19;
     border-radius: 15px;
     border: 1px dotted #865c5c85;
     padding: 0px;

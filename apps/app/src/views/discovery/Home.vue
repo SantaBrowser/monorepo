@@ -33,8 +33,8 @@
             </div>
         </div>
 
-        <div ref="secondDivs" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
-            <div class="d-flex h-100">
+        <div ref="secondDivs" :class="{ 'slide-up': isSecondDivVisible }" class="window-container bg-secondDiv">
+            <div class="d-flex h-100 bf-blur">
                 <Quests />
                 <BaseSidebar />
             </div>
@@ -544,7 +544,12 @@ export default defineComponent({
     font-weight: 800;
     /* margin-bottom: -15vh; */
     border-radius: 15px;
-    background: #ffcd07;
+    //background: #ffcd07;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-color: #ffcd07;
+    -webkit-text-stroke-width: 6px;
+    background-position: top;
+    background: url('https://www.shutterstock.com/shutterstock/photos/2473979299/display_1500/stock-photo-santa-claus-smiling-and-opening-his-hands-facing-towards-the-viewer-small-red-metal-robot-with-2473979299.jpg');
     top: 0;
     left: 0;
     width: 100%;
@@ -570,10 +575,15 @@ export default defineComponent({
 }
 
 .bg-secondDiv {
-    background-image: url('/src/assets/bg-secondDiv.jpg');
+    background-image: url('src/assets/bg-secondDiv.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     padding: 0;
     margin: 0;
+    background-blend-mode: color-dodge;
+}
+
+.bf-blur {
+    backdrop-filter: blur(30px);
 }
 </style>

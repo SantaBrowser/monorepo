@@ -94,17 +94,19 @@ export default defineComponent({
 <style scoped>
 .header-nav {
     position: fixed;
-    top: 0;
+    top: 3px;
     left: 0.5%;
     width: 99% !important;
     background-color: rgba(37, 37, 37, 0.5);
     z-index: 1000;
-    box-shadow: inset 0 2px 13px 12px rgb(223 18 18 / 10%);
+    box-shadow: 0 2px 10px 3px rgb(24 17 17 / 44%);
     padding: 8px;
-    border-bottom: 1px dotted #dd1e1e66;
+    //border-bottom: 1px dotted #dd1e1e66;
     border-radius: 15px;
     background: #000;
     margin: 0.1% 0.5% 0.1% 0;
+    border: 1px dotted #ad8b0bab;
+    padding-right: 60px;
 }
 
 .header-nav h2 {
@@ -129,10 +131,10 @@ export default defineComponent({
 
 .equal-divs {
     background: rgb(179 2 2 / 14%);
-    flex: 1;
+    flex: auto;
     min-width: 0;
     min-height: 0;
-    padding: 7px 20px;
+    padding: 7px 10px;
     border-radius: 22px;
     border: 1px dotted #ffcd06;
 }
@@ -141,7 +143,7 @@ export default defineComponent({
     width: 40px;
     height: 40px;
     position: absolute;
-    right: 14px;
+    right: 64px;
 }
 
 .name-avatar h2 {
