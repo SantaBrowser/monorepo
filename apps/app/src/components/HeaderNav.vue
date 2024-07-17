@@ -56,11 +56,24 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore),
         participantSanta() {
-            return this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
+            console.log('this.accountStore.participants', this.accountStore.participants);
+            return this.accountStore.participants.find(
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === SANTA_CAMPAIGN,
+            );
         },
         participantCP() {
-            return this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
+            return this.accountStore.participants.find(
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === CP_CAMPAIGN,
+            );
         },
+    },
+    watch: {
+        'accountStore.participants': function (newVal, oldVal) {
+            console.log('Participants changed:', newVal);
+        },
+    },
+    async created() {
+        // await this.accountStore.getParticipants();
     },
     methods: {
         balance(participant: TParticipant) {
