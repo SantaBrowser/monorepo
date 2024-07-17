@@ -26,6 +26,10 @@
         <router-link :to="`/c/${accountStore.config.slug}/ranking`">
             <i class="fas fa-trophy mr-lg-3" />
             <div>Rank</div>
+        </router-link> 
+        <router-link v-if="accountStore.isMobile" :to="`/c/${accountStore.config.slug}/wallets`">
+            <i class="fas fa-wallet mr-lg-3" />
+            <div>Wallet</div>
         </router-link> -->
         <a @click="selectNavItem('Quests')">
             <i class="fas fa-tasks me-lg-3" />
@@ -35,14 +39,14 @@
             <i class="fas fa-gift me-lg-3" />
             <div>Rewards</div>
         </a>
-        <a>
+        <a @click="selectNavItem('Leaderboard')">
             <i class="fas fa-trophy mr-lg-3" />
             <div>Rank</div>
         </a>
-        <router-link v-if="accountStore.isMobile" :to="`/c/${accountStore.config.slug}/wallets`">
+        <a @click="selectNavItem('Wallet')">
             <i class="fas fa-wallet mr-lg-3" />
             <div>Wallet</div>
-        </router-link>
+        </a>
         <BaseNavbarSecondary v-if="!accountStore.isMobile" class="ms-auto" />
     </b-navbar>
 </template>
@@ -69,7 +73,6 @@ export default defineComponent({
     },
     methods: {
         selectNavItem(item: string) {
-            console.log('ASD');
             this.$emit('nav-clicked', item);
         },
     },

@@ -1,5 +1,8 @@
 <template>
-    <b-container class="mt-2 overflow-y-scroll quest-cont">
+    <b-container
+        v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
+        class="mt-2 overflow-y-scroll quest-cont"
+    >
         <b-row>
             <b-col lg="6" xl="7" offset-xl="0" class="quests-column">
                 <div v-if="!accountStore.isMobile" class="mb-2 align-items-center bg-quests rounded">
@@ -201,7 +204,7 @@ export default defineComponent({
                 this.questStore.list(SANTA_CAMPAIGN);
                 this.rewardStore.list(CP_CAMPAIGN);
                 this.reward2Store.list(SANTA_CAMPAIGN);
-                this.accountStore.getParticipants(SANTA_CAMPAIGN);
+                // this.accountStore.getParticipants(SANTA_CAMPAIGN);
             },
             immediate: true,
         },
