@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container">
+        <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container bg-secondDiv">
             <HeaderNav :is-visible="isHeaderVisible" />
             <div class="d-flex h-100 bf-blur"><Quests :selected-part="selectedPart" /><BaseSidebar /></div>
         </div>
@@ -551,8 +551,8 @@ export default defineComponent({
 }
 
 .unwrap {
-    padding: 9vh 0 0;
-    line-height: 53vh;
+    padding: 8.5vh 0 0;
+    line-height: 48vh;
     /* font-family: "Kode Mono", monospace; */
     font-size: 21vw;
     color: #3b3306;

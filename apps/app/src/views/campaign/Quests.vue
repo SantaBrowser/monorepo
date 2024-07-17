@@ -1,5 +1,4 @@
 <template>
-    <b-container class="mt-2 overflow-y-scroll d-flex">
     <b-container class="mt-2 overflow-y-scroll quest-cont">
         <b-row>
             <b-col lg="6" xl="7" offset-xl="0" class="quests-column">
