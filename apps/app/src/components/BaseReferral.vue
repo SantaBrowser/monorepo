@@ -49,8 +49,9 @@ export default {
 .referral-text h4 {
     color: black;
     font-style: normal;
-    font-weight: 500;
+    font-weight: bold;
     line-height: normal;
+    font-family: 'Kode Mono', monospace;
 }
 
 .referral-text span {
