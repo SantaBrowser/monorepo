@@ -1,5 +1,6 @@
 <template>
     <div
+        v-if="list.length"
         class="d-flex gap-2 dropdown-menu wal-dropdown align-items-center justify-content-between equal-divs m-0 white-btn"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
