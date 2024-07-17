@@ -8,10 +8,12 @@
                     opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
                     margin: 0,
                 }"
-                class="h-100"
+                class="h-100 bg-santa"
                 @transitionend="onTransitionEnd"
             >
-                <div class="unwrap">UNWRAP</div>
+                <div class="bg-blur">
+                    <div class="unwrap">UNWRAP</div>
+                </div>
                 <!--                <div class="d-flex flex-column gap-4 landing-top hidden">-->
                 <!--                    <h1>Santa <span>Rewards</span></h1>-->
                 <!--                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>-->
@@ -338,7 +340,7 @@ export default defineComponent({
     background-size: cover;
     background-repeat: no-repeat;
     transition: transform 0.5s ease;
-    height: 100vh;
+    //height: 100vh;
     //padding: 12px;
 }
 
@@ -385,9 +387,10 @@ export default defineComponent({
 .window-container {
     height: calc(100vh - 70px);
     background-color: #0c0d15;
-    position: absolute;
-    bottom: -60%;
-    left: 0;
+    //position: absolute;
+    //bottom: -60%;
+    //top: 10px;
+    //left: 0;
     width: 100%;
     transition: bottom 0.5s ease-in-out;
     z-index: 11;
@@ -550,8 +553,20 @@ export default defineComponent({
     margin: 0;
 }
 
+.bg-santa {
+    background: url('/src/assets/top-bg.jpg');
+    border-radius: 20px;
+    border: 1px dotted #fbed5375;
+    overflow: hidden;
+    box-shadow: inset 0px 19px 20px 14px rgb(8 1 1 / 52%);
+}
+
+.bg-blur {
+    backdrop-filter: blur(2px);
+}
+
 .unwrap {
-    padding: 8.5vh 0 0;
+    padding: 40px 0 0;
     line-height: 48vh;
     /* font-family: "Kode Mono", monospace; */
     font-size: 21vw;
@@ -565,11 +580,13 @@ export default defineComponent({
     -webkit-text-stroke-color: #ffcd07;
     -webkit-text-stroke-width: 6px;
     background-position: top;
-    background: url('https://www.shutterstock.com/shutterstock/photos/2473979299/display_1500/stock-photo-santa-claus-smiling-and-opening-his-hands-facing-towards-the-viewer-small-red-metal-robot-with-2473979299.jpg');
     top: 0;
     left: 0;
     width: 100%;
     text-align: center;
+    transition: 1s all ease-in-out;
+    -moz-transition: 1s all ease-in-out;
+    -webkit-transition: 1s all ease-in-out;
 }
 .bestoftheweb {
     font-family: 'Kode Mono', monospace;
@@ -617,7 +634,7 @@ export default defineComponent({
 
 @media (max-height: 900px) {
     .landing-page {
-        height: auto;
+        //height: auto;
     }
 
     .mainComponent {
