@@ -165,4 +165,28 @@ export default {
     outline: none;
     border: none;
 }
+
+@media (max-width: 845px) {
+    .campaign-card {
+        width: 260px;
+    }
+}
+
+@media (max-width: 600px) {
+    .campaign-card {
+        width: 180px;
+    }
+}
+
+@media (max-width: 424px) {
+    .campaign-card {
+        width: 100%;
+        padding: 20px;
+        height: 100%;
+    }
+
+    .cp-card-header {
+        margin-bottom: 15px;
+    }
+}
 </style>
