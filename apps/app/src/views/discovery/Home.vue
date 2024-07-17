@@ -1,6 +1,6 @@
 <template>
     <div ref="mainComponent" class="mainComponent">
-        <HeaderNav :is-visible="true" />
+        <HeaderNav :is-visible="!accountStore.isMobile" />
         <div ref="firstDiv" class="landing-page w-100">
             <div
                 :class="{ blurred: isBlurred }"
@@ -8,10 +8,12 @@
                     opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
                     margin: 0,
                 }"
-                class="h-100"
+                class="h-100 bg-santa"
                 @transitionend="onTransitionEnd"
             >
-                <div class="unwrap">UNWRAP</div>
+                <div class="bg-blur">
+                    <div class="unwrap">UNWRAP</div>
+                </div>
                 <!--                <div class="d-flex flex-column gap-4 landing-top hidden">-->
                 <!--                    <h1>Santa <span>Rewards</span></h1>-->
                 <!--                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>-->
@@ -33,8 +35,29 @@
         </div>
 
         <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container bg-secondDiv">
-            <HeaderNav :is-visible="isHeaderVisible" />
-            <div class="d-flex h-100 bf-blur"><Quests :selected-part="selectedPart" /><BaseSidebar /></div>
+            <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
+            <div class="d-flex h-100 bf-blur w-100">
+                <Quests :selected-part="selectedPart" />
+
+                <BaseSidebar />
+                <div
+                    v-if="accountStore.isMobile && (selectedPart === 'Leaderboard' || selectedPart === 'Wallet')"
+                    class="w-100"
+                >
+                    <div v-if="selectedPart === 'Leaderboard'">
+                        <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
+                    </div>
+                    <div v-if="selectedPart === 'Wallet'">
+                        <BaseCardAccount />
+                        <BaseCardWalletInfo />
+                        <div class="d-flex gap-4 campaigns-box w-100">
+                            <div v-for="campaign in filteredCampaigns" :key="campaign._id" class="w-100">
+                                <CampaignCard :campaign="campaign" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <BaseNavbarPrimary
             v-if="accountStore.isMobile"
@@ -133,6 +156,8 @@ import * as html from 'html-entities';
 import Quests from '../campaign/Quests.vue';
 import HeaderNav from '@thxnetwork/app/components/HeaderNav.vue';
 import BaseNavbarPrimary from '@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue';
+import BaseQuestLeaderboardSmall from '@thxnetwork/app/components/BaseQuestLeaderboardSmall.vue';
+import BaseCardAccount from '@thxnetwork/app/components/card/BaseCardAccount.vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
@@ -144,6 +169,8 @@ export default defineComponent({
         // CampaignCard,
         Quests,
         BaseNavbarPrimary,
+        BaseQuestLeaderboardSmall,
+        BaseCardAccount,
     },
     data(): any {
         return {
@@ -301,7 +328,6 @@ export default defineComponent({
         },
         handleScroll() {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-            console.log('Scroll Position:', scrollPosition); // Add this line to log the scroll position
             if (scrollPosition > 100) {
                 this.isSecondDivVisible = true;
                 this.isHeaderVisible = true;
@@ -338,7 +364,7 @@ export default defineComponent({
     background-size: cover;
     background-repeat: no-repeat;
     transition: transform 0.5s ease;
-    height: 100vh;
+    //height: 100vh;
     //padding: 12px;
 }
 
@@ -385,9 +411,10 @@ export default defineComponent({
 .window-container {
     height: calc(100vh - 70px);
     background-color: #0c0d15;
-    position: absolute;
-    bottom: -60%;
-    left: 0;
+    //position: absolute;
+    //bottom: -60%;
+    //top: 10px;
+    //left: 0;
     width: 100%;
     transition: bottom 0.5s ease-in-out;
     z-index: 11;
@@ -550,8 +577,20 @@ export default defineComponent({
     margin: 0;
 }
 
+.bg-santa {
+    background: url('/src/assets/top-bg.jpg');
+    border-radius: 20px;
+    border: 1px dotted #fbed5375;
+    overflow: hidden;
+    box-shadow: inset 0px 19px 20px 14px rgb(8 1 1 / 52%);
+}
+
+.bg-blur {
+    backdrop-filter: blur(2px);
+}
+
 .unwrap {
-    padding: 8.5vh 0 0;
+    padding: 40px 0 0;
     line-height: 48vh;
     /* font-family: "Kode Mono", monospace; */
     font-size: 21vw;
@@ -565,11 +604,13 @@ export default defineComponent({
     -webkit-text-stroke-color: #ffcd07;
     -webkit-text-stroke-width: 6px;
     background-position: top;
-    background: url('https://www.shutterstock.com/shutterstock/photos/2473979299/display_1500/stock-photo-santa-claus-smiling-and-opening-his-hands-facing-towards-the-viewer-small-red-metal-robot-with-2473979299.jpg');
     top: 0;
     left: 0;
     width: 100%;
     text-align: center;
+    transition: 1s all ease-in-out;
+    -moz-transition: 1s all ease-in-out;
+    -webkit-transition: 1s all ease-in-out;
 }
 .bestoftheweb {
     font-family: 'Kode Mono', monospace;
@@ -606,7 +647,6 @@ export default defineComponent({
 @media (max-width: 424px) {
     .campaigns-box {
         flex-direction: column;
-        width: 100%;
         margin-top: 16px !important;
     }
     .carousel-cont {
@@ -615,9 +655,9 @@ export default defineComponent({
     }
 }
 
-@media (max-height: 900px) {
+@media (max-width: 992px) {
     .landing-page {
-        height: auto;
+        //height: auto;
     }
 
     .mainComponent {
