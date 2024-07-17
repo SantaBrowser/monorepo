@@ -1,5 +1,10 @@
 <template>
-    <div header-class="p-0" body-class="d-flex flex-column pt-0" class="leaderboard-wrapper">
+    <div
+        v-if="!accountStore.isMobile || selectedPart === 'Leaderboard'"
+        header-class="p-0"
+        body-class="d-flex flex-column pt-0"
+        class="leaderboard-wrapper"
+    >
         <b-card-title
             class="d-flex m-0 align-items-center"
             :style="{ backgroundImage: `url('src/assets/bg_leaderboard.png')` }"
@@ -50,6 +55,12 @@ import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '../config/secrets';
 
 export default defineComponent({
     name: 'BaseQuestLeaderboardSmall',
+    props: {
+        selectedPart: {
+            type: String,
+            default: 'Quests',
+        },
+    },
     data() {
         return {
             isLoading: false,

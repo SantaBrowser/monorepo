@@ -6,7 +6,12 @@
         >
             <template v-if="accountStore.account">
                 <b-link class="rounded-circle position-relative" @click="accountStore.isModalAccountShown = true">
-                    <b-avatar class="b-avatar-img-icon" size="50" :src="accountStore.account.profileImg" variant="dark" />
+                    <b-avatar
+                        class="b-avatar-img-icon"
+                        size="50"
+                        :src="accountStore.account.profileImg"
+                        variant="dark"
+                    />
                     <b-button
                         variant="primary"
                         size="sm"
@@ -19,15 +24,15 @@
                 <div class="ps-3 flex-grow-1" style="min-width: 200px">
                     <h3 class="text-white mb-0">
                         {{ accountStore.account.username }}
-                    </div>
+                    </h3>
                     <div class="d-flex align-items-center justify-content-between">
-                        <!-- <BaseDropdownWallets /> -->
+                        <BaseDropdownWallets />
                     </div>
                 </div>
             </template>
             <b-spinner v-else small class="text-opaque" />
         </div>
-    </div>
+    </b-card>
 </template>
 
 <script lang="ts">

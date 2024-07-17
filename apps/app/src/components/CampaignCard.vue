@@ -66,7 +66,9 @@ export default {
     computed: {
         ...mapStores(useAccountStore, useRewardStore, useQuestStore),
         participant() {
-            return this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
+            return this.accountStore.participants.find(
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === this.campaign._id,
+            );
         },
         balance() {
             if (!this.participant) return 0;
@@ -94,9 +96,9 @@ export default {
     methods: {
         async goToSecondDiv() {
             this.$emit('scrollToSecondDiv');
-            await this.questStore.list(this.campaign._id);
-            await this.rewardStore.list(this.campaign._id);
-            await this.accountStore.getParticipants(this.campaign._id);
+            // await this.questStore.list(this.campaign._id);
+            // await this.rewardStore.list(this.campaign._id);
+            // await this.accountStore.getParticipants(this.campaign._id);
         },
     },
 };
@@ -104,7 +106,8 @@ export default {
 
 <style scoped>
 .campaign-card {
-    width: 373px;
+    flex: 1;
+    width: 100%;
     height: 200px;
     border-radius: 12px;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.4) 100%);
