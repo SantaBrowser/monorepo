@@ -1,5 +1,6 @@
 <template>
     <b-container class="mt-2 overflow-y-scroll d-flex">
+    <b-container class="mt-2 overflow-y-scroll quest-cont">
         <b-row>
             <b-col lg="6" xl="7" offset-xl="0" class="quests-column">
                 <div v-if="!accountStore.isMobile" class="mb-2 align-items-center bg-quests rounded">
@@ -14,7 +15,12 @@
                 <div v-if="questStore.isLoading" class="d-flex justify-content-center py-5">
                     <b-spinner variant="primary" small />
                 </div>
-                <b-tabs v-else content-class="mt-3" justified class="mt-3">
+                <b-tabs
+                    v-else-if="!accountStore.isMobile || selectedPart === 'Quests'"
+                    content-class="mt-3"
+                    justified
+                    class="mt-3"
+                >
                     <b-tab active>
                         <template #title>
                             Available
@@ -49,7 +55,14 @@
                     </b-tab>
                 </b-tabs>
             </b-col>
-            <b-col v-if="!accountStore.isMobile" lg="5" xl="5" xxl="4" class="h-100 rewards-column" offset-xl="0">
+            <b-col
+                v-if="!accountStore.isMobile || selectedPart === 'Rewards'"
+                lg="5"
+                xl="5"
+                xxl="4"
+                class="h-100 rewards-column"
+                offset-xl="0"
+            >
                 <div class="mb-2 bg-rewards rounded">
                     <div class="align-items-center p-2 quests-title d-flex" style="justify-content: space-between">
                         <div>
@@ -139,6 +152,12 @@ export default defineComponent({
         BaseCardRewardCoupon,
         BaseCardRewardDiscordRole,
         BaseCardRewardGalachain,
+    },
+    props: {
+        selectedPart: {
+            type: String,
+            default: 'Quests',
+        },
     },
     data() {
         return {
@@ -378,5 +397,14 @@ export default defineComponent({
 
 .quests-title .text-opaque {
     font-size: 11px;
+}
+.quest-cont {
+    margin-left: 12px;
+}
+@media (max-width: 575px) {
+    .quest-cont {
+        margin-right: 12px;
+        overflow-x: hidden;
+    }
 }
 </style>

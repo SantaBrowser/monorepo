@@ -25,9 +25,7 @@
                 class="d-flex align-items-center justify-content-between equal-divs name-avatar"
                 @click="accountStore.isModalAccountShown = true"
             >
-                <h2>
-                    <span style="display: block">{{ accountStore?.account?.username }}</span>
-                </h2>
+                <h2 class="username">{{ accountStore?.account?.username }}</h2>
                 <b-avatar class="b-avatar-header" size="40" :src="accountStore?.account?.profileImg" variant="dark" />
             </div>
         </div>
@@ -155,5 +153,11 @@ export default defineComponent({
 }
 .name-avatar {
     padding-right: 2px !important;
+}
+.username {
+    max-width: 150px; /* Adjust this value as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
