@@ -1,6 +1,6 @@
 <template>
     <div ref="mainComponent" class="mainComponent">
-        <HeaderNav :is-visible="true" />
+        <HeaderNav :is-visible="!accountStore.isMobile" />
         <div ref="firstDiv" class="landing-page w-100">
             <div
                 :class="{ blurred: isBlurred }"
@@ -33,8 +33,29 @@
         </div>
 
         <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container bg-secondDiv">
-            <HeaderNav :is-visible="isHeaderVisible" />
-            <div class="d-flex h-100 bf-blur"><Quests :selected-part="selectedPart" /><BaseSidebar /></div>
+            <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
+            <div class="d-flex h-100 bf-blur w-100">
+                <Quests :selected-part="selectedPart" />
+
+                <BaseSidebar />
+                <div
+                    v-if="accountStore.isMobile && (selectedPart === 'Leaderboard' || selectedPart === 'Wallet')"
+                    class="w-100"
+                >
+                    <div v-if="selectedPart === 'Leaderboard'">
+                        <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
+                    </div>
+                    <div v-if="selectedPart === 'Wallet'">
+                        <BaseCardAccount />
+                        <BaseCardWalletInfo />
+                        <div class="d-flex gap-4 campaigns-box w-100">
+                            <div v-for="campaign in filteredCampaigns" :key="campaign._id" class="w-100">
+                                <CampaignCard :campaign="campaign" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <BaseNavbarPrimary
             v-if="accountStore.isMobile"
@@ -133,6 +154,8 @@ import * as html from 'html-entities';
 import Quests from '../campaign/Quests.vue';
 import HeaderNav from '@thxnetwork/app/components/HeaderNav.vue';
 import BaseNavbarPrimary from '@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue';
+import BaseQuestLeaderboardSmall from '@thxnetwork/app/components/BaseQuestLeaderboardSmall.vue';
+import BaseCardAccount from '@thxnetwork/app/components/card/BaseCardAccount.vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
@@ -144,6 +167,8 @@ export default defineComponent({
         // CampaignCard,
         Quests,
         BaseNavbarPrimary,
+        BaseQuestLeaderboardSmall,
+        BaseCardAccount,
     },
     data(): any {
         return {
@@ -301,7 +326,6 @@ export default defineComponent({
         },
         handleScroll() {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-            console.log('Scroll Position:', scrollPosition); // Add this line to log the scroll position
             if (scrollPosition > 100) {
                 this.isSecondDivVisible = true;
                 this.isHeaderVisible = true;
@@ -606,7 +630,6 @@ export default defineComponent({
 @media (max-width: 424px) {
     .campaigns-box {
         flex-direction: column;
-        width: 100%;
         margin-top: 16px !important;
     }
     .carousel-cont {
@@ -615,7 +638,7 @@ export default defineComponent({
     }
 }
 
-@media (max-height: 900px) {
+@media (max-width: 992px) {
     .landing-page {
         height: auto;
     }
