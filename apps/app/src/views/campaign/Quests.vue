@@ -62,7 +62,7 @@
                 lg="5"
                 xl="5"
                 xxl="4"
-                class="h-100 rewards-column"
+                class="h-100 rewards-column w-auto"
                 offset-xl="0"
             >
                 <div class="mb-2 bg-rewards rounded">
@@ -383,7 +383,7 @@ export default defineComponent({
     align-items: flex-start;
     align-content: flex-start;
     padding: 0px;
-    gap: 15px;
+    gap: 10px;
     margin-bottom: 10px;
 }
 .title-q {
