@@ -69,6 +69,14 @@
             "dependsOn": ["^build"],
             "executor": "nx:run-commands",
             "options": {
+                "command": "npx hardhat run scripts/deploy.ts --network localhost",
+                "cwd": "apps/api/src/app/hardhat"
+            }
+        },
+        "hardhat-deploy-erc20": {
+            "dependsOn": ["^build"],
+            "executor": "nx:run-commands",
+            "options": {
                 "command": "npx hardhat run scripts/deployERC20.ts --network polygon",
                 "cwd": "apps/api/src/app/hardhat"
             }
