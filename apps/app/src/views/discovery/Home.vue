@@ -657,5 +657,8 @@ export default defineComponent({
     .window-container {
         padding-bottom: 70px;
     }
+    .unwrap {
+        line-height: 28vh;
+    }
 }
 </style>
