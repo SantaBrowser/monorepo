@@ -78,23 +78,15 @@
                         </select>
                     </div>
                 </div>
-                <div v-if="selectedValue == 'All' || selectedValue == 'Santa'" class="rewards-container">
-                    <component
-                        :is="componentMap[reward.variant]"
-                        v-for="reward of reward2Store.rewards"
-                        :reward="reward"
-                        class="mb-2 gr-2"
-                        style="width: 48%"
-                    />
-                </div>
-                <div v-if="selectedValue == 'All' || selectedValue == 'Playwall'" class="rewards-container">
-                    <component
-                        :is="componentMap[reward.variant]"
-                        v-for="reward of rewardStore.rewards"
-                        :reward="reward"
-                        class="mb-2 gr-2 mt-5"
-                        style="width: 48%"
-                    />
+                <div v-if="mergedRewards.length > 0" class="rewards-container flex-1">
+                    <div
+                        v-for="(reward, index) in mergedRewards"
+                        :key="index"
+                        class="reward-item mb-2 gr-2"
+                        :style="reward.isPromoted ? 'width: 100%' : 'width: 48% !important'"
+                    >
+                        <component :is="componentMap[reward.variant]" :reward="reward" />
+                    </div>
                 </div>
             </b-col>
         </b-row>
@@ -193,6 +185,16 @@ export default defineComponent({
             const { quests } = this.questStore;
             return quests.sort(sortMap[this.selectedSort.key]).map((quest, index) => ({ ...quest, index }));
         },
+        mergedRewards() {
+            if (this.selectedValue === 'All') {
+                return [...this.reward2Store.rewards, ...this.rewardStore.rewards];
+            } else if (this.selectedValue === 'Santa') {
+                return this.reward2Store.rewards;
+            } else if (this.selectedValue === 'Playwall') {
+                return this.rewardStore.rewards;
+            }
+            return [];
+        },
     },
     watch: {
         'accountStore.isAuthenticated': {
@@ -221,7 +223,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
 .my-nav .nav-link.active {
     --bs-nav-tabs-link-active-color: rgba(255, 255, 255, 0.7) !important;
     background: linear-gradient(180deg, #202023 0%, #000 84%) !important;
@@ -400,13 +402,12 @@ export default defineComponent({
 .quests-title .text-opaque {
     font-size: 11px;
 }
-.quest-cont {
-    margin-left: 12px;
-}
-@media (max-width: 575px) {
-    .quest-cont {
+@media (max-width: 992px) {
+    .quest-cont .row > * {
+        flex-shrink: unset;
+    }
+    .quests-column {
         margin-right: 12px;
-        overflow-x: hidden;
     }
 }
 </style>

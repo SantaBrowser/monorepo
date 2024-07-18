@@ -4,7 +4,7 @@
     <nav v-if="isVisible" class="header-nav d-flex justify-content-between w-100">
         <!-- Your header content -->
         <!-- <h1>Header Navigation</h1> -->
-        <div class="d-flex gap-2" style="width: 500px">
+        <div class="d-flex gap-2 balance-wrap" style="width: 500px">
             <div v-if="participantSanta" class="d-flex align-items-center justify-content-between equal-divs">
                 <h2>Santa <span style="display: block">Quests</span></h2>
                 <div class="d-flex align-items-center">
@@ -19,13 +19,13 @@
         </div>
         <div class="d-flex gap-2"></div>
         <div class="d-flex gap-2">
-            <BaseCardWalletInfo />
+            <BaseCardWalletInfo v-if="!accountStore.isMobile" />
             <BaseDropdownWallets />
             <div
                 class="d-flex align-items-center justify-content-between equal-divs name-avatar"
                 @click="accountStore.isModalAccountShown = true"
             >
-                <h2 class="username">{{ accountStore?.account?.username }}</h2>
+                <h2 v-if="!accountStore.isMobile" class="username">{{ accountStore?.account?.username }}</h2>
                 <b-avatar class="b-avatar-header" size="40" :src="accountStore?.account?.profileImg" variant="dark" />
             </div>
         </div>
@@ -112,7 +112,7 @@ export default defineComponent({
     z-index: 1000;
     box-shadow: 0 2px 10px 3px rgb(24 17 17 / 44%);
     padding: 8px;
-    //border-bottom: 1px dotted #dd1e1e66;
+    /*border-bottom: 1px dotted #dd1e1e66;*/
     border-radius: 15px;
     background: #000;
     margin: 0.1% 0.5% 0.1% 0;
@@ -128,6 +128,7 @@ export default defineComponent({
     font-weight: 600;
     text-transform: uppercase;
     margin: 0;
+    white-space: nowrap;
 }
 
 .header-nav p {
@@ -172,5 +173,27 @@ export default defineComponent({
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+@media (max-width: 992px) {
+    .header-nav {
+        padding-right: 0;
+    }
+    .b-avatar-header {
+        position: relative;
+        right: 0;
+    }
+    .name-avatar {
+        padding-right: 10px !important;
+    }
+}
+
+@media (max-width: 490px) {
+    .header-nav h2 {
+        display: none;
+    }
+    .balance-wrap {
+        width: auto !important;
+    }
 }
 </style>

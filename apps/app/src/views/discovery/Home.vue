@@ -1,6 +1,6 @@
 <template>
     <div ref="mainComponent" class="mainComponent">
-        <HeaderNav :is-visible="!accountStore.isMobile" />
+        <HeaderNav :is-visible="true" />
         <div ref="firstDiv" class="landing-page w-100">
             <div
                 :class="{ blurred: isBlurred }"
@@ -48,13 +48,7 @@
                         <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
                     </div>
                     <div v-if="selectedPart === 'Wallet'">
-                        <BaseCardAccount />
-                        <BaseCardWalletInfo />
-                        <div class="d-flex gap-4 campaigns-box w-100">
-                            <div v-for="campaign in filteredCampaigns" :key="campaign._id" class="w-100">
-                                <CampaignCard :campaign="campaign" />
-                            </div>
-                        </div>
+                        <BaseCardRewards />
                     </div>
                 </div>
             </div>
@@ -157,7 +151,7 @@ import Quests from '../campaign/Quests.vue';
 import HeaderNav from '@thxnetwork/app/components/HeaderNav.vue';
 import BaseNavbarPrimary from '@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue';
 import BaseQuestLeaderboardSmall from '@thxnetwork/app/components/BaseQuestLeaderboardSmall.vue';
-import BaseCardAccount from '@thxnetwork/app/components/card/BaseCardAccount.vue';
+import BaseCardRewards from '@thxnetwork/app/components/card/BaseCardRewards.vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
@@ -170,7 +164,7 @@ export default defineComponent({
         Quests,
         BaseNavbarPrimary,
         BaseQuestLeaderboardSmall,
-        BaseCardAccount,
+        BaseCardRewards,
     },
     data(): any {
         return {
@@ -327,7 +321,8 @@ export default defineComponent({
             secondDiv.scrollIntoView({ behavior: 'smooth' });
         },
         handleScroll() {
-            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+            const scrollPosition =
+                window.scrollY || document.documentElement.scrollTop || this.$refs.mainComponent.scrollTop;
             if (scrollPosition > 100) {
                 this.isSecondDivVisible = true;
                 this.isHeaderVisible = true;
@@ -656,20 +651,11 @@ export default defineComponent({
 }
 
 @media (max-width: 992px) {
-    .landing-page {
-        //height: auto;
-    }
-
     .mainComponent {
-        height: 100%;
         overflow: auto;
     }
     .window-container {
-        height: auto;
-        position: relative;
-        overflow: unset;
-        bottom: unset;
-        padding: 32px 0 100px;
+        padding-bottom: 70px;
     }
 }
 </style>
