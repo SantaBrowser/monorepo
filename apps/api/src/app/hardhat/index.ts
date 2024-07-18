@@ -42,35 +42,35 @@ export const getArtifact = (contractName: TContractName) => {
 export const contractNetworks = {
     '31337': {
         // Safe
-        simulateTxAccessorAddress: '0x278Ff6d33826D906070eE938CDc9788003749e93',
-        safeProxyFactoryAddress: '0xEAB9a65eB0F098f822033192802B53EE159De5F0',
-        fallbackHandlerAddress: '0x055cBfeD6df4AFE2452b18fd3D2592D1795592b4',
-        createCallAddress: '0xb63564A81D5d4004F4f22E9aB074cE25540B0C26',
-        multiSendAddress: '0x50aF0922d65D04D87d810048Dc640E2474eBfbd9',
-        multiSendCallOnlyAddress: '0x15FC0878406CcF4d2963235A5B1EF68C67F17Ee5',
-        signMessageLibAddress: '0xa4E84979c95cD4f12C53E73d63E0A8634A1f44Ae',
-        safeMasterCopyAddress: '0xd916a690676e925Ac9Faf2d01869c13Fd9757ef2',
+        simulateTxAccessorAddress: '0xBe900568F856c024a96Ea757c4Bb59A84C0feD1e',
+        safeProxyFactoryAddress: '0xAdB96Fce55cdAabb6D8155093b440b4Fe5bADf34',
+        fallbackHandlerAddress: '0x1a111e50fAd935C19E54b70841b36981a99b0a08',
+        createCallAddress: '0xD44Af1f90B3dAe2Dd7C7C4189Ce6171Adb7F09a0',
+        multiSendAddress: '0xd9e8E1ee7ea3B823347B4A031B7025CB76d3FC7c',
+        multiSendCallOnlyAddress: '0xB90DaC4562A7451389d5c46f97363de286747773',
+        signMessageLibAddress: '0x6a19bf92CA00FfFbfbf72c320A201Ad05a0800dB',
+        safeMasterCopyAddress: '0x8b861ecB0231F698511745A597ffdF580C8A676d',
 
         // Tokens
-        THX: '0xB952d9b5de7804691e7936E88915A669B15822ef',
-        USDC: '0x7150A3CC09429583471020A6CE5228A57736180a',
-        BAL: '0xe1c01805a21ee0DC535afa93172a5F21CE160649',
-        BPT: '0xf228ADAa4c3D07C8285C1025421afe2c4F320C59',
-        BPTGauge: '0x8613B8E442219e4349fa5602C69431131a7ED114',
-        BalancerVault: '0x8B219D3d1FC64e03F6cF3491E7C7A732bF253EC8',
+        THX: '0x0e225E554f7B4D81F3cff9921f7065b921B90DbE',
+        USDC: '0xEac6eeAa25873bF4e89a797B50a5a0f2cd956B65',
+        BAL: '0xe400acDCddcD569C847710DC4b85795335B10E76',
+        BPT: '0xDD2Da6d1345D1aa2F9F4AEade0204582aD21df2B',
+        BPTGauge: '0x79f2ddCd9f94b46D6Bf66331F9D250cE20EFFE9E',
+        BalancerVault: '0x8D237e28431911BC320430771cB11A231916873b',
 
         // veTHX
-        VotingEscrow: '0x1280809d06C42E68063305235813e52c8Bb03a58',
-        RewardDistributor: '0xd0507c5363AeCfe8231FF4110e05AFf611d7F7B6',
-        RewardFaucet: '0x33599eaec2752DB3242323483A7313bA3b1111cd',
-        SmartWalletWhitelist: '0xb3B2b0fc5ce12aE58EEb13E19547Eb2Dd61A79D5',
-        LensReward: '0x774442713f32fa98bf27bEc78c96fb7186f7C223',
+        VotingEscrow: '0xc5535aC62e1De7e8095A196149a9AB90ac3663b9',
+        RewardDistributor: '0x9F1bBD3b552382CF6080ad94B27920eDC3617C15',
+        RewardFaucet: '0xe943fb53A96e767AbB935A5314809fCAF4Ab0652',
+        SmartWalletWhitelist: '0x866cf08660ef059FC644CFc19a98d73726963a5E',
+        LensReward: '0x34b9F8c17FD543708356c966e593a44bb3601fc3',
 
         // Company
-        THXRegistry: '0x0Bb5Cb54566cEEf9dF1F60d8D7d2Fd01eA88279e',
-        THXPaymentSplitter: '0x58C0e64cBB7E5C7D0201A3a5c2D899cC70B0dc4c',
+        THXRegistry: '0x6123Bb1df6380687458E3c67f7F3431A0E601c1E',
+        THXPaymentSplitter: '0xB0ABe932009C221b97F4014870322Ec59E2259F8',
 
-        CompanyMultiSig: '0xaf9d56684466fcFcEA0a2B7fC137AB864d642946',
+        CompanyMultiSig: '0x51A68B7625450D95b41C3fD880aaDF12dF078539',
     },
     '11155111': {
         // Safe
