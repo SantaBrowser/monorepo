@@ -127,9 +127,14 @@
                     v-if="!image"
                     :src="randomPlaywallPlaceholderImage"
                     class=""
-                    :style="{ width: '100%', height: '167px', borderRadius: '4px' }"
+                    :style="{ width: '100%', height: '120px', borderRadius: '4px', objectFit: 'cover' }"
                 />
-                <img v-else :src="image" alt="Image" :style="{ width: '100%', height: '167px', borderRadius: '4px' }" />
+                <img
+                    v-else
+                    :src="image"
+                    alt="Image"
+                    :style="{ width: '100%', height: '120px', borderRadius: '4px', objectFit: 'cover' }"
+                />
             </div>
             <b-card-title class="d-flex align-items-center c-quest-title">
                 <!-- <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" /> -->
@@ -152,7 +157,7 @@
                     id="disabled-wrapper"
                     class="d-block"
                     tabindex="0"
-                    :style="{ margin: '0px 26px 15px 26px' }"
+                    :style="{ margin: '0px 26px 10px 26px' }"
                 >
                     <!-- <BaseButtonQuestLocked
                         v-if="reward.isLocked || isInsufficientPoints"
