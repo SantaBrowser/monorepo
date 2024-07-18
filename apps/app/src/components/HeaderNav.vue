@@ -6,7 +6,6 @@
         <!-- <h1>Header Navigation</h1> -->
         <div class="d-flex gap-2 balance-wrap" style="width: 500px">
             <div
-                v-if="participantSanta"
                 ref="santaDiv"
                 class="d-flex align-items-center justify-content-between equal-divs"
                 @click="toggleSantaDropdown"
@@ -30,7 +29,6 @@
                 </div>
             </div>
             <div
-                v-if="participantCP"
                 ref="cpDiv"
                 class="d-flex align-items-center justify-content-between equal-divs"
                 @click="toggleCPDropdown"
