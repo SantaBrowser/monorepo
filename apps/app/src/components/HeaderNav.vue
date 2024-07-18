@@ -5,16 +5,41 @@
         <!-- Your header content -->
         <!-- <h1>Header Navigation</h1> -->
         <div class="d-flex gap-2 balance-wrap" style="width: 500px">
-            <div v-if="participantSanta" class="d-flex align-items-center justify-content-between equal-divs">
+            <div
+                v-if="participantSanta"
+                ref="santaDiv"
+                class="d-flex align-items-center justify-content-between equal-divs"
+                @click="toggleSantaDropdown"
+            >
                 <h2>Santa <span style="display: block">Quests</span></h2>
                 <div class="d-flex align-items-center">
                     <p>{{ formattedBalance(participantSanta, SANTA_CAMPAIGN) }}</p>
                     <img :src="imgStarCoin" alt="Star Coin" width="24" />
                 </div>
+                <div v-if="showSantaDropdown" class="dropdown-content">
+                    <div class="d-flex justify-content-between">
+                        <p>Total Eearnings:</p>
+                        <div class="d-flex align-items-center">
+                            <p>{{ formattedScore(participantSanta, SANTA_CAMPAIGN) }}</p>
+                            <img :src="imgStarCoin" alt="Star Coin" width="12" height="12" />
+                        </div>
+                    </div>
+                    <p>
+                        Latest Completed Quest: <span>{{ latestCompletedQuest?.title }}</span>
+                    </p>
+                </div>
             </div>
-            <div v-if="participantCP" class="d-flex align-items-center justify-content-between equal-divs">
+            <div
+                v-if="participantCP"
+                ref="cpDiv"
+                class="d-flex align-items-center justify-content-between equal-divs"
+                @click="toggleCPDropdown"
+            >
                 <h2>Cashback &<span style="display: block">Playwall</span></h2>
                 <p>{{ formattedBalance(participantCP, CP_CAMPAIGN) }}</p>
+                <div v-if="showCPDropdown" class="dropdown-content">
+                    <p>Total Eearnings: {{ formattedScore(participantCP, CP_CAMPAIGN) }}</p>
+                </div>
             </div>
         </div>
         <div class="d-flex gap-2"></div>
@@ -38,6 +63,7 @@ import { useAccountStore } from '../stores/Account';
 import { mapStores } from 'pinia';
 import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '../config/secrets';
 import imgStarCoin from '../assets/star-coin.png';
+import { useQuestStore } from '../stores/Quest';
 export default defineComponent({
     name: 'HeaderNav',
     props: {
@@ -51,10 +77,12 @@ export default defineComponent({
             SANTA_CAMPAIGN,
             CP_CAMPAIGN,
             imgStarCoin,
+            showSantaDropdown: false,
+            showCPDropdown: false,
         };
     },
     computed: {
-        ...mapStores(useAccountStore),
+        ...mapStores(useAccountStore, useQuestStore),
         participantSanta() {
             console.log('this.accountStore.participants', this.accountStore.participants);
             return this.accountStore.participants.find(
@@ -66,6 +94,10 @@ export default defineComponent({
                 (p) => p.sub === this.accountStore.account?.sub && p.poolId === CP_CAMPAIGN,
             );
         },
+        latestCompletedQuest() {
+            const { quests } = this.questStore;
+            return quests.find((quest) => !quest.isAvailable);
+        },
     },
     watch: {
         'accountStore.participants': function (newVal, oldVal) {
@@ -75,7 +107,37 @@ export default defineComponent({
     async created() {
         // await this.accountStore.getParticipants();
     },
+    mounted() {
+        document.addEventListener('click', this.handleClickOutside);
+    },
+    beforeUnmount() {
+        document.removeEventListener('click', this.handleClickOutside);
+    },
     methods: {
+        toggleSantaDropdown() {
+            this.showSantaDropdown = !this.showSantaDropdown;
+            this.showCPDropdown = false;
+            event.stopPropagation();
+        },
+        toggleCPDropdown() {
+            this.showCPDropdown = !this.showCPDropdown;
+            this.showSantaDropdown = false;
+            event.stopPropagation();
+        },
+        handleClickOutside(event: Event) {
+            const santaDiv = this.$refs.santaDiv as HTMLElement;
+            const cpDiv = this.$refs.cpDiv as HTMLElement;
+
+            if (
+                santaDiv &&
+                !santaDiv.contains(event.target as Node) &&
+                cpDiv &&
+                !cpDiv.contains(event.target as Node)
+            ) {
+                this.showSantaDropdown = false;
+                this.showCPDropdown = false;
+            }
+        },
         balance(participant: TParticipant) {
             if (!participant) return 0;
             return Number(participant.balance);
@@ -174,7 +236,24 @@ export default defineComponent({
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.dropdown-content {
+    position: absolute;
+    background-color: #000;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 20px;
+    transform: translate(-10px, 43px);
+    padding: 1em;
+    border: 1px dotted #ffcd06;
+}
 
+.dropdown-content p {
+    font-size: 12px;
+}
+.dropdown-content p span {
+    color: #c1c1c1;
+}
 @media (max-width: 992px) {
     .header-nav {
         padding-right: 0;
