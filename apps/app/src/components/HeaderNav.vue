@@ -12,14 +12,14 @@
             >
                 <h2>Santa <span style="display: block">Quests</span></h2>
                 <div class="d-flex align-items-center">
-                    <p>{{ formattedBalance(participantSanta, SANTA_CAMPAIGN) }}</p>
+                    <p>{{ numberWithCommas(formattedBalance(participantSanta, SANTA_CAMPAIGN)) }}</p>
                     <img :src="imgStarCoin" alt="Star Coin" width="24" />
                 </div>
                 <div v-if="showSantaDropdown" class="dropdown-content">
                     <div class="d-flex justify-content-between">
                         <p>Total Eearnings:</p>
                         <div class="d-flex align-items-center">
-                            <p>{{ formattedScore(participantSanta, SANTA_CAMPAIGN) }}</p>
+                            <p>{{ numberWithCommas(formattedScore(participantSanta, SANTA_CAMPAIGN)) }}</p>
                             <img :src="imgStarCoin" alt="Star Coin" width="12" height="12" />
                         </div>
                     </div>
@@ -34,9 +34,9 @@
                 @click="toggleCPDropdown"
             >
                 <h2>Cashback &<span style="display: block">Playwall</span></h2>
-                <p>{{ formattedBalance(participantCP, CP_CAMPAIGN) }}</p>
+                <p>${{ numberWithCommas(formattedBalance(participantCP, CP_CAMPAIGN)) }}</p>
                 <div v-if="showCPDropdown" class="dropdown-content">
-                    <p>Total Eearnings: {{ formattedScore(participantCP, CP_CAMPAIGN) }}</p>
+                    <p>Total Eearnings: ${{ numberWithCommas(formattedScore(participantCP, CP_CAMPAIGN)) }}</p>
                 </div>
             </div>
         </div>
@@ -147,16 +147,19 @@ export default defineComponent({
         formattedScore(participant: TParticipant, campaignId: string) {
             if (campaignId === CP_CAMPAIGN) {
                 const score = this.score(participant) / 100;
-                return Number.isInteger(score) ? `$${score}` : `$${score.toFixed(2)}`;
+                return Number.isInteger(score) ? score : score.toFixed(2);
             }
             return this.score(participant);
         },
         formattedBalance(participant: TParticipant, campaignId: string) {
             if (campaignId === CP_CAMPAIGN) {
                 const balance = this.balance(participant) / 100;
-                return Number.isInteger(balance) ? `$${balance}` : `$${balance.toFixed(2)}`;
+                return Number.isInteger(balance) ? balance : balance.toFixed(2);
             }
             return this.balance(participant);
+        },
+        numberWithCommas(x: number | string) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
     },
 });
