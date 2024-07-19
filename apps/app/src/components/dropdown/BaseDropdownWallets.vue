@@ -11,7 +11,7 @@
             }"
             toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none p-2"
             auto-close="outside"
-            menu-class="bg-body"
+            :menu-class="{ 'bg-body': walletStore.wallet, 'd-none': !walletStore.wallet }"
             no-caret
             end
         >
@@ -23,7 +23,7 @@
                     }"
                     class="fas fa-circle me-2"
                 />
-                <div>
+                <div @click="toggleDropdown">
                     {{ walletStore.wallet ? walletStore.wallet.short : 'Connect' }}
                 </div>
             </template>
@@ -158,7 +158,7 @@
             </b-dropdown-item>
             <b-dropdown-divider />
             <b-dropdown-item
-                link-class="d-flex align-items-center"
+                link-class="d-flex align-items-center justify-content-center"
                 @click="walletStore.isModalWalletCreateShown = true"
             >
                 New Wallet
@@ -168,12 +168,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, toDisplayString } from 'vue';
 import { mapStores } from 'pinia';
 import { useWalletStore, walletLogoMap } from '../../stores/Wallet';
 import { useAccountStore } from '../../stores/Account';
 import { WalletVariant } from '../../types/enums/accountVariant';
 import { chainList } from '@thxnetwork/app/utils/chains';
+import { is } from 'date-fns/locale';
 
 export default defineComponent({
     name: 'BaseDropdownWallets',
@@ -260,6 +261,11 @@ export default defineComponent({
             this.walletStore.setWallet(wallet);
             this.accountStore.setGlobals({ activeWalletId: wallet._id });
             this.walletStore.list();
+        },
+        toggleDropdown() {
+            if (this.walletStore.wallet === null) {
+                this.isOpen = !this.isOpen;
+            }
         },
     },
 });
