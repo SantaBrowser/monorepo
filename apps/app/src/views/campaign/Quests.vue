@@ -1,7 +1,8 @@
 <template>
     <b-container
         v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
-        class="mt-2 overflow-y-scroll quest-cont"
+        class="mt-2 quest-cont"
+        :class="{ 'overflow-y-hidden': !isSecondDivVisible, 'overflow-y-scroll': isSecondDivVisible }"
     >
         <b-row>
             <b-col
@@ -152,6 +153,10 @@ export default defineComponent({
         selectedPart: {
             type: String,
             default: 'Quests',
+        },
+        isSecondDivVisible: {
+            type: Boolean,
+            default: false,
         },
     },
     data() {
