@@ -174,4 +174,10 @@ export default defineComponent({
 .leaderboard-wrapper .list-group {
     padding: 13.5px 7.5px;
 }
+
+@media (max-width: 992px) {
+    .leaderboard-wrapper {
+        margin: 12px 12px 0;
+    }
+}
 </style>

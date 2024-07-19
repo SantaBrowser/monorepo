@@ -9,7 +9,14 @@
                     <span class="text-opaque">Members Online</span>
                 </div>
             </div>
-            <b-button v-if="inviteURL" target="_blank" :href="inviteURL" size="sm" class="ms-auto" variant="success">
+            <b-button
+                v-if="inviteURL"
+                target="_blank"
+                :href="inviteURL"
+                size="sm"
+                class="ms-auto ml-1"
+                variant="success"
+            >
                 Ask around!
             </b-button>
         </template>
@@ -81,6 +88,10 @@ export default defineComponent({
 });
 </script>
 <style>
+.disc-black {
+    position: absolute;
+    bottom: 0;
+}
 .truncate-text {
     display: inline-block;
     width: 245px;
