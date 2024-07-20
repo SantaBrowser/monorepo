@@ -117,7 +117,7 @@ export default class QuestService {
         return Quest.findByIdAndUpdate(questId, options, { new: true });
     }
 
-    static getAmount(variant: QuestVariant, quest: TQuest, account: TAccount, data?: { metadata: any }) {
+    static getAmount(variant: QuestVariant, quest: TQuest, account: TAccount, data?: any) {
         return serviceMap[variant].getAmount({ quest, account, data });
     }
 
@@ -215,6 +215,8 @@ export default class QuestService {
                 sub: account.sub,
                 questId: quest.id,
                 poolId: pool.id,
+                santaQuestType: data.santaQuestType,
+                santaQuestId: data.santaQuestId,
                 uuid: v4(),
             } as TQuestEntry);
             if (!entry) throw new Error('Entry creation failed.');
