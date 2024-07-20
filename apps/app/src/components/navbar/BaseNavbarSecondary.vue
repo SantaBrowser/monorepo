@@ -1,19 +1,19 @@
 <template>
     <b-navbar class="navbar-top pt-3 pb-3 px-0 px-lg-3 p-lg-0">
-        <div v-if="accountStore.config.isQRCodeCampaign && !accountStore.isAuthenticated">
-            <b-img :src="accountStore.config.logoUrl" height="40" />
-        </div>
-        <b-link
-            v-if="!accountStore.config.isQRCodeCampaign"
-            class="d-lg-none text-decoration-none me-auto"
-            style="width: 120px"
-            @click="onClickRefresh"
-        >
-            <div class="text-accent h1 m-0">
-                <strong>{{ accountStore.isAuthenticated && participant ? participant.balance : 0 }}</strong>
-            </div>
-            <span class="points text-opaque">points</span>
-        </b-link>
+        <!--        <div v-if="accountStore.config.isQRCodeCampaign && !accountStore.isAuthenticated">-->
+        <!--            <b-img :src="accountStore.config.logoUrl" height="40" />-->
+        <!--        </div>-->
+        <!--        <b-link-->
+        <!--            v-if="!accountStore.config.isQRCodeCampaign"-->
+        <!--            class="d-lg-none text-decoration-none me-auto"-->
+        <!--            style="width: 120px"-->
+        <!--            @click="onClickRefresh"-->
+        <!--        >-->
+        <!--            <div class="text-accent h1 m-0">-->
+        <!--                <strong>{{ accountStore.isAuthenticated && participant ? participant.balance : 0 }}</strong>-->
+        <!--            </div>-->
+        <!--            <span class="points text-opaque">points</span>-->
+        <!--        </b-link>-->
         <BaseDropdownWallets />
         <div class="ms-auto" style="width: 120px; text-align: right">
             <b-button

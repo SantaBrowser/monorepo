@@ -16,16 +16,17 @@
                     <img :src="imgStarCoin" alt="Star Coin" width="24" />
                 </div>
                 <div v-if="showSantaDropdown" class="dropdown-content">
-                    <div class="d-flex justify-content-between">
-                        <p>Total Eearnings:</p>
-                        <div class="d-flex align-items-center">
+                    <div class="justify-content-between">
+                        <p>Total Earnings</p>
+                        <div class="d-flex align-items-center total-earnings">
                             <p>{{ numberWithCommas(formattedScore(participantSanta, SANTA_CAMPAIGN)) }}</p>
-                            <img :src="imgStarCoin" alt="Star Coin" width="12" height="12" />
+                            <img :src="imgStarCoin" alt="Star Coin" width="24" height="24" />
                         </div>
                     </div>
-                    <p>
-                        Latest Completed Quest: <span>{{ latestCompletedQuest?.title }}</span>
-                    </p>
+                    <div>
+                        Latest Completed Quest
+                        <p>{{ latestCompletedQuest?.title }}</p>
+                    </div>
                 </div>
             </div>
             <div
@@ -36,14 +37,23 @@
                 <h2>Cashback &<span style="display: block">Playwall</span></h2>
                 <p>${{ numberWithCommas(formattedBalance(participantCP, CP_CAMPAIGN)) }}</p>
                 <div v-if="showCPDropdown" class="dropdown-content">
-                    <p>Total Eearnings: ${{ numberWithCommas(formattedScore(participantCP, CP_CAMPAIGN)) }}</p>
+                    <div class="justify-content-between">
+                        <p>Total Earnings</p>
+                        <div class="d-flex align-items-center total-earnings">
+                            <p>${{ numberWithCommas(formattedScore(participantCP, CP_CAMPAIGN)) }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        Latest Activity
+                        <p>-</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="d-flex gap-2"></div>
-        <div class="d-flex gap-2">
+        <div v-if="!accountStore.isMobile" class="d-flex gap-2"></div>
+        <div v-if="!accountStore.isMobile" class="d-flex gap-2">
             <BaseCardWalletInfo v-if="!accountStore.isMobile" />
-            <BaseDropdownWallets />
+            <BaseDropdownWallets v-if="!accountStore.isMobile" />
             <div
                 class="d-flex align-items-center justify-content-between equal-divs name-avatar"
                 @click="accountStore.isModalAccountShown = true"
@@ -176,10 +186,10 @@ export default defineComponent({
     box-shadow: 0 2px 10px 3px rgb(24 17 17 / 44%);
     padding: 8px;
     /*border-bottom: 1px dotted #dd1e1e66;*/
-    border-radius: 15px;
+    border-radius: 30px;
     background: #000;
     margin: 0.1% 0.5% 0.1% 0;
-    border: 1px dotted #ad8b0bab;
+    border: 1px dotted #987a07f7;
     padding-right: 60px;
 }
 
@@ -212,13 +222,15 @@ export default defineComponent({
     padding: 7px 10px;
     border-radius: 22px;
     border: 1px dotted #ffcd06;
+    position: relative;
+    cursor: pointer;
 }
 .b-avatar-header {
     border: 2px dotted #064f17;
     width: 40px;
     height: 40px;
     position: absolute;
-    right: 64px;
+    right: 4px;
 }
 
 .name-avatar h2 {
@@ -240,13 +252,15 @@ export default defineComponent({
 .dropdown-content {
     position: absolute;
     background-color: #000;
-    min-width: 160px;
+    /* min-width: 160px; */
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 20px;
     transform: translate(-10px, 43px);
     padding: 1em;
     border: 1px dotted #ffcd06;
+    width: 100%;
+    top: -1px;
 }
 
 .dropdown-content p {
@@ -275,5 +289,16 @@ export default defineComponent({
     .balance-wrap {
         width: auto !important;
     }
+}
+
+.total-earnings {
+    margin: 10px 0;
+}
+
+.total-earnings p {
+    font-size: 20px;
+    text-align: right;
+    display: block;
+    width: 100%;
 }
 </style>

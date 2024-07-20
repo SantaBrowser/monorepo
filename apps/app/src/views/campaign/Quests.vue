@@ -212,7 +212,7 @@ export default defineComponent({
                 this.questStore.list(SANTA_CAMPAIGN);
                 this.rewardStore.list(CP_CAMPAIGN);
                 this.reward2Store.list(SANTA_CAMPAIGN);
-                // this.accountStore.getParticipants(SANTA_CAMPAIGN);
+                this.accountStore.getParticipants(SANTA_CAMPAIGN);
             },
             immediate: true,
         },
@@ -306,6 +306,12 @@ export default defineComponent({
     background: #000 !important;
 }
 
+.btn-primary {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px 0px, rgba(255, 255, 255, 0.12) 0px 4px 4px 0px inset;
+    background: rgb(212, 70, 70) !important;
+    border-radius: 20px;
+}
+
 .my-leader {
     background-color: #151515;
 }
@@ -328,7 +334,7 @@ export default defineComponent({
 .gr-2 {
     width: 100% !important;
     box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
-    zoom: 0.75;
+    //zoom: 0.75;
 }
 
 .gr-2 .card-body {
@@ -374,7 +380,7 @@ export default defineComponent({
 }
 
 .quests-title {
-    backdrop-filter: brightness(0.5);
+    backdrop-filter: brightness(0.3);
     overflow: hidden;
 }
 
@@ -393,9 +399,10 @@ export default defineComponent({
     margin-bottom: 10px;
 }
 .title-q {
-    font-size: 23px;
+    font-size: 30px;
     line-height: 23px;
-    color: #feff00;
+    color: #00ffe7;
+    //color: #feff00;
     font-weight: 400;
     font-family: 'Kode Mono', monospace;
 }

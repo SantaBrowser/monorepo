@@ -3,7 +3,7 @@
         <b-dropdown
             v-model="isOpenWallet"
             variant="link"
-            class="w-100 rounded"
+            class="w-100 rounded w-dropdown"
             :style="{
                 backgroundColor: 'rgba(0, 0, 0, 0.3)',
                 borderTopRightRadius: '0 !important',
@@ -285,6 +285,11 @@ export default defineComponent({
     background: #000;
 }
 
+.w-dropdown ul.dropdown-menu {
+    background: linear-gradient(129deg, #0a1a5f, #101431);
+    background-color: transparent !important;
+    left: 37px !important;
+}
 .h-wallet button div {
     font-size: 13px;
     font-weight: 500;

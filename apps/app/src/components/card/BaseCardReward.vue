@@ -375,7 +375,7 @@ export default defineComponent({
     position: relative;
     border-radius: 15px;
     border: 1px solid rgba(78, 78, 78, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
+    //background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
     padding: 5px 0;
     transition: background 0.3s ease;
     z-index: 0;

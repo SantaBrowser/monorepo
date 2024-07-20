@@ -26,7 +26,7 @@
         <router-link :to="`/c/${accountStore.config.slug}/ranking`">
             <i class="fas fa-trophy mr-lg-3" />
             <div>Rank</div>
-        </router-link> 
+        </router-link>
         <router-link v-if="accountStore.isMobile" :to="`/c/${accountStore.config.slug}/wallets`">
             <i class="fas fa-wallet mr-lg-3" />
             <div>Wallet</div>
@@ -82,6 +82,20 @@ export default defineComponent({
 <style>
 .nav-campaign {
     background-color: #151515;
+}
+
+.navbar-bottom {
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    z-index: 22;
+    /* left: 1%; */
+    /* border-radius: 36px; */
+    box-shadow: rgb(251 250 250 / 81%) 0px 4px 4px 0px, rgb(255 255 255 / 0%) 0px 4px 4px 0px inset !important;
+    background: rgb(1 1 1) !important;
+    /* border-radius: 48px; */
+    zoom: 0.75;
+    border-top: 1px dotted #bbc11ddd;
 }
 
 .nav-campaign .router-link-exact-active {
