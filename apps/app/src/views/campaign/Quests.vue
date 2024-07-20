@@ -212,7 +212,7 @@ export default defineComponent({
                 this.questStore.list(SANTA_CAMPAIGN);
                 this.rewardStore.list(CP_CAMPAIGN);
                 this.reward2Store.list(SANTA_CAMPAIGN);
-                // this.accountStore.getParticipants(SANTA_CAMPAIGN);
+                this.accountStore.getParticipants(SANTA_CAMPAIGN);
             },
             immediate: true,
         },

@@ -6,7 +6,7 @@
                 <span>Got questions?</span>
                 <div>
                     <strong class="me-1 text-accent">{{ presenceCount }}</strong>
-                    <span class="text-opaque">Members Online</span>
+                    <span class="text-opaque">Online</span>
                 </div>
             </div>
             <b-button
@@ -91,6 +91,7 @@ export default defineComponent({
 .disc-black {
     position: absolute;
     bottom: 0;
+    width: 92%;
 }
 .truncate-text {
     display: inline-block;
