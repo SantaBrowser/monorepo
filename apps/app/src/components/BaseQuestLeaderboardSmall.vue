@@ -99,7 +99,7 @@ export default defineComponent({
                 const dollars = score / 100;
                 return `$${dollars.toFixed(dollars % 1 === 0 ? 0 : 2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
             }
-            return `${score}`;
+            return score.toLocaleString();
         },
     },
 });
