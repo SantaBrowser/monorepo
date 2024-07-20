@@ -578,6 +578,9 @@ export default defineComponent({
     border: 1px dotted #fbed5375;
     overflow: hidden;
     box-shadow: inset 0px 19px 20px 14px rgb(8 1 1 / 52%);
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top: 0;
 }
 
 .bg-blur {
@@ -585,16 +588,12 @@ export default defineComponent({
 }
 
 .unwrap {
-    padding: 40px 0 0;
-    line-height: 48vh;
-    /* font-family: "Kode Mono", monospace; */
+    padding: 50px 0 0;
+    line-height: 30vh;
     font-size: 21vw;
     color: #3b3306;
-    /* margin-top: 15vh; */
     font-weight: 800;
-    /* margin-bottom: -15vh; */
     border-radius: 15px;
-    //background: #ffcd07;
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke-color: #ffcd07;
     -webkit-text-stroke-width: 6px;

@@ -380,7 +380,7 @@ export default defineComponent({
 }
 
 .quests-title {
-    backdrop-filter: brightness(0.5);
+    backdrop-filter: brightness(0.3);
     overflow: hidden;
 }
 
@@ -399,9 +399,10 @@ export default defineComponent({
     margin-bottom: 10px;
 }
 .title-q {
-    font-size: 23px;
+    font-size: 30px;
     line-height: 23px;
-    color: #feff00;
+    color: #00ffe7;
+    //color: #feff00;
     font-weight: 400;
     font-family: 'Kode Mono', monospace;
 }

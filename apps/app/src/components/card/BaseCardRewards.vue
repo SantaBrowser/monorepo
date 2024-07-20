@@ -1,5 +1,7 @@
 <template>
-    <div style="overflow: auto; min-height: 260px">
+    <div style="overflow: auto; min-height: 70%; padding: 10px">
+        <BaseNavbarSecondary v-if="accountStore.isMobile" class="ms-auto" />
+
         <div class="d-flex p-2 m-0 align-items-center">
             <div class="flex-grow-1 pe-2">Your Wallet</div>
             <b-dropdown variant="primary" size="sm" no-caret>
