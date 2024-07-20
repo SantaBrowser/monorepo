@@ -175,8 +175,8 @@ export default class QuestService {
         return Quest.findByIdAndUpdate(questId, options, { new: true });
     }
 
-    static getAmount(variant: QuestVariant, quest: TQuest, account: TAccount) {
-        return serviceMap[variant].getAmount({ quest, account });
+    static getAmount(variant: QuestVariant, quest: TQuest, account: TAccount, data?: any) {
+        return serviceMap[variant].getAmount({ quest, account, data });
     }
 
     static async getEntriesPendingReview(quest: TQuest, account?: TAccount) {
@@ -319,7 +319,7 @@ export default class QuestService {
 
     static async createEntryJob(job: Job) {
         try {
-            const { variant, questId, sub, ip, metadata } = job.attrs.data as any;
+            const { variant, questId, sub, ip, metadata, data } = job.attrs.data as any;
             const Entry = serviceMap[Number(variant)].models.entry;
             const account = await AccountProxy.findById(sub);
             const quest = await this.findById(variant, questId);
@@ -346,6 +346,8 @@ export default class QuestService {
                 questId: quest.id,
                 poolId: pool.id,
                 status,
+                santaQuestType: data.santaQuestType,
+                santaQuestId: data.santaQuestId,
                 uuid: v4(),
             } as TQuestEntry);
 
