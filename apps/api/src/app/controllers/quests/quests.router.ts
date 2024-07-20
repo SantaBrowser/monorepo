@@ -4,6 +4,7 @@ import express from 'express';
 import * as ListQuests from './list.controller';
 import * as ListQuestsPublic from './recent/list.controller';
 import * as CreateQuestEntry from './entries/post.controller';
+import RouterQuestCashback from './cashback/cashback.router';
 
 const router: express.Router = express.Router();
 
@@ -18,5 +19,7 @@ router.post(
     assertAccount,
     CreateQuestEntry.controller,
 );
+router.use(checkJwt).use(corsHandler);
+router.use('/cashback', RouterQuestCashback);
 
 export default router;

@@ -11,6 +11,7 @@ import QuestWebhookService from '../QuestWebhookService';
 import { QuestVariant } from '@thxnetwork/common/enums';
 import { PoolDocument } from '@thxnetwork/api/models';
 import { Request } from 'express';
+import QuestCashbackService from '../QuestCashbackService';
 
 export interface IQuestInviteService extends IQuestService {
     assertQuestEntry(options: { pool: PoolDocument; quest: TQuest; account: TAccount }): Promise<void>;
@@ -22,7 +23,7 @@ export interface IQuestService {
     decorate(options: { quest: TQuest; account?: TAccount; data: Partial<TQuestEntry> }): Promise<TQuest>;
     isAvailable(options: { quest: TQuest; account?: TAccount }): Promise<TValidationResult>;
     getDataForRequest(req: Request, options: { quest: TQuest; account: TAccount }): Promise<Partial<TQuestEntry>>;
-    getAmount(options: { quest: TQuest; account?: TAccount }): Promise<number>;
+    getAmount(options: { quest: TQuest; account?: TAccount; data?: any }): Promise<number>;
     getValidationResult(options: {
         quest: TQuest;
         account: TAccount;
@@ -43,4 +44,5 @@ export const serviceMap: {
     [QuestVariant.Web3]: new QuestWeb3Service(),
     [QuestVariant.Gitcoin]: new QuestGitcoinService(),
     [QuestVariant.Webhook]: new QuestWebhookService(),
+    [QuestVariant.CashbackPlaywall]: new QuestCashbackService()
 };

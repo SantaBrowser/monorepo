@@ -10,6 +10,7 @@ import {
     QuestWebhook,
 } from '@thxnetwork/api/models';
 import { PipelineStage } from 'mongoose';
+import { QuestCashback } from '@thxnetwork/api/models/QuestCashback';
 
 const validation = [
     param('id').isMongoId(),
@@ -39,6 +40,7 @@ const controller = async (req: Request, res: Response) => {
         { $unionWith: { coll: QuestWeb3.collection.name } },
         { $unionWith: { coll: QuestGitcoin.collection.name } },
         { $unionWith: { coll: QuestWebhook.collection.name } },
+        { $unionWith: { coll: QuestCashback.collection.name } },
         { $match },
         { $sort: { createdAt: -1 } },
     ];
@@ -52,7 +54,7 @@ const controller = async (req: Request, res: Response) => {
 
     // Count the total of quest documents
     const arr = await Promise.all(
-        [QuestDaily, QuestInvite, QuestSocial, QuestCustom, QuestWeb3, QuestGitcoin, QuestWebhook].map(
+        [QuestDaily, QuestInvite, QuestSocial, QuestCustom, QuestWeb3, QuestGitcoin, QuestWebhook, QuestCashback].map(
             async (model) => await model.countDocuments($match),
         ),
     );
