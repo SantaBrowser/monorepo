@@ -3,7 +3,8 @@
         <i class="fas fa-tools me-2" />
         We are running some maintenance and will be back shortly. See you soon! ❤️
     </b-alert>
-    <div v-else id="main" :class="{ 'overflow-hidden': accountStore.isMobile }">
+    <!-- <div v-else id="main" :class="{ 'overflow-hidden': accountStore.isMobile }"> -->
+    <div v-else id="main">
         <BaseNavbarTop />
         <div class="d-flex h-100">
             <transition name="fade" mode="out-in">

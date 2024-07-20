@@ -37,7 +37,7 @@
         <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container bg-secondDiv">
             <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
             <div class="d-flex h-100 bf-blur w-100">
-                <Quests :selected-part="selectedPart" />
+                <Quests :selected-part="selectedPart" :is-second-div-visible="isSecondDivVisible" />
 
                 <BaseSidebar />
                 <div
@@ -651,9 +651,6 @@ export default defineComponent({
 }
 
 @media (max-width: 992px) {
-    .mainComponent {
-        overflow: auto;
-    }
     .window-container {
         padding-bottom: 70px;
     }
