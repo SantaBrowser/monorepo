@@ -1,11 +1,18 @@
 <template>
     <b-container
         v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
-        class="mt-2 overflow-y-scroll quest-cont"
+        class="mt-2 quest-cont"
+        :class="{ 'overflow-y-hidden': !isSecondDivVisible, 'overflow-y-scroll': isSecondDivVisible }"
     >
         <b-row>
-            <b-col lg="6" xl="7" offset-xl="0" class="quests-column">
-                <div v-if="!accountStore.isMobile" class="mb-2 align-items-center bg-quests rounded">
+            <b-col
+                v-if="!accountStore.isMobile || selectedPart === 'Quests'"
+                lg="6"
+                xl="7"
+                offset-xl="0"
+                class="quests-column"
+            >
+                <div class="mb-2 align-items-center bg-quests rounded">
                     <div class="quests-title d-flex p-2">
                         <div>
                             <strong class="title-q">Quests</strong>
@@ -17,12 +24,7 @@
                 <div v-if="questStore.isLoading" class="d-flex justify-content-center py-5">
                     <b-spinner variant="primary" small />
                 </div>
-                <b-tabs
-                    v-else-if="!accountStore.isMobile || selectedPart === 'Quests'"
-                    content-class="mt-3"
-                    justified
-                    class="mt-3"
-                >
+                <b-tabs v-else content-class="mt-3" justified class="mt-3">
                     <b-tab active>
                         <template #title>
                             Available
@@ -62,7 +64,7 @@
                 lg="5"
                 xl="5"
                 xxl="4"
-                class="h-100 rewards-column w-auto"
+                class="h-100 rewards-column"
                 offset-xl="0"
             >
                 <div class="mb-2 bg-rewards rounded">
@@ -151,6 +153,10 @@ export default defineComponent({
         selectedPart: {
             type: String,
             default: 'Quests',
+        },
+        isSecondDivVisible: {
+            type: Boolean,
+            default: false,
         },
     },
     data() {
@@ -413,7 +419,26 @@ export default defineComponent({
         flex-shrink: unset;
     }
     .quests-column {
-        margin-right: 12px;
+        margin-right: 12px !important;
+    }
+    .quest-cont {
+        max-width: 100%;
+    }
+    .rewards-column {
+        width: 100% !important;
+        margin: 0 12px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .rewards-column {
+        width: auto;
+    }
+}
+
+@media (max-width: 1025px) {
+    .quests-column {
+        margin-right: 5px;
     }
 }
 </style>

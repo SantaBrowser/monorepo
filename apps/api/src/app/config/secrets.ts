@@ -26,12 +26,6 @@ if (process.env.NODE_ENV === 'production') {
         ...[
             'GCLOUD_RECAPTCHA_API_KEY',
             'POLYGON_RPC',
-            'POLYGON_NAME',
-            'POLYGON_RELAYER',
-            'POLYGON_RELAYER_API_KEY',
-            'POLYGON_RELAYER_API_SECRET',
-            'INFURA_IPFS_PROJECT_ID',
-            'INFURA_IPFS_PROJECT_SECRET',
             'RELAYER_SPEED',
             'TWITTER_API_TOKEN',
         ],
@@ -41,8 +35,6 @@ if (process.env.NODE_ENV === 'production') {
         ...[
             'GCLOUD_RECAPTCHA_API_KEY',
             'SEPOLIA_RPC',
-            'INFURA_IPFS_PROJECT_ID',
-            'INFURA_IPFS_PROJECT_SECRET',
             'TWITTER_API_TOKEN',
         ],
     );
@@ -83,15 +75,8 @@ export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 export const PORT = process.env.PORT || '';
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID || '';
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET || '';
-export const RATE_LIMIT_REWARD_GIVE = Number(process.env.RATE_LIMIT_REWARD_GIVE) || '';
-export const RATE_LIMIT_REWARD_CLAIM = Number(process.env.RATE_LIMIT_REWARD_CLAIM) || '';
-export const RATE_LIMIT_REWARD_GIVE_WINDOW = Number(process.env.RATE_LIMIT_REWARD_GIVE_WINDOW) || '';
-export const RATE_LIMIT_REWARD_CLAIM_WINDOW = Number(process.env.RATE_LIMIT_REWARD_CLAIM_WINDOW) || '';
 export const INITIAL_ACCESS_TOKEN = process.env.INITIAL_ACCESS_TOKEN || '';
 export const CIRCULATING_SUPPLY = process.env.CIRCULATING_SUPPLY || '';
-export const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID || '';
-export const INFURA_IPFS_PROJECT_ID = process.env.INFURA_IPFS_PROJECT_ID || '';
-export const INFURA_IPFS_PROJECT_SECRET = process.env.INFURA_IPFS_PROJECT_SECRET || '';
 export const MINIMUM_GAS_LIMIT = 54680 || '';
 export const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || '';
 export const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || '';
@@ -99,9 +84,6 @@ export const AWS_S3_PUBLIC_BUCKET_NAME = process.env.AWS_S3_PUBLIC_BUCKET_NAME |
 export const AWS_S3_PUBLIC_BUCKET_REGION = process.env.AWS_S3_PUBLIC_BUCKET_REGION || '';
 export const AWS_S3_PRIVATE_BUCKET_NAME = process.env.AWS_S3_PRIVATE_BUCKET_NAME || '';
 export const AWS_S3_PRIVATE_BUCKET_REGION = process.env.AWS_S3_PRIVATE_BUCKET_REGION || '';
-export const POLYGON_RELAYER = process.env.POLYGON_RELAYER || '';
-export const POLYGON_RELAYER_API_KEY = process.env.POLYGON_RELAYER_API_KEY || '';
-export const POLYGON_RELAYER_API_SECRET = process.env.POLYGON_RELAYER_API_SECRET || '';
 export const LOCAL_CERT = process.env.LOCAL_CERT || '';
 export const LOCAL_CERT_KEY = process.env.LOCAL_CERT_KEY || '';
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';
