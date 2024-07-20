@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="d-flex gap-2"></div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 wallet-wrap">
             <BaseCardWalletInfo v-if="!accountStore.isMobile" />
             <BaseDropdownWallets />
             <div
@@ -260,11 +260,18 @@ export default defineComponent({
         padding-right: 0;
     }
     .b-avatar-header {
-        position: relative;
         right: 0;
     }
     .name-avatar {
+        position: relative;
         padding-right: 10px !important;
+        width: 40px;
+        height: 40px;
+        border: none;
+    }
+    .wallet-wrap {
+        align-items: center;
+        margin-right: 8px;
     }
 }
 
