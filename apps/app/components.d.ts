@@ -183,6 +183,8 @@ declare module 'vue' {
     CampaignCard: typeof import('./src/components/CampaignCard.vue')['default']
     copy: typeof import('./src/components/card/BaseCardLotteryWinner copy.vue')['default']
     HeaderNav: typeof import('./src/components/HeaderNav.vue')['default']
+    OfferCard: typeof import('./src/components/OfferCard.vue')['default']
+    OffersList: typeof import('./src/components/OffersList.vue')['default']
     QuestsCarousel: typeof import('./src/components/homepage/QuestsCarousel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
