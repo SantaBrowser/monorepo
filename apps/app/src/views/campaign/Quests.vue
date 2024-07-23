@@ -34,13 +34,14 @@
                                 </b-badge>
                             </sup>
                         </template>
-                        <div v-for="(quest, key) of quests" :key="key" :class="{ 'd-none': !quest.isAvailable }">
+                        <div v-for="(item, index) in mergedQuestsAndOffers" :key="index">
                             <component
-                                :is="questComponentMap[quest.variant]"
-                                v-if="quest"
-                                :quest="quest"
+                                :is="questComponentMap[item.variant]"
+                                v-if="!item.isOffer"
+                                :quest="item"
                                 class="mb-2 mx-lg-0 my-lg-3"
                             />
+                            <OfferCard v-else :offer="item" class="offer-item mb-2" />
                         </div>
                         <div v-if="!availableQuestCount" class="text-center mt-5">
                             <i class="h1 fas fa-trophy text-accent" />
@@ -121,6 +122,9 @@ import BaseCardRewardDiscordRole from '../../components/card/BaseCardRewardDisco
 import BaseCardRewardGalachain from '../../components/card/BaseCardRewardGalachain.vue';
 import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 import { ref } from 'vue';
+import { useAuthStore } from '@thxnetwork/app/stores/Auth';
+import axios from 'axios';
+import OfferCard from '@thxnetwork/app/components/OfferCard.vue';
 
 const selectedValue = ref<string>('All');
 const componentMap: { [variant: string]: string } = {
@@ -148,6 +152,7 @@ export default defineComponent({
         BaseCardRewardCoupon,
         BaseCardRewardDiscordRole,
         BaseCardRewardGalachain,
+        OfferCard,
     },
     props: {
         selectedPart: {
@@ -168,6 +173,7 @@ export default defineComponent({
             selectedSort: { label: 'Default', key: RewardSortVariant.Default },
             activeFilters: [],
             entry: null,
+            offers: [],
         };
     },
     computed: {
@@ -201,6 +207,17 @@ export default defineComponent({
             }
             return [];
         },
+        userManager() {
+            return useAuthStore().userManager;
+        },
+        mergedQuestsAndOffers() {
+            let merged = [...this.quests, ...this.offers.map((offer) => ({ ...offer, isOffer: true }))];
+            for (let i = merged.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [merged[i], merged[j]] = [merged[j], merged[i]];
+            }
+            return merged;
+        },
     },
     watch: {
         'accountStore.isAuthenticated': {
@@ -224,6 +241,24 @@ export default defineComponent({
                 window.top?.postMessage({ message: 'thx.reward.amount', amount }, this.accountStore.config.origin);
             },
             immediate: true,
+        },
+    },
+    mounted() {
+        this.fetchOffers();
+    },
+    methods: {
+        async fetchOffers() {
+            try {
+                const user = await this.userManager.getUser();
+                const clid = user.profile.clid;
+                const response = await axios.get(
+                    `https://offers-api.santabrowser.com/offers/list?pageSize=50&pageNo=0&clid=${clid}`,
+                );
+                console.log('response', response);
+                this.offers = response.data.trending;
+            } catch (error) {
+                console.error('Failed to fetch offers', error);
+            }
         },
     },
 });
