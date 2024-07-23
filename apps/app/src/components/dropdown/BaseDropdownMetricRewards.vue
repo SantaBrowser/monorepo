@@ -37,6 +37,7 @@ import { chainList } from '@thxnetwork/app/utils/chains';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
 import { ChainId } from '@thxnetwork/common/enums';
 import { contractNetworks } from '@thxnetwork/app/config/constants';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseDropdownMetricAPR',
@@ -48,11 +49,11 @@ export default defineComponent({
     computed: {
         ...mapStores(useLiquidityStore, useWalletStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[ChainId.Polygon];
+            if (!this.walletStore.wallet) return chainList[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return chainList[this.walletStore.wallet.chainId];
         },
         rewardsMetric() {

@@ -40,6 +40,7 @@ import { ChainId } from '@thxnetwork/common/enums';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { mapStores } from 'pinia';
 import { defineComponent } from 'vue';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseFormGroupLockAmount',
@@ -55,7 +56,7 @@ export default defineComponent({
     computed: {
         ...mapStores(useWalletStore, useVeStore, useLiquidityStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         balanceBPTGauge() {

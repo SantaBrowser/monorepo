@@ -14,6 +14,7 @@ import {
 import { RewardCoin } from '@thxnetwork/api/models/RewardCoin';
 import { Collaborator } from '@thxnetwork/api/models/Collaborator';
 import { Pool, QuestDaily, QuestInvite, QuestSocial, QuestCustom } from '@thxnetwork/api/models';
+import { NODE_ENV } from '@thxnetwork/api/config/secrets';
 
 const csvFilePath = path.join(__dirname, '../../../', 'quests.csv');
 // const sub = '60a38b36bf804b033c5e3faa'; // Local
@@ -36,7 +37,7 @@ const collaborators = [
 ];
 
 // const chainId = ChainId.Hardhat;
-const chainId = ChainId.Polygon;
+const chainId = NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia;
 // const erc20Id = '64d3a4149f7e6d78c9366982'; // Local
 const erc20Id = '6464c665633c1cf385d8cc2b'; // SANTA Browser (POS) on Prod
 
@@ -69,7 +70,7 @@ export default async function main() {
                 pool = await createPool(sub, gameName, gameDomain);
             }
 
-            await pool.updateOne({ chainId: ChainId.Polygon });
+            await pool.updateOne({ chainId: NODE_ENV == "production" ? ChainId.Polygon : ChainId.Sepolia });
 
             const poolId = pool._id;
             await pool.updateOne({ chainId });

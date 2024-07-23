@@ -94,6 +94,7 @@ import { format, differenceInDays } from 'date-fns';
 import { contractNetworks } from '../../config/constants';
 import { fromWei } from 'web3-utils';
 import { ChainId } from '@thxnetwork/common/enums';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseTabWithdraw',
@@ -115,7 +116,7 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore, useWalletStore, useVeStore, useLiquidityStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         isEarly() {

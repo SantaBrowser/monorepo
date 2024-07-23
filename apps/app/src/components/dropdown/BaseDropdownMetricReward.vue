@@ -35,6 +35,7 @@ import { toFiatPrice } from '@thxnetwork/app/utils/price';
 import { contractNetworks } from '@thxnetwork/app/config/constants';
 import { ChainId } from '@thxnetwork/common/enums';
 import { chainList } from '@thxnetwork/app/utils/chains';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 type TMetricReward = {
     week: string;
@@ -59,11 +60,11 @@ export default defineComponent({
     computed: {
         ...mapStores(useLiquidityStore, useWalletStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[ChainId.Polygon];
+            if (!this.walletStore.wallet) return chainList[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return chainList[this.walletStore.wallet.chainId];
         },
     },

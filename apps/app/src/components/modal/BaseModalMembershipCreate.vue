@@ -142,6 +142,7 @@ import { BigNumber } from 'ethers/lib/ethers';
 import { format } from 'date-fns';
 import { roundDownFixed, toFiatPrice } from '@thxnetwork/app/utils/price';
 import { parseError } from '@thxnetwork/app/utils/toast';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseModalDeposit',
@@ -172,11 +173,11 @@ export default defineComponent({
             return !!this.errors.length;
         },
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[ChainId.Polygon];
+            if (!this.walletStore.wallet) return chainList[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return chainList[this.walletStore.wallet.chainId];
         },
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         amounts() {

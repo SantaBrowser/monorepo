@@ -124,6 +124,7 @@ import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { BigNumber } from 'ethers/lib/ethers';
 import { parseError } from '@thxnetwork/app/utils/toast';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseTabLiquidity',
@@ -140,11 +141,11 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore, useAuthStore, useWalletStore, useVeStore, useLiquidityStore),
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[ChainId.Polygon];
+            if (!this.walletStore.wallet) return chainList[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return chainList[this.walletStore.wallet.chainId];
         },
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         isAlertInsufficientTokensShown() {

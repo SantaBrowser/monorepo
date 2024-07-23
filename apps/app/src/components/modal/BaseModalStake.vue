@@ -47,6 +47,7 @@ import { contractNetworks } from '../../config/constants';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { ChainId } from '@thxnetwork/common/enums';
 import { WalletVariant } from '@thxnetwork/app/types/enums/accountVariant';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseModalStake',
@@ -69,7 +70,7 @@ export default defineComponent({
     computed: {
         ...mapStores(useWalletStore, useVeStore, useLiquidityStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         isAlertInfoShown() {
