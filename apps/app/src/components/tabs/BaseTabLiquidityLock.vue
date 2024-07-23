@@ -50,6 +50,7 @@ import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import { BigNumber } from 'ethers/lib/ethers';
 import { parseError } from '@thxnetwork/app/utils/toast';
 import { getThursdaysUntilTimestamp, NinetyDaysInMs } from '@thxnetwork/app/utils/date';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseTabDeposit',
@@ -65,7 +66,7 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore, useWalletStore, useAuthStore, useVeStore, useLiquidityStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         isSufficientBPTGaugeAllowance() {

@@ -83,6 +83,7 @@ import { useWalletStore } from '../../stores/Wallet';
 import { contractNetworks } from '../../config/constants';
 import { ChainId } from '@thxnetwork/common/enums';
 import { formatUnits } from 'ethers/lib/utils';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseCardMembership',
@@ -103,7 +104,7 @@ export default defineComponent({
             return this.veStore.lock && !Number(this.veStore.lock.amount);
         },
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         balanceUSDC() {

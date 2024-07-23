@@ -18,6 +18,7 @@ import { useLiquidityStore } from '@thxnetwork/app/stores/Liquidity';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { useVeStore } from '@thxnetwork/app/stores/VE';
 import { track } from '@thxnetwork/common/mixpanel';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseButtonLiquidityCreate',
@@ -35,7 +36,7 @@ export default defineComponent({
     computed: {
         ...mapStores(useVeStore, useWalletStore, useLiquidityStore, useAccountStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         balanceUSDC() {

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { track } from '@thxnetwork/common/mixpanel';
-import { HARDHAT_RPC, POLYGON_RPC } from '../config/secrets';
+import { HARDHAT_RPC, POLYGON_RPC, SEPOLIA_RPC } from '../config/secrets';
 import { useAuthStore } from './Auth';
 import { EthersAdapter, SafeConfig } from '@safe-global/protocol-kit';
 import { ethers } from 'ethers';
@@ -45,6 +45,7 @@ export const walletLogoMap: { [variant: string]: string } = {
 const rpcMap: { [chainId: number]: string } = {
     [ChainId.Hardhat]: HARDHAT_RPC,
     [ChainId.Polygon]: POLYGON_RPC,
+    [ChainId.Sepolia]: SEPOLIA_RPC,
 };
 
 const wagmiConfig = defaultWagmiConfig({

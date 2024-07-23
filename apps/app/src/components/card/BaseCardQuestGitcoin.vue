@@ -61,6 +61,7 @@ import { useWalletStore } from '../../stores/Wallet';
 import { WalletVariant } from '../../types/enums/accountVariant';
 import { ChainId } from '@thxnetwork/common/enums';
 import imgLogoGitcoin from '../../assets/gitcoin-logo.svg';
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseCardQuestGitcoin',
@@ -111,7 +112,7 @@ export default defineComponent({
                 await this.questStore.completeQuest(this.quest, {
                     signature,
                     message: this.message,
-                    chainId: ChainId.Polygon,
+                    chainId: NODE_ENV === 'production' ? ChainId.Polygon : ChainId.Sepolia,
                 });
                 this.isModalQuestEntryShown = true;
             } catch (error) {

@@ -94,6 +94,7 @@ import { ChainId } from '@thxnetwork/common/enums';
 import { formatUnits } from 'ethers/lib/utils';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import { useAccountStore } from '../../stores/Account';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseCardMembershipOnboarding',
@@ -107,7 +108,7 @@ export default defineComponent({
                 symbol: 'THX',
                 logoImgURL: 'https://assets.coingecko.com/coins/images/21323/standard/logo-thx-resized-200-200.png',
                 decimals: 18,
-                address: contractNetworks[ChainId.Polygon].THX,
+                address: contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia].THX,
                 balance: '0',
                 value: 0,
                 price: 0,
@@ -121,11 +122,11 @@ export default defineComponent({
     computed: {
         ...mapStores(useWalletStore, useVeStore, useAuthStore, useAccountStore, useLiquidityStore),
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[ChainId.Polygon];
+            if (!this.walletStore.wallet) return chainList[NODE_ENV == "production" ? ChainId.Polygon : ChainId.Sepolia];
             return chainList[this.walletStore.wallet.chainId];
         },
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV == "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         tokens() {

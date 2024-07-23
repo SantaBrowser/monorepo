@@ -82,6 +82,25 @@ export const contractNetworks = {
         multiSendAddress: '0x998739BFdAAdde7C933B942a68053933098f9EDa',
         multiSendCallOnlyAddress: '0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B',
         signMessageLibAddress: '0x98FFBBF51bb33A056B08ddf711f289936AafF717',
+        // Tokens
+        BPT: '0xDE13D18a351a535cB04503FbFaf8c37EB1581567',
+        BPTGauge: '0x5b48cdd1C5e029DdC63861698a203c7764e03a2e',
+        BalancerVault: '0x1FaD7443F9668e49f01bA90E3Ae959625A139fC6',
+        BAL: '0x2829557Bf26525D690457497f0d2F19960ab2f99',
+        USDC: '0x026af5D52D0fB1B5A1FF41BE7e59A45c7D3dF9d7',
+        THX: '0x90Ac3DBe1F3df817d43a8De3a685a7512EDE3a77',
+
+        // veTHX
+        VotingEscrow: '0x4E937771Ba4bb93014e3B162E6b935bE205B1f41',
+        RewardDistributor: '0xD39f51cdeab23D9aC2121925292863e1D1C8dE92',
+        RewardFaucet: '0xf5582f4EA07348f4c35Fb00f12BDefDe2207477E',
+        SmartWalletWhitelist: '0x876625a92cEAa7f1Bddd40908B8eb5C6080cB83C',
+        LensReward: '0xE8D9624E0B7f839540E7c13577550E3Eff3FC8aA',
+
+        // Company
+        THXRegistry: '',
+        THXPaymentSplitter: '',
+        CompanyMultiSig: '0x0b8e0aAF940cc99EDA5DA5Ab0a8d6Ed798eDc08A',
     },
     '137': {
         //Safe

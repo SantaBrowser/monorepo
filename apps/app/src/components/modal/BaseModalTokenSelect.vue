@@ -46,6 +46,7 @@ import { contractNetworks } from '@thxnetwork/app/config/constants';
 import { ChainId } from '@thxnetwork/common/enums';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { formatUnits } from 'ethers/lib/utils';
+import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseModalTokenSelect',
@@ -65,11 +66,11 @@ export default defineComponent({
     computed: {
         ...mapStores(useVeStore, useWalletStore, useLiquidityStore),
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[ChainId.Polygon];
+            if (!this.walletStore.wallet) return chainList[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return chainList[this.walletStore.wallet.chainId];
         },
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
+            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
     },
