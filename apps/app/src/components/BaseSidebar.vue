@@ -43,6 +43,10 @@ export default defineComponent({
 </script>
 <style lang="scss">
 .sidebar {
+    height: calc(100vh - 70px);
+    position: sticky;
+    top: 70px;
+    background-color: #f1f1f1;
     background: rgba(44, 44, 44, 0.3);
     .sidebar-panel {
         width: 350px;

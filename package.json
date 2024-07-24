@@ -102,6 +102,7 @@
         "vue": "^3.3.4",
         "vue-chart-3": "^3.1.8",
         "vue-confetti-explosion": "^1.0.2",
+        "vue-qrcode": "^2.2.2",
         "vue-router": "^4.0.0-0",
         "vue3-clipboard": "^1.0.0",
         "vue3-toastify": "^0.1.11",

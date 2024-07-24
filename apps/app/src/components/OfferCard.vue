@@ -1,6 +1,6 @@
 <template>
     <b-card
-        class="mb-1 w-100"
+        class="mb-1 w-100 my-offer-card"
         header-class="p-0"
         body-class="d-flex flex-column p-0"
         :class="{ 'card-collapsed': isVisible, 'card-promoted': offer.isPromoted }"
@@ -15,7 +15,9 @@
                 <div class="d-flex align-items-center justify-content-center" style="width: 25px">
                     <i class="me-2 text-primary fas fa-gift"></i>
                 </div>
-                <div class="flex-grow-1 pe-2">{{ decodeHTML(offer.title) }}</div>
+                <div class="flex-grow-1 pe-2 offer-description">
+                    {{ decodeHTML(offer.title) }}
+                </div>
                 <div v-if="offer.payout" class="text-primary fw-bold" style="white-space: nowrap">
                     {{ offer.payout }} {{ offer.currency }}
                 </div>
@@ -40,13 +42,12 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <b-card-text
                         v-if="offer.description"
-                        class="flex-grow-1 mb-3"
-                        style="white-space: pre-line"
+                        class="flex-grow-1 mb-3 offer-description"
                         v-html="decodeHTML(offer.description)"
                     />
                 </div>
 
-                <b-button variant="primary" block class="w-100" :href="offer.santaClickUrl" target="_blank">
+                <b-button variant="primary" block class="w-100" target="_blank" @click="openModal">
                     Claim <strong>${{ offer.payout }}</strong>
                 </b-button>
 
@@ -58,15 +59,71 @@
                 </div> -->
             </div>
         </b-collapse>
+        <b-modal v-model="showModal" size="lg" hide-footer hide-header>
+            <div>
+                <button type="button" class="modal-btn-close" aria-label="Close" @click="showModal = false">x</button>
+                <h2 class="modal-title">{{ decodeHTML(offer.title) }}</h2>
+                <div class="modal-body d-flex flex-column">
+                    <div class="d-flex align-items-center">
+                        <img
+                            v-if="offer.imageUrl"
+                            class="img-fluid mb-3"
+                            :src="offer.imageUrl"
+                            alt="header image"
+                            width="156"
+                            height="156"
+                            style="border-radius: 5px; object-fit: cover"
+                        />
+                        <div class="modal-details ms-3">
+                            <p class="offer-payout">${{ offer.payout }}</p>
+                            <p class="offer-provider">{{ offer.provider }}</p>
+                            <p class="offer-categories">
+                                <span v-for="category in offer.categories" :key="category" class="me-1">
+                                    {{ category }}
+                                </span>
+                            </p>
+                            <p class="modal-offer-description" v-html="decodeHTML(offer.description)"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-4 modal-info-wrap">
+                    <div>
+                        <h2 class="modal-title mt-4">Rewards</h2>
+                        <div class="rewards-list">
+                            <div
+                                v-for="event in offer.events"
+                                :key="event.name"
+                                class="reward-item d-flex align-items-center mb-2"
+                            >
+                                <div class="reward-amount me-2">${{ event.payout.toFixed(2) }}</div>
+                                <div class="reward-name">
+                                    {{ event.name }}
+                                </div>
+                            </div>
+                        </div>
+                        <h2 class="modal-title mt-4">Steps</h2>
+                        <p class="offer-steps">{{ offer.terms }}</p>
+                    </div>
+
+                    <div class="qr-code mt-4">
+                        <h3 class="modal-title">Scan on your mobile</h3>
+                        <Qrcode :value="offer.santaClickUrl" :size="200" />
+                    </div>
+                </div>
+            </div>
+        </b-modal>
     </b-card>
 </template>
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import { decodeHTML } from '@thxnetwork/app/utils/decode-html';
-
+import Qrcode from 'vue-qrcode';
 export default defineComponent({
     name: 'OfferCard',
+    components: {
+        Qrcode,
+    },
     props: {
         offer: { required: true, type: Object as PropType<any> },
     },
@@ -74,6 +131,7 @@ export default defineComponent({
         return {
             decodeHTML,
             isVisible: false,
+            showModal: false,
             iconMap: {
                 Lootably: 'fas fa-gift',
                 Adgate: 'fas fa-tags',
@@ -84,9 +142,132 @@ export default defineComponent({
     mounted() {
         this.isVisible = window.innerWidth > 768;
     },
+    methods: {
+        openModal() {
+            this.showModal = true;
+        },
+    },
 });
 </script>
 
 <style scoped>
-/* Add any necessary styles here */
+.offer-description {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+.offer-categories span {
+    font-weight: 500;
+    align-self: center;
+    background-color: var(--popup-tag-bg);
+    border-radius: 50vmax;
+    color: var(--popup-tag-color);
+    font-size: 10px;
+    padding: 0.1rem 0.6rem;
+    background-color: rgba(14, 34, 64, 1);
+    color: rgba(93, 154, 238, 1);
+}
+.modal-title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px 0;
+    padding-right: 24px;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.offer-payout {
+    color: rgba(163, 163, 163, 1);
+    font-size: 1.87rem;
+    font-weight: 600;
+    margin: 0;
+}
+.offer-provider {
+    color: rgba(163, 163, 163, 1);
+    font-size: 0.7rem;
+    margin: 0;
+}
+.offer-categories {
+    margin: 0;
+    padding: 0.5rem 0;
+}
+.modal-offer-description {
+    color: rgba(163, 163, 163, 1);
+    font-size: 1rem;
+    margin: 0;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+.reward-amount {
+    padding: 0 0.4rem;
+    background: rgba(95, 185, 126, 0.13);
+    font-size: 0.8rem;
+    border-radius: 5px;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    align-self: center;
+    min-width: 63px;
+    min-height: 24px;
+    border-radius: 5px;
+    border: 0.25px solid rgba(95, 185, 126, 0.5);
+    background: rgba(95, 185, 126, 0.13);
+    color: rgba(95, 185, 126, 1);
+}
+.reward-name {
+    color: rgba(163, 163, 163, 1);
+    font-size: 0.9rem;
+    margin: 0;
+}
+.offer-steps {
+    color: rgba(163, 163, 163, 1);
+    margin-top: 4px;
+    font-weight: 500;
+    font-size: 0.775rem;
+    line-height: 1.2rem;
+}
+.qr-code {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: fit-content;
+    background-color: transparent;
+    border: 1px solid rgb(82, 82, 82);
+    border-radius: 6px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 10px;
+}
+.modal-btn-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(37, 37, 41, 1);
+    border: none;
+    color: rgba(142, 142, 142, 1);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 111;
+    border-radius: 50%;
+}
+@media (max-width: 992px) {
+    .modal-info-wrap {
+        display: block !important;
+    }
+}
 </style>
