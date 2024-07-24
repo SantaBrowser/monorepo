@@ -25393,6 +25393,13 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-qrcode@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/vue-qrcode/-/vue-qrcode-2.2.2.tgz#c0b0ec16bd245100cdc87559349550fbf8463a9b"
+  integrity sha512-SbrXq/mSb1g2tbDyXPe9gy9KiMYsvxWKRErlpij1BqiFoHwQckheZV63CTw6yRLLUVG2RXAVlX+APkpdCK7SQQ==
+  dependencies:
+    tslib "^2.6.2"
+
 vue-router@^4.0.0-0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.4.0.tgz#128e3fc0c84421035a9bd26027245e6bd68f69ab"
