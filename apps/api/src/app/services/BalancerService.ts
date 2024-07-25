@@ -13,14 +13,14 @@ class BalancerService {
     apr = {
         [ChainId.Hardhat]: {
             balancer: {
-                min: 0,
-                max: 0,
+                apr: 0,
                 swapFees: 0,
             },
             thx: 0,
         },
         [ChainId.Sepolia]: {
             balancer: {
+                apr: 0,
                 min: 0,
                 max: 0,
                 swapFees: 0,
@@ -29,8 +29,7 @@ class BalancerService {
         },
         [ChainId.Polygon]: {
             balancer: {
-                min: 0,
-                max: 0,
+                apr: 0,
                 swapFees: 0,
             },
             thx: 0,
@@ -52,7 +51,7 @@ class BalancerService {
         [ChainId.Polygon]: { bal: [], bpt: [] },
     };
     balancer = new BalancerSDK(
-        NODE_ENV === 'production' ? 
+        NODE_ENV === 'production' ?
             {
                 network: Network.POLYGON,
                 rpcUrl: POLYGON_RPC,
@@ -64,9 +63,9 @@ class BalancerService {
         );
 
     constructor() {
-        this.updatePricesJob().then(() => {
-            this.updateMetricsJob();
-        });
+        // this.updatePricesJob().then(() => {
+        //     this.updateMetricsJob();
+        // });
     }
 
     async buildJoin(

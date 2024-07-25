@@ -57,7 +57,6 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { roundDownFixed } from '@thxnetwork/app/utils/price';
 import { WalletVariant } from '@thxnetwork/app/types/enums/accountVariant';
 import { BigNumber } from 'alchemy-sdk';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseModalDeposit',
@@ -86,7 +85,7 @@ export default defineComponent({
             return !!this.errors.length;
         },
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
+            if (!this.walletStore.wallet) return contractNetworks[ChainId.Polygon];
             return contractNetworks[this.walletStore.wallet.chainId];
         },
         allowanceInWei() {

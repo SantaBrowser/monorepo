@@ -17,10 +17,10 @@
             </b-link>
 
             <div v-else-if="code" class="d-flex align-items-center text-accent mb-0">
-                <strong class="truncate-text" style="letter-spacing: 0.25rem">{{ code }}</strong>
-                <b-button variant="link" size="sm" @click="isVisible = !isVisible">
+                <b-link class="me-2" @click="isVisible = !isVisible">
                     <i class="fas fa-eye" />
-                </b-button>
+                </b-link>
+                <strong class="truncate-text" style="letter-spacing: 0.25rem">{{ code }}</strong>
             </div>
 
             <span v-else>Code not found.</span>
@@ -48,6 +48,7 @@ import { useWalletStore } from '../../stores/Wallet';
 import { useAccountStore } from '../../stores/Account';
 import { format } from 'date-fns';
 import BaseModalExternalURL from '../../components/modal/BaseModalExternalURL.vue';
+import { RewardVariant } from '@thxnetwork/common/enums';
 
 export default defineComponent({
     name: 'BaseCardCouponCode',
@@ -88,7 +89,7 @@ export default defineComponent({
 <style>
 .truncate-text {
     display: inline-block;
-    width: 245px;
+    width: 230px !important;
     white-space: nowrap;
     overflow: hidden;
     font-size: 0.8rem;

@@ -107,7 +107,6 @@ import { useAccountStore } from '../../stores/Account';
 import { useWalletStore } from '../../stores/Wallet';
 import { useQuestStore } from '../../stores/Quest';
 import { useRewardStore } from '../../stores/Reward';
-import { useReward2Store } from '../../stores/Reward';
 import { RewardSortVariant } from '../../types/enums/rewards';
 import { questComponentMap, sortMap } from '../../utils/quests';
 import BaseCardQuestInvite from '../../components/card/BaseCardQuestInvite.vue';
@@ -137,7 +136,6 @@ const componentMap: { [variant: string]: string } = {
     [RewardVariant.Custom]: 'BaseCardRewardCustom',
     [RewardVariant.Coupon]: 'BaseCardRewardCoupon',
     [RewardVariant.DiscordRole]: 'BaseCardRewardDiscordRole',
-    [RewardVariant.Galachain]: 'BaseCardRewardGalachain',
 };
 
 export default defineComponent({
@@ -155,7 +153,6 @@ export default defineComponent({
         BaseCardRewardCustom,
         BaseCardRewardCoupon,
         BaseCardRewardDiscordRole,
-        BaseCardRewardGalachain,
         OfferCard,
     },
     props: {
@@ -177,7 +174,6 @@ export default defineComponent({
             selectedSort: { label: 'Default', key: RewardSortVariant.Default },
             activeFilters: [],
             entry: null,
-            offers: [],
         };
     },
     computed: {
@@ -244,13 +240,17 @@ export default defineComponent({
         'accountStore.isAuthenticated': {
             async handler(isAuthenticated: boolean) {
                 if (!isAuthenticated) return;
+
                 if (!this.accountStore.account) {
                     await this.accountStore.getAccount();
                 }
-                this.questStore.list(SANTA_CAMPAIGN);
-                this.rewardStore.list(CP_CAMPAIGN);
-                this.reward2Store.list(SANTA_CAMPAIGN);
-                this.accountStore.getParticipants(SANTA_CAMPAIGN);
+
+                await Promise.all([
+                  this.questStore.list(SANTA_CAMPAIGN),
+                  this.rewardStore.list(CP_CAMPAIGN),
+                  this.reward2Store.list(SANTA_CAMPAIGN),
+                  this.accountStore.getParticipants(SANTA_CAMPAIGN),
+                ]);
             },
             immediate: true,
         },

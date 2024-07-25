@@ -43,6 +43,7 @@
         :spender="address.BPTGauge"
         :amount="amountStake"
         :disabled="!veStore.isAccepted"
+        :chain-id="liquidityStore.chainId"
         @error="onError"
     >
         Approve <strong>20USDC-80THX</strong> <span class="text-opaque">(1/2)</span>
@@ -111,7 +112,11 @@ export default defineComponent({
                 if (!wallet) return;
                 const balanceBPT = this.walletStore.balances[this.address.BPT];
                 this.amountStake = balanceBPT ? formatUnits(balanceBPT, 18) : '0';
-                this.walletStore.getApproval({ tokenAddress: this.address.BPT, spender: this.address.BPTGauge });
+                this.walletStore.getApproval({
+                    tokenAddress: this.address.BPT,
+                    spender: this.address.BPTGauge,
+                    chainId: this.liquidityStore.chainId,
+                });
             },
             immediate: true,
         },
@@ -119,8 +124,8 @@ export default defineComponent({
     methods: {
         onLiquidityStake() {
             this.amountStake = '0';
-            this.walletStore.getBalance(this.address.BPT);
-            this.walletStore.getBalance(this.address.BPTGauge);
+            this.walletStore.getBalance(this.address.BPT, this.liquidityStore.chainId);
+            this.walletStore.getBalance(this.address.BPTGauge, this.liquidityStore.chainId);
             this.$emit('change-tab', 2);
         },
         onError(error: Error) {

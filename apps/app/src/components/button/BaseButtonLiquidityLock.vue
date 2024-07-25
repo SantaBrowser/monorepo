@@ -9,12 +9,12 @@
 import { defineComponent, PropType } from 'vue';
 import { BigNumber } from 'ethers/lib/ethers';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
+import { useLiquidityStore } from '@thxnetwork/app/stores/Liquidity';
 import { mapStores } from 'pinia';
 import { useVeStore } from '@thxnetwork/app/stores/VE';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { contractNetworks } from '../../config/constants';
 import { ChainId } from '@thxnetwork/common/enums';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseButtonLiquidityLock',
@@ -29,7 +29,7 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useWalletStore, useVeStore, useAccountStore),
+        ...mapStores(useWalletStore, useVeStore, useAccountStore, useLiquidityStore),
         address() {
             if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
             return contractNetworks[this.walletStore.wallet.chainId];
@@ -57,11 +57,14 @@ export default defineComponent({
 
                 this.isPolling = true;
 
+                // Check current chainId to be Hardhat or Polygon
+                if (![ChainId.Hardhat, ChainId.Polygon, ChainId.Sepolia].includes(this.walletStore.chainId)) {
+                    throw new Error('Please, change your network to Polygon');
+                }
+
                 const lockEndTimestamp = Math.ceil(new Date(this.lockEnd).getTime() / 1000);
                 const data = { amountInWei: this.amountInWei.toString(), lockEndTimestamp };
                 await this.veStore.deposit(wallet, data);
-                await this.veStore.waitForLock(wallet, this.amountInWei, lockEndTimestamp);
-                await this.walletStore.getBalance(this.address.BPTGauge);
 
                 this.$emit('success');
             } catch (error) {

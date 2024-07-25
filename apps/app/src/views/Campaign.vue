@@ -62,6 +62,7 @@ export default defineComponent({
         this.accountStore.postMessage({ message: 'thx.widget.ready' });
 
         await this.questStore.list();
+        await this.rewardStore.list();
     },
     methods: {
         // This redirects the user to the wallet if there are no quest and rewards
@@ -134,6 +135,7 @@ export default defineComponent({
     @media (min-width: 991px) {
         // height: calc(100% - 30px) !important;
     }
+    height: calc(100% - 30px) !important;
 }
 
 .my-campaign {

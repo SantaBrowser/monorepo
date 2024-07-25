@@ -21,6 +21,7 @@
         :token="{ address: address.BPTGauge, decimals: 18 }"
         :spender="address.VotingEscrow"
         :disabled="!veStore.isAccepted"
+        :chain-id="liquidityStore.chainId"
         @error="onError"
     >
         Approve <strong>20USDC-80THX</strong> Transfer <span class="text-opaque">(1/2)</span>
@@ -97,6 +98,7 @@ export default defineComponent({
                 this.walletStore.getApproval({
                     tokenAddress: this.address.BPTGauge,
                     spender: this.address.VotingEscrow,
+                    chainId: this.liquidityStore.chainId,
                 });
             },
             immediate: true,

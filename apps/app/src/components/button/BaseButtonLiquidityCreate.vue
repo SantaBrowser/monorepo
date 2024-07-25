@@ -11,14 +11,12 @@ import { BigNumber } from 'ethers/lib/ethers';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
 import { mapStores } from 'pinia';
 import { BALANCER_POOL_ID, contractNetworks } from '@thxnetwork/app/config/constants';
-import { ChainId } from '@thxnetwork/common/enums';
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
 import { POLYGON_RPC } from '@thxnetwork/app/config/secrets';
 import { useLiquidityStore } from '@thxnetwork/app/stores/Liquidity';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { useVeStore } from '@thxnetwork/app/stores/VE';
-import { track } from '@thxnetwork/common/mixpanel';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { ChainId } from '@thxnetwork/common/enums';
 
 export default defineComponent({
     name: 'BaseButtonLiquidityCreate',
@@ -65,6 +63,11 @@ export default defineComponent({
 
                 this.isPolling = true;
 
+                // Check current chainId to be Hardhat or Polygon
+                if (![ChainId.Hardhat, ChainId.Polygon, ChainId.Sepolia].includes(this.walletStore.chainId)) {
+                    throw new Error('Please, change your network to Polygon');
+                }
+
                 // Create Balancer SDK here in favor of code splitting on /earn
                 const balancer = new BalancerSDK({
                     network: Network.POLYGON,
@@ -81,7 +84,6 @@ export default defineComponent({
                 // Create liquidity
                 const data = { usdcAmountInWei, thxAmountInWei, slippage, pool };
                 await this.liquidityStore.createLiquidity(wallet, data);
-                await this.liquidityStore.waitForLiquidity(wallet, data);
 
                 this.$emit('success');
             } catch (error) {

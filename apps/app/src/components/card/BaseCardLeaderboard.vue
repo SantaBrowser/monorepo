@@ -11,6 +11,7 @@
             </b-button>
         </div>
         <b-list-group>
+        <b-list-group class="list-group-overflow">
             <b-list-group-item v-for="(entry, key) of accountStore.leaderboard" :key="key" class="d-flex px-0 pe-3">
                 <span class="list-item-field-rank">
                     <i class="fas fa-hashtag me-1 text-opaque" />
@@ -73,7 +74,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .card-header {
     border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
 }
@@ -87,6 +88,7 @@ export default defineComponent({
     left: 1px;
     bottom: 1px;
     width: 40px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;

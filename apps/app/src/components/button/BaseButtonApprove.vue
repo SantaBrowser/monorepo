@@ -27,6 +27,7 @@ export default defineComponent({
         token: { type: Object as PropType<{ address: string; decimals: number }>, required: true },
         spender: { type: String, required: true },
         disabled: { type: Boolean, default: false },
+        chainId: { type: Number as PropType<ChainId>, required: true },
     },
     data() {
         return {
@@ -63,6 +64,7 @@ export default defineComponent({
                 await this.walletStore.getApproval({
                     tokenAddress: this.token.address,
                     spender: this.spender,
+                    chainId: this.chainId,
                 });
                 return this.isSufficientAllowance ? Promise.resolve() : Promise.reject('Approve');
             };
@@ -72,13 +74,17 @@ export default defineComponent({
             try {
                 this.isPolling = true;
 
+                // Check current chainId to be Hardhat or Polygon
+                if (![ChainId.Hardhat, ChainId.Polygon, ChainId.Sepolia].includes(this.walletStore.chainId)) {
+                    throw new Error('Please, change your network to Polygon or sepolia');
+                }
+
                 const data = {
                     tokenAddress: this.token.address,
                     spender: this.spender,
                     amountInWei: this.amountInWei.toString(),
                 };
                 await this.walletStore.approve(data);
-
                 await this.waitForApproval();
 
                 this.trackEvent(data);
@@ -92,6 +98,7 @@ export default defineComponent({
         trackEvent(data: any) {
             const { poolId, account } = this.accountStore;
             const { wallet } = this.walletStore;
+
             track('UserCreates', [account?.sub, 'allowance', { poolId, address: wallet?.address, ...data }]);
         },
     },

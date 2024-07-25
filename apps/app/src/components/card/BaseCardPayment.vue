@@ -24,15 +24,25 @@
                     <slot name="header" />
                 </div>
                 <!-- <b-dropdown variant="link" size="sm" no-caret end>
+                <b-dropdown variant="link" size="sm" no-caret end header-class="d-flex">
                     <template #button-content>
                         <i class="fas fa-ellipsis-h ml-0 text-muted"></i>
+                        <i class="fas fa-ellipsis-v ml-0 text-muted"></i>
                     </template>
                     <slot name="dropdown-items"></slot>
+                    <b-dropdown-header v-if="createdAt">
+                        <div class="text-opaque">
+                            {{ format(new Date(createdAt), 'MMM do hh:mm') }}
+                        </div>
+                        <i class="text-opaque" :class="`ms-auto ${iconMap[rewardVariant]}`" />
+                    </b-dropdown-header>
                     <b-dropdown-divider />
                     <b-dropdown-text v-if="createdAt" class="text-end small text-opaque">
                         {{ format(new Date(createdAt), 'MMMM do hh:mm') }}
                     </b-dropdown-text>
                 </b-dropdown> -->
+<!--                    <slot name="dropdown-items"></slot>-->
+<!--                </b-dropdown>-->
             </div>
         </template>
         <b-collapse v-model="isVisible">
@@ -54,6 +64,7 @@ export default defineComponent({
     name: 'BaseCardPayment',
     props: {
         icon: String,
+        headerClass: String,
         rewardVariant: { type: Number, required: true },
         createdAt: Date,
     },
@@ -70,3 +81,12 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.dropdown-header {
+    display: flex !important;
+    font-size: 0.8rem !important;
+    opacity: 0.75 !important;
+    color: var(--bs-dropdown-header-color) !important;
+}
+</style>

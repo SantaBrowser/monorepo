@@ -80,8 +80,8 @@ import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
 import { useVeStore } from '../../stores/VE';
 import { useWalletStore } from '../../stores/Wallet';
+import { useLiquidityStore } from '../../stores/Liquidity';
 import { contractNetworks } from '../../config/constants';
-import { ChainId } from '@thxnetwork/common/enums';
 import { formatUnits } from 'ethers/lib/utils';
 import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
@@ -99,7 +99,7 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useVeStore, useWalletStore),
+        ...mapStores(useVeStore, useWalletStore, useLiquidityStore),
         isLocker() {
             return this.veStore.lock && !Number(this.veStore.lock.amount);
         },
@@ -156,10 +156,10 @@ export default defineComponent({
         },
         async getBalances() {
             await Promise.all([
-                this.walletStore.getBalance(this.address.USDC),
-                this.walletStore.getBalance(this.address.THX),
-                this.walletStore.getBalance(this.address.BPT),
-                this.walletStore.getBalance(this.address.BPTGauge),
+                this.walletStore.getBalance(this.address.USDC, this.liquidityStore.chainId),
+                this.walletStore.getBalance(this.address.THX, this.liquidityStore.chainId),
+                this.walletStore.getBalance(this.address.BPT, this.liquidityStore.chainId),
+                this.walletStore.getBalance(this.address.BPTGauge, this.liquidityStore.chainId),
             ]);
         },
     },

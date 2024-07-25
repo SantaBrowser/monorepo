@@ -143,8 +143,9 @@ export const useAccountStore = defineStore('account', {
         onUserUnloaded() {
             return useAuthStore().onUserUnloadedCallback();
         },
-        isSubscribed(id: string) {
-            return this.participants.find((p) => p.poolId === id)?.isSubscribed;
+        isSubscribed(campaignId: string) {
+            const participant = this.participants.find((p) => p.poolId === campaignId);
+            return participant ? participant.isSubscribed : false;
         },
         async getAccount() {
             this.account = await this.api.request.get('/v1/account');
@@ -159,7 +160,6 @@ export const useAccountStore = defineStore('account', {
             const params: { poolId?: string } = {};
             if (poolId) params['poolId'] = poolId;
             if (this.poolId) params['poolId'] = this.poolId;
-
             this.participants = await this.api.request.get('/v1/participants', { params });
         },
         async updateParticipant({ email, isSubscribed }: Partial<TParticipant> & { email: string }) {
@@ -315,7 +315,7 @@ export const useAccountStore = defineStore('account', {
             };
 
             // Poll for job to finish
-            await poll({ taskFn, interval: 3000, retries: 90 });
+            await poll({ taskFn, interval: 1000, retries: 60 });
         },
     },
 });

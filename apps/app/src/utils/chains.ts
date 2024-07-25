@@ -6,18 +6,7 @@ import ImgLogoHardhat from '../assets/thx_logo_hardhat.svg';
 import ImgLogoLinea from '../assets/thx_logo_linea.svg';
 import ImgLogoMetis from '../assets/thx_logo_metis.svg';
 import ImgLogoBase from '../assets/thx_logo_base.svg';
-import {
-    arbitrum,
-    mainnet,
-    bsc,
-    polygon,
-    hardhat,
-    polygonZkEvm,
-    linea,
-    metis,
-    base,
-    sepolia,
-} from '@wagmi/core/chains';
+import { arbitrum, mainnet, bsc, polygon, hardhat, polygonZkEvm, linea, metis, base, sepolia } from '@wagmi/core/chains';
 import { ChainId } from '@thxnetwork/common/enums';
 
 const chainList: { [chainId: number]: ChainInfo } = {
@@ -67,7 +56,7 @@ const chainList: { [chainId: number]: ChainInfo } = {
         chainId: ChainId.Linea,
         name: 'Linea',
         logo: ImgLogoLinea,
-        blockExplorer: 'https://zkevm.polygonscan.com',
+        blockExplorer: 'https://lineascan.build',
         chain: linea,
     },
     [ChainId.Metis]: {
@@ -84,9 +73,16 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://basescan.org',
         chain: base,
     },
+    [ChainId.Hardhat]: {
+        chainId: ChainId.Hardhat,
+        name: 'Hardhat',
+        logo: ImgLogoHardhat,
+        blockExplorer: 'https://hardhatscan.org',
+        chain: hardhat,
+    },
 };
 
-if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'sepolia') {
+if (PROD) {
     chainList[ChainId.Hardhat] = {
         chainId: ChainId.Hardhat,
         name: 'Hardhat',
