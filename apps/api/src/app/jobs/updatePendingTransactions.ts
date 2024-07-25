@@ -1,8 +1,7 @@
 import { TransactionState, TransactionType } from '@thxnetwork/common/enums';
 import { Transaction, TransactionDocument } from '@thxnetwork/api/models/Transaction';
-import { Wallet } from '../models/Wallet';
-import TransactionService from '@thxnetwork/api/services/TransactionService';
 import SafeService from '../services/SafeService';
+import TransactionService from '../services/TransactionService';
 import { logger } from '../util/logger';
 
 export async function updatePendingTransactions() {
@@ -50,8 +49,9 @@ export async function updatePendingTransactions() {
                 if (tx.type == TransactionType.Relayed) {
                     TransactionService.queryTransactionStatusDefender(tx).catch((error) => logger.error(error));
                 }
-                break;
             }
+        } catch (error) {
+            logger.error(error.message);
         }
     }
 }

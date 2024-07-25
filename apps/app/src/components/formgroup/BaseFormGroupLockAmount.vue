@@ -56,8 +56,8 @@ export default defineComponent({
     computed: {
         ...mapStores(useWalletStore, useVeStore, useLiquidityStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
-            return contractNetworks[this.walletStore.wallet.chainId];
+            if (!this.walletStore.chainId) return contractNetworks[ChainId.Polygon];
+            return contractNetworks[this.walletStore.chainId];
         },
         balanceBPTGauge() {
             if (!this.walletStore.balances[this.address.BPTGauge]) return 0;

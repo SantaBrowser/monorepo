@@ -25,8 +25,8 @@
                             :force="0.5"
                         />
                     </div>
-                    <div class="d-flex">
-                        <div class="d-flex justify-content-center align-items-center" style="width: 75px">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-center align-items-center">
                             <div>
                                 <b-spinner v-if="isLoadingImage" small variant="light" />
                                 <b-img
@@ -96,7 +96,7 @@
                         <b-spinner v-if="isLoadingCollect" small variant="dark" />
                         <template v-else>Collect</template>
                     </b-button>
-                    <b-button v-else v-b-modal="'modalLogin'" variant="primary" class="w-100">
+                    <b-button v-else variant="primary" class="w-100" @click="authStore.isModalLoginShown = true">
                         Sign in &amp; Collect
                     </b-button>
                 </b-card>

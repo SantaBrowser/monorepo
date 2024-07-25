@@ -7,14 +7,14 @@ import { WalletDocument } from '../models';
 import { ChainId } from '@thxnetwork/common/enums';
 import { contractArtifacts, contractNetworks } from '@thxnetwork/api/hardhat';
 import { BigNumber } from 'alchemy-sdk';
+import { formatUnits } from 'ethers/lib/utils';
 
 class BalancerService {
     pricing = {};
     apr = {
         [ChainId.Hardhat]: {
             balancer: {
-                min: 0,
-                max: 0,
+                apr: 0,
                 swapFees: 0,
             },
             thx: 0,
@@ -29,8 +29,7 @@ class BalancerService {
         },
         [ChainId.Polygon]: {
             balancer: {
-                min: 0,
-                max: 0,
+                apr: 0,
                 swapFees: 0,
             },
             thx: 0,
@@ -196,12 +195,11 @@ class BalancerService {
         // }
     }
 
-    async calculateTHXAPR(gauge: ethers.Contract, veTHX: ethers.Contract, rewardsInBPT: string, pricePerBPT: number) {
-        // const monthlyEmissions = Number(formatUnits(rewardsInBPT, 18));
-        // const totalShares = Number(formatUnits(await gauge.balanceOf(veTHX.address), 18));
-        // const pricePerShare = pricePerBPT;
-        // return ((monthlyEmissions * 12) / totalShares / pricePerShare) * 100;
-        return 0;
+    // Eg (43294,435240 * 12) / 1232297,290257 * 100 = 42.2%
+    async calculateTHXAPR(chainId: ChainId) {
+        const monthlyEmissions = Number(formatUnits(this.rewards[chainId].bpt, 18));
+        const tvl = Number(formatUnits(this.tvl[chainId].tvl, 18));
+        return ((monthlyEmissions * 12) / tvl) * 100;
     }
 
     async calculateBalancerAPR(gauge: ethers.Contract, priceOfBAL: number, pricePerBPT: number) {

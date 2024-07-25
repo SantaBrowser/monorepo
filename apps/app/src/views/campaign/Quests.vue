@@ -223,6 +223,7 @@ export default defineComponent({
         'accountStore.isAuthenticated': {
             async handler(isAuthenticated: boolean) {
                 if (!isAuthenticated) return;
+
                 if (!this.accountStore.account) {
                     await this.accountStore.getAccount();
                 }

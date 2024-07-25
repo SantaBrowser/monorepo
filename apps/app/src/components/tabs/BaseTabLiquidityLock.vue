@@ -21,6 +21,7 @@
         :token="{ address: address.BPTGauge, decimals: 18 }"
         :spender="address.VotingEscrow"
         :disabled="!veStore.isAccepted"
+        :chain-id="liquidityStore.chainId"
         @error="onError"
     >
         Approve <strong>20USDC-80THX</strong> Transfer <span class="text-opaque">(1/2)</span>
@@ -44,7 +45,6 @@ import { useWalletStore } from '../../stores/Wallet';
 import { useLiquidityStore } from '../../stores/Liquidity';
 import { useVeStore } from '../../stores/VE';
 import { contractNetworks } from '../../config/constants';
-import { ChainId } from '@thxnetwork/common/enums';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import { BigNumber } from 'ethers/lib/ethers';
@@ -66,8 +66,7 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore, useWalletStore, useAuthStore, useVeStore, useLiquidityStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
-            return contractNetworks[this.walletStore.wallet.chainId];
+            return contractNetworks[this.liquidityStore.chainId];
         },
         isSufficientBPTGaugeAllowance() {
             if (!this.walletStore.allowances[this.address.BPTGauge]) return false;
@@ -97,6 +96,7 @@ export default defineComponent({
                 this.walletStore.getApproval({
                     tokenAddress: this.address.BPTGauge,
                     spender: this.address.VotingEscrow,
+                    chainId: this.liquidityStore.chainId,
                 });
             },
             immediate: true,

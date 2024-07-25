@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useAccountStore } from '../../stores/Account';
 import { mapStores } from 'pinia';
 import { useWalletStore } from '../../stores/Wallet';
@@ -98,6 +98,9 @@ import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
 export default defineComponent({
     name: 'BaseTabWithdraw',
+    props: {
+        chainId: { type: Number as PropType<ChainId>, required: true },
+    },
     data() {
         return {
             fromWei,
@@ -116,8 +119,7 @@ export default defineComponent({
     computed: {
         ...mapStores(useAccountStore, useWalletStore, useVeStore, useLiquidityStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
-            return contractNetworks[this.walletStore.wallet.chainId];
+            return contractNetworks[this.liquidityStore.chainId];
         },
         isEarly() {
             return Number(this.veStore.now) < Number(this.veStore.lock.end);
@@ -150,6 +152,7 @@ export default defineComponent({
             try {
                 const wallet = this.walletStore.wallet;
                 if (!wallet) throw new Error('Please connect a wallet ');
+
                 await this.veStore.increasUnlockTime(wallet, { lockEndTimestamp: this.lockEnd });
             } catch (error) {
                 this.error = (error as any).toSTring();

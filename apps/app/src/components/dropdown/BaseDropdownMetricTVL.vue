@@ -56,12 +56,12 @@ export default defineComponent({
     computed: {
         ...mapStores(useLiquidityStore, useWalletStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
-            return contractNetworks[this.walletStore.wallet.chainId];
+            if (!this.walletStore.chainId) return contractNetworks[ChainId.Polygon];
+            return contractNetworks[this.walletStore.chainId];
         },
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
-            return chainList[this.walletStore.wallet.chainId];
+            if (!this.walletStore.chainId) return chainList[ChainId.Polygon];
+            return chainList[this.walletStore.chainId];
         },
         tvlMetric() {
             const { tvl: tvlInWei, staked: stakedInWei, liquidity: liquidityInWei } = this.liquidityStore.tvl;
