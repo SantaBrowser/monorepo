@@ -182,24 +182,7 @@ export const findBy = (query: { address: string; chainId: ChainId; sub?: string 
 export const importToken = async (chainId: number, address: string, sub: string, logoImgUrl: string) => {
     const { web3 } = NetworkService.getProvider(chainId);
     const contract = new web3.eth.Contract(getArtifact('THXERC20_LimitedSupply').abi, address);
-    console.log({
-        chainId,
-        address,
-        sub,
-    });
-    const { web3 } = getProvider(chainId);
-    const { abi } = getArtifact('THXERC20_LimitedSupply');
-    const contract = new web3.eth.Contract(abi, address);
     const [name, symbol] = await Promise.all([contract.methods.name().call(), contract.methods.symbol().call()]);
-    const erc20 = await ERC20.create({
-        sub,
-        name,
-        symbol,
-        address: toChecksumAddress(address),
-        chainId,
-        logoImgUrl,
-        type: ERC20Type.Unknown,
-    });
     const erc20 = await ERC20.create({
         sub,
         name,
