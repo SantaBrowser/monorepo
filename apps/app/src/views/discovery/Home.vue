@@ -652,6 +652,7 @@ export default defineComponent({
 
 @media (max-width: 992px) {
     .window-container {
+        height: calc(100vh - 70px);
         padding-bottom: 70px;
     }
     .unwrap {
