@@ -472,6 +472,12 @@ export default defineComponent({
     font-weight: 500;
     line-height: 22px;
     // height: 60px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 .c-quest-title .fas {
     color: rgba(217, 217, 217, 0.2);
