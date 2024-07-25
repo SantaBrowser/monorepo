@@ -61,9 +61,9 @@ class IdentityService {
         await Identity.findOneAndUpdate({ uuid: { $in: uuids } }, { accountId: account.sub });
     }
 
-  static async forceConnectClidUUID(pool: PoolDocument, account: TAccount, sub) {
+   async forceConnectClidUUID(pool: PoolDocument, account: TAccount, sub) {
       const clid = account.clid;
-      const result = await this.getIdentityForSalt(pool, clid);
+      const result = await this.getIdentityForSalt(sub, clid);
       const uuid = result.uuid;
       const isConnected = await Identity.exists({ uuid, sub: { $exists: true } });
       if (!isConnected) {

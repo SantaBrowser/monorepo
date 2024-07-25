@@ -1,40 +1,5 @@
 <template>
     <div v-if="accountStore.isAuthenticated" class="d-flex h-wallet">
-    <div v-if="accountStore.isAuthenticated" class="d-flex">
-        <b-dropdown
-            v-model="isOpenChains"
-            variant="link"
-            class="w-100 rounded"
-            :style="{
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                borderTopRightRadius: '0 !important',
-                borderBottomRightRadius: '0 !important',
-            }"
-            toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none p-2 ps-3 pe-0"
-            auto-close="outside"
-            menu-class="bg-body"
-            no-caret
-            start
-        >
-            <template #button-content>
-                <b-img
-                    v-if="walletStore.chainId"
-                    :src="chainList[walletStore.chainId].logo"
-                    width="15"
-                    height="15"
-                    class="me-2"
-                />
-                <b-spinner v-else small />
-            </template>
-            <b-dropdown-item
-                v-for="chain of chains"
-                link-class="d-flex align-items-center"
-                @click="onClickChainSwitch(chain)"
-            >
-                <b-img :src="chainList[chain.chainId].logo" width="15" height="15" class="me-3" />
-                {{ chain.name }}
-            </b-dropdown-item>
-        </b-dropdown>
         <b-dropdown
             v-model="isOpenWallet"
             variant="link"
@@ -45,27 +10,23 @@
                 borderBottomRightRadius: '0 !important',
             }"
             toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none p-2"
-            class="w-100 rounded"
-            :style="{
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                borderTopLeftRadius: '0 !important',
-                borderBottomLeftRadius: '0 !important',
-                borderTopRightRadius: walletStore.wallets.length ? '0 !important' : null,
-                borderBottomRightRadius: walletStore.wallets.length ? '0 !important' : null,
-            }"
-            :toggle-class="`d-flex align-items-center justify-content-end text-white text-decoration-none py-2 px-1 ${
-                !walletStore.wallets.length ? 'pe-3' : ''
-            }`"
             auto-close="outside"
             :menu-class="{ 'bg-body': walletStore.wallet, 'd-none': !walletStore.wallet }"
             no-caret
             center
         >
-          <template v-if="walletStore.wallet" #button-content>
-            {{ walletStore.wallet.short }}
-          </template>
-          <template v-else #button-content> Connect </template>
-          <template v-else #button-content> Connect </template>
+            <template #button-content>
+                <i
+                    :class="{
+                        'text-success': isConnected || !isWalletConnect,
+                        'text-danger': !isConnected && isWalletConnect,
+                    }"
+                    class="fas fa-circle me-2"
+                />
+                <div @click="toggleDropdown">
+                    {{ walletStore.wallet ? walletStore.wallet.short : 'Connect' }}
+                </div>
+            </template>
             <b-dropdown-text v-if="walletStore.wallet" text-class="bg-dark">
                 <b-form-group label-class="d-flex align-items-center mb-1 ">
                     <template #label>
@@ -157,7 +118,7 @@
             v-if="walletStore.wallets.length"
             v-model="isOpen"
             variant="link"
-            menu-class="w-100 bg-body"
+            menu-class="w-100"
             no-caret
             end
             toggle-class="p-2"

@@ -52,8 +52,6 @@
             />
         </template> -->
     </BaseCardPayment>
-        </template>
-    </BaseCardPayment>
 </template>
 
 <script lang="ts">

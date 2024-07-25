@@ -22,5 +22,5 @@ export const CAMPAIGN_ID = import.meta.env.VITE_SANTA_CAMPAIGN_ID || '';
 export const SANTA_CAMPAIGN = import.meta.env.VITE_SANTA_CAMPAIGN_ID || '';
 export const CP_CAMPAIGN = import.meta.env.VITE_CP_CAMPAIGN_ID || '';
 export const NODE_ENV = import.meta.env.NODE_ENV || '';
-export const CAMPAIGN_ID = import.meta.env.VITE_CAMPAIGN_ID || '663259683f597135e0007c60';
+// export const CAMPAIGN_ID = import.meta.env.VITE_CAMPAIGN_ID || '663259683f597135e0007c60';
 export const PROD = import.meta.env.PROD;

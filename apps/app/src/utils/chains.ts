@@ -6,7 +6,18 @@ import ImgLogoHardhat from '../assets/thx_logo_hardhat.svg';
 import ImgLogoLinea from '../assets/thx_logo_linea.svg';
 import ImgLogoMetis from '../assets/thx_logo_metis.svg';
 import ImgLogoBase from '../assets/thx_logo_base.svg';
-import { arbitrum, mainnet, bsc, polygon, hardhat, polygonZkEvm, linea, metis, base, sepolia } from '@wagmi/core/chains';
+import {
+    arbitrum,
+    mainnet,
+    bsc,
+    polygon,
+    hardhat,
+    polygonZkEvm,
+    linea,
+    metis,
+    base,
+    sepolia,
+} from '@wagmi/core/chains';
 import { ChainId } from '@thxnetwork/common/enums';
 
 const chainList: { [chainId: number]: ChainInfo } = {
@@ -82,15 +93,15 @@ const chainList: { [chainId: number]: ChainInfo } = {
     },
 };
 
-if (PROD) {
-    chainList[ChainId.Hardhat] = {
-        chainId: ChainId.Hardhat,
-        name: 'Hardhat',
-        logo: ImgLogoHardhat,
-        blockExplorer: 'https://hardhatscan.com',
-        chain: hardhat,
-    };
-}
+// if (PROD) {
+//     chainList[ChainId.Hardhat] = {
+//         chainId: ChainId.Hardhat,
+//         name: 'Hardhat',
+//         logo: ImgLogoHardhat,
+//         blockExplorer: 'https://hardhatscan.com',
+//         chain: hardhat,
+//     };
+// }
 
 function getTokenURL(chainId: ChainId, address: string) {
     return `${chainList[chainId].blockExplorer}/token/${address}`;

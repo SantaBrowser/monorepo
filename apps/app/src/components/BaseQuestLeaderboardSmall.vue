@@ -71,7 +71,7 @@ export default defineComponent({
         ...mapStores(useQuestStore),
     },
     watch: {
-        $route(to, from) {
+        $route() {
             this.updateLeaderboard();
         },
     },

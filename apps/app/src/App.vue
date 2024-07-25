@@ -12,7 +12,7 @@
                     <component :is="Component" />
                 </transition>
             </router-view>
-            <BaseSidebar />
+            <!--            <BaseSidebar />-->
         </div>
         <BaseModalLogin />
         <BaseModalAccount size="lg" />

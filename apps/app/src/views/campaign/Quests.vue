@@ -107,6 +107,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useWalletStore } from '../../stores/Wallet';
 import { useQuestStore } from '../../stores/Quest';
 import { useRewardStore } from '../../stores/Reward';
+import { useReward2Store } from '../../stores/Reward';
 import { RewardSortVariant } from '../../types/enums/rewards';
 import { questComponentMap, sortMap } from '../../utils/quests';
 import BaseCardQuestInvite from '../../components/card/BaseCardQuestInvite.vue';
@@ -122,7 +123,7 @@ import BaseCardRewardNFT from '../../components/card/BaseCardRewardNFT.vue';
 import BaseCardRewardCustom from '../../components/card/BaseCardRewardCustom.vue';
 import BaseCardRewardCoupon from '../../components/card/BaseCardRewardCoupon.vue';
 import BaseCardRewardDiscordRole from '../../components/card/BaseCardRewardDiscordRole.vue';
-import BaseCardRewardGalachain from '../../components/card/BaseCardRewardGalachain.vue';
+// import BaseCardRewardGalachain from '../../components/card/BaseCardRewardGalachain.vue';
 import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 import { ref } from 'vue';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
@@ -174,6 +175,7 @@ export default defineComponent({
             selectedSort: { label: 'Default', key: RewardSortVariant.Default },
             activeFilters: [],
             entry: null,
+            offers: [],
         };
     },
     computed: {
@@ -246,10 +248,10 @@ export default defineComponent({
                 }
 
                 await Promise.all([
-                  this.questStore.list(SANTA_CAMPAIGN),
-                  this.rewardStore.list(CP_CAMPAIGN),
-                  this.reward2Store.list(SANTA_CAMPAIGN),
-                  this.accountStore.getParticipants(SANTA_CAMPAIGN),
+                    this.questStore.list(SANTA_CAMPAIGN),
+                    this.rewardStore.list(CP_CAMPAIGN),
+                    this.reward2Store.list(SANTA_CAMPAIGN),
+                    this.accountStore.getParticipants(SANTA_CAMPAIGN),
                 ]);
             },
             immediate: true,

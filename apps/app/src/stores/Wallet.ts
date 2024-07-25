@@ -5,7 +5,7 @@ import { track } from '@thxnetwork/common/mixpanel';
 import { useAuthStore } from './Auth';
 import { ChainId } from '@thxnetwork/common/enums';
 import { WalletVariant } from '../types/enums/accountVariant';
-import { AUTH_URL, POLYGON_RPC, SEPOLIA_RPC, WALLET_CONNECT_PROJECT_ID, WIDGET_URL } from '../config/secrets';
+import { AUTH_URL, POLYGON_RPC, WALLET_CONNECT_PROJECT_ID, WIDGET_URL } from '../config/secrets';
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';
 import {
     sendTransaction,
@@ -28,7 +28,6 @@ import { encodeFunctionData } from 'viem';
 import { ethers } from 'ethers';
 import { abi } from '../utils/abi';
 import { contractNetworks } from '../config/constants';
-import Safe from '@safe-global/protocol-kit';
 import imgSafeLogo from '../assets/safe-logo.jpg';
 import imgWalletConnectLogo from '../assets/walletconnect-logo.png';
 
@@ -43,11 +42,11 @@ export const walletLogoMap: { [variant: string]: string } = {
     [WalletVariant.Safe]: imgSafeLogo,
 };
 
-const rpcMap: { [chainId: number]: string } = {
-    [ChainId.Hardhat]: HARDHAT_RPC,
-    [ChainId.Polygon]: POLYGON_RPC,
-    [ChainId.Sepolia]: SEPOLIA_RPC,
-};
+// const rpcMap: { [chainId: number]: string } = {
+//     [ChainId.Hardhat]: HARDHAT_RPC,
+//     [ChainId.Polygon]: POLYGON_RPC,
+//     [ChainId.Sepolia]: SEPOLIA_RPC,
+// };
 
 const wagmiConfig = defaultWagmiConfig({
     chains: [
@@ -77,7 +76,6 @@ export const useWalletStore = defineStore('wallet', {
         erc1155: [],
         couponCodes: [],
         discordRoles: [],
-        galachain: [],
         pendingPoints: 0,
         wallets: [],
         wallet: null,
@@ -97,7 +95,6 @@ export const useWalletStore = defineStore('wallet', {
             this.erc1155 = [];
             this.couponCodes = [];
             this.discordRoles = [];
-            this.galachain = [];
             this.pendingPoints = 0;
             this.wallets = [];
             this.wallet = null;

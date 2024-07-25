@@ -65,6 +65,8 @@ if (process.env.NODE_ENV === 'test') {
 
 export const VERSION = 'v1';
 export const CWD = process.env.CWD || path.resolve(__dirname, '../../../apps/api/src');
+export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY || '';
+export const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID || '';
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 export const AUTH_URL = process.env.AUTH_URL || '';
 export const API_URL = process.env.API_URL || '';
@@ -74,7 +76,8 @@ export const WIDGET_URL = process.env.WIDGET_URL || '';
 export const PUBLIC_URL = process.env.PUBLIC_URL || '';
 
 export const HARDHAT_RPC = process.env.HARDHAT_RPC || '';
-export const POLYGON_RPC = process.env.POLYGON_RPC;
+export const POLYGON_RPC = process.env.POLYGON_RPC || 'https://rpc.ankr.com/polygon';
+export const LINEA_RPC = `https://linea-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`;
 export const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
 export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth';
 

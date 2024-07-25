@@ -41,8 +41,8 @@
                         {{ format(new Date(createdAt), 'MMMM do hh:mm') }}
                     </b-dropdown-text>
                 </b-dropdown> -->
-<!--                    <slot name="dropdown-items"></slot>-->
-<!--                </b-dropdown>-->
+                <!--                    <slot name="dropdown-items"></slot>-->
+                <!--                </b-dropdown>-->
             </div>
         </template>
         <b-collapse v-model="isVisible">

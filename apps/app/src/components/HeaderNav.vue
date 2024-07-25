@@ -108,7 +108,7 @@ export default defineComponent({
         },
     },
     watch: {
-        'accountStore.participants': function (newVal, oldVal) {
+        'accountStore.participants': function (newVal) {
             console.log('Participants changed:', newVal);
         },
     },
