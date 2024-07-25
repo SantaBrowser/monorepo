@@ -1,16 +1,15 @@
 import {
     HARDHAT_RPC,
-    POLYGON_RELAYER,
-    POLYGON_RELAYER_API_KEY,
-    POLYGON_RELAYER_API_SECRET,
     POLYGON_RPC,
-    LINEA_RELAYER,
-    LINEA_RELAYER_API_KEY,
-    LINEA_RELAYER_API_SECRET,
     LINEA_RPC,
     PRIVATE_KEY,
     RELAYER_SPEED,
     SAFE_TXS_SERVICE,
+    HARDHAT_SAFE_TXS_SERVICE,
+    POLYGON_SAFE_TXS_SERVICE,
+    SEPOLIA_SAFE_TXS_SERVICE,
+    LINEA_SAFE_TXS_SERVICE,
+    SEPOLIA_RPC,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
 import { ethers, Wallet } from 'ethers';
@@ -22,24 +21,6 @@ import { ChainId } from '@thxnetwork/common/enums';
 import { EthersAdapter } from '@safe-global/protocol-kit';
 
 class NetworkService {
-    config = {
-        networks: [
-            {
-                chainId: ChainId.Linea,
-                defaultAccount: LINEA_RELAYER,
-                rpc: LINEA_RPC,
-                relayer: { apiKey: LINEA_RELAYER_API_KEY, apiSecret: LINEA_RELAYER_API_SECRET },
-                txServiceUrl: 'https://safe-transaction-linea.safe.global',
-            },
-            {
-                chainId: ChainId.Polygon,
-                defaultAccount: POLYGON_RELAYER,
-                rpc: POLYGON_RPC,
-                relayer: { apiKey: POLYGON_RELAYER_API_KEY, apiSecret: POLYGON_RELAYER_API_SECRET },
-                txServiceUrl: 'https://safe-transaction-polygon.safe.global',
-            },
-        ],
-    };
     networks: { [chainId: number]: TNetworkConfig } = {};
 
     constructor() {
@@ -63,13 +44,53 @@ class NetworkService {
                 signer,
                 ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
                 defaultAccount,
-                txServiceUrl: SAFE_TXS_SERVICE,
+                txServiceUrl: HARDHAT_SAFE_TXS_SERVICE,
             };
         }
 
-        // Provides all other configured networks for this service
-        for (const network of this.config.networks) {
-            this.setNetwork(network);
+        if (POLYGON_RPC) {
+            const web3 = new Web3(POLYGON_RPC);
+            const provider = new ethers.providers.JsonRpcProvider(POLYGON_RPC);
+            const signer = new Wallet(PRIVATE_KEY, provider);
+            this.networks[ChainId.Polygon] = {
+                rpc: POLYGON_RPC,
+                web3,
+                provider,
+                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
+                signer,
+                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
+                txServiceUrl: POLYGON_SAFE_TXS_SERVICE,
+            };
+        }
+
+        if (SEPOLIA_RPC) {
+            const web3 = new Web3(SEPOLIA_RPC);
+            const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_RPC);
+            const signer = new Wallet(PRIVATE_KEY, provider);
+            this.networks[ChainId.Sepolia] = {
+                rpc: SEPOLIA_RPC,
+                web3,
+                provider,
+                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
+                signer,
+                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
+                txServiceUrl: SEPOLIA_SAFE_TXS_SERVICE,
+            };
+        }
+
+        if (LINEA_RPC) {
+            const web3 = new Web3(LINEA_RPC);
+            const provider = new ethers.providers.JsonRpcProvider(LINEA_RPC);
+            const signer = new Wallet(PRIVATE_KEY, provider);
+            this.networks[ChainId.Linea] = {
+                rpc: LINEA_RPC,
+                web3,
+                provider,
+                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
+                signer,
+                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
+                txServiceUrl: LINEA_SAFE_TXS_SERVICE,
+            };
         }
     }
 

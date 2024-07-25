@@ -56,6 +56,7 @@ class SafeService {
                 contractNetworks,
             });
         } catch (error) {
+            logger.error(error);
             await agenda.now(JobType.DeploySafe, { safeAccountConfig, saltNonce, chainId: wallet.chainId });
             logger.debug(`[${wallet.sub}] Deployed Safe: ${safeAddress}`, [saltNonce]);
         }
@@ -64,6 +65,7 @@ class SafeService {
     }
 
     async deploySafeJob({ attrs }: Job) {
+        console.log("#########Deploy Safe Job");
         const { safeAccountConfig, saltNonce, chainId } = attrs.data as TJobDeploySafe;
         const { ethAdapter } = NetworkService.getProvider(chainId);
         const safeFactory = await SafeFactory.create({
@@ -71,12 +73,14 @@ class SafeService {
             safeVersion,
             contractNetworks,
         });
-        const args = { safeAccountConfig, options: { gasLimit: '3000000' } };
+        const args = { safeAccountConfig, options: { gasPrice: '100000000000' } };
         if (saltNonce) args['saltNonce'] = saltNonce;
 
         try {
             await safeFactory.deploySafe(args);
+            console.log("#########Deployed Safe Job");
         } catch (error) {
+            logger.error(error);
             logger.error(error.response ? error.response.data : error.message);
         }
     }
