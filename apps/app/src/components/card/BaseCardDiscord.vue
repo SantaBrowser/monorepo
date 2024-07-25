@@ -68,7 +68,7 @@ export default defineComponent({
         ...mapStores(useAccountStore, useWalletStore),
         membersTruncated() {
             return shuffleArray(this.members)
-                .slice(0, 26)
+                .slice(0, 17)
                 .map((member) => ({
                     ...member,
                     isOnline: member.status !== 'idle',

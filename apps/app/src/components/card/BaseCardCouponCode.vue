@@ -48,6 +48,7 @@ import { useWalletStore } from '../../stores/Wallet';
 import { useAccountStore } from '../../stores/Account';
 import { format } from 'date-fns';
 import BaseModalExternalURL from '../../components/modal/BaseModalExternalURL.vue';
+import { RewardVariant } from '@thxnetwork/common/enums';
 
 export default defineComponent({
     name: 'BaseCardCouponCode',
@@ -88,7 +89,7 @@ export default defineComponent({
 <style>
 .truncate-text {
     display: inline-block;
-    width: 245px;
+    width: 230px !important;
     white-space: nowrap;
     overflow: hidden;
     font-size: 0.8rem;

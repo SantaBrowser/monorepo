@@ -12,10 +12,6 @@
             <!-- <b-link to="/"> Rewards Dashboard </b-link> -->
             <b-link to="/"> <img :src="earningsIcon" alt="Earnings Icon" class="me-2" height="40" />Earnings </b-link>
         </b-navbar-brand>
-        <BaseDropdownWallets v-if="accountStore.isAuthenticated" class="d-block d-lg-none ms-auto" />
-        <b-button variant="link" class="d-block d-lg-none" @click="isNavbarOffcanvasShown = true">
-            <i class="fas fa-bars text-white"></i>
-        </b-button>
         <b-collapse id="nav-collapse" is-nav>
             <!--            <b-button-->
             <!--                class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded text-decoration-none text-white"-->
@@ -48,13 +44,11 @@
             <!--            </b-button>-->
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0 justify-content-end align-items-center">
                 <b-button
-                    v-if="accountStore.isMobile"
-                    class="me-lg-3 mb-3 mb-lg-0 py-2 px-4 rounded"
+                    class="px-4 ms-2 rounded py-2"
                     variant="outline-light"
-                    to="/wallets"
+                    @click="authStore.isModalLoginShown = true"
                 >
-                    <i class="fas fa-wallet me-1"></i>
-                    Wallet
+                    Sign up
                 </b-button>
                 <!-- <template v-if="!authStore.user">
                     <b-button v-b-modal="'modalLogin'" class="px-4 ms-2 rounded py-2" variant="outline-light">
@@ -73,6 +67,13 @@
                 <!--                </template>-->
             </b-navbar-nav>
         </b-collapse>
+        <div class="d-flex align-items-center">
+            <BaseDropdownWallets v-if="accountStore.isAuthenticated" class="me-3" />
+            <BaseDropdownUserMenu class="ms-auto" />
+            <b-button variant="link" class="d-block d-lg-none" @click="isNavbarOffcanvasShown = true">
+                <i class="fas fa-bars text-white"></i>
+            </b-button>
+        </div>
     </b-navbar>
     <b-offcanvas
         v-model="isNavbarOffcanvasShown"
@@ -89,23 +90,15 @@
                 SANTA Browser
             </b-link>
         </template>
-        <BaseCardAccount v-if="accountStore.isAuthenticated" />
+
         <b-list-group class="w-100 mb-4" style="border-radius: 0">
-            <b-list-group-item class="d-flex" @click="onClickRoute('/')">
-                <div style="width: 30px"><i class="fas fa-home me-1 text-opaque"></i></div>
-                Explore
-            </b-list-group-item>
             <b-list-group-item class="d-flex" @click="onClickRoute('/learn')">
                 <div style="width: 30px"><i class="fas fa-graduation-cap me-1 text-opaque"></i></div>
                 Learn
             </b-list-group-item>
-            <b-list-group-item class="d-flex" @click="onClickRoute('/earn')">
-                <div style="width: 30px"><i class="fas fa-rocket me-1 text-opaque"></i></div>
-                Earn
-            </b-list-group-item>
-            <b-list-group-item class="d-flex" @click="onClickRoute('/community')">
+            <b-list-group-item class="d-flex" @click="onClickRoute('/governance')">
                 <div style="width: 30px"><i class="fas fa-users me-1 text-opaque"></i></div>
-                Community
+                Governance
             </b-list-group-item>
             <b-list-group-item class="d-flex" @click="onClickRoute('/members')">
                 <div style="width: 30px"><i class="fas fa-id-card me-1 text-opaque"></i></div>
@@ -118,17 +111,34 @@
                 @click="onClickRoute('/wallets')"
             >
                 <div style="width: 30px"><i class="fas fa-wallet me-1 text-opaque"></i></div>
-                My Rewards
+                Wallet
             </b-list-group-item>
         </b-list-group>
-        <b-button v-if="!accountStore.isAuthenticated" v-b-modal="'modalLogin'" variant="primary">
-            Sign in
-            <i class="fas fa-sign-in-alt ml-auto"></i>
+
+        <b-button class="ps-4 pe-3 rounded py-2 ms-2" variant="primary" target="_blank" :href="dashboardURL">
+            Create Campaign
+            <i class="fas fa-plus ms-2 text-opaque" />
         </b-button>
-        <b-button v-else variant="primary" @click="accountStore.signout()">
-            Sign out
-            <i class="fas fa-sign-out-alt ml-auto"></i>
-        </b-button>
+        <div class="text-center">
+            <b-button
+                v-if="!accountStore.isAuthenticated"
+                variant="link"
+                class="text-white text-decoration-none text-opaque"
+                @click="authStore.isModalLoginShown = true"
+            >
+                Sign in
+                <i class="fas fa-sign-in-alt ml-auto"></i>
+            </b-button>
+            <b-button
+                v-else
+                variant="link"
+                class="text-white text-decoration-none text-opaque"
+                @click="accountStore.signout()"
+            >
+                Sign out
+                <i class="fas fa-sign-out-alt ml-auto"></i>
+            </b-button>
+        </div>
     </b-offcanvas>
 </template>
 

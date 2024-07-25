@@ -18,7 +18,6 @@
                         :alt="chainList[contract.chainId].name"
                         class="me-2"
                     />
-
                     <b-link target="_blank" :href="getAddressURL(contract.chainId, contract.address)">
                         {{ chainList[contract.chainId].name }}
                     </b-link>
@@ -97,7 +96,7 @@ export default defineComponent({
     },
     methods: {
         onUpdate(wallet: TWallet | null) {
-            this.walletStore.setWallet(wallet, true);
+            this.walletStore.setWallet(wallet);
         },
         async onClickSign() {
             this.error = '';

@@ -6,6 +6,7 @@ import ImgLogoHardhat from '../assets/thx_logo_hardhat.svg';
 import ImgLogoLinea from '../assets/thx_logo_linea.svg';
 import ImgLogoMetis from '../assets/thx_logo_metis.svg';
 import ImgLogoBase from '../assets/thx_logo_base.svg';
+import ImgLogoIOTA from '../assets/thx_logo_iota.svg';
 import {
     arbitrum,
     mainnet,
@@ -19,6 +20,21 @@ import {
     sepolia,
 } from '@wagmi/core/chains';
 import { ChainId } from '@thxnetwork/common/enums';
+import { PROD } from '../config/secrets';
+import { defineChain } from 'viem';
+
+const iota = defineChain({
+    id: ChainId.IOTA,
+    name: 'IOTA EVM',
+    nativeCurrency: { name: 'IOTA', symbol: 'IOTA', decimals: 18 },
+    rpcUrls: {
+        default: { http: ['https://json-rpc.evm.iotaledger.net'] },
+    },
+    blockExplorers: {
+        default: { name: 'Explorer', url: 'https://explorer.evm.iota.org' },
+    },
+    contracts: {},
+});
 
 const chainList: { [chainId: number]: ChainInfo } = {
     [ChainId.Ethereum]: {
@@ -67,7 +83,7 @@ const chainList: { [chainId: number]: ChainInfo } = {
         chainId: ChainId.Linea,
         name: 'Linea',
         logo: ImgLogoLinea,
-        blockExplorer: 'https://zkevm.polygonscan.com',
+        blockExplorer: 'https://lineascan.build',
         chain: linea,
     },
     [ChainId.Metis]: {
@@ -84,9 +100,16 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://basescan.org',
         chain: base,
     },
+    [ChainId.IOTA]: {
+        chainId: ChainId.IOTA,
+        name: 'IOTA',
+        logo: ImgLogoIOTA,
+        blockExplorer: 'https://explorer.evm.iota.org',
+        chain: iota,
+    },
 };
 
-if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'sepolia') {
+if (process.env.NODE_ENV !== 'production') {
     chainList[ChainId.Hardhat] = {
         chainId: ChainId.Hardhat,
         name: 'Hardhat',

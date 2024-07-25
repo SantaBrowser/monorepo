@@ -200,18 +200,11 @@ export default defineComponent({
         ...mapStores(useAccountStore, useAuthStore),
     },
     watch: {
-        async 'page'(page) {
+        async page(page) {
             this.page = page;
             this.isLoadingPage = true;
             await this.getCampaigns();
             this.isLoadingPage = false;
-        },
-        'accountStore.isAuthenticated': {
-            handler(isAuthenticated) {
-                if (!isAuthenticated) return;
-                this.getParticipants();
-            },
-            immediate: true,
         },
     },
     async mounted() {
@@ -228,11 +221,6 @@ export default defineComponent({
         window.removeEventListener('resize', this.checkWidth);
     },
     methods: {
-        async getParticipants() {
-            if (this.accountStore.isAuthenticated) {
-                await this.accountStore.getParticipants();
-            }
-        },
         async getCampaigns() {
             const url = new URL(API_URL);
             url.pathname = '/v1/leaderboards';

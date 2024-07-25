@@ -1,8 +1,10 @@
 <template>
     <b-card
         no-body
-        class="gradient-shadow card-campaign"
-        :style="{ opacity: isLoading ? 0.5 : 1, backgroundImage: `url(${backgroundImage})` }"
+        class="cursor-pointer gradient-shadow card-campaign"
+        :class="isLoading ? 'cursor-disabled' : 'auto'"
+        :style="{ opacity: isLoading ? 0.5 : 1, pointerEvents: isLoading ? 'none' : 'auto' }"
+        @click="goTo(`/c/${campaign.slug}`)"
     >
         <b-spinner
             v-if="isLoading"
@@ -232,13 +234,6 @@ export default defineComponent({
         campaignDomain() {
             return this.campaign.domain && new URL(this.campaign.domain).hostname;
         },
-        isSubscribed() {
-            return this.accountStore.isAuthenticated && this.accountStore.isSubscribed(this.campaign._id);
-        },
-
-        rewardsList() {
-            // return this.rewardStore.list(this.campaign.slug);
-        },
     },
     mounted() {
         // this.rewardList = rewardsList();
@@ -247,22 +242,6 @@ export default defineComponent({
         goTo(path: string) {
             this.isLoading = true;
             this.$router.push(path);
-        },
-        async onClickSubscribe() {
-            try {
-                this.isLoading = true;
-                await this.accountStore.api.request.patch(`/v1/participants/${this.participant?._id}`, {
-                    data: {
-                        isSubscribed: !this.participant?.isSubscribed,
-                        email: this.accountStore.account ? this.accountStore.account.email : null,
-                    },
-                });
-                await this.accountStore.getParticipants(this.campaign._id);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                this.isLoading = false;
-            }
         },
     },
 });

@@ -35,7 +35,6 @@ import { toFiatPrice } from '@thxnetwork/app/utils/price';
 import { BigNumber } from 'ethers/lib/ethers';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
-import { ChainId } from '@thxnetwork/common/enums';
 import { contractNetworks } from '@thxnetwork/app/config/constants';
 import { NODE_ENV } from "@thxnetwork/app/config/secrets";
 
@@ -49,12 +48,12 @@ export default defineComponent({
     computed: {
         ...mapStores(useLiquidityStore, useWalletStore),
         address() {
-            if (!this.walletStore.wallet) return contractNetworks[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
-            return contractNetworks[this.walletStore.wallet.chainId];
+            if (!this.walletStore.chainId) return contractNetworks[this.liquidityStore.chainId];
+            return contractNetworks[this.walletStore.chainId];
         },
         chainInfo() {
-            if (!this.walletStore.wallet) return chainList[NODE_ENV === "production" ? ChainId.Polygon : ChainId.Sepolia];
-            return chainList[this.walletStore.wallet.chainId];
+            if (!this.walletStore.wallet) return chainList[this.liquidityStore.chainId];
+            return chainList[this.walletStore.chainId];
         },
         rewardsMetric() {
             const { bal, bpt } = this.liquidityStore.rewards;

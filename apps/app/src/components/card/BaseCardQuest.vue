@@ -82,10 +82,10 @@
 
                 <b-button
                     v-if="!accountStore.isAuthenticated"
-                    v-b-modal="'modalLogin'"
                     variant="primary"
                     block
                     class="w-100"
+                    @click="authStore.isModalLoginShown = true"
                 >
                     <template v-if="quest.amount">
                         Earn <strong>{{ quest.amount }} points</strong>
@@ -132,6 +132,7 @@ import { format, formatDistance } from 'date-fns';
 import { mapStores } from 'pinia';
 import { useAccountStore } from '../../stores/Account';
 import { useQuestStore } from '../../stores/Quest';
+import { useAuthStore } from '../../stores/Auth';
 import { decodeHTML } from '@thxnetwork/app/utils/decode-html';
 import { QuestVariant } from '@thxnetwork/sdk/types/enums';
 
@@ -139,7 +140,7 @@ export default defineComponent({
     name: 'BaseCardQuest',
     props: {
         id: String,
-        visible: Boolean,
+        // visible: Boolean,
         loading: Boolean,
         completing: Boolean,
         error: String,
@@ -164,7 +165,7 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useAccountStore, useQuestStore),
+        ...mapStores(useAccountStore, useAuthStore, useQuestStore),
         expiryDate() {
             if (!this.quest.expiryDate) return '';
             return formatDistance(new Date(this.quest.expiryDate), new Date(), {
@@ -183,11 +184,11 @@ export default defineComponent({
     },
     watch: {
         visible(value: boolean) {
-            this.isVisible = window.innerWidth > 768 || value;
+            this.isVisible = value;
         },
     },
     mounted() {
-        this.isVisible = window.innerWidth > 768 || this.visible;
+        this.isVisible = !this.quest.index;
     },
     methods: {
         onClickLink(url: string) {

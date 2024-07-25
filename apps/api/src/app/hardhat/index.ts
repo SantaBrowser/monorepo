@@ -1,4 +1,3 @@
-import { ContractNetworksConfig } from '@safe-global/protocol-kit';
 // Safe
 import DefaultCallbackHandler from './export/DefaultCallbackHandler.json';
 import CreateCall from './export/CreateCall.json';
@@ -40,6 +39,7 @@ export const getArtifact = (contractName: TContractName) => {
 };
 
 export const contractNetworks = {
+    // Hardhat
     '31337': {
         // Safe
         simulateTxAccessorAddress: '0xBe900568F856c024a96Ea757c4Bb59A84C0feD1e',
@@ -102,6 +102,19 @@ export const contractNetworks = {
         THXPaymentSplitter: '',
         CompanyMultiSig: '0x0b8e0aAF940cc99EDA5DA5Ab0a8d6Ed798eDc08A',
     },
+    // Linea
+    '59144': {
+        // Safe
+        simulateTxAccessorAddress: '0x59AD6735bCd8152B84860Cb256dD9e96b85F69Da',
+        safeProxyFactoryAddress: '0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2',
+        fallbackHandlerAddress: '0x1AC114C2099aFAf5261731655Dc6c306bFcd4Dbd',
+        createCallAddress: '0x7cbB62EaA69F79e6873cD1ecB2392971036cFAa4',
+        multiSendAddress: '0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761',
+        multiSendCallOnlyAddress: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+        signMessageLibAddress: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
+        safeMasterCopyAddress: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
+    },
+    // Polygon
     '137': {
         //Safe
         safeMasterCopyAddress: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
@@ -137,7 +150,7 @@ export const contractNetworks = {
         BalancerGaugeController: '0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD',
         BalancerRootGauge: '0x9902913ce5439d667774c8f9526064b2bc103b4a',
     },
-} as ContractNetworksConfig & any;
+} as unknown as { [chainId: string]: any } as any;
 
 export type TContractName = (typeof contractNames)[number];
 
