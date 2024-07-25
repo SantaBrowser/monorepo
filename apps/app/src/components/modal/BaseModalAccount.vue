@@ -65,10 +65,10 @@
             >
                 Close
             </b-button>
-            <!--            <b-button variant="link" class="w-100 text-white" @click="onClickSignout">-->
-            <!--                <b-spinner v-if="isLoadingReset" small variant="light" />-->
-            <!--                <template v-else> Sign out </template>-->
-            <!--            </b-button>-->
+            <b-button variant="link" class="w-100 text-white" @click="onClickSignout">
+                <b-spinner v-if="isLoadingReset" small variant="light" />
+                <template v-else> Sign out </template>
+            </b-button>
         </template>
     </b-modal>
 </template>

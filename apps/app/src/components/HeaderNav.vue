@@ -54,10 +54,7 @@
         <div v-if="!accountStore.isMobile" class="d-flex gap-2">
             <BaseCardWalletInfo v-if="!accountStore.isMobile" />
             <BaseDropdownWallets v-if="!accountStore.isMobile" />
-            <div
-                class="d-flex align-items-center justify-content-between equal-divs name-avatar"
-                @click="accountStore.isModalAccountShown = true"
-            >
+            <div class="d-flex align-items-center justify-content-between equal-divs name-avatar" @click="handleClick">
                 <h2 v-if="!accountStore.isMobile" class="username">{{ accountStore?.account?.username }}</h2>
                 <b-avatar class="b-avatar-header" size="40" :src="accountStore?.account?.profileImg" variant="dark" />
             </div>
@@ -68,10 +65,15 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { useAccountStore } from '../stores/Account';
+import { useAuthStore } from '../stores/Auth';
 import { mapStores } from 'pinia';
 import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '../config/secrets';
 import imgStarCoin from '../assets/star-coin.png';
 import { useQuestStore } from '../stores/Quest';
+
+const accountStore = useAccountStore();
+const authStore = useAuthStore();
+
 export default defineComponent({
     name: 'HeaderNav',
     props: {
@@ -90,7 +92,7 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useAccountStore, useQuestStore),
+        ...mapStores(useAccountStore, useQuestStore, useAuthStore),
         participantSanta() {
             console.log('this.accountStore.participants', this.accountStore.participants);
             return this.accountStore.participants.find(
@@ -170,6 +172,13 @@ export default defineComponent({
         },
         numberWithCommas(x: number | string) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        },
+        handleClick() {
+            if (!accountStore.account) {
+                authStore.isModalLoginShown = true;
+            } else {
+                accountStore.isModalAccountShown = true;
+            }
         },
     },
 });
