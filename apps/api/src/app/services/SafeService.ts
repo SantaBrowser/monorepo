@@ -143,7 +143,7 @@ class SafeService {
         // Create hash for this transaction
         const safeTxHash = await safe.getTransactionHash(safeTransaction);
         const signature = await safe.signTransactionHash(safeTxHash);
-        const apiKit = this.getApiKit(wallet.chainId);
+        const apiKit = this.getApiKit(wallet);
     
         logger.info({ safeTxHash, nonce });
     
@@ -214,7 +214,7 @@ class SafeService {
 
     async executeTransaction(wallet: WalletDocument, safeTxHash: string) {
         const { provider, ethAdapter } = NetworkService.getProvider(wallet.chainId);
-        const apiKit = this.getApiKit(wallet.chainId);
+        const apiKit = this.getApiKit(wallet);
         const safe = await Safe.create({
             ethAdapter,
             safeAddress: wallet.address,
