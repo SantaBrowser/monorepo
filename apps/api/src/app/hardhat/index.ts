@@ -146,6 +146,37 @@ export const contractNetworks = {
         THXPaymentSplitter: '',
         CompanyMultiSig: '0x0b8e0aAF940cc99EDA5DA5Ab0a8d6Ed798eDc08A',
     },
+    '42161': {
+        //Safe
+        safeMasterCopyAddress: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
+        safeSingletonAddress: '0x3E5c63644E683549055b9Be8653de26E0B4CD36E',
+        simulateTxAccessorAddress: '0x59AD6735bCd8152B84860Cb256dD9e96b85F69Da',
+        safeProxyFactoryAddress: '0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2',
+        fallbackHandlerAddress: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+        createCallAddress: '0x7cbB62EaA69F79e6873cD1ecB2392971036cFAa4',
+        multiSendAddress: '0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761',
+        multiSendCallOnlyAddress: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
+        signMessageLibAddress: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
+        // Tokens
+        BPT: '0xb204BF10bc3a5435017D3db247f56dA601dFe08A',
+        BPTGauge: '0xf16BECC1Bcaf0fF0b865024a644a4da1A2f8585c',
+        BalancerVault: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+        BAL: '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3',
+        USDC: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+        THX: '0x2934b36ca9A4B31E633C5BE670C8C8b28b6aA015',
+
+        // veTHX
+        VotingEscrow: '0xE3B8E734e7BCcB64B63e032795896CC57012A51D',
+        RewardDistributor: '0xCc62c812EfF9cA4c35623103B2Bb63E22f465E09',
+        RewardFaucet: '0xA1D7671f73FbcB5e079d4dC4Cffb7dDD0967EA7E',
+        SmartWalletWhitelist: '0x876625a92cEAa7f1Bddd40908B8eb5C6080cB83C',
+        LensReward: '0xE8D9624E0B7f839540E7c13577550E3Eff3FC8aA',
+
+        // Company
+        THXRegistry: '',
+        THXPaymentSplitter: '',
+        CompanyMultiSig: '0x0b8e0aAF940cc99EDA5DA5Ab0a8d6Ed798eDc08A',
+    },
     '1': {
         BalancerGaugeController: '0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD',
         BalancerRootGauge: '0x9902913ce5439d667774c8f9526064b2bc103b4a',

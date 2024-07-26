@@ -4,12 +4,13 @@ import {
     LINEA_RPC,
     PRIVATE_KEY,
     RELAYER_SPEED,
-    SAFE_TXS_SERVICE,
     HARDHAT_SAFE_TXS_SERVICE,
     POLYGON_SAFE_TXS_SERVICE,
+    ARBITRUM_SAFE_TXS_SERVICE,
     SEPOLIA_SAFE_TXS_SERVICE,
     LINEA_SAFE_TXS_SERVICE,
     SEPOLIA_RPC,
+    ARBITRUM_RPC,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
 import { ethers, Wallet } from 'ethers';
@@ -60,6 +61,21 @@ class NetworkService {
                 signer,
                 defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
                 txServiceUrl: POLYGON_SAFE_TXS_SERVICE,
+            };
+        }
+
+        if (ARBITRUM_RPC) {
+            const web3 = new Web3(ARBITRUM_RPC);
+            const provider = new ethers.providers.JsonRpcProvider(ARBITRUM_RPC);
+            const signer = new Wallet(PRIVATE_KEY, provider);
+            this.networks[ChainId.Arbitrum] = {
+                rpc: ARBITRUM_RPC,
+                web3,
+                provider,
+                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
+                signer,
+                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
+                txServiceUrl: ARBITRUM_SAFE_TXS_SERVICE,
             };
         }
 
