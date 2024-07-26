@@ -75,7 +75,7 @@ export default defineComponent({
         const clid = urlParams.get('clid');
         const { userManager } = useAuthStore();
         const user = await userManager.getUser();
-        console.log('sadsadasdsadasdsadsadsad', user.profile.clid);
+        // console.log('sadsadasdsadasdsadsadsad', user.profile.clid);
         // if (!clid) {
         // this.refreshUser();
         // }
