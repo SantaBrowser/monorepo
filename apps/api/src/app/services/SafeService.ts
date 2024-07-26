@@ -56,31 +56,27 @@ class SafeService {
                 contractNetworks,
             });
         } catch (error) {
-            logger.error(error);
             await agenda.now(JobType.DeploySafe, { safeAccountConfig, saltNonce, chainId: wallet.chainId });
-            logger.debug(`[${wallet.sub}] Deployed Safe: ${safeAddress}`, [saltNonce]);
         }
 
         return safeAddress;
     }
 
     async deploySafeJob({ attrs }: Job) {
-        console.log("#########Deploy Safe Job");
         const { safeAccountConfig, saltNonce, chainId } = attrs.data as TJobDeploySafe;
-        const { ethAdapter } = NetworkService.getProvider(chainId);
+        const { provider, ethAdapter } = NetworkService.getProvider(chainId);
         const safeFactory = await SafeFactory.create({
             ethAdapter,
             safeVersion,
             contractNetworks,
         });
-        const args = { safeAccountConfig, options: { gasPrice: '100000000000' } };
+        const gasPrice = await provider.getGasPrice();
+        const args = { safeAccountConfig, options: { gasPrice: gasPrice.toString() } };
         if (saltNonce) args['saltNonce'] = saltNonce;
 
         try {
             await safeFactory.deploySafe(args);
-            console.log("#########Deployed Safe Job");
         } catch (error) {
-            logger.error(error);
             logger.error(error.response ? error.response.data : error.message);
         }
     }
@@ -216,11 +212,15 @@ class SafeService {
                 const safeTx = await safe.toSafeTransactionType(pendingTx);
 
                 try {
-                    const response = await safe.executeTransaction(safeTx);
+                    const { provider } = NetworkService.getProvider(wallet.chainId);
+                    const gasPrice = await provider.getGasPrice();
+                    console.log(gasPrice.toString());
+                    const response = await safe.executeTransaction(safeTx, { gasPrice: gasPrice.toString() } );
                     const receipt = await response.transactionResponse.wait();
+                    logger.debug("Executed Transaction");
                     if (!receipt) throw new Error(`No receipt found for ${tx.safeTxHash}`);
 
-                    await tx.updateOne({ transactionHash: receipt.transactionHash, state: TransactionState.Sent });
+                    await tx.updateOne({ transactionHash: receipt.transactionHash, state: TransactionState.Executed });
                 } catch (error) {
                     // Suppress non breaking gas estimation error and start polling for state
                     if (error.message.includes('GS026')) {
@@ -290,7 +290,6 @@ class SafeService {
             safeAddress: wallet.address,
             contractNetworks,
         });
-        logger.debug('Safe init', { safeAddress: wallet.address });
         return safe;
     }
 

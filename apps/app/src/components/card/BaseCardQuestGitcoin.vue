@@ -112,7 +112,7 @@ export default defineComponent({
                 await this.questStore.completeQuest(this.quest, {
                     signature,
                     message: this.message,
-                    chainId: NODE_ENV === 'production' ? ChainId.Polygon : ChainId.Sepolia,
+                    chainId: ChainId.Polygon,
                 });
                 this.isModalQuestEntryShown = true;
             } catch (error) {

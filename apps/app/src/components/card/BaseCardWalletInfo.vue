@@ -38,20 +38,18 @@ import { useWalletStore } from '../../stores/Wallet';
 import { useAuthStore } from '../../stores/Auth';
 import { RewardVariant } from '@thxnetwork/common/enums';
 import { useAccountStore } from '../../stores/Account';
-import BaseCardERC20 from '../../components/card/BaseCardERC20.vue';
-import BaseCardERC721 from '../../components/card/BaseCardERC721.vue';
+import BaseCardCoin from '../../components/card/BaseCardCoin.vue';
+import BaseCardNFT from '../../components/card/BaseCardNFT.vue';
 import BaseCardCouponCode from '../../components/card/BaseCardCouponCode.vue';
 import BaseCardDiscordRole from '../../components/card/BaseCardDiscordRole.vue';
-import BaseCardGalachain from '../../components/card/BaseCardGalachain.vue';
 
 export default defineComponent({
     name: 'BaseCardWalletInfo',
     components: {
-        BaseCardERC20,
-        BaseCardERC721,
+        BaseCardCoin,
+        BaseCardNFT,
         BaseCardCouponCode,
         BaseCardDiscordRole,
-        BaseCardGalachain,
     },
     data() {
         return {
@@ -82,10 +80,6 @@ export default defineComponent({
                     label: 'Codes',
                     key: [RewardVariant.Coupon],
                 },
-                {
-                    label: 'Galachain',
-                    key: [RewardVariant.Galachain],
-                },
             ] as { label: string; key: number[] }[],
         };
     },
@@ -99,7 +93,6 @@ export default defineComponent({
                     ...this.walletStore.erc1155,
                     ...this.walletStore.couponCodes,
                     ...this.walletStore.discordRoles,
-                    ...this.walletStore.galachain,
                 ].filter((item) => {
                     if (!this.activeFilter.key.length) return true;
                     return this.activeFilter.key.includes(item.rewardVariant);
@@ -111,7 +104,6 @@ export default defineComponent({
                 ...this.walletStore.erc1155,
                 ...this.walletStore.couponCodes,
                 ...this.walletStore.discordRoles,
-                ...this.walletStore.galachain,
             ]
                 .filter((item) => {
                     if (!this.activeFilter.key.length) return true;

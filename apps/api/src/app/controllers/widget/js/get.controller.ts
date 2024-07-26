@@ -504,7 +504,7 @@ if (typeof window.THXWidget !== 'undefined') {
 `;
     const result = await minify(data, {
         mangle: { toplevel: false },
-        sourceMap: NODE_ENV !== 'production' && NODE_ENV !== 'sepolia',
+        sourceMap: NODE_ENV !== 'production',
     });
 
     res.set({ 'Content-Type': 'application/javascript' }).send(result.code);

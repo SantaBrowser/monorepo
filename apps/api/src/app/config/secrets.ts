@@ -26,15 +26,8 @@ if (process.env.NODE_ENV === 'production') {
         ...[
             'GCLOUD_RECAPTCHA_API_KEY',
             'POLYGON_RPC',
-            'RELAYER_SPEED',
-            'TWITTER_API_TOKEN',
-        ],
-    );
-} else if (process.env.NODE_ENV === 'sepolia') {
-    required.push(
-        ...[
-            'GCLOUD_RECAPTCHA_API_KEY',
             'SEPOLIA_RPC',
+            'RELAYER_SPEED',
             'TWITTER_API_TOKEN',
         ],
     );
@@ -112,7 +105,7 @@ export const TWITTER_API_TOKEN = process.env.TWITTER_API_TOKEN || '';
 export const IPFS_BASE_URL = 'https://ipfs.io/ipfs/';
 export const WEBHOOK_REFERRAL = process.env.WEBHOOK_REFERRAL || '';
 export const WEBHOOK_MILESTONE = process.env.WEBHOOK_MILESTONE || '';
-export const SAFE_TXS_SERVICE = process.env.NODE_ENV === 'production' ? 'https://safe-transaction-polygon.safe.global' : (process.env.NODE_ENV === 'sepolia' ? 'https://safe-transaction-sepolia.safe.global' : "http://localhost:8000/txs");
+export const SAFE_TXS_SERVICE = 'https://safe-transaction-polygon.safe.global';
 export const HARDHAT_SAFE_TXS_SERVICE = "http://localhost:8000/txs";
 export const POLYGON_SAFE_TXS_SERVICE = "https://safe-transaction-polygon.safe.global";
 export const SEPOLIA_SAFE_TXS_SERVICE = "https://safe-transaction-sepolia.safe.global";

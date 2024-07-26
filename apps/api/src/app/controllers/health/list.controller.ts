@@ -138,8 +138,6 @@ const controller = async (req: Request, res: Response) => {
 
     if (NODE_ENV === 'production') {
         result.networks[ChainId.Polygon] = await getNetworkDetails(ChainId.Polygon);
-    } else if (NODE_ENV === 'sepolia') {
-        result.networks[ChainId.Sepolia] = await getNetworkDetails(ChainId.Sepolia);
     } else {
         result.networks[ChainId.Hardhat] = await getNetworkDetails(ChainId.Hardhat);
     }

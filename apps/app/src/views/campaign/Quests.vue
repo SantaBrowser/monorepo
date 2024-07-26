@@ -119,7 +119,6 @@ import BaseCardRewardNFT from '../../components/card/BaseCardRewardNFT.vue';
 import BaseCardRewardCustom from '../../components/card/BaseCardRewardCustom.vue';
 import BaseCardRewardCoupon from '../../components/card/BaseCardRewardCoupon.vue';
 import BaseCardRewardDiscordRole from '../../components/card/BaseCardRewardDiscordRole.vue';
-import BaseCardRewardGalachain from '../../components/card/BaseCardRewardGalachain.vue';
 import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 import { ref } from 'vue';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
@@ -133,7 +132,6 @@ const componentMap: { [variant: string]: string } = {
     [RewardVariant.Custom]: 'BaseCardRewardCustom',
     [RewardVariant.Coupon]: 'BaseCardRewardCoupon',
     [RewardVariant.DiscordRole]: 'BaseCardRewardDiscordRole',
-    [RewardVariant.Galachain]: 'BaseCardRewardGalachain',
 };
 
 export default defineComponent({
@@ -151,7 +149,6 @@ export default defineComponent({
         BaseCardRewardCustom,
         BaseCardRewardCoupon,
         BaseCardRewardDiscordRole,
-        BaseCardRewardGalachain,
         OfferCard,
     },
     props: {
