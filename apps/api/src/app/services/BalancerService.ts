@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { BalancerSDK, Network } from '@balancer-labs/sdk';
-import { BALANCER_POOL_ID, ETHEREUM_RPC, HARDHAT_RPC, NODE_ENV, POLYGON_RPC, SEPOLIA_RPC } from '../config/secrets';
+import { BALANCER_POOL_ID, ETHEREUM_RPC, HARDHAT_RPC, POLYGON_RPC, SEPOLIA_RPC } from '../config/secrets';
 import { logger } from '../util/logger';
 import { WalletDocument } from '../models';
 import { ChainId } from '@thxnetwork/common/enums';
@@ -51,14 +51,9 @@ class BalancerService {
         [ChainId.Polygon]: { bal: [], bpt: [] },
     };
     balancer = new BalancerSDK(
-        NODE_ENV === 'production' ? 
             {
                 network: Network.POLYGON,
                 rpcUrl: POLYGON_RPC,
-            } :
-            {
-                network: Network.SEPOLIA,
-                rpcUrl: SEPOLIA_RPC,
             }
         );
 

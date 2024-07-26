@@ -1,5 +1,6 @@
 import { TransactionState, TransactionType } from '@thxnetwork/common/enums';
 import { Transaction, TransactionDocument } from '@thxnetwork/api/models/Transaction';
+import { Wallet } from '../models/Wallet';
 import SafeService from '../services/SafeService';
 import TransactionService from '../services/TransactionService';
 import { logger } from '../util/logger';
@@ -8,6 +9,8 @@ export async function updatePendingTransactions() {
     const transactions: TransactionDocument[] = await Transaction.find({
         $or: [{ state: TransactionState.Confirmed }, { state: TransactionState.Sent }],
     }).sort({ createdAt: 'asc' });
+
+    console.log(transactions);
 
     // Iterate over all tx sent to or proposed and confirmed by the relayer
     for (const tx of transactions) {

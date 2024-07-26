@@ -20,7 +20,7 @@ const controller = async (req: Request, res: Response) => {
     if (!erc721) throw new NotFoundError('Could not find this NFT in the database');
 
     let image = req.body.imageUrl;
-    if (req.body.imageUrl && (NODE_ENV === 'production' || NODE_ENV === 'sepolia')) {
+    if (req.body.imageUrl && NODE_ENV === 'production') {
         const cid = await IPFSService.addUrlSource(req.body.imageUrl);
         image = IPFS_BASE_URL + cid;
     }

@@ -19,7 +19,7 @@ export const errorOutput = (error: any, req: Request, res: Response, next: NextF
     if (error instanceof THXHttpError || error.status) {
         status = error.status;
         response.error.message = error.message;
-    } else if (NODE_ENV !== 'production' && NODE_ENV !== 'sepolia') {
+    } else if (NODE_ENV !== 'production') {
         response.error.error = error;
         response.error.stack = error.stack;
     }

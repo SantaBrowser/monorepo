@@ -75,7 +75,7 @@ export default defineComponent({
             walletVariants: [WalletVariant.WalletConnect],
             chainList,
             getAddressURL,
-            chainId: NODE_ENV === 'production' ? ChainId.Polygon : ChainId.Sepolia,
+            chainId: ChainId.Polygon,
             isModalQuestEntryShown: false,
         };
     },

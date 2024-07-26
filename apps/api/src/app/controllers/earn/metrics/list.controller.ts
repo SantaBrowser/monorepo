@@ -1,4 +1,3 @@
-import { NODE_ENV } from '@thxnetwork/api/config/secrets';
 import BalancerService from '@thxnetwork/api/services/BalancerService';
 import { Request, Response } from 'express';
 import { query } from 'express-validator';

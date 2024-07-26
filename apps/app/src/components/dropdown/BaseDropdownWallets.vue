@@ -1,9 +1,9 @@
 <template>
     <div v-if="accountStore.isAuthenticated" class="d-flex h-wallet">
         <b-dropdown
-            v-model="isOpenChains"
+            v-model="isOpenWallet"
             variant="link"
-            class="w-100 rounded w-dropdown"
+            class="w-100 rounded"
             :style="{
                 backgroundColor: 'rgba(0, 0, 0, 0.3)',
                 borderTopRightRadius: '0 !important',
@@ -13,7 +13,7 @@
             auto-close="outside"
             :menu-class="{ 'bg-body': walletStore.wallet, 'd-none': !walletStore.wallet }"
             no-caret
-            start
+            end
         >
             <template #button-content>
                 <i
@@ -27,7 +27,6 @@
                     {{ walletStore.wallet ? walletStore.wallet.short : 'Connect' }}
                 </div>
             </template>
-            <template v-else #button-content> Connect </template>
             <b-dropdown-text v-if="walletStore.wallet" text-class="bg-dark">
                 <b-form-group label-class="d-flex align-items-center mb-1 ">
                     <template #label>
@@ -63,77 +62,71 @@
                         </template>
                     </template>
                     <div class="d-flex align-items-center">
-                        <i
-                            class="fas fa-circle me-2"
-                            :class="{ 'text-success': isConnected, 'text-danger': !isConnected }"
-                        />
-                        <strong class="me-5">
-                            {{ walletStore.wallet.short }}
-                        </strong>
-                        <b-button
-                            v-clipboard:copy="walletStore.wallet?.address"
-                            v-clipboard:success="() => (isCopied = true)"
-                            variant="primary"
-                            size="sm"
-                            class="ms-2 px-2 p-1"
-                        >
-                            <i
-                                class="fas fa-clipboard"
-                                :class="{ 'fa-clipboard-check': isCopied, 'fa-clipboard': !isCopied }"
-                                style="font-size: 0.7rem"
-                            />
-                        </b-button>
-                        <b-button
-                            variant="primary"
-                            size="sm"
-                            class="ms-2 px-2 p-1"
-                            :href="
-                                chainList[walletStore.chainId].blockExplorer + '/address/' + walletStore.wallet?.address
-                            "
-                            target="_blank"
-                        >
-                            <i class="fas fa-external-link-alt" style="font-size: 0.7rem" />
-                        </b-button>
-                    </div>
-                    <div v-if="walletStore.wallet" class="d-flex align-items-center me-2">
-                        {{ walletVariantMap[walletStore.wallet.variant] }}
-                        <b-img
-                            :src="walletLogoMap[walletStore.wallet.variant]"
-                            width="15"
-                            height="15"
-                            style="border-radius: 3px"
-                            class="ms-1"
-                        />
+                        <b-avatar badge-variant="light" :src="walletImgURL" size="2.8rem" class="me-2">
+                            <template #badge>
+                                <b-img :src="chainList[walletStore.wallet.chainId].logo" width="12" height="12" />
+                            </template>
+                        </b-avatar>
+                        <div>
+                            <div class="d-flex align-items-center">
+                                <strong class="me-5">
+                                    {{ walletStore.wallet.short }}
+                                </strong>
+                                <b-button
+                                    v-clipboard:copy="walletStore.wallet?.address"
+                                    v-clipboard:success="() => (isCopied = true)"
+                                    variant="primary"
+                                    size="sm"
+                                    class="ms-2 px-2 p-1"
+                                >
+                                    <i
+                                        class="fas fa-clipboard"
+                                        :class="{ 'fa-clipboard-check': isCopied, 'fa-clipboard': !isCopied }"
+                                        style="font-size: 0.7rem"
+                                    />
+                                </b-button>
+                                <b-button
+                                    variant="primary"
+                                    size="sm"
+                                    class="ms-2 px-2 p-1"
+                                    :href="
+                                        chainList[walletStore.wallet.chainId].blockExplorer +
+                                        '/address/' +
+                                        walletStore.wallet?.address
+                                    "
+                                    target="_blank"
+                                >
+                                    <i class="fas fa-external-link-alt" style="font-size: 0.7rem" />
+                                </b-button>
+                            </div>
+                            <div v-if="walletStore.wallet" class="d-flex align-items-center me-2">
+                                {{ walletVariantMap[walletStore.wallet.variant] }}
+                                <b-img
+                                    :src="walletLogoMap[walletStore.wallet.variant]"
+                                    width="15"
+                                    height="15"
+                                    style="border-radius: 3px"
+                                    class="ms-1"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </b-form-group>
+                <b-form-group label="Network" label-class="text-opaque">
+                    <i
+                        v-if="isWalletConnect"
+                        class="fas fa-circle me-2"
+                        :class="{ 'text-success': isConnected, 'text-danger': !isConnected }"
+                    />
+                    {{ chainList[walletStore.wallet.chainId].name }}
+                    <span class="text-opaque">({{ walletStore.wallet.chainId }})</span>
+                </b-form-group>
             </b-dropdown-text>
-            <b-dropdown-item
-                v-else
-                link-class="d-flex align-items-center"
-                @click="walletStore.isModalWalletCreateShown = true"
-            >
-                Add Wallet
-            </b-dropdown-item>
         </b-dropdown>
         <b-dropdown
             v-model="isOpen"
             variant="link"
             menu-class="w-100"
-            no-caret
-            end
-            toggle-class="p-2"
-            :disabled="!accountStore.isAuthenticated"
-            :style="{
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                borderTopLeftRadius: '0 !important',
-                borderBottomLeftRadius: '0 !important',
-            }"
-        >
-        <b-dropdown
-            v-if="walletStore.wallets.length"
-            v-model="isOpen"
-            variant="link"
-            menu-class="w-100 bg-body"
             no-caret
             end
             toggle-class="p-2"
@@ -168,7 +161,7 @@
                 link-class="d-flex align-items-center justify-content-center"
                 @click="walletStore.isModalWalletCreateShown = true"
             >
-                Add Wallet
+                New Wallet
             </b-dropdown-item>
         </b-dropdown>
     </div>
@@ -181,8 +174,6 @@ import { useWalletStore, walletLogoMap } from '../../stores/Wallet';
 import { useAccountStore } from '../../stores/Account';
 import { WalletVariant } from '../../types/enums/accountVariant';
 import { chainList } from '@thxnetwork/app/utils/chains';
-import { ChainId } from '@thxnetwork/common/enums';
-import { PROD } from '@thxnetwork/app/config/secrets';
 import { is } from 'date-fns/locale';
 
 export default defineComponent({
@@ -192,13 +183,11 @@ export default defineComponent({
     },
     data() {
         return {
-            ChainId,
             walletLogoMap,
             chainList,
             isCopied: false,
             isOpen: false,
             isOpenWallet: false,
-            isOpenChains: false,
             walletVariantMap: {
                 [WalletVariant.WalletConnect]: 'Wallet Connect',
                 [WalletVariant.Safe]: 'Safe Multisig',
@@ -211,9 +200,13 @@ export default defineComponent({
             return this.walletStore.wallet?.variant === WalletVariant.WalletConnect;
         },
         isConnected() {
-            const { account, wallet } = this.walletStore;
+            const { chainId, account, wallet } = this.walletStore;
             if (!account || !wallet) return false;
-            return account.address === wallet.address;
+
+            const isAddressCorrect = account.address === wallet.address;
+            const isChainCorrect = chainId === wallet.chainId;
+
+            return isAddressCorrect && isChainCorrect;
         },
         walletImgURL() {
             if (!this.walletStore.wallet) return '';
@@ -222,10 +215,6 @@ export default defineComponent({
             url.searchParams.append('seed', this.walletStore.wallet.address);
             url.searchParams.append('backgroundType', 'gradientLinear');
             return url.toString();
-        },
-        chains() {
-            const allowedChains = [ChainId.Polygon, ChainId.Linea, ...(PROD ? [] : [ChainId.Hardhat])];
-            return Object.values(chainList).filter(({ chainId }) => allowedChains.includes(chainId));
         },
     },
     watch: {
@@ -273,9 +262,6 @@ export default defineComponent({
             this.accountStore.setGlobals({ activeWalletId: wallet._id });
             this.walletStore.list();
         },
-        onClickChainSwitch(chain: { chainId: ChainId }) {
-            this.walletStore.switchChain(chain.chainId);
-        },
         toggleDropdown() {
             if (this.walletStore.wallet === null) {
                 this.isOpen = !this.isOpen;
@@ -292,18 +278,12 @@ export default defineComponent({
 .h-wallet {
     border-radius: 22px;
     border: 1px dotted #4baec0;
-    //overflow: hidden;
 }
 
 .dropdown {
     background: #000;
 }
 
-.w-dropdown ul.dropdown-menu {
-    background: linear-gradient(129deg, #0a1a5f, #101431);
-    background-color: transparent !important;
-    left: 37px !important;
-}
 .h-wallet button div {
     font-size: 13px;
     font-weight: 500;

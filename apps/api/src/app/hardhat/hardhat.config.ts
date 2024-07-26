@@ -39,7 +39,7 @@ const config: HardhatUserConfig = {
             chainId: 11155111,
         },
         polygon: {
-            url: "https://rpc.ankr.com/polygon",
+            url: "https://polygon-mainnet.infura.io/v3/7552502863e74302a1d48f4045ee2640",
             accounts: POLYGON_PRIVATE_KEY ? [POLYGON_PRIVATE_KEY]: [],
             chainId: 137,
         },

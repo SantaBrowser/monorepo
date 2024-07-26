@@ -69,10 +69,6 @@ export default defineComponent({
                     label: 'Codes',
                     key: [RewardVariant.Coupon],
                 },
-                {
-                    label: 'Galachain',
-                    key: [RewardVariant.Galachain],
-                },
             ] as { label: string; key: number[] }[],
         };
     },
