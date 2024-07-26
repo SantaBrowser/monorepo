@@ -64,6 +64,7 @@ export const PUBLIC_URL = process.env.PUBLIC_URL || '';
 
 export const HARDHAT_RPC = process.env.HARDHAT_RPC;
 export const POLYGON_RPC = process.env.POLYGON_RPC;
+export const ARBITRUM_RPC = process.env.ARBITRUM_RPC;
 export const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
 export const LINEA_RPC = process.env.LINEA_RPC;
 export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth';
@@ -108,6 +109,7 @@ export const WEBHOOK_MILESTONE = process.env.WEBHOOK_MILESTONE || '';
 export const SAFE_TXS_SERVICE = 'https://safe-transaction-polygon.safe.global';
 export const HARDHAT_SAFE_TXS_SERVICE = "http://localhost:8000/txs";
 export const POLYGON_SAFE_TXS_SERVICE = "https://safe-transaction-polygon.safe.global";
+export const ARBITRUM_SAFE_TXS_SERVICE = "https://safe-transaction-arbitrum.safe.global";
 export const SEPOLIA_SAFE_TXS_SERVICE = "https://safe-transaction-sepolia.safe.global";
 export const LINEA_SAFE_TXS_SERVICE = "https://safe-transaction-linea.safe.global";
 export const BOT_TOKEN = process.env.BOT_TOKEN || '';

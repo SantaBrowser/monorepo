@@ -6,6 +6,7 @@ dotenv.config();
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY || '';
 const POLYGON_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
+const ARBITRUM_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 const ETHERSCAN_POLYGON_API_KEY = process.env.ETHERSCAN_POLYGON_API_KEY || '';
 const ETHERSCAN_BASE_API_KEY = process.env.ETHERSCAN_BASE_API_KEY || '';
 const SEPOLIA_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
@@ -34,14 +35,19 @@ const config: HardhatUserConfig = {
             ],
         },
         sepolia: {
-            url: "https://sepolia.infura.io/v3/7552502863e74302a1d48f4045ee2640",
+            url: "https://sepolia.infura.io/v3/d8d9d860d0c94b7f88c73b371afee338",
             accounts: SEPOLIA_PRIVATE_KEY ? [SEPOLIA_PRIVATE_KEY]: [],
             chainId: 11155111,
         },
         polygon: {
-            url: "https://polygon-mainnet.infura.io/v3/7552502863e74302a1d48f4045ee2640",
+            url: "https://polygon-mainnet.infura.io/v3/d8d9d860d0c94b7f88c73b371afee338",
             accounts: POLYGON_PRIVATE_KEY ? [POLYGON_PRIVATE_KEY]: [],
             chainId: 137,
+        },
+        arbitrum: {
+            url: "https://arbitrum-mainnet.infura.io/v3/d8d9d860d0c94b7f88c73b371afee338",
+            accounts: ARBITRUM_PRIVATE_KEY ? [ARBITRUM_PRIVATE_KEY]: [],
+            chainId: 42161,
         },
     },
     paths: {
