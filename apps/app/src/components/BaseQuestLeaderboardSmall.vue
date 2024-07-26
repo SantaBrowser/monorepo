@@ -177,7 +177,8 @@ export default defineComponent({
 
 @media (max-width: 992px) {
     .leaderboard-wrapper {
-        margin: 12px 12px 0;
+        height: 100%;
+        margin: 0;
     }
 }
 </style>

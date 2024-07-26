@@ -501,6 +501,9 @@ export default defineComponent({
         width: 100% !important;
         margin: 0 12px;
     }
+    .quest-cont .row {
+        height: 100%;
+    }
 }
 
 @media (max-width: 1400px) {
