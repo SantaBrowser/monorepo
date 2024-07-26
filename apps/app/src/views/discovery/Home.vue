@@ -44,7 +44,7 @@
                     v-if="accountStore.isMobile && (selectedPart === 'Leaderboard' || selectedPart === 'Wallet')"
                     class="w-100"
                 >
-                    <div v-if="selectedPart === 'Leaderboard'">
+                    <div v-if="selectedPart === 'Leaderboard'" class="leaderboard-cont">
                         <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
                     </div>
                     <div v-if="selectedPart === 'Wallet'">
@@ -657,6 +657,10 @@ export default defineComponent({
     }
     .unwrap {
         line-height: 28vh;
+    }
+    .leaderboard-cont {
+        height: 100%;
+        padding: 12px 12px 0;
     }
 }
 </style>

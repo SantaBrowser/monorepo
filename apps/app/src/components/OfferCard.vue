@@ -3,7 +3,6 @@
         class="mb-1 w-100 my-offer-card"
         header-class="p-0"
         body-class="d-flex flex-column p-0"
-        :class="{ 'card-collapsed': isVisible, 'card-promoted': offer.isPromoted }"
         style="background: transparent"
     >
         <template #header>
@@ -34,7 +33,7 @@
                 ) !important;
             "
         >
-            <div class="d-flex justify-content-center w-100" style="height: 200px">
+            <div class="d-flex justify-content-center w-100 offer-card-img">
                 <img v-if="offer.imageUrl" class="img-fluid" :src="offer.imageUrl" alt="header image" />
             </div>
 
@@ -47,7 +46,7 @@
                     />
                 </div>
 
-                <b-button variant="primary" block class="w-100" target="_blank" @click="openModal">
+                <b-button variant="primary" block class="w-100 mb-3" target="_blank" @click="openModal">
                     Claim <strong>${{ offer.payout }}</strong>
                 </b-button>
 
@@ -133,7 +132,7 @@ export default defineComponent({
     data() {
         return {
             decodeHTML,
-            isVisible: false,
+            isVisible: true,
             showModal: false,
             iconMap: {
                 Lootably: 'fas fa-gift',
@@ -141,9 +140,6 @@ export default defineComponent({
                 // Add more mappings as needed
             } as { [provider: string]: string },
         };
-    },
-    mounted() {
-        this.isVisible = window.innerWidth > 768;
     },
     methods: {
         openModal() {
@@ -268,9 +264,16 @@ export default defineComponent({
     z-index: 111;
     border-radius: 50%;
 }
+.offer-card-img {
+    height: 200px;
+    margin-top: 1rem;
+}
 @media (max-width: 992px) {
     .modal-info-wrap {
         display: block !important;
+    }
+    .offer-card-img {
+        height: 150px;
     }
 }
 </style>
