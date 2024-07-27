@@ -34,9 +34,9 @@
             </div>
         </div>
 
-        <div ref="secondDiv" :class="{ 'slide-up': isSecondDivVisible }" class="window-container bg-secondDiv">
+        <div ref="secondDiv" :class="{ 'slides-up': isSecondDivVisible }" class="d-flex window-container bg-secondDiv">
             <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
-            <div class="d-flex h-100 bf-blur w-100">
+            <div class="d-flex bf-blur w-100">
                 <Quests :selected-part="selectedPart" :is-second-div-visible="isSecondDivVisible" />
 
                 <BaseSidebar />
@@ -44,7 +44,7 @@
                     v-if="accountStore.isMobile && (selectedPart === 'Leaderboard' || selectedPart === 'Wallet')"
                     class="w-100"
                 >
-                    <div v-if="selectedPart === 'Leaderboard'">
+                    <div v-if="selectedPart === 'Leaderboard'" class="leaderboard-cont">
                         <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
                     </div>
                     <div v-if="selectedPart === 'Wallet'">
@@ -392,7 +392,7 @@ export default defineComponent({
     text-align: center;
 }
 .window-container {
-    height: calc(100vh - 70px);
+    //height: calc(100vh - 70px);
     background-color: #0c0d15;
     //position: absolute;
     //bottom: -60%;
@@ -401,7 +401,7 @@ export default defineComponent({
     width: 100%;
     transition: bottom 0.5s ease-in-out;
     z-index: 11;
-    overflow: hidden;
+    //overflow: hidden;
 }
 
 .slide-up {
@@ -620,6 +620,7 @@ export default defineComponent({
     padding: 0;
     margin: 0;
     background-blend-mode: color-dodge;
+    background-attachment: fixed;
 }
 
 .bf-blur {
@@ -639,10 +640,15 @@ export default defineComponent({
 
 @media (max-width: 992px) {
     .window-container {
+        height: calc(100vh - 70px);
         padding-bottom: 70px;
     }
     .unwrap {
         line-height: 28vh;
+    }
+    .leaderboard-cont {
+        height: 100%;
+        padding: 12px 12px 0;
     }
 }
 </style>

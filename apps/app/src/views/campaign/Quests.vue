@@ -35,13 +35,17 @@
                             </sup>
                         </template>
                         <div v-for="(item, index) in mergedQuestsAndOffers" :key="index">
+                            <div v-if="item.isOfferRow" class="d-flex flex-wrap offer-row">
+                                <div v-for="offer in item.offers" :key="offer.id" class="offer-item">
+                                    <OfferCard :offer="offer" class="mb-2" />
+                                </div>
+                            </div>
                             <component
                                 :is="questComponentMap[item.variant]"
-                                v-if="!item.isOffer"
+                                v-else
                                 :quest="item"
                                 class="mb-2 mx-lg-0 my-lg-3"
                             />
-                            <OfferCard v-else :offer="item" class="offer-item mb-2" />
                         </div>
                         <div v-if="!availableQuestCount" class="text-center mt-5">
                             <i class="h1 fas fa-trophy text-accent" />
@@ -208,10 +212,27 @@ export default defineComponent({
             return useAuthStore().userManager;
         },
         mergedQuestsAndOffers() {
-            let merged = [...this.quests, ...this.offers.map((offer) => ({ ...offer, isOffer: true }))];
-            for (let i = merged.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [merged[i], merged[j]] = [merged[j], merged[i]];
+            let merged = [];
+            let offerIndex = 0;
+            const questBatchSize = 5;
+
+            for (let i = 0; i < this.quests.length; i++) {
+                if (i % questBatchSize === 0 && i !== 0) {
+                    merged.push({
+                        isOfferRow: true,
+                        offers: [this.offers[offerIndex], this.offers[offerIndex + 1]].filter(Boolean),
+                    });
+                    offerIndex += 2;
+                }
+                merged.push(this.quests[i]);
+            }
+
+            while (offerIndex < this.offers.length) {
+                merged.push({
+                    isOfferRow: true,
+                    offers: [this.offers[offerIndex], this.offers[offerIndex + 1]].filter(Boolean),
+                });
+                offerIndex += 2;
             }
             return merged;
         },
@@ -448,6 +469,22 @@ export default defineComponent({
 .quests-title .text-opaque {
     font-size: 11px;
 }
+
+.offer-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.offer-item {
+    flex: 1 0 45%;
+    margin: 1%;
+    max-width: 45%;
+    box-sizing: border-box;
+}
 @media (max-width: 992px) {
     .quest-cont .row > * {
         flex-shrink: unset;
@@ -461,6 +498,9 @@ export default defineComponent({
     .rewards-column {
         width: 100% !important;
         margin: 0 12px;
+    }
+    .quest-cont .row {
+        height: 100%;
     }
 }
 
