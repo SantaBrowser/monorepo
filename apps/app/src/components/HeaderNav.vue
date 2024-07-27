@@ -175,7 +175,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .header-nav {
     position: fixed;
     top: 3px;
@@ -283,12 +283,12 @@ export default defineComponent({
 }
 
 @media (max-width: 490px) {
-    .header-nav h2 {
-        display: none;
-    }
-    .balance-wrap {
-        width: auto !important;
-    }
+    //.header-nav h2 {
+    //  display: none;
+    //}
+    //.balance-wrap {
+    //  width: auto !important;
+    //}
 }
 
 .total-earnings {
