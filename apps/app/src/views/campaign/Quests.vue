@@ -2,7 +2,6 @@
     <b-container
         v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
         class="mt-2 quest-cont"
-        :class="{ 'overflow-y-hidden': !isSecondDivVisible, 'overflow-y-scroll': isSecondDivVisible }"
     >
         <b-row>
             <b-col
@@ -178,6 +177,7 @@ export default defineComponent({
             activeFilters: [],
             entry: null,
             offers: [],
+            offersPerRow: window.innerWidth > 1350 ? 3 : 2,
         };
     },
     computed: {
@@ -223,9 +223,9 @@ export default defineComponent({
                 if (i % questBatchSize === 0 && i !== 0) {
                     merged.push({
                         isOfferRow: true,
-                        offers: [this.offers[offerIndex], this.offers[offerIndex + 1]].filter(Boolean),
+                        offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
                     });
-                    offerIndex += 2;
+                    offerIndex += this.offersPerRow;
                 }
                 merged.push(this.quests[i]);
             }
@@ -233,9 +233,9 @@ export default defineComponent({
             while (offerIndex < this.offers.length) {
                 merged.push({
                     isOfferRow: true,
-                    offers: [this.offers[offerIndex], this.offers[offerIndex + 1]].filter(Boolean),
+                    offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
                 });
-                offerIndex += 2;
+                offerIndex += this.offersPerRow;
             }
             return merged;
         },
@@ -266,6 +266,10 @@ export default defineComponent({
     },
     mounted() {
         this.fetchOffers();
+        window.addEventListener('resize', this.handleResize);
+    },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.handleResize);
     },
     methods: {
         async fetchOffers() {
@@ -280,6 +284,9 @@ export default defineComponent({
             } catch (error) {
                 console.error('Failed to fetch offers', error);
             }
+        },
+        handleResize() {
+            this.offersPerRow = window.innerWidth > 1350 ? 3 : 2;
         },
     },
 });
@@ -422,7 +429,7 @@ export default defineComponent({
     border-radius: 10px;
     border: 1px dotted #f39696a1;
     overflow: hidden;
-    margin-bottom: 15px !important;
+    margin-bottom: 15px;
 }
 
 .rewards-column {
@@ -479,6 +486,9 @@ export default defineComponent({
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+    background-color: #00ffe7;
+    margin-bottom: 15px;
+    border-radius: 20px;
 }
 
 .offer-item {
@@ -515,6 +525,13 @@ export default defineComponent({
 @media (max-width: 1025px) {
     .quests-column {
         margin-right: 5px;
+    }
+}
+
+@media (min-width: 1350px) {
+    .offer-item {
+        flex: 1 0 30%;
+        max-width: 30%;
     }
 }
 </style>

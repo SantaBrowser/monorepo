@@ -23,25 +23,16 @@
             </b-card-title>
         </template>
 
-        <b-collapse
-            v-model="isVisible"
-            style="
-                background: linear-gradient(
-                    155deg,
-                    rgba(255, 255, 255, 0.02) -2.13%,
-                    rgba(42, 42, 42, 0.11) 136.58%
-                ) !important;
-            "
-        >
+        <b-collapse v-model="isVisible" style="background-color: #a22d2e !important">
             <div class="d-flex justify-content-center w-100 offer-card-img">
                 <img v-if="offer.imageUrl" class="img-fluid" :src="offer.imageUrl" alt="header image" />
             </div>
 
-            <div class="px-3 mt-3">
+            <div class="px-3">
                 <div class="d-flex align-items-start justify-content-between">
                     <b-card-text
                         v-if="offer.description"
-                        class="flex-grow-1 mb-3 offer-description"
+                        class="flex-grow-1 offer-description"
                         v-html="decodeHTML(offer.description)"
                     />
                 </div>
@@ -157,6 +148,7 @@ export default defineComponent({
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    margin-bottom: 10px;
 }
 .offer-categories span {
     font-weight: 500;
@@ -265,8 +257,17 @@ export default defineComponent({
     border-radius: 50%;
 }
 .offer-card-img {
-    height: 200px;
-    margin-top: 1rem;
+    height: 120px;
+    margin: 10px 0;
+}
+
+.offer-card-img .img-fluid {
+    border-radius: 20px;
+}
+
+.my-offer-card {
+    border: none !important;
+    margin-bottom: 0 !important;
 }
 @media (max-width: 992px) {
     .modal-info-wrap {
@@ -274,6 +275,16 @@ export default defineComponent({
     }
     .offer-card-img {
         height: 150px;
+    }
+}
+@media (max-width: 1350px) {
+    .offer-card-img {
+        height: 200px;
+    }
+}
+@media (max-width: 1200px) {
+    .offer-card-img {
+        height: 100px;
     }
 }
 </style>

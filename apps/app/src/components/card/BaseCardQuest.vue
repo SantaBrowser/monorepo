@@ -1,6 +1,6 @@
 <template>
     <b-card
-        class="mb-1 w-100"
+        class="w-100"
         header-class="p-0"
         body-class="d-flex flex-column p-0"
         :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted }"
