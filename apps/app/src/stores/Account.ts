@@ -301,9 +301,12 @@ export const useAccountStore = defineStore('account', {
         getIdentity() {
             return window.sessionStorage.getItem(`thx:${this.poolId}:id`);
         },
-        async getLeaderboard() {
-            if (!this.poolId) return;
-            this.leaderboard = await this.api.request.get(`/v1/leaderboards/${this.poolId}`);
+        async getLeaderboard(poolId: string) {
+            if (poolId) {
+                this.leaderboardPrimary = await this.api.request.get(`/v1/leaderboards/${poolId}`);
+            } else {
+                this.leaderboard = await this.api.request.get(`/v1/leaderboards/${this.poolId}`);
+            }
         },
         async waitForJob(jobId: string) {
             const taskFn = async () => {

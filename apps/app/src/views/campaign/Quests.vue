@@ -2,7 +2,6 @@
     <b-container
         v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
         class="mt-2 quest-cont"
-        :class="{ 'overflow-y-hidden': !isSecondDivVisible, 'overflow-y-scroll': isSecondDivVisible }"
     >
         <b-row>
             <b-col
@@ -175,6 +174,7 @@ export default defineComponent({
             activeFilters: [],
             entry: null,
             offers: [],
+            offersPerRow: window.innerWidth > 1350 ? 3 : 2,
         };
     },
     computed: {
@@ -220,9 +220,9 @@ export default defineComponent({
                 if (i % questBatchSize === 0 && i !== 0) {
                     merged.push({
                         isOfferRow: true,
-                        offers: [this.offers[offerIndex], this.offers[offerIndex + 1]].filter(Boolean),
+                        offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
                     });
-                    offerIndex += 2;
+                    offerIndex += this.offersPerRow;
                 }
                 merged.push(this.quests[i]);
             }
@@ -230,9 +230,9 @@ export default defineComponent({
             while (offerIndex < this.offers.length) {
                 merged.push({
                     isOfferRow: true,
-                    offers: [this.offers[offerIndex], this.offers[offerIndex + 1]].filter(Boolean),
+                    offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
                 });
-                offerIndex += 2;
+                offerIndex += this.offersPerRow;
             }
             return merged;
         },
@@ -241,14 +241,13 @@ export default defineComponent({
         'accountStore.isAuthenticated': {
             async handler(isAuthenticated: boolean) {
                 if (!isAuthenticated) return;
-
                 if (!this.accountStore.account) {
                     await this.accountStore.getAccount();
                 }
                 this.questStore.list(SANTA_CAMPAIGN);
                 this.rewardStore.list(CP_CAMPAIGN);
                 this.reward2Store.list(SANTA_CAMPAIGN);
-                this.accountStore.getParticipants(SANTA_CAMPAIGN);
+                this.accountStore.getParticipants();
             },
             immediate: true,
         },
@@ -264,6 +263,10 @@ export default defineComponent({
     },
     mounted() {
         this.fetchOffers();
+        window.addEventListener('resize', this.handleResize);
+    },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.handleResize);
     },
     methods: {
         async fetchOffers() {
@@ -278,6 +281,9 @@ export default defineComponent({
             } catch (error) {
                 console.error('Failed to fetch offers', error);
             }
+        },
+        handleResize() {
+            this.offersPerRow = window.innerWidth > 1350 ? 3 : 2;
         },
     },
 });
@@ -420,7 +426,7 @@ export default defineComponent({
     border-radius: 10px;
     border: 1px dotted #f39696a1;
     overflow: hidden;
-    margin-bottom: 15px !important;
+    margin-bottom: 15px;
 }
 
 .rewards-column {
@@ -477,6 +483,9 @@ export default defineComponent({
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+    background: linear-gradient(129deg, #572985, #3a0202e6);
+    margin-bottom: 15px;
+    border-radius: 20px;
 }
 
 .offer-item {
@@ -484,6 +493,19 @@ export default defineComponent({
     margin: 1%;
     max-width: 45%;
     box-sizing: border-box;
+    background: #130301 !important;
+    border-radius: 20px;
+
+    .card {
+        border: 0 !important;
+        img {
+            border-radius: 20px;
+            background: aliceblue;
+            max-height: 130px;
+            overflow: hidden;
+            border: 0.5px solid rgba(13, 92, 226, 0.2705882353);
+        }
+    }
 }
 @media (max-width: 992px) {
     .quest-cont .row > * {
@@ -513,6 +535,13 @@ export default defineComponent({
 @media (max-width: 1025px) {
     .quests-column {
         margin-right: 5px;
+    }
+}
+
+@media (min-width: 1350px) {
+    .offer-item {
+        flex: 1 0 30%;
+        max-width: 30%;
     }
 }
 </style>
