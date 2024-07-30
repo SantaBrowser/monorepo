@@ -5,12 +5,6 @@
             'h-vertical': !accountStore.isIFrame,
         }"
     >
-    <div
-        class="d-flex flex-column h-100 p-0"
-        :class="{
-            'h-vertical': !accountStore.isIFrame,
-        }"
-    >
         <BaseNavbarSecondary v-if="accountStore.isMobile" />
         <b-container
             v-if="accountStore.isAuthenticated === false"
@@ -21,10 +15,8 @@
         </b-container>
         <template v-else>
             <BaseCardCampaignJumbotron :height="100" />
-            <BaseCardCampaignJumbotron :height="100" />
             <router-view class="order-lg-2 overflow-mobile flex-grow-1" />
         </template>
-        <BaseNavbarPrimary v-if="accountStore.isMobile" />
         <BaseNavbarPrimary v-if="accountStore.isMobile" />
         <BaseModalInvite :show="isModalInviteShown" />
     </div>
@@ -70,7 +62,6 @@ export default defineComponent({
         this.accountStore.postMessage({ message: 'thx.widget.ready' });
 
         await this.questStore.list();
-        await this.rewardStore.list();
     },
     methods: {
         // This redirects the user to the wallet if there are no quest and rewards

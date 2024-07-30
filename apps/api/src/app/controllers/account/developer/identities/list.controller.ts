@@ -8,7 +8,7 @@ const controller = async (req: Request, res: Response) => {
     const page = Number(req.query.page);
     const limit = Number(req.query.limit);
     const identities = await IdentityService.list(req.auth.sub, page, limit);
-
+    console.log(identities, req.auth.sub);
     res.json(identities);
 };
 

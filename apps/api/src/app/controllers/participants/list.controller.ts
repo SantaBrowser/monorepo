@@ -22,9 +22,10 @@ const controller = async (req: Request, res: Response) => {
         const pool = await PoolService.getById(poolId);
         const account = await AccountProxy.findById(req.auth.sub);
         if (!account) throw new NotFoundError('Account not found.');
-
         // Force connect account address as identity might be available
         await IdentityService.forceConnect(pool, account);
+        await IdentityService.forceConnectClidUUID(pool, account);
+
 
         // If no participants were found, create a participant for the authenticated user
         if (!participants.length) {
