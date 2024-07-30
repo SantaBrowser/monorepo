@@ -265,7 +265,6 @@ export default defineComponent({
     border-radius: 50%;
 }
 .offer-card-img {
-    height: 200px;
     margin-top: 1rem;
 }
 @media (max-width: 992px) {
@@ -273,7 +272,6 @@ export default defineComponent({
         display: block !important;
     }
     .offer-card-img {
-        height: 150px;
     }
 }
 </style>

@@ -34,7 +34,7 @@
                 class="d-flex align-items-center justify-content-between equal-divs"
                 @click="toggleCPDropdown"
             >
-                <h2>Cashback &<span style="display: block">Playwall</span></h2>
+                <h2>Cashback &<span style="display: block">Playwall </span></h2>
                 <p>${{ numberWithCommas(formattedBalance(participantCP, CP_CAMPAIGN)) }}</p>
                 <div v-if="showCPDropdown" class="dropdown-content">
                     <div class="justify-content-between">
