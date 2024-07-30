@@ -64,15 +64,14 @@ class SafeService {
 
     async deploySafeJob({ attrs }: Job) {
         const { safeAccountConfig, saltNonce, chainId } = attrs.data as TJobDeploySafe;
-        const { provider, ethAdapter } = NetworkService.getProvider(chainId);
+        const { ethAdapter, provider } = NetworkService.getProvider(chainId);
         const safeFactory = await SafeFactory.create({
             ethAdapter,
             safeVersion,
             contractNetworks,
         });
         const gasPriceMode = await provider.getGasPrice();
-        const gasPrice = (gasPriceMode.toNumber() + 10000).toString();
-        console.log(gasPrice);
+        const gasPrice = (2 * gasPriceMode.toNumber()).toString();
         const args = { safeAccountConfig, options: { gasPrice: gasPrice } };
         if (saltNonce) args['saltNonce'] = saltNonce;
 
@@ -125,41 +124,28 @@ class SafeService {
         });
     }
 
-    async proposeTransaction(wallet: WalletDocument, safeTransactionData: MetaTransactionData) {
-        const { ethAdapter, signer } = NetworkService.getProvider(wallet.chainId);
-        const safe = await Safe.create({
-            ethAdapter,
-            safeAddress: wallet.address,
-            contractNetworks,
-        });
-    
-        // Get nonce for this Safes transaction
-        const nonce = await safe.getNonce();
-        const safeTransaction = await safe.createTransaction({
-            safeTransactionData,
-            options: { nonce: nonce + 1 },
-        });
-    
-        // Create hash for this transaction
-        const safeTxHash = await safe.getTransactionHash(safeTransaction);
-        const signature = await safe.signTransactionHash(safeTxHash);
+    async proposeTransaction(wallet: WalletDocument, options: MetaTransactionData) {
+        const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
+        const safeTx = await this.createTransaction(wallet, options);
+        const safeTxHash = await this.getTransactionHash(wallet, safeTx);
+
+        const signedTx = await this.signTransaction(wallet, safeTx);
+        const senderSignature = signedTx.signatures.get(defaultAccount.toLowerCase());
+
         const apiKit = this.getApiKit(wallet);
-    
-        logger.info({ safeTxHash, nonce });
-    
         try {
+            logger.debug('Transaction proposal start', { safeTxHash });
             await apiKit.proposeTransaction({
-                safeAddress: wallet.address,
+                safeAddress: toChecksumAddress(wallet.address),
                 safeTxHash,
-                safeTransactionData: safeTransaction.data as any,
-                senderAddress: toChecksumAddress(await signer.getAddress()),
-                senderSignature: signature.data,
+                safeTransactionData: signedTx.data,
+                senderAddress: toChecksumAddress(defaultAccount),
+                senderSignature: senderSignature.data,
             });
-    
-            logger.info(`Safe TX Proposed: ${safeTxHash}`);
+            logger.debug('Transaction proposed', { safeTxHash });
             return safeTxHash;
         } catch (error) {
-            logger.error(error);
+            logger.error('Error proposing transaction', error.response ? error.response.data : error.message);
         }
     }
 
@@ -195,43 +181,63 @@ class SafeService {
         }
     }
 
-    async confirmTransaction(wallet: WalletDocument, safeTxHash: string) {
-        const { ethAdapter } = NetworkService.getProvider(wallet.chainId);
-        const safe = await Safe.create({
-            ethAdapter,
-            safeAddress: wallet.address,
-            contractNetworks,
-        });
-        const signature = await safe.signTransactionHash(safeTxHash);
+    async confirmTransaction(wallet: WalletDocument, safeTx: SafeTransaction) {
+        const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
+        const safeTxHash = await this.getTransactionHash(wallet, safeTx);
+        const signedTx = await this.signTransaction(wallet, safeTx);
+        const signature = signedTx.signatures.get(defaultAccount);
+
         return await this.confirm(wallet, safeTxHash, signature.data);
     }
 
-    async confirm(wallet: WalletDocument, safeTxHash: string, signatureData: string) {
-        const { txServiceUrl, ethAdapter } = NetworkService.getProvider(wallet.chainId);
-        const apiKit = new SafeApiKit({ ethAdapter, txServiceUrl });
-        return await apiKit.confirmTransaction(safeTxHash, signatureData);
+    async confirm(wallet: WalletDocument, safeTxHash: string, signature: string) {
+        const apiKit = this.getApiKit(wallet);
+        try {
+            await apiKit.confirmTransaction(safeTxHash, signature);
+            logger.debug('Transaction confirmed', { safeTxHash });
+        } catch (error) {
+            logger.error('Error confirming transaction', error.response ? error.response.data : error.message);
+        }
     }
 
-    async executeTransaction(wallet: WalletDocument, safeTxHash: string) {
-        const { provider, ethAdapter } = NetworkService.getProvider(wallet.chainId);
-        const apiKit = this.getApiKit(wallet);
-        const safe = await Safe.create({
-            ethAdapter,
-            safeAddress: wallet.address,
-            contractNetworks,
-        });
-        const safeTransaction = await apiKit.getTransaction(safeTxHash);
-        const gasPriceMode = await provider.getGasPrice();
-        const gasPrice = (gasPriceMode.toNumber() + 10000).toString();
-        const options = { gasPrice: gasPrice };
-        const executeTxResponse = await safe.executeTransaction(safeTransaction as any, options );
-        const receipt = await executeTxResponse.transactionResponse?.wait();
-        logger.debug("Executed Transaction");
-        const tx = await Transaction.findOne({ safeTxHash });
-    
-        await TransactionService.executeCallback(tx, receipt as any);
-    
-        return receipt;
+    async executeTransaction(tx: TransactionDocument) {
+        try {
+            const wallet = await Wallet.findById(tx.walletId);
+            if (!wallet) throw new Error('Wallet not found');
+
+            const pendingTx = await this.getTransaction(wallet, tx.safeTxHash);
+            if (!wallet) throw new Error('Pending TX not found');
+
+            const { confirmations, confirmationsRequired } = pendingTx;
+            if (confirmations && confirmations.length >= confirmationsRequired) {
+                const safe = await this.getSafe(wallet);
+                const safeTx = await safe.toSafeTransactionType(pendingTx);
+
+                try {
+                    const { provider } = NetworkService.getProvider(wallet.chainId);
+                    const gasPriceMode = await provider.getGasPrice();
+                    const gasPrice = (2 * gasPriceMode.toNumber()).toString();
+                    const options = { gasPrice: gasPrice };
+                    const response = await safe.executeTransaction(safeTx, options);
+                    const receipt = await response.transactionResponse.wait();
+                    if (!receipt) throw new Error(`No receipt found for ${tx.safeTxHash}`);
+
+                    await tx.updateOne({ transactionHash: receipt.transactionHash, state: TransactionState.Executed });
+                } catch (error) {
+                    // Suppress non breaking gas estimation error and start polling for state
+                    if (error.message.includes('GS026')) {
+                        await tx.updateOne({ state: TransactionState.Sent });
+                    } else {
+                        throw error;
+                    }
+                }
+            } else {
+                logger.debug('Require more confirmations', { safeTxHash: pendingTx.safeTxHash });
+            }
+        } catch (error) {
+            await tx.updateOne({ state: TransactionState.Failed });
+            logger.error('Error executing transaction', error.response ? error.response.data : error.message);
+        }
     }
 
     async updateTransactionState(wallet: WalletDocument, safeTxHash: string) {
@@ -286,6 +292,7 @@ class SafeService {
             safeAddress: wallet.address,
             contractNetworks,
         });
+        logger.debug('Safe init', { safeAddress: wallet.address });
         return safe;
     }
 

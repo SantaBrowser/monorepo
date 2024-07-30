@@ -3,7 +3,6 @@ import {
     POLYGON_RPC,
     LINEA_RPC,
     PRIVATE_KEY,
-    RELAYER_SPEED,
     HARDHAT_SAFE_TXS_SERVICE,
     POLYGON_SAFE_TXS_SERVICE,
     ARBITRUM_SAFE_TXS_SERVICE,
@@ -22,6 +21,28 @@ import { ChainId } from '@thxnetwork/common/enums';
 import { EthersAdapter } from '@safe-global/protocol-kit';
 
 class NetworkService {
+    config = {
+        networks: [
+            {
+                chainId: ChainId.Polygon,
+                defaultAccount: PRIVATE_KEY,
+                rpc: POLYGON_RPC,
+                txServiceUrl: POLYGON_SAFE_TXS_SERVICE,
+            },
+            {
+                chainId: ChainId.Sepolia,
+                defaultAccount: PRIVATE_KEY,
+                rpc: SEPOLIA_RPC,
+                txServiceUrl: SEPOLIA_SAFE_TXS_SERVICE,
+            },
+            {
+                chainId: ChainId.Arbitrum,
+                defaultAccount: PRIVATE_KEY,
+                rpc: ARBITRUM_RPC,
+                txServiceUrl: ARBITRUM_SAFE_TXS_SERVICE,
+            },
+        ],
+    };
     networks: { [chainId: number]: TNetworkConfig } = {};
 
     constructor() {
@@ -49,64 +70,9 @@ class NetworkService {
             };
         }
 
-        if (POLYGON_RPC) {
-            const web3 = new Web3(POLYGON_RPC);
-            const provider = new ethers.providers.JsonRpcProvider(POLYGON_RPC);
-            const signer = new Wallet(PRIVATE_KEY, provider);
-            this.networks[ChainId.Polygon] = {
-                rpc: POLYGON_RPC,
-                web3,
-                provider,
-                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
-                signer,
-                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
-                txServiceUrl: POLYGON_SAFE_TXS_SERVICE,
-            };
-        }
-
-        if (ARBITRUM_RPC) {
-            const web3 = new Web3(ARBITRUM_RPC);
-            const provider = new ethers.providers.JsonRpcProvider(ARBITRUM_RPC);
-            const signer = new Wallet(PRIVATE_KEY, provider);
-            this.networks[ChainId.Arbitrum] = {
-                rpc: ARBITRUM_RPC,
-                web3,
-                provider,
-                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
-                signer,
-                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
-                txServiceUrl: ARBITRUM_SAFE_TXS_SERVICE,
-            };
-        }
-
-        if (SEPOLIA_RPC) {
-            const web3 = new Web3(SEPOLIA_RPC);
-            const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_RPC);
-            const signer = new Wallet(PRIVATE_KEY, provider);
-            this.networks[ChainId.Sepolia] = {
-                rpc: SEPOLIA_RPC,
-                web3,
-                provider,
-                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
-                signer,
-                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
-                txServiceUrl: SEPOLIA_SAFE_TXS_SERVICE,
-            };
-        }
-
-        if (LINEA_RPC) {
-            const web3 = new Web3(LINEA_RPC);
-            const provider = new ethers.providers.JsonRpcProvider(LINEA_RPC);
-            const signer = new Wallet(PRIVATE_KEY, provider);
-            this.networks[ChainId.Linea] = {
-                rpc: LINEA_RPC,
-                web3,
-                provider,
-                ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
-                signer,
-                defaultAccount: web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY).address,
-                txServiceUrl: LINEA_SAFE_TXS_SERVICE,
-            };
+        // Provides all other configured networks for this service
+        for (const network of this.config.networks) {
+            this.setNetwork(network);
         }
     }
 
@@ -114,29 +80,21 @@ class NetworkService {
         chainId: ChainId;
         defaultAccount: string;
         rpc: string;
-        relayer: { apiKey: string; apiSecret: string };
         txServiceUrl: string;
     }) {
         if (!options.rpc) return;
 
-        const { apiKey, apiSecret } = options.relayer;
-        if (!apiKey || !apiSecret) return;
-
-        const provider = new DefenderRelayProvider({ apiKey, apiSecret }, { speed: RELAYER_SPEED });
-        const relayer = new Relayer({ apiKey, apiSecret });
-        const signer = new DefenderRelaySigner(
-            { apiKey, apiSecret },
-            new ethers.providers.JsonRpcProvider(options.rpc),
-            { speed: RELAYER_SPEED },
-        );
+        const web3 = new Web3(options.rpc);
+        const provider = new ethers.providers.JsonRpcProvider(options.rpc);
+        const signer = new Wallet(options.defaultAccount, provider);
         this.networks[options.chainId] = {
             rpc: options.rpc,
-            web3: new Web3(provider as any),
+            web3,
+            provider,
             ethAdapter: new EthersAdapter({ ethers, signerOrProvider: signer }),
             signer,
-            defaultAccount: options.defaultAccount,
+            defaultAccount: web3.eth.accounts.privateKeyToAccount(options.defaultAccount).address,
             txServiceUrl: options.txServiceUrl,
-            relayer,
         };
     }
 

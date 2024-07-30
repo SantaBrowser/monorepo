@@ -66,8 +66,6 @@ class TransactionService {
                 state: TransactionState.Sent,
             });
 
-        await tx.save();
-
             if (forceSync) {
                 await poll(
                     async () => {
@@ -203,9 +201,7 @@ class TransactionService {
             value: '0',
         });
         if (!safeTxHash) throw new Error("Couldn't propose transaction.");
-    
-        await SafeService.confirmTransaction(wallet, safeTxHash);
-    
+
         return await Transaction.create({
             type: relayer ? TransactionType.Relayed : TransactionType.Default,
             state: TransactionState.Confirmed,

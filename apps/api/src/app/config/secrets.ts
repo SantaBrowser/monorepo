@@ -17,7 +17,6 @@ const required = [
     'AWS_S3_PUBLIC_BUCKET_REGION',
     'AWS_S3_PRIVATE_BUCKET_NAME',
     'AWS_S3_PRIVATE_BUCKET_REGION',
-    'SAFE_TXS_SERVICE',
     'CWD',
 ];
 
@@ -27,12 +26,17 @@ if (process.env.NODE_ENV === 'production') {
             'GCLOUD_RECAPTCHA_API_KEY',
             'POLYGON_RPC',
             'SEPOLIA_RPC',
+            'ARBITRUM_RPC',
             'RELAYER_SPEED',
             'TWITTER_API_TOKEN',
+            'POLYGON_SAFE_TXS_SERVICE',
+            'ARBITRUM_SAFE_TXS_SERVICE',
+            'SEPOLIA_SAFE_TXS_SERVICE',
+            'LINEA_SAFE_TXS_SERVICE',
         ],
     );
 } else if (process.env.NODE_ENV === 'development') {
-    required.push(...['PRIVATE_KEY', 'HARDHAT_RPC', 'LOCAL_CERT', 'LOCAL_CERT_KEY', 'TWITTER_API_TOKEN']);
+    required.push(...['PRIVATE_KEY', 'HARDHAT_RPC', 'HARDHAT_SAFE_TXS_SERVICE', 'LOCAL_CERT', 'LOCAL_CERT_KEY', 'TWITTER_API_TOKEN']);
 }
 
 required.forEach((value: string) => {
@@ -106,12 +110,11 @@ export const TWITTER_API_TOKEN = process.env.TWITTER_API_TOKEN || '';
 export const IPFS_BASE_URL = 'https://ipfs.io/ipfs/';
 export const WEBHOOK_REFERRAL = process.env.WEBHOOK_REFERRAL || '';
 export const WEBHOOK_MILESTONE = process.env.WEBHOOK_MILESTONE || '';
-export const SAFE_TXS_SERVICE = 'https://safe-transaction-polygon.safe.global';
-export const HARDHAT_SAFE_TXS_SERVICE = "http://localhost:8000/txs";
-export const POLYGON_SAFE_TXS_SERVICE = "https://safe-transaction-polygon.safe.global";
-export const ARBITRUM_SAFE_TXS_SERVICE = "https://safe-transaction-arbitrum.safe.global";
-export const SEPOLIA_SAFE_TXS_SERVICE = "https://safe-transaction-sepolia.safe.global";
-export const LINEA_SAFE_TXS_SERVICE = "https://safe-transaction-linea.safe.global";
+export const HARDHAT_SAFE_TXS_SERVICE = process.env.HARDHAT_SAFE_TXS_SERVICE || '';
+export const POLYGON_SAFE_TXS_SERVICE = process.env.POLYGON_SAFE_TXS_SERVICE || '';
+export const ARBITRUM_SAFE_TXS_SERVICE = process.env.ARBITRUM_SAFE_TXS_SERVICE || '';
+export const SEPOLIA_SAFE_TXS_SERVICE = process.env.SEPOLIA_SAFE_TXS_SERVICE || '';
+export const LINEA_SAFE_TXS_SERVICE = process.env.LINEA_SAFE_TXS_SERVICE || '';
 export const BOT_TOKEN = process.env.BOT_TOKEN || '';
 export const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '';
 export const GITCOIN_API_KEY = process.env.GITCOIN_API_KEY || '';

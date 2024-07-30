@@ -136,10 +136,10 @@ const controller = async (req: Request, res: Response) => {
         networks: {},
     };
 
-    if (NODE_ENV === 'production') {
-        result.networks[ChainId.Polygon] = await getNetworkDetails(ChainId.Polygon);
-    } else {
+    if (NODE_ENV !== 'production') {
         result.networks[ChainId.Hardhat] = await getNetworkDetails(ChainId.Hardhat);
+    } else {
+        result.networks[ChainId.Polygon] = await getNetworkDetails(ChainId.Polygon);
     }
 
     res.header('Content-Type', 'application/json').send(JSON.stringify(result, null, 4));

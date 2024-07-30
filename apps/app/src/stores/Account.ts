@@ -149,8 +149,6 @@ export const useAccountStore = defineStore('account', {
         },
         async getAccount() {
             this.account = await this.api.request.get('/v1/account');
-            // await this.api.request.patch(`/v1/identity/793b9487-cafa-5407-1e36-4683d22a7394`);
-
             // if (
             //     this.account &&
             //     (!this.account.username || this.account.profileImg.startsWith('https://api.dicebear.com'))

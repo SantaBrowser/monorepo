@@ -42,6 +42,15 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
+aside.sidebar {
+    margin-top: 7px;
+    border-radius: 20px;
+    border: 0.5px dotted #e2ad14fa;
+    margin-right: 10px;
+    /* overflow: hidden; */
+    /* width: 350px; */
+    box-shadow: inset rgba(182, 9, 153, 0.15) 0px -7px 20px 8px;
+}
 .sidebar {
     height: calc(100vh - 70px);
     position: sticky;
@@ -54,7 +63,7 @@ export default defineComponent({
         border-radius: 0;
         box-shadow: -9px -5px 20px 20px rgb(63 77 202 / 12%);
         backdrop-filter: blur(5px);
-        border-left: 1px dotted #20af104d;
+        //border-left: 1px dotted #20af104d;
         overflow-x: hidden;
         overflow-y: auto;
 
