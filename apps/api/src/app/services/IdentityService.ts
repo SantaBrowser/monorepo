@@ -41,12 +41,10 @@ class IdentityService {
         const subs = identities.results.filter(({ accountId }) => !!accountId).map(({ accountId }) => accountId);
         const accounts = await AccountProxy.find({ subs });
 
-        const results = identities.results.map((identity: TIdentity) => ({
+        identities.results = identities.results.map((identity: TIdentity) => ({
             ...identity,
             account: accounts.find(({ sub }) => sub && sub === identity.accountId),
         }));
-
-        identities.results = results;
 
         return identities;
     }
