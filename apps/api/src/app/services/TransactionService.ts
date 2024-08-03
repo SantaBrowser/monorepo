@@ -207,7 +207,7 @@ class TransactionService {
 
         return await Transaction.create({
             type: relayer ? TransactionType.Relayed : TransactionType.Default,
-            state: TransactionState.Confirmed,
+            state: wallet.chainId == ChainId.Skale ? TransactionState.Executed : TransactionState.Confirmed,
             safeTxHash,
             chainId: wallet.chainId,
             walletId: wallet.id,
