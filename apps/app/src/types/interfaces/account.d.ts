@@ -19,6 +19,7 @@ type TAccount = {
     isEmailVerified?: boolean;
     tokens: { kind: AccessTokenKind; userId: string; scopes: string[] }[];
     clid: string;
+    providerUserId: string;
 };
 
 type TAuthState = {
@@ -59,6 +60,7 @@ type TInvite = {
 } | null;
 
 type TAccountState = {
+    session: null | Session;
     css: HTMLStyleElement | null;
     invite: TInvite;
     isAuthenticated: boolean | null;
@@ -81,6 +83,7 @@ type TAccountState = {
     participants: TParticipant[];
     leaderboard: { rank: number; score: number; questEntryCount: number; account: TAccount }[];
     leaderboardPrimary: { rank: number; score: number; questEntryCount: number; account: TAccount }[];
+    isNavbarOffcanvasShown: boolean;
 };
 
 type TWidgetTheme = {

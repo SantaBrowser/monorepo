@@ -22,8 +22,9 @@ import TokenService from './TokenService';
 const mailTemplatePath = path.join(assetsPath, 'views', 'mail');
 
 function createOTP(account: AccountDocument) {
+  console.log('createOTP', account);
     return account.email === CYPRESS_EMAIL
-        ? '00000': '11111';
+        ? '00000': '111111';
         // : Array.from({ length: 5 })
         //       .map(() => crypto.randomInt(0, 10))
         //       .join('');

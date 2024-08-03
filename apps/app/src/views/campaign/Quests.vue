@@ -271,13 +271,13 @@ export default defineComponent({
     methods: {
         async fetchOffers() {
             try {
-                const user = await this.userManager.getUser();
-                const clid = user.profile.clid;
-                const response = await axios.get(
-                    `https://offers-api.santabrowser.com/offers/list?pageSize=50&pageNo=0&clid=${clid}`,
-                );
-                console.log('response', response);
-                this.offers = response.data.trending;
+                // const user = await this.userManager.getUser();
+                // const clid = user.profile.clid;
+                // const response = await axios.get(
+                //     `https://offers-api.santabrowser.com/offers/list?pageSize=50&pageNo=0&clid=${clid}`,
+                // );
+                // console.log('response', response);
+                // this.offers = response.data.trending;
             } catch (error) {
                 console.error('Failed to fetch offers', error);
             }

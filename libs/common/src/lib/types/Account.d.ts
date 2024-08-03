@@ -23,4 +23,5 @@ type TAccount = {
     createdAt: Date;
     updatedAt: Date;
     clid: string;
+    providerUserId: string;
 };

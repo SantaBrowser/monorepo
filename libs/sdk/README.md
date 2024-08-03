@@ -1,4 +1,4 @@
-# SantaBrowser JS SDK
+# THX Network JS SDK
 
 This SDK contains API wrappers and an OIDC OAuth manager to simplify access to THX API resources.
 

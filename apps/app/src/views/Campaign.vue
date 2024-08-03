@@ -6,17 +6,8 @@
         }"
     >
         <BaseNavbarSecondary v-if="accountStore.isMobile" />
-        <b-container
-            v-if="accountStore.isAuthenticated === false"
-            style="max-width: none"
-            class="d-flex align-items-center justify-content-center h-100 order-lg-1 mt-lg-5"
-        >
-            <b-spinner type="grow" variant="primary" small />
-        </b-container>
-        <template v-else>
-            <BaseCardCampaignJumbotron :height="100" />
-            <router-view class="order-lg-2 overflow-mobile flex-grow-1" />
-        </template>
+        <BaseCardCampaignJumbotron :height="100" />
+        <router-view class="order-lg-2 overflow-mobile flex-grow-1" />
         <BaseNavbarPrimary v-if="accountStore.isMobile" />
         <BaseModalInvite :show="isModalInviteShown" />
     </div>
@@ -25,7 +16,7 @@
 import { mapStores } from 'pinia';
 import { track } from '@thxnetwork/common/mixpanel';
 import { defineComponent } from 'vue';
-import { GTM } from '../config/secrets';
+import { GTM, WIDGET_URL } from '../config/secrets';
 import { useAuthStore } from '../stores/Auth';
 import { useAccountStore } from '../stores/Account';
 import { useQuestStore } from '../stores/Quest';
@@ -90,11 +81,12 @@ export default defineComponent({
                 'thx.auth.identity': () => this.onSetIdentity(event.data.identity),
                 'thx.auth.signout': () => this.onSignout,
                 'thx.auth.signin': () => this.onSignin,
+                'thx.auth.callback': () => this.accountStore.onSignedIn(event.data.session),
             };
 
-            if (event.origin !== localOrigin || !event.data.message || !messageMap[event.data.message]) return;
-
-            messageMap[event.data.message]();
+            if ([localOrigin, WIDGET_URL].includes(event.origin) && messageMap[event.data.message]) {
+                messageMap[event.data.message]();
+            }
         },
         async onSetIdentity(identity: string) {
             // Store in localstorage and patch identity on auth success
@@ -106,7 +98,7 @@ export default defineComponent({
             }
         },
         onSignin() {
-            this.accountStore.signin();
+            // this.accountStore.signin();
         },
         onSignout() {
             this.accountStore.signout();
