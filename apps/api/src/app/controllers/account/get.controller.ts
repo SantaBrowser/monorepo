@@ -7,7 +7,8 @@ const validation = [];
 
 const controller = async (req: Request, res: Response) => {
     // Connect identity if none exists
-    await THXService.connect(req.auth);
+
+  await THXService.connect(req.auth);
 
     // If account variant is metamask and no wallet is found then create it
     if (req.auth.variant === AccountVariant.Metamask) {

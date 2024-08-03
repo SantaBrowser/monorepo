@@ -24,9 +24,9 @@ export default defineComponent({
     watch: {
         'walletStore.wallet': {
             handler(wallet) {
-                this.liquidityStore.listMetrics(wallet);
+                // this.liquidityStore.listMetrics(wallet);
                 if (!wallet) return;
-                this.veStore.getLocks(wallet);
+                // this.veStore.getLocks(wallet);
             },
             immediate: true,
         },

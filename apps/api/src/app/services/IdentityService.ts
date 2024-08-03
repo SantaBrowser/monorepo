@@ -41,10 +41,12 @@ class IdentityService {
         const subs = identities.results.filter(({ accountId }) => !!accountId).map(({ accountId }) => accountId);
         const accounts = await AccountProxy.find({ subs });
 
-        identities.results = identities.results.map((identity: TIdentity) => ({
+        const results = identities.results.map((identity: TIdentity) => ({
             ...identity,
             account: accounts.find(({ sub }) => sub && sub === identity.accountId),
         }));
+
+        identities.results = results;
 
         return identities;
     }
@@ -61,8 +63,9 @@ class IdentityService {
         await Identity.findOneAndUpdate({ uuid: { $in: uuids } }, { accountId: account.sub });
     }
     async forceConnectClidUUID(pool: PoolDocument, account: TAccount) {
-      const clid = account.clid;
-      const result = await this.getIdentityForSalt(pool.sub, clid);
+      console.log(account, '==========================================')
+      // const clid = account.clid;
+      const result = await this.getIdentityForSalt(pool.sub, account.email);
       const uuid = result.uuid;
       const isConnected = await Identity.exists({ uuid, accountId: account.sub, sub: pool.sub });
       if (!isConnected) {

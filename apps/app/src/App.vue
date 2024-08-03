@@ -75,14 +75,9 @@ export default defineComponent({
     async mounted() {
         const urlParams = new URLSearchParams(window.location.search);
         const clid = urlParams.get('clid');
-        // const { userManager } = useAuthStore();
         const user = this.accountStore.isAuthenticated;
-        // console.log('sadsadasdsadasdsadsadsad', user.profile.clid);
-        // if (!clid) {
-        // this.refreshUser();
-        // }
         if (clid && !user) {
-            console.log('clidclid');
+            console.log('clidclid', clid);
             await this.authenticateUser(clid);
         }
     },

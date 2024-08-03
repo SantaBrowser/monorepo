@@ -1,6 +1,5 @@
 import { Speed } from '@openzeppelin/defender-relay-client';
 import path from 'path';
-import 'dotenv/config';
 
 const required = [
     'AUTH_URL',
@@ -78,6 +77,10 @@ export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 export const PORT = process.env.PORT || '';
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID || '';
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET || '';
+export const RATE_LIMIT_REWARD_GIVE = Number(process.env.RATE_LIMIT_REWARD_GIVE) || '';
+export const RATE_LIMIT_REWARD_CLAIM = Number(process.env.RATE_LIMIT_REWARD_CLAIM) || '';
+export const RATE_LIMIT_REWARD_GIVE_WINDOW = Number(process.env.RATE_LIMIT_REWARD_GIVE_WINDOW) || '';
+export const RATE_LIMIT_REWARD_CLAIM_WINDOW = Number(process.env.RATE_LIMIT_REWARD_CLAIM_WINDOW) || '';
 export const INITIAL_ACCESS_TOKEN = process.env.INITIAL_ACCESS_TOKEN || '';
 export const CIRCULATING_SUPPLY = process.env.CIRCULATING_SUPPLY || '';
 export const MINIMUM_GAS_LIMIT = 54680 || '';

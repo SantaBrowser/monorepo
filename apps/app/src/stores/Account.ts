@@ -1,4 +1,4 @@
-import { API_URL, AUTH_URL, SUPABASE_PUBLIC_KEY, SUPABASE_URL, WIDGET_URL } from '../config/secrets';
+import { API_URL, AUTH_URL, SUPABASE_PUBLIC_KEY, SUPABASE_URL, WIDGET_URL, SANTA_CAMPAIGN } from '../config/secrets';
 import { DEFAULT_COLORS, DEFAULT_ELEMENTS, getStyles } from '../utils/theme';
 import { defineStore } from 'pinia';
 import { track } from '@thxnetwork/common/mixpanel';
@@ -106,17 +106,19 @@ export const useAccountStore = defineStore('account', {
                 });
             }
 
+            this.poolId = SANTA_CAMPAIGN;
+            this.api.setCampaignId(this.poolId);
+
             // If no slug is provided we're not on a campaign page so we return early
             if (!slug) return;
 
             const config = await this.api.request.get('/v1/widget/' + slug);
-            this.poolId = config.poolId;
-            this.api.setCampaignId(this.poolId);
 
             this.setConfig(config.poolId, { ...config, origin });
             this.setTheme(config);
         },
         async onSignedIn(session: Session | null) {
+            console.log(session, 'sess');
             if (session) await this.setSession(session);
             this.setStatus(!!session);
         },
@@ -126,14 +128,13 @@ export const useAccountStore = defineStore('account', {
             this.isNavbarOffcanvasShown = false;
         },
         async setSession(session: Session | null) {
-            console.log(session, 'asda===========================');
             this.api.request.setUser(session);
             if (session) {
                 // this.postMessage({ message: 'thx.auth.identitySession', session });
-                await this.storeIdentity(session.user.id);
-                this.connectIdentity();
+                // await this.storeIdentity(session.user.id);
+                // this.connectIdentity();
 
-                if (!this.account) await this.getAccount();
+                // if (!this.account) await this.getAccount();
                 useAuthStore().isModalLoginShown = false;
                 this.isNavbarOffcanvasShown = false;
                 this.session = session;
@@ -148,12 +149,12 @@ export const useAccountStore = defineStore('account', {
         },
         async getAccount() {
             this.account = await this.api.request.get('/v1/account');
-            if (
-                this.account &&
-                (!this.account.username || this.account.profileImg.startsWith('https://api.dicebear.com'))
-            ) {
-                this.isModalAccountShown = true;
-            }
+            // if (
+            //     this.account &&
+            //     (!this.account.username || this.account.profileImg.startsWith('https://api.dicebear.com'))
+            // ) {
+            //     this.isModalAccountShown = true;
+            // }
         },
         async getParticipants(poolId?: string) {
             const params: { poolId?: string } = {};
@@ -406,7 +407,7 @@ export const useAccountStore = defineStore('account', {
             };
 
             // Poll for job to finish
-            await poll({ taskFn, interval: 3000, retries: 90 });
+            await poll({ taskFn, interval: 1000, retries: 60 });
         },
     },
 });

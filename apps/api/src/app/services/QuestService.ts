@@ -76,8 +76,7 @@ export default class QuestService {
     }
 
     static async update(quest: TQuest, updates: Partial<TQuest>, file?: Express.Multer.File) {
-      console.log('in update', quest);
-      if (file) {
+        if (file) {
             updates.image = await ImageService.upload(file);
         }
 
@@ -86,7 +85,7 @@ export default class QuestService {
             await NotificationService.notify(quest.variant, {
                 ...quest,
                 ...updates,
-                // image: updates.image || quest.image,
+                image: updates.image || quest.image,
             });
         }
 
@@ -109,9 +108,7 @@ export default class QuestService {
     }
 
     static findById(variant: QuestVariant, questId: string) {
-      console.log('in find', questId);
-
-      const Quest = serviceMap[variant].models.quest;
+        const Quest = serviceMap[variant].models.quest;
         return Quest.findById(questId);
     }
 
