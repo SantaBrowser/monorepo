@@ -30,6 +30,7 @@ import RewardDistributor from './export/RewardDistributor.json';
 import RewardFaucet from './export/RewardFaucet.json';
 import SmartWalletWhitelist from './export/SmartWalletWhitelist.json';
 import LensReward from './export/LensReward.json';
+import SafeWallet from './export/SafeWallet.json';
 
 export const getArtifact = (contractName: TContractName) => {
     if (!contractArtifacts[contractName]) {
@@ -218,6 +219,7 @@ export const contractArtifacts: { [contractName: string]: { abi: any; bytecode: 
     RewardFaucet,
     SmartWalletWhitelist,
     LensReward,
+    SafeWallet,
 };
 
 export const contractNames = [
@@ -253,4 +255,5 @@ export const contractNames = [
     'RewardFaucet',
     'SmartWalletWhitelist',
     'LensReward',
+    'SafeWallet'
 ] as const;

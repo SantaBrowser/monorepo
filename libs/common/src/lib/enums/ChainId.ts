@@ -4,6 +4,7 @@ export enum ChainId {
     BNBChain = 56,
     Hardhat = 31337,
     Sepolia = 11155111,
+    Skale = 1444673419,
     Polygon = 137,
     PolygonZK = 1101,
     Linea = 59144,

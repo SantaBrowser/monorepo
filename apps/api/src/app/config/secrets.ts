@@ -25,6 +25,7 @@ if (process.env.NODE_ENV === 'production') {
             'GCLOUD_RECAPTCHA_API_KEY',
             'POLYGON_RPC',
             'SEPOLIA_RPC',
+            'SKALE_RPC',
             'ARBITRUM_RPC',
             'RELAYER_SPEED',
             'TWITTER_API_TOKEN',
@@ -69,6 +70,7 @@ export const HARDHAT_RPC = process.env.HARDHAT_RPC;
 export const POLYGON_RPC = process.env.POLYGON_RPC;
 export const ARBITRUM_RPC = process.env.ARBITRUM_RPC;
 export const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
+export const SKALE_RPC = process.env.SKALE_RPC;
 export const LINEA_RPC = process.env.LINEA_RPC;
 export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth';
 

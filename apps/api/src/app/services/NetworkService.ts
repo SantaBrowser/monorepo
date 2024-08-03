@@ -9,6 +9,7 @@ import {
     SEPOLIA_SAFE_TXS_SERVICE,
     LINEA_SAFE_TXS_SERVICE,
     SEPOLIA_RPC,
+    SKALE_RPC,
     ARBITRUM_RPC,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
@@ -34,6 +35,12 @@ class NetworkService {
                 defaultAccount: PRIVATE_KEY,
                 rpc: SEPOLIA_RPC,
                 txServiceUrl: SEPOLIA_SAFE_TXS_SERVICE,
+            },
+            {
+                chainId: ChainId.Skale,
+                defaultAccount: PRIVATE_KEY,
+                rpc: SKALE_RPC,
+                txServiceUrl: "",
             },
             {
                 chainId: ChainId.Arbitrum,

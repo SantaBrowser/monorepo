@@ -11,6 +11,7 @@ const DEPLOYER_PRIVATE_KEY = process.env.POLYGON_PRIVATE_KEY || '';
 const ETHERSCAN_POLYGON_API_KEY = process.env.ETHERSCAN_POLYGON_API_KEY || '';
 const ETHERSCAN_BASE_API_KEY = process.env.ETHERSCAN_BASE_API_KEY || '';
 const SEPOLIA_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
+const SKALE_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 
 const config: HardhatUserConfig = {
     defaultNetwork: 'polygon',
@@ -39,6 +40,11 @@ const config: HardhatUserConfig = {
             url: "https://sepolia.infura.io/v3/d8d9d860d0c94b7f88c73b371afee338",
             accounts: SEPOLIA_PRIVATE_KEY ? [SEPOLIA_PRIVATE_KEY]: [],
             chainId: 11155111,
+        },
+        skale: {
+            url: "https://testnet.skalenodes.com/v1/juicy-low-small-testnet",
+            accounts: SKALE_PRIVATE_KEY ? [SKALE_PRIVATE_KEY]: [],
+            chainId: 1444673419,
         },
         polygon: {
             url: "https://polygon-mainnet.infura.io/v3/d8d9d860d0c94b7f88c73b371afee338",
