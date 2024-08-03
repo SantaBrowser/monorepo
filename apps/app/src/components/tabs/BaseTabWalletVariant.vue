@@ -56,7 +56,8 @@ export default defineComponent({
         },
         // Can not create Safes if not for a QR code campaign and if a Safe for the required network already exists
         isDisabledSafeCreate() {
-            return !!this.walletStore.wallets.find((wallet) => wallet.variant === WalletVariant.Safe);
+            return false;
+            // return !!this.walletStore.wallets.find((wallet) => wallet.variant === WalletVariant.Safe);
         },
     },
 });

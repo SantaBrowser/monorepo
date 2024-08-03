@@ -188,7 +188,7 @@ export default defineComponent({
         },
     },
     mounted() {
-        this.isVisible = !this.quest.index;
+        this.isVisible = this.accountStore.isAuthenticated ? !this.quest.index : false;
     },
     methods: {
         onClickLink(url: string) {

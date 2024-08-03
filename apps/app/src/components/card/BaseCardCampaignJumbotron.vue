@@ -7,18 +7,20 @@
             backgroundImage: accountStore.config.backgroundUrl && `url('${accountStore.config.backgroundUrl}')`,
         }"
     >
-        <b-container class="container-fluid-s">
+        <b-container>
             <b-row>
-                <b-col lg="9">
-                    <div class="d-flex py-3 py-lg-5">
-                        <b-img :src="accountStore.config.logoUrl" height="50" alt="logo" class="rounded me-3" />
-                        <div>
+                <b-col lg="7" offset-lg="1" class="py-lg-4 px-lg-0">
+                    <div class="py-3">
+                        <div class="d-flex align-items-center">
+                            <b-img :src="accountStore.config.logoUrl" height="50" alt="logo" class="rounded me-3" />
                             <div class="lead text-white">{{ accountStore.config.title }}</div>
-                            <p class="text-opaque">{{ accountStore.config.description || 'No description' }}</p>
                         </div>
+                        <p v-if="accountStore.config.description" class="text-opaque d-none d-lg-block mt-2">
+                            {{ accountStore.config.description }}
+                        </p>
                     </div>
                 </b-col>
-                <b-col lg="3">
+                <b-col lg="3" class="px-lg-0">
                     <div class="d-none d-lg-flex align-items-center justify-content-end">
                         <BaseDropdownWallets class="me-3" />
                         <BaseDropdownUserMenu />

@@ -39,7 +39,9 @@ export default defineComponent({
         ...mapStores(useAccountStore, useAuthStore, useWalletStore),
         isOffline() {
             try {
-                return JSON.parse(MAINTENANCE);
+                return this.$route.query.maintenance
+                    ? !!JSON.parse(this.$route.query.maintenance)
+                    : !!JSON.parse(MAINTENANCE);
             } catch (error) {
                 return false;
             }
@@ -73,8 +75,8 @@ export default defineComponent({
     async mounted() {
         const urlParams = new URLSearchParams(window.location.search);
         const clid = urlParams.get('clid');
-        const { userManager } = useAuthStore();
-        const user = await userManager.getUser();
+        // const { userManager } = useAuthStore();
+        const user = this.accountStore.isAuthenticated;
         // console.log('sadsadasdsadasdsadsadsad', user.profile.clid);
         // if (!clid) {
         // this.refreshUser();
@@ -87,7 +89,7 @@ export default defineComponent({
     methods: {
         async authenticateUser(clid: string) {
             try {
-                await this.authStore.signin({ auth_variant: 8, auth_clid: clid });
+                await this.accountStore.signinWithClid(clid);
             } catch (error) {
                 console.error('Authentication error:', error);
             }
