@@ -3,7 +3,7 @@ import { ChainId, JobType, TransactionState, WalletVariant } from '@thxnetwork/c
 import { contractNetworks } from '@thxnetwork/api/hardhat';
 import { toChecksumAddress } from 'web3-utils';
 import { safeVersion } from '@thxnetwork/api/services/ContractService';
-import { SafeTransaction, MetaTransactionData } from '@safe-global/safe-core-sdk-types';
+import { SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
 import { convertObjectIdToNumber } from '../util';
 import SafeApiKit from '@safe-global/api-kit';
 import Safe, { SafeFactory, SafeAccountConfig } from '@safe-global/protocol-kit';
@@ -57,6 +57,7 @@ class SafeService {
             });
         } catch (error) {
             await agenda.now(JobType.DeploySafe, { safeAccountConfig, saltNonce, chainId: wallet.chainId });
+            logger.debug(`[${wallet.sub}] Deployed Safe: ${safeAddress}`, [saltNonce]);
         }
 
         return safeAddress;
@@ -124,7 +125,7 @@ class SafeService {
         });
     }
 
-    async proposeTransaction(wallet: WalletDocument, options: MetaTransactionData) {
+    async proposeTransaction(wallet: WalletDocument, options: SafeTransactionDataPartial) {
         const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
         const safeTx = await this.createTransaction(wallet, options);
         const safeTxHash = await this.getTransactionHash(wallet, safeTx);
@@ -149,7 +150,16 @@ class SafeService {
         }
     }
 
-    async createTransaction(wallet: WalletDocument, { to, data }: Partial<MetaTransactionData>) {
+    async getNextNonce(wallet: WalletDocument) {
+        const apiKit = this.getApiKit(wallet);
+        try {
+            return await apiKit.getNextNonce(wallet.address);
+        } catch (error) {
+            logger.error('Error getting next nonce', error.response ? error.response.data : error.message);
+        }
+    }
+
+    async createTransaction(wallet: WalletDocument, { to, data, nonce }: SafeTransactionDataPartial) {
         const safe = await this.getSafe(wallet);
         try {
             const apiKit = this.getApiKit(wallet);
@@ -221,11 +231,18 @@ class SafeService {
                     const response = await safe.executeTransaction(safeTx, options);
                     const receipt = await response.transactionResponse.wait();
                     if (!receipt) throw new Error(`No receipt found for ${tx.safeTxHash}`);
+                    if (!receipt.transactionHash) throw new Error(`No transactionHash found for ${tx.safeTxHash}`);
 
                     await tx.updateOne({ transactionHash: receipt.transactionHash, state: TransactionState.Executed });
+                    await tx.updateOne({ transactionHash: receipt.transactionHash, state: TransactionState.Sent });
+
+                    logger.debug('Transaction executed', {
+                        safeTxHash: tx.safeTxHash,
+                        transactionHash: receipt.transactionHash,
+                    });
                 } catch (error) {
-                    // Suppress non breaking gas estimation error and start polling for state
-                    if (error.message.includes('GS026')) {
+                    // Suppress non breaking gas estimation error on Hardhat and start polling for state
+                    if (tx.chainId === ChainId.Hardhat && error.message.includes('GS026')) {
                         await tx.updateOne({ state: TransactionState.Sent });
                     } else {
                         throw error;
