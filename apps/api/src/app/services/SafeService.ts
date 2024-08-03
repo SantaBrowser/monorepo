@@ -160,50 +160,58 @@ class SafeService {
     }
 
     async proposeTransaction(wallet: WalletDocument, options: SafeTransactionDataPartial) {
-        const { defaultAccount, web3, provider } = NetworkService.getProvider(wallet.chainId);
-        if(wallet.chainId == ChainId.Skale) {
-            const { abi } = getArtifact('SafeWallet');
-            const contract = new web3.eth.Contract(abi, wallet.address);
-            const nonce = await contract.methods.getNonce().call();
+      const { defaultAccount, web3, provider } = NetworkService.getProvider(wallet.chainId);
+      if (wallet.chainId == ChainId.Skale) {
+        const { abi } = getArtifact('SafeWallet');
+        const contract = new web3.eth.Contract(abi, wallet.address);
+        const nonce = await contract.methods.getNonce().call();
 
-            const dataField = ethers.utils.defaultAbiCoder.encode(
-                ["address", "bytes", "uint256"],
-                [options.to, options.data, nonce]
-            );
-            const hash = ethers.utils.keccak256(dataField);
-            const signatures = web3.eth.accounts.sign(hash, PRIVATE_KEY);
-            const signWallet = new ethers.Wallet(PRIVATE_KEY, provider);
-            const walletContract = new ethers.Contract(wallet.address, abi, signWallet);
-            const gasPriceMode = await provider.getGasPrice();
-            const gasPrice = (2 * gasPriceMode.toNumber()).toString();
-            const res = await walletContract.execTransaction(options.to, options.data, signatures.signature, {
-                gasPrice: gasPrice,
+        const dataField = ethers.utils.defaultAbiCoder.encode(
+          ["address", "bytes", "uint256"],
+          [options.to, options.data, nonce]
+        );
+        const hash = ethers.utils.keccak256(dataField);
+        const signatures = web3.eth.accounts.sign(hash, PRIVATE_KEY);
+        const signWallet = new ethers.Wallet(PRIVATE_KEY, provider);
+        const walletContract = new ethers.Contract(wallet.address, abi, signWallet);
+        const gasPriceMode = await provider.getGasPrice();
+        const gasPrice = (2 * gasPriceMode.toNumber()).toString();
+        const res = await walletContract.execTransaction(options.to, options.data, signatures.signature, {
+          gasPrice: gasPrice,
+        });
+        logger.debug("Safe TX Executed");
+        return res.hash;
+      } else {
+        const safeTx = await this.createTransaction(wallet, options);
+        const safeTxHash = await this.getTransactionHash(wallet, safeTx);
+
+        const signedTx = await this.signTransaction(wallet, safeTx);
+        const senderSignature = signedTx.signatures.get(defaultAccount.toLowerCase());
+
+        const apiKit = this.getApiKit(wallet);
+        try {
+            logger.debug('Transaction proposal start', { safeTxHash });
+            await apiKit.proposeTransaction({
+                safeAddress: toChecksumAddress(wallet.address),
+                safeTxHash,
+                safeTransactionData: signedTx.data,
+                senderAddress: toChecksumAddress(defaultAccount),
+                senderSignature: senderSignature.data,
             });
-            logger.debug("Safe TX Executed");
-            return res.hash;
+            logger.debug('Transaction proposed', { safeTxHash });
+            return safeTxHash;
+        } catch (error) {
+            logger.error('Error proposing transaction', error.response ? error.response.data : error.message);
         }
-        else {
-            const safeTx = await this.createTransaction(wallet, options);
-            const safeTxHash = await this.getTransactionHash(wallet, safeTx);
+      }
+    }
 
-            const signedTx = await this.signTransaction(wallet, safeTx);
-            const senderSignature = signedTx.signatures.get(defaultAccount.toLowerCase());
-
-            const apiKit = this.getApiKit(wallet);
-            try {
-                logger.debug('Transaction proposal start', { safeTxHash });
-                await apiKit.proposeTransaction({
-                    safeAddress: toChecksumAddress(wallet.address),
-                    safeTxHash,
-                    safeTransactionData: signedTx.data,
-                    senderAddress: toChecksumAddress(defaultAccount),
-                    senderSignature: senderSignature.data,
-                });
-                logger.debug('Transaction proposed', { safeTxHash });
-                return safeTxHash;
-            } catch (error) {
-                logger.error('Error proposing transaction', error.response ? error.response.data : error.message);
-            }
+    async getNextNonce(wallet: WalletDocument) {
+        const apiKit = this.getApiKit(wallet);
+        try {
+            return await apiKit.getNextNonce(wallet.address);
+        } catch (error) {
+            logger.error('Error getting next nonce', error.response ? error.response.data : error.message);
         }
     }
 
@@ -216,6 +224,7 @@ class SafeService {
                     data,
                     value: '0',
                     operation: 0,
+                    nonce,
                 },
                 options: { nonce },
             });
