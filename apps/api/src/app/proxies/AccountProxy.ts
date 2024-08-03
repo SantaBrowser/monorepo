@@ -14,6 +14,8 @@ import { toChecksumAddress } from 'web3-utils';
 import { SUPABASE_JWT_SECRET } from '@thxnetwork/api/config/secrets';
 import { logger } from '../util/logger';
 import { UserIdentity } from '@supabase/supabase-js';
+import { generateFromEmail, generateUsername } from 'unique-username-generator';
+
 
 export const supabase = supabaseClient();
 
@@ -49,23 +51,17 @@ class AccountProxy {
 
     async findByRequest(req: Request) {
         const header = req.header('authorization');
-        console.log('sssss-------------------------------------')
         if (!header) return;
-      console.log('sssss-------------------------------------1')
 
         const token = header.split(' ')[1];
         if (!token) return;
-      console.log('sssss-------------------------------------2')
-
 
         const { data, error } = await supabase.auth.getUser(token);
         if (error) throw error;
-      console.log('sssss-------------------------------------3')
 
         const { app_metadata, user_metadata, identities } = data.user;
         const provider = app_metadata.provider;
         let variant = user_metadata.variant;
-      console.log('sssss-------------------------------------3', variant)
 
         // user_metadata.variant can not be set through the client when using
         // OAuth flows so we update the user_metadata based on the provider
@@ -86,9 +82,8 @@ class AccountProxy {
             // Find the account for the email used in the OTP flow
             case AccountVariant.EmailPassword:
                 email = user_metadata.email;
-              console.log('sssss-------------------------------------5')
-
-              account = await this.findByEmail(email);
+                providerUserId =  user_metadata.address;
+                account = await this.findByEmail(email);
                 break;
             // Find the account for the address stored in authenticated user metadata
             case AccountVariant.Metamask:
@@ -113,7 +108,9 @@ class AccountProxy {
 
         // If all of the above are skipped we create a new account
         if (!account) {
+          console.log('in ----------------------------------------------')
             account = await this.create({
+                username: await this.genName(),
                 variant,
                 providerUserId,
                 email: email && email.toLowerCase(),
@@ -129,14 +126,26 @@ class AccountProxy {
     async decorate(account: AccountDocument): Promise<TAccount> {
         return {
             profileImg: `https://api.dicebear.com/7.x/identicon/svg?seed=${account.id}`,
-            username: '',
+            // username: await generateUsername(account.email),
             ...account.toJSON(),
             sub: account.id,
             tokens: await this.findTokensBySub(account.id),
         };
     }
 
-    private async findTokensBySub(sub: string) {
+  private async genName() {
+    const username = generateUsername("", 2, 14);
+    const isUsed = await Account.exists({
+      username: username,
+    });
+    if (isUsed) {
+      this.genName()
+    }
+    return username;
+  }
+
+
+  private async findTokensBySub(sub: string) {
         const tokens = await Token.find({ sub });
         return (
             tokens

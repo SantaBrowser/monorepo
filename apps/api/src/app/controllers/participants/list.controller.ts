@@ -13,6 +13,7 @@ const controller = async (req: Request, res: Response) => {
     const query = { sub: req.auth.sub };
     if (poolId) query['poolId'] = poolId;
 
+    // console.log(req, '------------------------------------------------');
     // Extend participant details with pool info
     const participants = await Participant.find(query);
     const pools = await Pool.find({ _id: participants.map((p) => p.poolId) });

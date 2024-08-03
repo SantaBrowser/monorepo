@@ -7,10 +7,8 @@ import * as CreateController from '@thxnetwork/api/controllers/pools/quests/post
 const validation = [param('variant').isInt(), param('questId').isMongoId(), ...CreateController.validation];
 
 const controller = async (req: Request, res: Response) => {
-
     const variant = req.params.variant as unknown as QuestVariant;
     const questId = req.params.questId as string;
-
 
     let quest = await QuestService.findById(variant, questId);
     quest = await QuestService.update(quest, req.body, req.file);
