@@ -272,12 +272,12 @@ export default defineComponent({
         async fetchOffers() {
             try {
                 // const user = await this.userManager.getUser();
-                // const clid = user.profile.clid;
-                // const response = await axios.get(
-                //     `https://offers-api.santabrowser.com/offers/list?pageSize=50&pageNo=0&clid=${clid}`,
-                // );
+                const clid = this.accountStore.account?.providerUserId;
+                const response = await axios.get(
+                    `https://offers-api.santabrowser.com/offers/list?pageSize=50&pageNo=0&clid=${clid}`,
+                );
                 // console.log('response', response);
-                // this.offers = response.data.trending;
+                this.offers = response.data.trending;
             } catch (error) {
                 console.error('Failed to fetch offers', error);
             }
@@ -498,6 +498,7 @@ export default defineComponent({
 
     .card {
         border: 0 !important;
+        border-radius: 20px !important;
         img {
             border-radius: 20px;
             background: aliceblue;

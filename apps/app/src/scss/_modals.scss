@@ -14,12 +14,12 @@
         .modal-title {
             color: var(--bs-success);
         }
-    
+
         .btn-close {
             background: transparent;
             color: var(--bs-modal-color);
-        }   
-    }       
+        }
+    }
 }
 
 .modal-campaign-domain,
@@ -40,4 +40,15 @@
 
 .modal-campaign-iframe .modal-content .modal-body {
     line-height: 0;
+}
+
+.modal.show .modal-content {
+  background: url(src/assets/bg-secondDiv.jpg);
+  background-position: left;
+  border-radius: 20px;
+  overflow: hidden;
+  .modal-header, .modal-body {
+    backdrop-filter: blur(100px);
+    background-color: transparent !important;
+  }
 }

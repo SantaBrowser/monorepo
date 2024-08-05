@@ -573,14 +573,14 @@ export default defineComponent({
 }
 
 .bg-santa {
-    background: url('/src/assets/top-bg.jpg');
-    border-radius: 20px;
-    border: 1px dotted #fbed5375;
+    background: url(/src/assets/top-bg.jpg);
+    border-radius: 30px;
+    border: 1px dotted rgb(23 72 208);
     overflow: hidden;
-    box-shadow: inset 0px 19px 20px 14px rgb(8 1 1 / 52%);
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    border-top: 0;
+    box-shadow: inset 1px 20px 20px 15px rgb(8 1 1 / 94%);
+    /* border-top-right-radius: 0; */
+    /* border-top-left-radius: 0; */
+    /* border-top: 0; */
 }
 
 .bg-blur {
