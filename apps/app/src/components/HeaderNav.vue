@@ -183,13 +183,13 @@ export default defineComponent({
     width: 99% !important;
     background-color: rgba(37, 37, 37, 0.5);
     z-index: 1000;
-    box-shadow: 0 2px 10px 3px rgb(24 17 17 / 44%);
+    box-shadow: -1px -12px 20px 13px rgb(24 17 17 / 84%);
     padding: 8px;
-    /*border-bottom: 1px dotted #dd1e1e66;*/
+    /* border-bottom: 1px dotted #dd1e1e66; */
     border-radius: 30px;
     background: #000;
     margin: 0.1% 0.5% 0.1% 0;
-    border: 1px dotted #987a07f7;
+    border: 1px dotted rgba(152, 122, 7, 0.968627451);
     padding-right: 60px;
 }
 

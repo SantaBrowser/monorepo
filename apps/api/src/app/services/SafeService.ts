@@ -289,7 +289,6 @@ class SafeService {
                     if (!receipt.transactionHash) throw new Error(`No transactionHash found for ${tx.safeTxHash}`);
 
                     await tx.updateOne({ transactionHash: receipt.transactionHash, state: TransactionState.Executed });
-                    await tx.updateOne({ transactionHash: receipt.transactionHash, state: TransactionState.Sent });
 
                     logger.debug('Transaction executed', {
                         safeTxHash: tx.safeTxHash,
