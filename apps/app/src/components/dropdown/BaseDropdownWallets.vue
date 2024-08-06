@@ -11,7 +11,7 @@
             }"
             toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none p-2"
             auto-close="outside"
-            :menu-class="{ 'bg-body': walletStore.wallet, 'd-none': !walletStore.wallet }"
+            menu-class="d-none"
             no-caret
             end
         >
@@ -23,7 +23,7 @@
                     }"
                     class="fas fa-circle me-2"
                 />
-                <div @click="toggleDropdown">
+                <div>
                     {{ walletStore.wallet ? walletStore.wallet.short : 'Connect' }}
                 </div>
             </template>
@@ -261,11 +261,6 @@ export default defineComponent({
             this.walletStore.setWallet(wallet);
             this.accountStore.setGlobals({ activeWalletId: wallet._id });
             this.walletStore.list();
-        },
-        toggleDropdown() {
-            if (this.walletStore.wallet === null) {
-                this.isOpen = !this.isOpen;
-            }
         },
     },
 });
