@@ -29,6 +29,7 @@ import { useAuthStore } from '../../stores/Auth';
 import { WalletVariant } from '../../types/enums/accountVariant';
 import { shortenAddress } from '@thxnetwork/app/utils/address';
 import poll from 'promise-poller';
+import { ChainId } from '@thxnetwork/common/enums';
 
 export default defineComponent({
     name: 'BaseTabWalletWalletConnect',
@@ -63,13 +64,41 @@ export default defineComponent({
             return this.walletStore.account.address;
         },
         async onClickConnect() {
+            console.log(this.walletStore.chainId);
+            console.log(this.walletStore.account);
             try {
-                await this.walletStore.disconnect();
-                await this.walletStore.connect();
-                this.address = await this.getAddress();
+                await window.martian.disconnect();
+                const accountInfo = await window.martian.connect();
+                console.log(accountInfo);
+                try {
+                    await this.walletStore.create({
+                        chainId: ChainId.Aptos,
+                        variant: this.variant,
+                        rawAddress: accountInfo.address,
+                    });
+                    console.log(this.walletStore.wallets);
+                    const wallet = this.walletStore.wallets.find(
+                        (wallet: TWallet) => wallet.address === accountInfo.address,
+                    );
+                    if (!wallet) throw new Error('New wallet not found');
+
+                    this.walletStore.setWallet(wallet);
+                    this.$emit('close');
+                } catch (error) {
+                    console.error(error);
+                    this.error = 'An issue occured while creating your wallet. Please try again.';
+                } finally {
+                    this.isLoading = false;
+                }
             } catch (error) {
-                console.error(error);
-                this.error = 'An issue occured while connecting your wallet. Please try again.';
+                try {
+                    await this.walletStore.disconnect();
+                    await this.walletStore.connect();
+                    this.address = await this.getAddress();
+                } catch (error) {
+                    console.error(error);
+                    this.error = 'An issue occured while connecting your wallet. Please try again.';
+                }
             }
         },
         async onClickAdd() {
@@ -77,7 +106,7 @@ export default defineComponent({
             try {
                 const signature = await this.walletStore.signMessage(this.message);
                 await this.walletStore.create({
-                    chainId: this.walletStore.chainId,
+                    // chainId: this.walletStore.chainId,
                     variant: this.variant,
                     message: this.message,
                     signature,

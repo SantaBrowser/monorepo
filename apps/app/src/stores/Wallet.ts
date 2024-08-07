@@ -186,7 +186,13 @@ export const useWalletStore = defineStore('wallet', {
 
             return sendTransaction(wagmiConfig, { to, data, gas });
         },
-        async create(data: { variant: WalletVariant; message?: string; signature?: string; chainId: ChainId }) {
+        async create(data: {
+            variant: WalletVariant;
+            message?: string;
+            signature?: string;
+            rawAddress?: string;
+            chainId?: ChainId;
+        }) {
             const { api } = useAccountStore();
             await api.request.post('/v1/account/wallets', { data });
             await this.listWallets();

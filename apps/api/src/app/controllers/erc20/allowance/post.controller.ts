@@ -9,8 +9,8 @@ import WalletService from '@thxnetwork/api/services/WalletService';
 import { ChainId } from '@thxnetwork/common/enums';
 
 const validation = [
-    body('tokenAddress').isEthereumAddress(),
-    body('spender').isEthereumAddress(),
+    // body('tokenAddress').isEthereumAddress(),
+    // body('spender').isEthereumAddress(),
     body('amountInWei').isString(),
     query('walletId').isMongoId(),
     query('chainId').isMongoId(),

@@ -44,7 +44,7 @@
             </p>
             <BaseFormGroupWalletSelect
                 v-if="isWalletRequired"
-                :chain-id="reward.chainId"
+                :chain-id="reward.erc20.chainId"
                 class="mb-0"
                 @update="wallet = $event"
             />

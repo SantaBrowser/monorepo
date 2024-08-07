@@ -6,7 +6,11 @@ import NetworkService from '@thxnetwork/api/services/NetworkService';
 import { getArtifact } from '@thxnetwork/api/hardhat';
 import { ChainId } from '@thxnetwork/common/enums';
 
-const validation = [query('walletId').isMongoId(), query('tokenAddress').isEthereumAddress(), query('chainId').isInt()];
+const validation = [
+    query('walletId').isMongoId(),
+    // query('tokenAddress').isEthereumAddress(), 
+    query('chainId').isInt()
+];
 
 const controller = async (req: Request, res: Response) => {
     const walletId = req.query.walletId as string;

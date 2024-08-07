@@ -11,7 +11,11 @@ import { ERC1155Metadata } from '@thxnetwork/api/models/ERC1155Metadata';
 import { toChecksumAddress } from 'web3-utils';
 import SafeService from '@thxnetwork/api/services/SafeService';
 
-const validation = [body('contractAddress').isEthereumAddress(), body('chainId').isInt(), body('walletId').isMongoId()];
+const validation = [
+    // body('contractAddress').isEthereumAddress(), 
+    body('chainId').isInt(), 
+    body('walletId').isMongoId()
+];
 
 const controller = async (req: Request, res: Response) => {
     const chainId = Number(req.body.chainId) as ChainId;

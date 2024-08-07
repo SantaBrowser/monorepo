@@ -6,7 +6,11 @@
                 <b-form-select-option
                     v-for="w in wallets"
                     :value="w"
-                    :disabled="chainId ? w.variant === WalletVariant.Safe && chainId !== w.chainId : false"
+                    :disabled="
+                        w.variant === WalletVariant.Safe ||
+                        (chainId == ChainId.Aptos && w.chainId !== ChainId.Aptos) ||
+                        (chainId !== ChainId.Aptos && w.chainId == ChainId.Aptos)
+                    "
                 >
                     {{ w.short }}
                     ({{ w.variant }})
@@ -27,6 +31,7 @@ import { defineComponent, PropType } from 'vue';
 import { chainList } from '../../utils/chains';
 import { WalletVariant } from '../../types/enums/accountVariant';
 import { useWalletStore } from '../../stores/Wallet';
+import { ChainId } from '@thxnetwork/common/enums';
 
 export default defineComponent({
     name: 'BaseFormGroupUsername',
@@ -43,7 +48,7 @@ export default defineComponent({
         },
     },
     data() {
-        return { chainList, WalletVariant };
+        return { chainList, WalletVariant, ChainId };
     },
     computed: {
         ...mapStores(useWalletStore),

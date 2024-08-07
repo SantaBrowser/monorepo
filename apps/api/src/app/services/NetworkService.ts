@@ -11,6 +11,8 @@ import {
     SEPOLIA_RPC,
     SKALE_RPC,
     ARBITRUM_RPC,
+    APTOS_NODE_URL,
+    APTOS_PRIVATE_KEY,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
 import { ethers, Wallet } from 'ethers';
@@ -20,6 +22,7 @@ import { Relayer } from '@openzeppelin/defender-relay-client';
 import { DefenderRelayProvider } from '@openzeppelin/defender-relay-client/lib/web3';
 import { ChainId } from '@thxnetwork/common/enums';
 import { EthersAdapter } from '@safe-global/protocol-kit';
+import { AptosClient, AptosAccount, HexString } from "aptos";
 
 class NetworkService {
     config = {
@@ -76,6 +79,17 @@ class NetworkService {
                 txServiceUrl: HARDHAT_SAFE_TXS_SERVICE,
             };
         }
+
+        if (APTOS_NODE_URL) {
+            const signer = new AptosAccount(new HexString(APTOS_PRIVATE_KEY).toUint8Array());
+            const defaultAccount = signer.address();
+            const client = new AptosClient(APTOS_NODE_URL);
+            this.networks[ChainId.Aptos] = {
+                signer,
+                defaultAccount,
+                client
+            };
+        } 
 
         // Provides all other configured networks for this service
         for (const network of this.config.networks) {

@@ -7,8 +7,8 @@ import SafeService from '@thxnetwork/api/services/SafeService';
 
 const validation = [
     param('id').isMongoId(),
-    query('tokenAddress').isEthereumAddress(),
-    query('spender').isEthereumAddress(),
+    // query('tokenAddress').isEthereumAddress(),
+    // query('spender').isEthereumAddress(),
     query('walletId').isMongoId(),
 ];
 

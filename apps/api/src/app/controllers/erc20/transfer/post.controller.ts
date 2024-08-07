@@ -10,7 +10,7 @@ import { toChecksumAddress } from 'web3-utils';
 const validation = [
     body('walletId').isMongoId(),
     body('erc20Id').isMongoId(),
-    body('to').isEthereumAddress().customSanitizer(toChecksumAddress),
+    // body('to').isEthereumAddress().customSanitizer(toChecksumAddress),
     body('amount').isString(),
 ];
 

@@ -8,7 +8,7 @@ import { Pool, QuestDaily } from '@thxnetwork/api/models';
 const validation = [
     param('uuid').isUUID('4'),
     body('code').optional().isUUID(4),
-    body('address').optional().isEthereumAddress(),
+    // body('address').optional().isEthereumAddress(),
 ];
 
 const controller = async (req: Request, res: Response) => {

@@ -8,10 +8,10 @@ import IdentityService from '@thxnetwork/api/services/IdentityService';
 const validation = [
     param('uuid').isUUID('4'),
     body('code').optional().isUUID(4),
-    body('address')
-        .optional()
-        .isEthereumAddress()
-        .customSanitizer((address) => toChecksumAddress(address)),
+    // body('address')
+    //     .optional()
+    //     .isEthereumAddress()
+    //     .customSanitizer((address) => toChecksumAddress(address)),
 ];
 
 const controller = async (req: Request, res: Response) => {
