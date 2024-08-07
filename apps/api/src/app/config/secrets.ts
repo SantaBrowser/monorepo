@@ -74,8 +74,11 @@ export const SKALE_RPC = process.env.SKALE_RPC;
 export const LINEA_RPC = process.env.LINEA_RPC;
 export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth';
 
+export const APTOS_NODE_URL = process.env.APTOS_NODE_URL || 'https://fullnode.testnet.aptoslabs.com';
+
 export const MONGODB_URI = String(process.env.MONGODB_URI) || '';
 export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
+export const APTOS_PRIVATE_KEY = process.env.APTOS_PRIVATE_KEY;
 export const PORT = process.env.PORT || '';
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID || '';
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET || '';

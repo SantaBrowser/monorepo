@@ -7,7 +7,11 @@ import { ChainId, ERC721TokenState, NFTVariant } from '@thxnetwork/common/enums'
 import { toChecksumAddress } from 'web3-utils';
 import SafeService from '@thxnetwork/api/services/SafeService';
 
-const validation = [body('walletId').isMongoId(), body('contractAddress').isEthereumAddress(), body('chainId').isInt()];
+const validation = [
+    body('walletId').isMongoId(), 
+    // body('contractAddress').isEthereumAddress(), 
+    body('chainId').isInt()
+];
 
 const controller = async (req: Request, res: Response) => {
     const chainId = Number(req.body.chainId) as ChainId;

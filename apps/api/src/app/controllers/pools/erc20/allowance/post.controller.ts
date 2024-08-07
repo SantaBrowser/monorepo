@@ -9,8 +9,8 @@ import SafeService from '@thxnetwork/api/services/SafeService';
 
 const validation = [
     param('id').isMongoId(),
-    body('tokenAddress').isEthereumAddress(),
-    body('spender').isEthereumAddress(),
+    // body('tokenAddress').isEthereumAddress(),
+    // body('spender').isEthereumAddress(),
     body('amountInWei').isString(),
     body('chainId').isInt(),
 ];

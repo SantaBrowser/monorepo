@@ -6,7 +6,7 @@ import ContractService from '@thxnetwork/api/services/ContractService';
 import SafeService from '@thxnetwork/api/services/SafeService';
 
 const validation = [
-    query('contractAddress').isEthereumAddress(),
+    // query('contractAddress').isEthereumAddress(),
     query('tokenId').isInt(),
     query('walletId').isMongoId(),
 ];

@@ -4,7 +4,7 @@ import { toChecksumAddress } from 'web3-utils';
 import ERC20Service from '@thxnetwork/api/services/ERC20Service';
 
 const validation = [
-    body('address').isString().customSanitizer(toChecksumAddress),
+    // body('address').isString().customSanitizer(toChecksumAddress),
     body('chainId').isInt(),
     body('logoImgUrl').optional().isString(),
 ];

@@ -56,10 +56,10 @@ export default class WalletService {
         await SafeService.create({ sub, chainId, safeVersion }, address);
     }
 
-    static async createWalletConnect({ sub, address }: Partial<TWallet>) {
+    static async createWalletConnect({ sub, address, chainId }: Partial<TWallet>) {
         await Wallet.findOneAndUpdate(
             { sub, address },
-            { variant: WalletVariant.WalletConnect, sub, address },
+            { variant: WalletVariant.WalletConnect, sub, address, chainId },
             { upsert: true },
         );
     }

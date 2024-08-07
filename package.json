@@ -47,6 +47,7 @@
         "@walletconnect/modal": "^2.6.2",
         "@web3modal/wagmi": "^4.0.9",
         "alchemy-sdk": "^3.3.1",
+        "aptos": "^1.21.0",
         "axios": "^1.6.5",
         "axios-better-stacktrace": "^2.1.6",
         "bcrypt": "^5.1.1",

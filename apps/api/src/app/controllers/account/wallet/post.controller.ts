@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { body } from 'express-validator';
 import NetworkService from '@thxnetwork/api/services/NetworkService';
 import WalletService from '@thxnetwork/api/services/WalletService';
+import { ChainId } from '@thxnetwork/common/enums';
 
 const validation = [
     body('variant').isString(),
@@ -11,12 +12,17 @@ const validation = [
 ];
 
 const controller = async (req: Request, res: Response) => {
-    const { message, signature, variant, chainId } = req.body;
+    const { message, signature, variant, chainId, rawAddress } = req.body;
     const data: Partial<TWallet> = { sub: req.auth.sub, chainId };
 
     // If no message and signature are present prepare a wallet to connect later
-    if (signature && message) {
-        data.address = NetworkService.recoverSigner(message, signature);
+    if (data.chainId == ChainId.Aptos) {
+        data.address = rawAddress;
+    }
+    else {
+        if (signature && message) {
+            data.address = NetworkService.recoverSigner(message, signature);
+        }
     }
 
     await WalletService.create(variant, data);

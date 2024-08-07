@@ -14,6 +14,8 @@ import { agenda } from '../util/agenda';
 import { logger } from '../util/logger';
 import { PRIVATE_KEY } from '../config/secrets';
 import { ethers } from "ethers";
+import * as Gen from "../config/generated";
+import { BCS } from "aptos";
 
 class SafeService {
     async create(
@@ -27,13 +29,17 @@ class SafeService {
         // Present address means Metamask account so do not deploy and return early
         if (!safeVersion && wallet.address) return wallet;
 
-        // Add relayer address and consider this a campaign safe
-        const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
-        const owners = [toChecksumAddress(defaultAccount)];
+        let owners = [];
 
-        // Add user address as a signer and consider this a participant safe
-        if (userWalletAddress) {
-            owners.push(toChecksumAddress(userWalletAddress));
+        // Add relayer address and consider this a campaign safe
+        if(data.chainId != ChainId.Aptos) {
+            const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
+            owners = [toChecksumAddress(defaultAccount)];
+
+            // Add user address as a signer and consider this a participant safe
+            if (userWalletAddress) {
+                owners.push(toChecksumAddress(userWalletAddress));
+            }
         }
 
         // If campaign safe we provide a nonce based on the timestamp in the MongoID the pool (poolId value)
@@ -44,7 +50,24 @@ class SafeService {
     }
 
     async deploy(wallet: WalletDocument, owners: string[], saltNonce?: string) {
-        if(wallet.chainId == ChainId.Skale) {
+        if (wallet.chainId == ChainId.Aptos) {
+            const { signer, client } = NetworkService.getProvider(wallet.chainId);
+            const payload: Gen.ViewRequest = {
+                function: "0x1::multisig_account::get_next_multisig_account_address",
+                type_arguments: [],
+                arguments: [signer.address().hex()],
+            };
+            const multisigAddress = (await client.view(payload))[0] as string;
+            const createMultisig = await client.generateTransaction(signer.address(), {
+                function: "0x1::multisig_account::create_with_owners",
+                type_arguments: [],
+                arguments: [[], 1, ["Shaka"], [BCS.bcsSerializeStr("Bruh")]],
+            });
+            await client.generateSignSubmitWaitForTransaction(signer, createMultisig.payload);
+            logger.debug('Deployed Safe :', multisigAddress);
+            return multisigAddress;
+        }
+        else if (wallet.chainId == ChainId.Skale) {
             const { web3, defaultAccount } = NetworkService.getProvider(wallet.chainId);
             const { abi, bytecode } = getArtifact('SafeWallet');
             const contract = new web3.eth.Contract(abi);
@@ -69,7 +92,7 @@ class SafeService {
             const signed = await web3.eth.accounts.signTransaction(tx, privateKey);
             console.log("Signed Transaction");
             const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction).on('receipt', receipt => {
-                console.debug('Contract Deployed :', receipt.contractAddress);
+                logger.debug('Deployed Safe :', receipt.contractAddress);
             });
             return receipt.contractAddress;
         }

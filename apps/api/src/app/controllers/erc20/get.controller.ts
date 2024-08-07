@@ -4,6 +4,8 @@ import { param } from 'express-validator';
 import { fromWei } from 'web3-utils';
 import NetworkService from '@thxnetwork/api/services/NetworkService';
 import { NotFoundError } from '@thxnetwork/api/util/errors';
+import { ChainId } from '@thxnetwork/common/enums';
+import AptosService from '@thxnetwork/api/services/AptosService';
 
 const validation = [param('id').isMongoId()];
 
@@ -18,20 +20,36 @@ const controller = async (req: Request, res: Response) => {
     if (!erc20.address) return res.send(erc20);
 
     const { defaultAccount } = NetworkService.getProvider(erc20.chainId);
-    const [totalSupplyInWei, decimalsString, adminBalanceInWei] = await Promise.all([
-        erc20.contract.methods.totalSupply().call(),
-        erc20.contract.methods.decimals().call(),
-        erc20.contract.methods.balanceOf(defaultAccount).call(),
-    ]);
-    const decimals = Number(decimalsString);
-    const adminBalance = Number(fromWei(adminBalanceInWei, 'ether'));
+    if (erc20.chainId == ChainId.Aptos) {
+        const [ , , decimalsString] = await AptosService.getCoinInfo(erc20.address);
+        const adminBalanceInWei = await AptosService.getCoinBalance(defaultAccount, erc20.address);
+        const decimals = Number(decimalsString);
+        const adminBalance = Number(adminBalanceInWei) / 10 ** decimals;
+        const totalSupplyInWei = "";
 
-    res.status(200).json({
-        ...erc20.toJSON(),
-        totalSupplyInWei,
-        decimals,
-        adminBalance,
-    });
+        res.status(200).json({
+            ...erc20.toJSON(),
+            totalSupplyInWei,
+            decimals,
+            adminBalance,
+        });
+    }
+    else {
+        const [totalSupplyInWei, decimalsString, adminBalanceInWei] = await Promise.all([
+            erc20.contract.methods.totalSupply().call(),
+            erc20.contract.methods.decimals().call(),
+            erc20.contract.methods.balanceOf(defaultAccount).call(),
+        ]);
+        const decimals = Number(decimalsString);
+        const adminBalance = Number(fromWei(adminBalanceInWei, 'ether'));
+
+        res.status(200).json({
+            ...erc20.toJSON(),
+            totalSupplyInWei,
+            decimals,
+            adminBalance,
+        });
+    }
 };
 
 export { controller, validation };
