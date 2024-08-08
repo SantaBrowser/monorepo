@@ -15,6 +15,7 @@ const router: express.Router = express.Router();
 
 router.get('/', ListQuests.controller);
 router.get('/public', ListQuestsPublic.controller);
+router.use('/cashback', RouterQuestCashback);
 router.use(checkJwt).use(corsHandler);
 router.use('/invite', RouterQuestInvite);
 router.use('/social', RouterQuestSocial);
