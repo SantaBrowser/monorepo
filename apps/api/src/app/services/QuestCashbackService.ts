@@ -32,17 +32,31 @@ export default class QuestCashbackService implements IQuestService {
         account?: TAccount;
         data: Partial<TQuestCashbackEntry>;
     }): Promise<TValidationResult> {
-        
-        let entries = await this.models.entry.find({
+        const { amount, santaQuestId, santaQuestType } = data;
+
+        const existingEntries = await this.models.entry.find({
             questId: quest._id,
-            sub: account.sub,
+            sub: account._id,
+            santaQuestId,
+            santaQuestType,
             isClaimed: true,
-            santaQuestId: data.santaQuestId,
-            santaQuestType: data.santaQuestType
         });
 
-        if (entries.length > 0) {
-            return { result: false, reason: 'Entry already exists.' };
+        // Only two entries allowed
+        if (existingEntries.length >= 2) {
+            return { result: false, reason: 'Entry already exists' };
+        }
+
+        if (existingEntries.length === 1) {
+            const existingEntry = existingEntries[0];
+
+            if (existingEntry.amount === amount) {
+                return { result: false, reason: 'Entry already exists' };
+            }
+
+            if (existingEntry.amount !== -amount) {
+                return { result: false, reason: 'Only an entry with the opposite amount is allowed.' };
+            }
         }
 
         return { result: true, reason: '' };
@@ -111,6 +125,6 @@ export default class QuestCashbackService implements IQuestService {
 
     private async findIdentities({ quest, account }: { quest: QuestCashbackDocument; account: TAccount }) {
         if (!account || !account.sub) return [];
-        return await Identity.find({ poolId: quest.poolId, sub: account.sub });
+        return await Identity.find({ poolId: quest.poolId, accountId: account.sub });
     }
 }
