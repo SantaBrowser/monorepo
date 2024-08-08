@@ -19,7 +19,7 @@ router.post(
     assertAccount,
     CreateQuestEntry.controller,
 );
-router.use(checkJwt).use(corsHandler);
 router.use('/cashback', RouterQuestCashback);
+router.use(checkJwt).use(corsHandler);
 
 export default router;
