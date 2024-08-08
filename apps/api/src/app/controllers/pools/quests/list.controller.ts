@@ -9,7 +9,6 @@ import {
     QuestDaily,
     QuestWebhook,
 } from '@thxnetwork/api/models';
-import { QuestCashback } from '@thxnetwork/api/models/QuestCashback';
 
 const validation = [
     param('id').isMongoId(),
@@ -35,11 +34,10 @@ const controller = async (req: Request, res: Response) => {
         { $unionWith: { coll: QuestWeb3.collection.name } },
         { $unionWith: { coll: QuestGitcoin.collection.name } },
         { $unionWith: { coll: QuestWebhook.collection.name } },
-        { $unionWith: { coll: QuestCashback.collection.name } },
         { $match },
     ];
     const arr = await Promise.all(
-        [QuestDaily, QuestInvite, QuestSocial, QuestCustom, QuestWeb3, QuestGitcoin, QuestWebhook, QuestCashback].map(
+        [QuestDaily, QuestInvite, QuestSocial, QuestCustom, QuestWeb3, QuestGitcoin, QuestWebhook].map(
             async (model) => await model.countDocuments($match),
         ),
     );

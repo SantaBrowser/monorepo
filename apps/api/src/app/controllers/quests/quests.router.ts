@@ -9,7 +9,6 @@ import RouterQuestGitcoin from './gitcoin/gitcoin.router';
 import RouterQuestDaily from './daily/daily.router';
 import RouterQuestCustom from './custom/custom.router';
 import RouterQuestWebhook from './webhook/webhook.router';
-import RouterQuestCashback from './cashback/cashback.router';
 
 const router: express.Router = express.Router();
 
@@ -23,6 +22,5 @@ router.use('/gitcoin', RouterQuestGitcoin);
 router.use('/daily', RouterQuestDaily);
 router.use('/custom', RouterQuestCustom);
 router.use('/webhook', RouterQuestWebhook);
-router.use('/cashback', RouterQuestCashback);
 
 export default router;
