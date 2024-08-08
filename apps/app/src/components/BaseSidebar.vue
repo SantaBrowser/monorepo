@@ -23,6 +23,10 @@ export default defineComponent({
             screenWidth: window.innerWidth,
         };
     },
+    async mounted() {
+        const { account } = this.accountStore;
+        console.log(this.accountStore.account, 'accounttt');
+    },
     computed: {
         ...mapStores(useAccountStore),
         isShown() {

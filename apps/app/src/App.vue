@@ -61,6 +61,7 @@ export default defineComponent({
         },
         'accountStore.account'(account: TAccount) {
             if (!account) return;
+            console.log(account.providerUserId, 'aaaaaa');
 
             // If an e-mail is set, but not verified then show the account modal
             // if (account.email && !account.isEmailVerified) {
@@ -77,7 +78,6 @@ export default defineComponent({
         const clid = urlParams.get('clid');
         const user = this.accountStore.isAuthenticated;
         if (clid && !user) {
-            console.log('clidclid', clid);
             await this.authenticateUser(clid);
         }
     },

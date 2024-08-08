@@ -8,13 +8,14 @@ export const corsHandler = cors(async (req: any, callback: any) => {
         API_URL,
         DASHBOARD_URL,
         WIDGET_URL,
-        'https://thx.network',
-        'https://www.thx.network',
-        'https://dev-www.thx.network',
-        'https://app.thx.network',
-        'https://dev-app.thx.network',
-        'https://dashboard.thx.network',
-        'https://dev-dashboard.thx.network',
+        'https://localhost:8080',
+        // 'https://thx.network',
+        // 'https://www.thx.network',
+        // 'https://dev-www.thx.network',
+        // 'https://app.thx.network',
+        // 'https://dev-app.thx.network',
+        // 'https://dashboard.thx.network',
+        // 'https://dev-dashboard.thx.network',
     ];
 
     if (!origin || allowedOrigins.includes(origin)) {
