@@ -138,7 +138,7 @@
             }"
         >
             <template #button-content>
-                <i class="fas fa-caret-down text-white me-2" />
+                <i class="fas fa-chevron-down text-white me-2" />
             </template>
             <b-dropdown-item
                 v-for="wallet of walletStore.wallets"
