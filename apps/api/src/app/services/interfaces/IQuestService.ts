@@ -10,7 +10,6 @@ import QuestWeb3Service from '../QuestWeb3Service';
 import QuestWebhookService from '../QuestWebhookService';
 import { QuestVariant } from '@thxnetwork/common/enums';
 import { PoolDocument } from '@thxnetwork/api/models';
-import QuestCashbackService from '../QuestCashbackService';
 
 export interface IQuestInviteService extends IQuestService {
     assertQuestEntry(options: { pool: PoolDocument; quest: TQuest; account: TAccount }): Promise<void>;
@@ -46,5 +45,4 @@ export const serviceMap: {
     [QuestVariant.Web3]: new QuestWeb3Service(),
     [QuestVariant.Gitcoin]: new QuestGitcoinService(),
     [QuestVariant.Webhook]: new QuestWebhookService(),
-    [QuestVariant.CashbackPlaywall]: new QuestCashbackService()
 };
