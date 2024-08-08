@@ -43,9 +43,9 @@
             <b-tab title="Connected">
                 <BaseFormGroupConnected class="mb-3" />
             </b-tab>
-            <b-tab title="Subscriptions">
-                <BaseFormGroupNotifications class="mb-3" />
-            </b-tab>
+            <!--            <b-tab title="Subscriptions">-->
+            <!--                <BaseFormGroupNotifications class="mb-3" />-->
+            <!--            </b-tab>-->
         </b-tabs>
 
         <template #footer>
