@@ -63,6 +63,12 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://explorer.evm.iota.org',
         rpc: 'https://json-rpc.evm.iotaledger.net',
     },
+    [ChainId.Aptos]: {
+        chainId: ChainId.Aptos,
+        name: 'Aptos',
+        blockExplorer: 'https://explorer.aptoslabs.com',
+        rpc: 'https://fullnode.testnet.aptoslabs.com'
+    },
 };
 
 if (process.env['NODE_ENV'] !== 'production') {
