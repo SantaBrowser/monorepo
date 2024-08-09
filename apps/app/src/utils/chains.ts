@@ -7,6 +7,9 @@ import ImgLogoLinea from '../assets/thx_logo_linea.svg';
 import ImgLogoMetis from '../assets/thx_logo_metis.svg';
 import ImgLogoBase from '../assets/thx_logo_base.svg';
 import ImgLogoIOTA from '../assets/thx_logo_iota.svg';
+import ImgLogoSepolia from '../assets/thx_logo_sepolia.svg';
+import ImgLogoSkale from '../assets/thx_logo_skale.svg';
+import ImgLogoAptos from '../assets/thx_logo_aptos.svg';
 import {
     arbitrum,
     mainnet,
@@ -32,6 +35,19 @@ const iota = defineChain({
     },
     blockExplorers: {
         default: { name: 'Explorer', url: 'https://explorer.evm.iota.org' },
+    },
+    contracts: {},
+});
+
+const skale = defineChain({
+    id: ChainId.Skale,
+    name: 'Skale',
+    nativeCurrency: { name: 'Skale', symbol: 'SKL', decimals: 18 },
+    rpcUrls: {
+        default: { http: ['https://testnet.skalenodes.com/v1/juicy-low-small-testnet'] },
+    },
+    blockExplorers: {
+        default: { name: 'Explorer', url: 'https://juicy-low-small-testnet.explorer.testnet.skalenodes.com' },
     },
     contracts: {},
 });
@@ -75,7 +91,7 @@ const chainList: { [chainId: number]: ChainInfo } = {
         chainId: ChainId.Sepolia,
         name: 'Sepolia',
         blockExplorer: 'https://sepolia.etherscan.io',
-        logo: ImgLogoArbitrum,
+        logo: ImgLogoSepolia,
         chain: sepolia,
     },
     [ChainId.Polygon]: {
@@ -123,9 +139,16 @@ const chainList: { [chainId: number]: ChainInfo } = {
     [ChainId.Aptos]: {
         chainId: ChainId.Aptos,
         name: 'Aptos',
-        logo: ImgLogoIOTA,
+        logo: ImgLogoAptos,
         blockExplorer: 'https://explorer.aptoslabs.com',
         chain: aptos,
+    },
+    [ChainId.Skale]: {
+        chainId: ChainId.Skale,
+        name: 'Skale',
+        logo: ImgLogoSkale,
+        blockExplorer: 'https://juicy-low-small-testnet.explorer.testnet.skalenodes.com',
+        chain: skale,
     },
 };
 
