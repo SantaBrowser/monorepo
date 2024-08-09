@@ -36,6 +36,19 @@ const iota = defineChain({
     contracts: {},
 });
 
+const aptos = defineChain({
+    id: ChainId.Aptos,
+    name: 'Aptos',
+    nativeCurrency: { name: 'Aptos', symbol: 'APT', decimals: 6 },
+    rpcUrls: {
+        default: { http: ['https://fullnode.testnet.aptoslabs.com'] },
+    },
+    blockExplorers: {
+        default: { name: 'Explorer', url: 'https://explorer.aptoslabs.com' },
+    },
+    contracts: {},
+});
+
 const chainList: { [chainId: number]: ChainInfo } = {
     [ChainId.Ethereum]: {
         chainId: ChainId.Ethereum,
@@ -106,6 +119,13 @@ const chainList: { [chainId: number]: ChainInfo } = {
         logo: ImgLogoIOTA,
         blockExplorer: 'https://explorer.evm.iota.org',
         chain: iota,
+    },
+    [ChainId.Aptos]: {
+        chainId: ChainId.Aptos,
+        name: 'Aptos',
+        logo: ImgLogoIOTA,
+        blockExplorer: 'https://explorer.aptoslabs.com',
+        chain: aptos,
     },
 };
 

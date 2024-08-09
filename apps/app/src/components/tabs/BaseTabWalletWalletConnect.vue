@@ -106,7 +106,7 @@ export default defineComponent({
             try {
                 const signature = await this.walletStore.signMessage(this.message);
                 await this.walletStore.create({
-                    // chainId: this.walletStore.chainId,
+                    chainId: this.walletStore.chainId,
                     variant: this.variant,
                     message: this.message,
                     signature,
