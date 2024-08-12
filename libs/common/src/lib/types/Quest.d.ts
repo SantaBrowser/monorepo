@@ -9,10 +9,21 @@ type TQuestEntry =
     | TQuestWebhookEntry;
 
 type TQuestEntryMetadata = TQuestSocialEntryMetadata | TQuestWeb3EntryMetadata;
-
+type TQuestLock = { variant: QuestVariant; questId: string };
 type TValidationResult = {
     reason: string;
     result: boolean;
+};
+
+type TBaseQuestEntry = {
+    poolId: string;
+    questId: string;
+    sub: string;
+    amount: number;
+    recaptcha: string;
+    ip: string;
+    status: QuestEntryStatus;
+    createdAt: Date;
 };
 
 type TBaseQuest = {
@@ -28,8 +39,20 @@ type TBaseQuest = {
     expiryDate: Date;
     locks: TQuestLock[];
     isPublished: boolean;
+    isIPLimitEnabled: boolean;
+    isReviewEnabled: boolean;
+    isAvailable: boolean;
+    entries: TQuestEntry[];
     createdAt: string;
     updatedAt: string;
-    update: (payload: Partial<TQuest>) => Promise<void>;
-    delete: (payload: Partial<TQuest>) => Promise<void>;
+};
+
+type TJobState = {
+    [jobId: string]: TJob;
+};
+
+type TQuestState = {
+    jobs: TJobState;
+    quests: TAnyQuest[];
+    isLoading: boolean;
 };

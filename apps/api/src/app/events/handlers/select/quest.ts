@@ -10,6 +10,7 @@ import AccountProxy from '@thxnetwork/api/proxies/AccountProxy';
 import PoolService from '@thxnetwork/api/services/PoolService';
 import QuestService from '@thxnetwork/api/services/QuestService';
 import DiscordDataProxy from '@thxnetwork/api/proxies/DiscordDataProxy';
+import QuestSocialService from '@thxnetwork/api/services/QuestSocialService';
 
 export async function completeQuest(
     interaction: ButtonInteraction | StringSelectMenuInteraction,
@@ -28,11 +29,11 @@ export async function completeQuest(
         if (!pool) throw new Error('Could not find this campaign.');
 
         const { interaction: questInteraction } = quest as TQuestSocial;
-        const platformUserId = questInteraction && QuestService.findUserIdForInteraction(account, questInteraction);
+        const platformUserId =
+            questInteraction && QuestSocialService.findUserIdForInteraction(account, questInteraction);
 
         const data = {
-            isClaimed: true,
-            platformUserId,
+            metadata: { platformUserId },
         };
         const availabilityValidation = await QuestService.isAvailable(variant, {
             quest,

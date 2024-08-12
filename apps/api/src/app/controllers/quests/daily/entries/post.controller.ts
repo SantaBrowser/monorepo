@@ -38,3 +38,4 @@ const controller = async (req: Request, res: Response) => {
 };
 
 export { controller, validation };
+

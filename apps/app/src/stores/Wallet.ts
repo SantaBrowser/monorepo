@@ -1,12 +1,12 @@
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit';
 import { useAccountStore } from './Account';
 import { defineStore } from 'pinia';
-import { track } from '@thxnetwork/common/mixpanel';
+import { track } from '@thxnetwork/app/utils/mixpanel';
 import { HARDHAT_RPC, POLYGON_RPC, SEPOLIA_RPC } from '../config/secrets';
 import { useAuthStore } from './Auth';
 import { ChainId } from '@thxnetwork/common/enums';
 import { WalletVariant } from '../types/enums/accountVariant';
-import { AUTH_URL, WALLET_CONNECT_PROJECT_ID, WIDGET_URL } from '../config/secrets';
+import { API_URL, POLYGON_RPC, WALLET_CONNECT_PROJECT_ID, WIDGET_URL } from '../config/secrets';
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';
 import {
     sendTransaction,
@@ -61,7 +61,7 @@ const wagmiConfig = defaultWagmiConfig({
         name: 'SANTA Browser',
         description: 'SANTA Browser Campaign Discovery',
         url: WIDGET_URL,
-        icons: [AUTH_URL + '/img/logo.png'],
+        icons: [API_URL + '/logo.png'],
     },
 });
 
