@@ -6,8 +6,19 @@ export const questSchema = {
     description: String,
     image: String,
     index: Number,
-    expiryDate: Date,
+    expiryDate: { type: Date, default: '' },
     infoLinks: [{ label: String, url: String }],
-    isPublished: { type: Boolean, default: false },
     locks: { type: [{ questId: String, variant: Number }], default: [] },
+    isPublished: { type: Boolean, default: false },
+    isIPLimitEnabled: { type: Boolean, default: false },
+    isReviewEnabled: { type: Boolean, default: false },
+};
+
+export const questEntrySchema = {
+    poolId: String,
+    questId: String,
+    sub: String,
+    amount: Number,
+    ip: String,
+    status: { type: String, default: 'pending' },
 };

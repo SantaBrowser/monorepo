@@ -1,15 +1,24 @@
 import { QuestSocial, QuestSocialDocument, QuestSocialEntry } from '@thxnetwork/api/models';
 import { WalletDocument } from '@thxnetwork/api/models/Wallet';
 import { IQuestService } from './interfaces/IQuestService';
-import { requirementMap } from './maps/quests';
+import { requirementMap, tokenInteractionMap } from './maps/quests';
 import { logger } from '../util/logger';
-import { QuestVariant } from '@thxnetwork/common/enums';
+import { QuestSocialRequirement, QuestVariant } from '@thxnetwork/common/enums';
+import { Request } from 'express';
 
 export default class QuestSocialService implements IQuestService {
     models = {
         quest: QuestSocial,
         entry: QuestSocialEntry,
     };
+
+    async getDataForRequest(
+        req: Request,
+        { quest, account }: { quest: TQuestSocial; account: TAccount },
+    ): Promise<Partial<TQuestEntry>> {
+        const platformUserId = QuestSocialService.findUserIdForInteraction(account, quest.interaction);
+        return { metadata: { platformUserId } };
+    }
 
     async decorate({
         quest,
@@ -32,7 +41,6 @@ export default class QuestSocialService implements IQuestService {
     async isAvailable({
         quest,
         account,
-        data,
     }: {
         quest: TQuestSocial;
         account: TAccount;
@@ -40,16 +48,16 @@ export default class QuestSocialService implements IQuestService {
     }): Promise<TValidationResult> {
         if (!account) return { result: true, reason: '' };
 
+        const platformUserId = QuestSocialService.findUserIdForInteraction(account, quest.interaction);
         // We validate for both here since there are entries that only contain a sub
         // and should not be claimed again.
-        const ids: any[] = [{ sub: account.sub }];
-        if (data && data.metadata && data.metadata.platformUserId)
-            ids.push({ platformUserId: data.metadata.platformUserId });
+        const conditions: any[] = [{ sub: account.sub }];
+        if (platformUserId) conditions.push({ 'metadata.platformUserId': platformUserId });
 
         // If no entry exist the quest is available
         const isCompleted = await QuestSocialEntry.exists({
             questId: quest._id,
-            $or: ids,
+            $or: conditions,
         });
         if (!isCompleted) return { result: true, reason: '' };
 
@@ -81,7 +89,7 @@ export default class QuestSocialService implements IQuestService {
     async findEntryMetadata({ quest }: { quest: QuestSocialDocument }) {
         const reachTotal = await this.getTwitterFollowerCount(quest);
         const uniqueParticipantIds = await QuestSocialEntry.find({
-            questId: String(quest._id),
+            questId: quest.id,
         }).distinct('sub');
 
         return { reachTotal, participantCount: uniqueParticipantIds.length };
@@ -96,5 +104,12 @@ export default class QuestSocialService implements IQuestService {
         ]);
 
         return result ? result.totalFollowersCount : 0;
+    }
+
+    static findUserIdForInteraction(account: TAccount, interaction: QuestSocialRequirement) {
+        if (typeof interaction === 'undefined') return;
+        const { kind } = tokenInteractionMap[interaction];
+        const token = account.tokens.find((token) => token.kind === kind);
+        return token && token.userId;
     }
 }

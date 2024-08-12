@@ -46,7 +46,8 @@ class AccountProxy {
     }
 
     async findById(sub: string) {
-        return await Account.findById(sub);
+        const account = await Account.findById(sub);
+        return await this.decorate(account);
     }
 
     async findByRequest(req: Request) {
@@ -124,6 +125,7 @@ class AccountProxy {
     }
 
     async decorate(account: AccountDocument): Promise<TAccount> {
+        if (!account) return;
         return {
             profileImg: `https://api.dicebear.com/7.x/identicon/svg?seed=${account.id}`,
             // username: await generateUsername(account.email),
@@ -157,7 +159,7 @@ class AccountProxy {
                     userId,
                     scopes,
                     metadata,
-                })) as TToken[]
+                })) as TAccessToken[]
         );
     }
 
@@ -249,7 +251,7 @@ class AccountProxy {
     }
 
     getByIdentity(identity: string): Promise<TAccount> {
-        return Account.findById({ identity });
+        return Account.findOne({ identity });
     }
 
     async isEmailDuplicate(email: string) {

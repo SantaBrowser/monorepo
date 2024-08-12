@@ -51,4 +51,8 @@
     backdrop-filter: blur(100px);
     background-color: transparent !important;
   }
+  .modal-footer {
+    backdrop-filter: blur(10px);
+    background-color: #25010166;
+  }
 }

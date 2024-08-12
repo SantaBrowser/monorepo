@@ -7,9 +7,13 @@ import { ForbiddenError } from '@thxnetwork/api/util/errors';
 const router: express.Router = express.Router();
 
 const mixpanelProxy = function (options: AxiosRequestConfig) {
-    if (!options.url.startsWith('/')) throw new ForbiddenError();
+  console.log('mixpanelProxy', options);
+  if (!options.url.startsWith('/')) throw new ForbiddenError();
     axios.defaults.baseURL = MIXPANEL_API_URL;
-    return axios(options);
+
+  console.log('mixpanelProxy', MIXPANEL_API_URL,options);
+
+  return axios(options);
 };
 
 router.all('*', async (req: Request, res: Response) => {
@@ -23,12 +27,13 @@ router.all('*', async (req: Request, res: Response) => {
     //     const dataString = JSON.stringify(data);
     //     req.body.data = Buffer.from(dataString).toString('base64');
     // }
-    await mixpanelProxy({
+    const response = await mixpanelProxy({
         method: req.method as Method,
         url: req.originalUrl.replace(req.baseUrl, ''),
-        headers: { 'X-REAL-IP': req.ip },
+        headers: { 'X-REAL-IP': '115.246.234.52' },
         params: req.body,
     });
+    console.log(response);
     res.end();
 });
 
