@@ -1,11 +1,11 @@
+import { Request } from 'express';
 import { JobType, QuestSocialRequirement, QuestVariant } from '@thxnetwork/common/enums';
-import { PoolDocument, Participant } from '@thxnetwork/api/models';
+import { PoolDocument, Participant, DiscordReaction, DiscordMessage, TwitterUser } from '@thxnetwork/api/models';
 import { v4 } from 'uuid';
 import { agenda } from '../util/agenda';
 import { logger } from '../util/logger';
 import { Job } from '@hokify/agenda';
 import { IQuestInviteService, serviceMap } from './interfaces/IQuestService';
-import { tokenInteractionMap } from './maps/quests';
 import { NODE_ENV } from '../config/secrets';
 import PoolService from './PoolService';
 import NotificationService from './NotificationService';
@@ -15,9 +15,19 @@ import ImageService from './ImageService';
 import AccountProxy from '../proxies/AccountProxy';
 import ParticipantService from './ParticipantService';
 import THXService from './THXService';
+import QuestSocialService from './QuestSocialService';
+import DiscordService from './DiscordService';
 import { PromiseParser } from '../util/promise';
+import { getIP } from '../util/ip';
+import { QuestEntryStatus } from '@thxnetwork/common/enums';
 
 export default class QuestService {
+    static async getDataForRequest(variant: QuestVariant, req: Request, options) {
+        const data = await serviceMap[variant].getDataForRequest(req, options);
+        // Use IP address for valiation of quest entry
+        return { ...data, ip: getIP(req), recaptcha: req.body.recaptcha };
+    }
+
     static async count({ poolId }) {
         const variants = Object.keys(QuestVariant).filter((v) => !isNaN(Number(v)));
         const counts = await Promise.all(
@@ -57,8 +67,11 @@ export default class QuestService {
                             const isExpired = this.isExpired(quest);
                             const QuestEntry = serviceMap[variant].models.entry;
                             const distinctSubs = await QuestEntry.countDocuments({ questId: q.id }).distinct('sub');
+                            const entriesPendingReview = await this.getEntriesPendingReview(quest, account);
+
                             return {
                                 ...decorated,
+                                entriesPendingReview,
                                 entryCount: distinctSubs.length,
                                 author: { username: author.username },
                                 isLocked,
@@ -92,6 +105,50 @@ export default class QuestService {
         return await this.updateById(quest.variant, quest._id, updates);
     }
 
+    static async updateEntries(quest: TQuest, updates: { entryId: string; status: QuestEntryStatus }[]) {
+        const Entry = serviceMap[quest.variant].models.entry;
+        const entryIds = updates.map(({ entryId }) => entryId);
+        const entries = await Entry.find({ _id: { $in: entryIds } });
+        const accounts = await AccountProxy.find({ subs: entries.map(({ sub }) => sub) });
+        const pool = await PoolService.getById(quest.poolId);
+
+        // Update entry status
+        const operations = updates
+            // Only process status changes
+            .filter(({ entryId, status }) => entries.find((e) => e.id === entryId).status !== status)
+            .map(({ entryId, status }) => ({
+                updateOne: {
+                    filter: { _id: entryId },
+                    update: { status },
+                },
+            }));
+        await Entry.bulkWrite(operations);
+
+        // Update point balances for entries
+        for (const { entryId, status } of updates) {
+            try {
+                const entry = entries.find((e) => e.id === entryId);
+                if (!entry) throw new Error('Entry not found');
+
+                const account = accounts.find((a) => a.sub === entry.sub);
+                if (!account) throw new Error('Account not found');
+
+                switch (status) {
+                    case QuestEntryStatus.Approved:
+                        await PointBalanceService.add(pool, account, entry.amount);
+                        break;
+                    case QuestEntryStatus.Rejected:
+                        await PointBalanceService.subtract(pool, account, entry.amount);
+                        break;
+                }
+            } catch (error) {
+                logger.error('UpdateEntry failed', { error });
+            }
+        }
+
+        return await Entry.find({ _id: { $in: entryIds } });
+    }
+
     static async create(variant: QuestVariant, poolId: string, data: Partial<TQuest>, file?: Express.Multer.File) {
         if (file) {
             data.image = await ImageService.upload(file);
@@ -119,6 +176,13 @@ export default class QuestService {
 
     static getAmount(variant: QuestVariant, quest: TQuest, account: TAccount, data?: { metadata: any }) {
         return serviceMap[variant].getAmount({ quest, account, data });
+    }
+
+    static async getEntriesPendingReview(quest: TQuest, account?: TAccount) {
+        if (!quest.isReviewEnabled || !account) return [];
+
+        const Entry = serviceMap[quest.variant].models.entry;
+        return await Entry.find({ questId: quest._id, sub: account.sub, status: QuestEntryStatus.Pending });
     }
 
     static isExpired(quest: TQuest) {
@@ -150,8 +214,8 @@ export default class QuestService {
         variant: QuestVariant,
         options: { quest: TQuest; account: TAccount; data: Partial<TQuestEntry & { recaptcha: string }> },
     ) {
-        // Skip recaptcha check in test environment
-        if (NODE_ENV !== 'test') return { result: true, reasons: '' };
+        // Skip recaptcha check non production environments
+        if (NODE_ENV !== 'production') return { result: true, reasons: '' };
 
         // Define the recaptcha action for this quest variant
         const recaptchaAction = `QUEST_${QuestVariant[variant].toUpperCase()}_ENTRY_CREATE`;
@@ -162,22 +226,38 @@ export default class QuestService {
             recaptchaAction,
         });
 
-        logger.info(
-            'ReCaptcha result' +
-                JSON.stringify({
-                    sub: options.account.sub,
-                    poolId: options.quest.poolId,
-                    riskAnalysis,
-                    recaptchaAction,
-                }),
-        );
-
         // Defaults: 0.1, 0.3, 0.7 and 0.9. Ranges from 0 (Bot) to 1 (User)
         if (riskAnalysis.score >= 0.7) {
-            return { result: true, reasons: '' };
+            return { result: true, reason: '' };
         }
 
         return { result: false, reason: 'This request has been indentified as potentially automated.' };
+    }
+
+    static async isIPCoolDown(
+        variant: QuestVariant,
+        options: { quest: TQuest; account: TAccount; data: Partial<TQuestEntry> },
+    ) {
+        if (options.quest.isIPLimitEnabled) {
+            const ONE_DAY_MS = 86400 * 1000; // 24 hours in milliseconds
+            const now = Date.now(),
+                start = now - ONE_DAY_MS,
+                end = now;
+            const Entry = serviceMap[variant].models.entry;
+            const isCompletedForIP = !!(await Entry.exists({
+                questId: options.quest._id,
+                createdAt: { $gt: new Date(start), $lt: new Date(end) },
+                ip: options.data.ip,
+            }));
+            if (isCompletedForIP) {
+                return {
+                    result: false,
+                    reason: 'You have completed this quest from this IP within the last 24 hours.',
+                };
+            }
+        }
+
+        return { result: true, reason: '' };
     }
 
     static async getValidationResult(
@@ -188,10 +268,61 @@ export default class QuestService {
             data: Partial<TQuestEntry>;
         },
     ) {
+        // Test for risk score (@dev does not work with discord calls)
+        const isRealUser = await QuestService.isRealUser(variant, options);
+        if (!isRealUser.result) return isRealUser;
+
+        // Test for IP as we limit to 1 per IP per day (if an ip is passed)
+        const isIPCoolDown = await this.isIPCoolDown(variant, options);
+        if (!isIPCoolDown.result) return isIPCoolDown;
+
+        // Test for availability of the quest
         const isAvailable = await this.isAvailable(variant, options);
         if (!isAvailable.result) return isAvailable;
 
         return await serviceMap[variant].getValidationResult(options);
+    }
+
+    static async getEntryMetadata({ account, quest, data }) {
+        const platformUserId = QuestSocialService.findUserIdForInteraction(account, quest.interaction);
+
+        // For Discord Bot quests we store server user name in metadata
+        if (quest.variant === QuestVariant.Discord && quest.interaction !== QuestSocialRequirement.DiscordGuildJoined) {
+            const guild = await DiscordService.getGuild(quest.poolId);
+            const member = guild && (await DiscordService.getMember(guild.id, platformUserId));
+
+            return {
+                ...data,
+                metadata: {
+                    platformUserId,
+                    discord: {
+                        guildId: guild && guild.id,
+                        username: member.user.username,
+                        joinedAt: new Date(member.joinedTimestamp).toISOString(),
+                        reactionCount: guild
+                            ? await DiscordReaction.countDocuments({ guildId: guild.id, userId: platformUserId })
+                            : 0,
+                        messageCount: guild
+                            ? await DiscordMessage.countDocuments({ guildId: guild.id, userId: platformUserId })
+                            : 0,
+                    },
+                },
+            };
+        }
+
+        // For Twitter quests we store public metrics in metadata
+        if (quest.variant === QuestVariant.Twitter) {
+            const user = await TwitterUser.findOne({ userId: platformUserId });
+            return {
+                ...data,
+                metadata: {
+                    platformUserId,
+                    twitter: user.publicMetrics,
+                },
+            };
+        }
+
+        return data;
     }
 
     static async createEntryJob(job: Job) {
@@ -209,12 +340,15 @@ export default class QuestService {
             if (!isAvailable.result) throw new Error(isAvailable.reason);
 
             // Create the quest entry
+            const status = quest.isReviewEnabled ? QuestEntryStatus.Pending : QuestEntryStatus.Approved;
+            const metadata = await this.getEntryMetadata({ quest, account, data });
             const entry = await Entry.create({
-                ...data,
+                ...metadata,
                 amount,
                 sub: account.sub,
                 questId: quest.id,
                 poolId: pool.id,
+                status,
                 uuid: v4(),
             } as TQuestEntry);
             if (!entry) throw new Error('Entry creation failed.');
@@ -223,8 +357,10 @@ export default class QuestService {
             const InviteService = serviceMap[QuestVariant.Invite] as IQuestInviteService;
             await InviteService.assertQuestEntry({ pool, quest, account });
 
-            // Add points to participant balance
-            await PointBalanceService.add(pool, account, amount);
+            // Add points to participant balance if manual review is disabled
+            if (!quest.isReviewEnabled) {
+                await PointBalanceService.add(pool, account, amount);
+            }
 
             // Update participant ranks async
             await agenda.now(JobType.UpdateParticipantRanks, { poolId: pool.id });
@@ -244,13 +380,13 @@ export default class QuestService {
         }
     }
 
-    static findUserIdForInteraction(account: TAccount, interaction: QuestSocialRequirement) {
-        if (typeof interaction === 'undefined') return;
-        const { kind } = tokenInteractionMap[interaction];
-        const token = account.tokens.find((token) => token.kind === kind);
+    // static findUserIdForInteraction(account: TAccount, interaction: QuestSocialRequirement) {
+    //     if (typeof interaction === 'undefined') return;
+    //     const { kind } = tokenInteractionMap[interaction];
+    //     const token = account.tokens.find((token) => token.kind === kind);
 
-        return token && token.userId;
-    }
+    //     return token && token.userId;
+    // }
 
     static async findEntries(quest: TQuest, { page = 1, limit = 25 }: { page: number; limit: number }) {
         const skip = (page - 1) * limit;

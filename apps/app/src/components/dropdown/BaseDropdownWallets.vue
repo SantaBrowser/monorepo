@@ -11,7 +11,7 @@
             }"
             toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none p-2"
             auto-close="outside"
-            :menu-class="{ 'bg-body': walletStore.wallet, 'd-none': !walletStore.wallet }"
+            :menu-class="{ 'd-none': !walletStore.wallet }"
             no-caret
             end
         >
@@ -23,12 +23,12 @@
                     }"
                     class="fas fa-circle me-2"
                 />
-                <div @click="toggleDropdown">
+                <div>
                     {{ walletStore.wallet ? walletStore.wallet.short : 'Connect' }}
                 </div>
             </template>
             <b-dropdown-text v-if="walletStore.wallet" text-class="bg-dark">
-                <b-form-group label-class="d-flex align-items-center mb-1 ">
+                <b-form-group label-class="d-flex align-items-center mb-1">
                     <template #label>
                         <span class="text-opaque">Account</span>
                         <template v-if="isWalletConnect">
@@ -62,11 +62,16 @@
                         </template>
                     </template>
                     <div class="d-flex align-items-center">
-                        <b-avatar badge-variant="light" :src="walletImgURL" size="2.8rem" class="me-2">
+                        <!-- <b-avatar badge-variant="light" :src="walletImgURL" size="2.8rem" class="me-2">
                             <template #badge>
-                                <b-img :src="chainList[walletStore.wallet.chainId].logo" width="12" height="12" />
+                                <b-img
+                                    v-if="chainList[walletStore.wallet.chainId]"
+                                    :src="chainList[walletStore.wallet.chainId]?.logo"
+                                    width="12"
+                                    height="12"
+                                />
                             </template>
-                        </b-avatar>
+                        </b-avatar> -->
                         <div>
                             <div class="d-flex align-items-center">
                                 <strong class="me-5">
@@ -90,7 +95,7 @@
                                     size="sm"
                                     class="ms-2 px-2 p-1"
                                     :href="
-                                        chainList[walletStore.wallet.chainId].blockExplorer +
+                                        chainList[walletStore.chainId].blockExplorer +
                                         '/address/' +
                                         walletStore.wallet?.address
                                     "
@@ -102,6 +107,7 @@
                             <div v-if="walletStore.wallet" class="d-flex align-items-center me-2">
                                 {{ walletVariantMap[walletStore.wallet.variant] }}
                                 <b-img
+                                    v-if="walletLogoMap[walletStore.wallet.variant]"
                                     :src="walletLogoMap[walletStore.wallet.variant]"
                                     width="15"
                                     height="15"
@@ -112,15 +118,17 @@
                         </div>
                     </div>
                 </b-form-group>
-                <b-form-group label="Network" label-class="text-opaque">
+                <!-- <b-form-group label="Network" label-class="text-opaque">
                     <i
                         v-if="isWalletConnect"
                         class="fas fa-circle me-2"
                         :class="{ 'text-success': isConnected, 'text-danger': !isConnected }"
                     />
-                    {{ chainList[walletStore.wallet.chainId].name }}
-                    <span class="text-opaque">({{ walletStore.wallet.chainId }})</span>
-                </b-form-group>
+                    <template v-if="chainList[walletStore.wallet.chainId]">
+                        {{ chainList[walletStore.wallet.chainId]?.name }}
+                        <span class="text-opaque">({{ walletStore.wallet.chainId }})</span>
+                    </template>
+                </b-form-group> -->
             </b-dropdown-text>
         </b-dropdown>
         <b-dropdown
@@ -138,7 +146,7 @@
             }"
         >
             <template #button-content>
-                <i class="fas fa-caret-down text-white me-2" />
+                <i class="fas fa-chevron-down text-white me-2" />
             </template>
             <b-dropdown-item
                 v-for="wallet of walletStore.wallets"
@@ -204,9 +212,10 @@ export default defineComponent({
             if (!account || !wallet) return false;
 
             const isAddressCorrect = account.address === wallet.address;
-            const isChainCorrect = chainId === wallet.chainId;
+            // const isChainCorrect = chainId === wallet.chainId;
 
-            return isAddressCorrect && isChainCorrect;
+            // return isAddressCorrect && isChainCorrect;
+            return isAddressCorrect;
         },
         walletImgURL() {
             if (!this.walletStore.wallet) return '';
@@ -261,11 +270,6 @@ export default defineComponent({
             this.walletStore.setWallet(wallet);
             this.accountStore.setGlobals({ activeWalletId: wallet._id });
             this.walletStore.list();
-        },
-        toggleDropdown() {
-            if (this.walletStore.wallet === null) {
-                this.isOpen = !this.isOpen;
-            }
         },
     },
 });
