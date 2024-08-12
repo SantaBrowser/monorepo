@@ -1,4 +1,4 @@
-import { Participant, PoolDocument, QuestInvite, QuestInviteEntry } from '@thxnetwork/api/models';
+import { PoolDocument, QuestInvite, QuestInviteEntry } from '@thxnetwork/api/models';
 import { IQuestService } from './interfaces/IQuestService';
 import { QuestInviteCode, QuestInviteInvitee, QuestInviteCodeDocument } from '../models';
 import { serviceMap } from './interfaces/IQuestService';
@@ -7,12 +7,21 @@ import { WIDGET_URL } from '../config/secrets';
 import PointBalanceService from './PointBalanceService';
 import AccountProxy from '../proxies/AccountProxy';
 import MailService from './MailService';
+import { Request } from 'express';
+import { QuestEntryStatus } from '@thxnetwork/common/enums/QuestEntryStatus';
 
 export default class QuestInviteService implements IQuestService {
     models = {
         quest: QuestInvite,
         entry: QuestInviteEntry,
     };
+
+    async getDataForRequest(
+        req: Request,
+        options: { quest: TQuest; account: TAccount },
+    ): Promise<Partial<TQuestEntry>> {
+        return {};
+    }
 
     findEntryMetadata(options: { quest: TQuestInvite }) {
         return {};
@@ -98,14 +107,14 @@ export default class QuestInviteService implements IQuestService {
             // Continue if no invitee is found for this sub and this invite quest
             const invitee = await QuestInviteInvitee.findOne({ sub: account.sub, questId: inviteQuest.id });
             if (!invitee) {
-                logger.error('Invitee not found', { sub: account.sub, questId: inviteQuest.id });
+                logger.debug('Invitee not found', { sub: account.sub, questId: inviteQuest.id });
                 continue;
             }
 
             // Continue if no code is found for this invitee and this invite quest
             const code = await QuestInviteCode.findOne({ code: invitee.code, questId: inviteQuest.id });
             if (!code) {
-                logger.error('Invite code not found', { code: invitee.code, questId: inviteQuest.id });
+                logger.debug('Invite code not found', { code: invitee.code, questId: inviteQuest.id });
                 continue;
             }
 
@@ -143,18 +152,22 @@ export default class QuestInviteService implements IQuestService {
             );
 
             // Create entry for invitee
+            const status = quest.isReviewEnabled ? QuestEntryStatus.Pending : QuestEntryStatus.Approved;
             await QuestInviteEntry.create({
                 questId: inviteQuest.id,
                 sub: account.sub,
                 amount: inviteQuest.amountInvitee,
+                status,
                 metadata: {
                     code: code.code,
                     inviter: inviter.username,
                 },
             });
 
-            // Transfer points to invitee
-            await PointBalanceService.add(pool, account, inviteQuest.amountInvitee);
+            // Add points to invitee balance if manual review is disabled
+            if (!quest.isReviewEnabled) {
+                await PointBalanceService.add(pool, account, inviteQuest.amountInvitee);
+            }
         }
     }
 

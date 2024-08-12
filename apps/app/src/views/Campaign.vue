@@ -14,7 +14,7 @@
 </template>
 <script lang="ts">
 import { mapStores } from 'pinia';
-import { track } from '@thxnetwork/common/mixpanel';
+import { track } from '@thxnetwork/app/utils/mixpanel';
 import { defineComponent } from 'vue';
 import { GTM, WIDGET_URL } from '../config/secrets';
 import { useAuthStore } from '../stores/Auth';
@@ -32,7 +32,7 @@ export default defineComponent({
     },
     computed: {
         ...mapStores(useAccountStore, useAuthStore, useQuestStore, useRewardStore),
-        isModalInviteShown() {
+        isModalInviteShown(): boolean {
             return !!this.$route.params.code;
         },
     },
