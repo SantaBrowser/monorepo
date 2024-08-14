@@ -452,11 +452,9 @@ export default defineComponent({
 .card-wrapper .card-body {
     border-radius: 8px;
     border: 1.5px solid rgba(255, 255, 255, 0.1);
-
     background: transparent !important;
-
-    box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12);
     backdrop-filter: blur(12.5px);
+    box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
 }
 
 .c-quest-title div {

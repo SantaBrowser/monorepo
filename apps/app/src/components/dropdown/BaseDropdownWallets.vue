@@ -274,14 +274,20 @@ export default defineComponent({
     },
 });
 </script>
-<style>
+<style scoped>
 .dropdown-toggle .fa-ellipsis-v {
     color: var(--bs-body-color);
 }
 
 .h-wallet {
     border-radius: 22px;
-    border: 1px dotted #4baec0;
+    border: 1px dotted #ffcd06;
+    transition: all 0.3s ease-in-out;
+}
+
+.h-wallet:hover {
+    background: rgba(255, 205, 7, 0.3);
+    box-shadow: 0 0 10px rgba(255, 205, 7, 0.5);
 }
 
 .dropdown {

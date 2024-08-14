@@ -1,7 +1,7 @@
 <template>
     <b-container
         v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
-        class="mt-2 quest-cont"
+        class="mt-2 quest-cont pb-3"
     >
         <b-row>
             <b-col
@@ -9,7 +9,7 @@
                 lg="6"
                 xl="7"
                 offset-xl="0"
-                class="quests-column"
+                class="quests-column flex-grow-1"
             >
                 <div class="mb-2 align-items-center bg-quests rounded">
                     <div class="quests-title d-flex p-2">
@@ -68,7 +68,7 @@
                 lg="5"
                 xl="5"
                 xxl="4"
-                class="h-100 rewards-column"
+                class="h-100 rewards-column flex-grow-1"
                 offset-xl="0"
             >
                 <div class="mb-2 bg-rewards rounded">
@@ -88,10 +88,10 @@
                     <div
                         v-for="(reward, index) in mergedRewards"
                         :key="index"
-                        class="reward-item mb-2 gr-2"
-                        :style="reward.isPromoted ? 'width: 100%' : 'width: 48% !important'"
+                        class="reward-item gr-2"
+                        :style="reward?.isPromoted ? 'width: 100%' : 'width: 48% !important'"
                     >
-                        <component :is="componentMap[reward.variant]" :reward="reward" />
+                        <component :is="componentMap[reward?.variant]" :reward="reward" />
                     </div>
                 </div>
             </b-col>
@@ -393,7 +393,6 @@ export default defineComponent({
 
 .gr-2 {
     width: 100% !important;
-    box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
     //zoom: 0.75;
 }
 
@@ -437,6 +436,7 @@ export default defineComponent({
     border-radius: 15px;
     border: 1px dotted #865c5c85;
     padding: 6px;
+    margin-right: 20px;
 }
 
 .quests-title {
@@ -455,8 +455,8 @@ export default defineComponent({
     align-items: flex-start;
     align-content: flex-start;
     padding: 0px;
-    gap: 10px;
-    margin-bottom: 10px;
+    column-gap: 10px;
+    margin-bottom: 8px;
 }
 .title-q {
     font-size: 30px;
