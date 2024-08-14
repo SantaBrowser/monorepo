@@ -148,11 +148,13 @@ export default defineComponent({
         },
         balance(participant: TParticipant) {
             if (!participant) return 0;
-            return Number(participant.balance);
+            const balance = Number(participant.balance);
+            return isNaN(balance) ? 0 : balance;
         },
         score(participant: TParticipant) {
             if (!participant) return 0;
-            return Number(participant.score);
+            const score = Number(participant.score);
+            return isNaN(score) ? 0 : score;
         },
         formattedScore(participant: TParticipant, campaignId: string) {
             if (campaignId === CP_CAMPAIGN) {
@@ -181,16 +183,15 @@ export default defineComponent({
     top: 3px;
     left: 0.5%;
     width: 99% !important;
-    background-color: rgba(37, 37, 37, 0.5);
     z-index: 1000;
-    box-shadow: -1px -12px 20px 13px rgb(24 17 17 / 84%);
     padding: 8px;
     /* border-bottom: 1px dotted #dd1e1e66; */
     border-radius: 30px;
-    background: #000;
     margin: 0.1% 0.5% 0.1% 0;
     border: 1px dotted rgba(152, 122, 7, 0.968627451);
-    padding-right: 60px;
+    //padding-right: 60px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.7);
 }
 
 .header-nav h2 {
@@ -224,6 +225,7 @@ export default defineComponent({
     border: 1px dotted #ffcd06;
     position: relative;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
 }
 .b-avatar-header {
     border: 2px dotted #064f17;
@@ -261,6 +263,16 @@ export default defineComponent({
     border: 1px dotted #ffcd06;
     width: 100%;
     top: -1px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .dropdown-content p {
@@ -268,6 +280,10 @@ export default defineComponent({
 }
 .dropdown-content p span {
     color: #c1c1c1;
+}
+.equal-divs:hover {
+    background: rgba(255, 205, 7, 0.3);
+    box-shadow: 0 0 10px rgba(255, 205, 7, 0.5);
 }
 @media (max-width: 992px) {
     .header-nav {
@@ -279,6 +295,11 @@ export default defineComponent({
     }
     .name-avatar {
         padding-right: 10px !important;
+    }
+    .balance-wrap {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding-right: 8px;
     }
 }
 

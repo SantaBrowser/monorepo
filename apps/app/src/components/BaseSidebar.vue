@@ -53,7 +53,8 @@ aside.sidebar {
     margin-right: 10px;
     /* overflow: hidden; */
     /* width: 350px; */
-    box-shadow: inset rgba(182, 9, 153, 0.15) 0px -7px 20px 8px;
+    box-shadow: -9px -5px 20px 20px rgb(63 77 202 / 12%);
+    backdrop-filter: blur(5px);
 }
 .sidebar {
     height: calc(100vh - 70px);
@@ -65,8 +66,7 @@ aside.sidebar {
         width: 350px;
         max-width: 350px;
         border-radius: 0;
-        box-shadow: -9px -5px 20px 20px rgb(63 77 202 / 12%);
-        backdrop-filter: blur(5px);
+
         //border-left: 1px dotted #20af104d;
         overflow-x: hidden;
         overflow-y: auto;
