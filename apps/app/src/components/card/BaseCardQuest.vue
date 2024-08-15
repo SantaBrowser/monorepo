@@ -1,6 +1,6 @@
 <template>
     <b-card
-        class="mb-1 w-100"
+        class="mb-3 w-100"
         header-class="p-0"
         body-class="d-flex flex-column p-0"
         :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted }"
@@ -194,7 +194,7 @@ export default defineComponent({
         },
     },
     mounted() {
-        this.isVisible = this.accountStore.isAuthenticated ? !this.quest.index : false;
+        this.isVisible = this.accountStore.isAuthenticated ? true : false;
     },
     methods: {
         onClickLink(url: string) {
