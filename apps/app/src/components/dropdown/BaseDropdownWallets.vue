@@ -11,7 +11,7 @@
             }"
             toggle-class="d-flex align-items-center justify-content-end text-white text-decoration-none p-2"
             auto-close="outside"
-            :menu-class="{ 'd-none': !walletStore.wallet }"
+            :menu-class="[{ 'd-none': !walletStore.wallet }, 'dropdown-move', 'fade-in']"
             no-caret
             end
         >
@@ -134,7 +134,7 @@
         <b-dropdown
             v-model="isOpen"
             variant="link"
-            menu-class="w-100"
+            menu-class="w-100 fade-in"
             no-caret
             end
             toggle-class="p-2"
@@ -274,7 +274,7 @@ export default defineComponent({
     },
 });
 </script>
-<style scoped>
+<style>
 .dropdown-toggle .fa-ellipsis-v {
     color: var(--bs-body-color);
 }
@@ -297,5 +297,20 @@ export default defineComponent({
 .h-wallet button div {
     font-size: 13px;
     font-weight: 500;
+}
+.dropdown-move {
+    transform: translate(-95px, 43px) !important;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
 }
 </style>
