@@ -33,7 +33,7 @@
 
         <template #button>
             <b-button
-                class="w-100 bg-purple"
+                class="w-100"
                 block
                 variant="primary"
                 :disabled="isSubmitting || !quest.isAvailable"

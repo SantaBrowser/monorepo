@@ -1,7 +1,7 @@
 <template>
     <b-container
         v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
-        class="mt-2 quest-cont"
+        class="mt-2 quest-cont pb-3"
     >
         <b-row>
             <b-col
@@ -9,7 +9,7 @@
                 lg="6"
                 xl="7"
                 offset-xl="0"
-                class="quests-column"
+                class="quests-column flex-grow-1"
             >
                 <div class="mb-2 align-items-center bg-quests rounded">
                     <div class="quests-title d-flex p-2">
@@ -68,7 +68,7 @@
                 lg="5"
                 xl="5"
                 xxl="4"
-                class="h-100 rewards-column"
+                class="h-100 rewards-column flex-grow-1"
                 offset-xl="0"
             >
                 <div class="mb-2 bg-rewards rounded">
@@ -88,10 +88,10 @@
                     <div
                         v-for="(reward, index) in mergedRewards"
                         :key="index"
-                        class="reward-item mb-2 gr-2"
-                        :style="reward.isPromoted ? 'width: 100%' : 'width: 48% !important'"
+                        class="reward-item gr-2"
+                        :style="reward?.isPromoted ? 'width: 100%' : 'width: 48% !important'"
                     >
-                        <component :is="componentMap[reward.variant]" :reward="reward" />
+                        <component :is="componentMap[reward?.variant]" :reward="reward" />
                     </div>
                 </div>
             </b-col>
@@ -370,6 +370,36 @@ export default defineComponent({
     box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px 0px, rgba(255, 255, 255, 0.12) 0px 4px 4px 0px inset;
     background: rgb(212, 70, 70) !important;
     border-radius: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: -1;
+}
+
+.btn-primary:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 8px 16px 0px, rgba(255, 255, 255, 0.2) 0px 8px 16px 0px inset;
+    background: rgb(248, 69, 69) !important;
+    color: white;
+    border-radius: 25px;
+}
+
+.btn-primary:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
 }
 
 .my-leader {
@@ -393,7 +423,6 @@ export default defineComponent({
 
 .gr-2 {
     width: 100% !important;
-    box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
     //zoom: 0.75;
 }
 
@@ -437,6 +466,7 @@ export default defineComponent({
     border-radius: 15px;
     border: 1px dotted #865c5c85;
     padding: 6px;
+    margin-right: 20px;
 }
 
 .quests-title {
@@ -455,8 +485,8 @@ export default defineComponent({
     align-items: flex-start;
     align-content: flex-start;
     padding: 0px;
-    gap: 10px;
-    margin-bottom: 10px;
+    column-gap: 10px;
+    margin-bottom: 8px;
 }
 .title-q {
     font-size: 30px;

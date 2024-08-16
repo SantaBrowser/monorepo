@@ -1,54 +1,60 @@
 <template>
     <div ref="mainComponent" class="mainComponent">
         <HeaderNav :is-visible="true" />
-        <div ref="firstDiv" class="landing-page w-100">
-            <div
-                :class="{ blurred: isBlurred }"
-                :style="{
-                    opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
-                    margin: 0,
-                }"
-                class="h-100 bg-santa"
-                @transitionend="onTransitionEnd"
-            >
-                <div class="bg-blur">
-                    <div class="unwrap">UNWRAP</div>
-                </div>
-                <!--                <div class="d-flex flex-column gap-4 landing-top hidden">-->
-                <!--                    <h1>Santa <span>Rewards</span></h1>-->
-                <!--                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>-->
-                <!--                </div>-->
-                <!--                <div class="d-flex gap-4 campaigns-box" style="margin-top: 75px">-->
-                <!--                    <div v-for="campaign in filteredCampaigns" :key="campaign._id">-->
-                <!--                        <CampaignCard :campaign="campaign" @scrollToSecondDiv="scrollToSecondDiv" />-->
-                <!--                    </div>-->
-                <!--                </div>-->
-
-                <!--                <div class="d-flex flex-wrap bestofwrapper" style="margin-top: 0px">-->
-                <!--                    <div class="bestoftheweb">The Best of the Web With Santa's Rewards!</div>-->
-
-                <!--                    <QuestsCarousel :quest-lists="questLists" class="hidden" @scrollToSecondDiv="scrollToSecondDiv" />-->
-                <!--                </div>-->
-                <!--                <div style="height: 100px"></div>-->
-                <!-- <BaseCardCampaign :campaign="campaign" /> -->
-            </div>
-        </div>
-
-        <div ref="secondDiv" :class="{ 'slides-up': isSecondDivVisible }" class="d-flex window-container bg-secondDiv">
-            <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
-            <div class="d-flex bf-blur w-100">
-                <Quests :selected-part="selectedPart" :is-second-div-visible="isSecondDivVisible" />
-
-                <BaseSidebar />
+        <div class="bf-blur">
+            <div ref="firstDiv" class="landing-page w-100">
                 <div
-                    v-if="accountStore.isMobile && (selectedPart === 'Leaderboard' || selectedPart === 'Wallet')"
-                    class="w-100"
+                    :class="{ blurred: isBlurred }"
+                    :style="{
+                        opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
+                        margin: 0,
+                    }"
+                    class="h-100 bg-santa"
+                    @transitionend="onTransitionEnd"
                 >
-                    <div v-if="selectedPart === 'Leaderboard'" class="leaderboard-cont">
-                        <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
+                    <div class="bg-blur">
+                        <div class="unwrap">UNWRAP</div>
                     </div>
-                    <div v-if="selectedPart === 'Wallet'">
-                        <BaseCardRewards />
+                    <!--                <div class="d-flex flex-column gap-4 landing-top hidden">-->
+                    <!--                    <h1>Santa <span>Rewards</span></h1>-->
+                    <!--                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>-->
+                    <!--                </div>-->
+                    <!--                <div class="d-flex gap-4 campaigns-box" style="margin-top: 75px">-->
+                    <!--                    <div v-for="campaign in filteredCampaigns" :key="campaign._id">-->
+                    <!--                        <CampaignCard :campaign="campaign" @scrollToSecondDiv="scrollToSecondDiv" />-->
+                    <!--                    </div>-->
+                    <!--                </div>-->
+
+                    <!--                <div class="d-flex flex-wrap bestofwrapper" style="margin-top: 0px">-->
+                    <!--                    <div class="bestoftheweb">The Best of the Web With Santa's Rewards!</div>-->
+
+                    <!--                    <QuestsCarousel :quest-lists="questLists" class="hidden" @scrollToSecondDiv="scrollToSecondDiv" />-->
+                    <!--                </div>-->
+                    <!--                <div style="height: 100px"></div>-->
+                    <!-- <BaseCardCampaign :campaign="campaign" /> -->
+                </div>
+            </div>
+
+            <div
+                ref="secondDiv"
+                :class="{ 'slides-up': isSecondDivVisible }"
+                class="d-flex window-container bg-secondDiv"
+            >
+                <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
+                <div class="d-flex bf-blur w-100">
+                    <Quests :selected-part="selectedPart" :is-second-div-visible="isSecondDivVisible" />
+
+                    <BaseSidebar />
+                    <div
+                        v-if="accountStore.isMobile && (selectedPart === 'Leaderboard' || selectedPart === 'Wallet')"
+                        class="w-100"
+                    >
+                        <div v-if="selectedPart === 'Leaderboard'" class="leaderboard-cont">
+                            <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
+                        </div>
+                        <div v-if="selectedPart === 'Wallet'">
+                            <BaseCardRewards />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -354,7 +360,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .landing-page {
     display: block;
-    background-image: url('/src/assets/bg-mosaic.png');
+    //background-image: url('/src/assets/bg-mosaic.png');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -405,7 +411,7 @@ export default defineComponent({
 }
 .window-container {
     //height: calc(100vh - 70px);
-    background-color: #0c0d15;
+    //background-color: #0c0d15;
     //position: absolute;
     //bottom: -60%;
     //top: 10px;
@@ -574,28 +580,32 @@ export default defineComponent({
 
 .bg-santa {
     background: url(/src/assets/top-bg.jpg);
-    border-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
     border: 1px dotted rgb(23 72 208);
     overflow: hidden;
     box-shadow: inset 1px 20px 20px 15px rgb(8 1 1 / 94%);
     /* border-top-right-radius: 0; */
     /* border-top-left-radius: 0; */
     /* border-top: 0; */
+    background-position: center 20%;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .bg-blur {
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(5px);
 }
 
 .unwrap {
     padding: 50px 0 0;
-    line-height: 30vh;
+    line-height: 35vh;
     font-size: 21vw;
     color: #3b3306;
     font-weight: 800;
     border-radius: 15px;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke-color: #ffcd07;
+    -webkit-text-stroke-color: rgba(255, 205, 7, 0.9);
     -webkit-text-stroke-width: 6px;
     background-position: top;
     top: 0;
@@ -605,6 +615,7 @@ export default defineComponent({
     transition: 1s all ease-in-out;
     -moz-transition: 1s all ease-in-out;
     -webkit-transition: 1s all ease-in-out;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
 .bestoftheweb {
     font-family: 'Kode Mono', monospace;
@@ -625,7 +636,7 @@ export default defineComponent({
     justify-content: center;
 }
 
-.bg-secondDiv {
+.mainComponent {
     background-image: url('src/assets/bg-secondDiv.jpg');
     background-size: cover;
     background-repeat: no-repeat;

@@ -1,5 +1,9 @@
 import hre, { ethers } from 'hardhat';
 
+/**
+ * Run the deployment script
+ * @dev npx hardhat run --network arbitrum scripts/deploy-verify.ts
+ */
 async function main() {
     const BondPurchaseCheckerFactory = await ethers.getContractFactory('BondPurchaseCheckerFactory');
     const factory = await BondPurchaseCheckerFactory.deploy();
