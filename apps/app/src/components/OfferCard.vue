@@ -6,11 +6,7 @@
         style="background: transparent"
     >
         <template #header>
-            <b-card-title
-                class="d-flex p-3 m-0 align-items-center"
-                style="cursor: pointer; background-color: #0e0f19"
-                @click="isVisible = !isVisible"
-            >
+            <b-card-title class="d-flex p-3 m-0 align-items-center" style="background-color: #0e0f19">
                 <div class="d-flex align-items-center justify-content-center" style="width: 25px">
                     <i class="me-2 text-primary fas fa-gift"></i>
                 </div>
