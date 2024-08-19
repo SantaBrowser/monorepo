@@ -27,6 +27,7 @@
                     {{ walletStore.wallet ? walletStore.wallet.short : 'Connect' }}
                 </div>
             </template>
+
             <b-dropdown-text v-if="walletStore.wallet" text-class="bg-dark">
                 <b-form-group label-class="d-flex align-items-center mb-1">
                     <template #label>
@@ -137,7 +138,6 @@
             menu-class="w-100 fade-in"
             no-caret
             end
-            toggle-class="p-2"
             :disabled="!accountStore.isAuthenticated"
             :style="{
                 backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -171,6 +171,23 @@
             >
                 New Wallet
             </b-dropdown-item>
+        </b-dropdown>
+        <b-dropdown
+            v-if="walletStore.wallet && walletStore.wallet.pendingTransactions.length"
+            variant="primary"
+            size="sm"
+            menu-class="bg-body"
+            toggle-class="ms-2 px-3"
+            no-caret
+        >
+            <template #button-content>
+                <i class="fas fa-circle text-danger position-absolute" style="top: -5px; right: -5px" />
+                <strong>{{ walletStore.wallet.pendingTransactions.length }}</strong>
+            </template>
+            <b-dropdown-text>
+                <span class="text-opaque">Transactions</span>
+                <BaseDropdownItemTransaction v-for="tx of walletStore.wallet.pendingTransactions" :tx="tx" />
+            </b-dropdown-text>
         </b-dropdown>
     </div>
 </template>
