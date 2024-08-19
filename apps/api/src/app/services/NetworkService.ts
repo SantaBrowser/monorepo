@@ -13,6 +13,10 @@ import {
     ARBITRUM_RPC,
     APTOS_NODE_URL,
     APTOS_PRIVATE_KEY,
+    METIS_RELAYER,
+    METIS_RPC,
+    METIS_RELAYER_API_KEY,
+    METIS_RELAYER_API_SECRET,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
 import { ethers, Wallet } from 'ethers';
@@ -50,6 +54,13 @@ class NetworkService {
                 defaultAccount: PRIVATE_KEY,
                 rpc: ARBITRUM_RPC,
                 txServiceUrl: ARBITRUM_SAFE_TXS_SERVICE,
+            },
+            {
+                chainId: ChainId.Metis,
+                defaultAccount: METIS_RELAYER,
+                rpc: METIS_RPC,
+                relayer: { apiKey: METIS_RELAYER_API_KEY, apiSecret: METIS_RELAYER_API_SECRET },
+                txServiceUrl: 'https://safe-transaction-polygon.safe.global',
             },
         ],
     };
