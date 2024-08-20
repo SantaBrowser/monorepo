@@ -30,7 +30,13 @@
                 ) !important;
             "
         >
-            <img v-if="quest.image" class="img-fluid" :src="quest.image" alt="header image" />
+            <img
+                v-if="quest.image"
+                class="img-fluid w-100"
+                :src="quest.image"
+                alt="header image"
+                style="border: 1px px solid #000; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px"
+            />
 
             <div class="px-3 mt-3">
                 <b-alert v-model="hasExpiry" variant="primary" class="px-2 py-1 flex-grow-1 mb-2">
