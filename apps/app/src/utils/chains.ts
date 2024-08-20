@@ -10,6 +10,7 @@ import ImgLogoIOTA from '../assets/thx_logo_iota.svg';
 import ImgLogoSepolia from '../assets/thx_logo_sepolia.svg';
 import ImgLogoSkale from '../assets/thx_logo_skale.svg';
 import ImgLogoAptos from '../assets/thx_logo_aptos.svg';
+import ImgLogoSui from '../assets/thx_logo_sui.svg';
 import {
     arbitrum,
     mainnet,
@@ -61,6 +62,19 @@ const aptos = defineChain({
     },
     blockExplorers: {
         default: { name: 'Explorer', url: 'https://explorer.aptoslabs.com' },
+    },
+    contracts: {},
+});
+
+const sui = defineChain({
+    id: ChainId.Sui,
+    name: 'Sui',
+    nativeCurrency: { name: 'Sui', symbol: 'SUI', decimals: 9 },
+    rpcUrls: {
+        default: { http: ['https://rpc-testnet.suiscan.xyz:443'] },
+    },
+    blockExplorers: {
+        default: { name: 'Explorer', url: 'https://suiscan.xyz/testnet' },
     },
     contracts: {},
 });
@@ -142,6 +156,13 @@ const chainList: { [chainId: number]: ChainInfo } = {
         logo: ImgLogoAptos,
         blockExplorer: 'https://explorer.aptoslabs.com',
         chain: aptos,
+    },
+    [ChainId.Sui]: {
+        chainId: ChainId.Sui,
+        name: 'Sui',
+        logo: ImgLogoSui,
+        blockExplorer: 'https://suiscan.xyz/testnet',
+        chain: sui,
     },
     [ChainId.Skale]: {
         chainId: ChainId.Skale,

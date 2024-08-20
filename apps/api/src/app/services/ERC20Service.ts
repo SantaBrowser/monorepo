@@ -21,6 +21,7 @@ import PoolService from './PoolService';
 import { fromWei } from 'web3-utils';
 import { PromiseParser } from '@thxnetwork/api/util';
 import AptosService from './AptosService';
+import SuiService from './SuiService';
 
 async function decorate(token: ERC20TokenDocument, wallet: WalletDocument) {
     const erc20 = await getById(token.erc20Id);
@@ -183,6 +184,25 @@ export const findBy = (query: { address: string; chainId: ChainId; sub?: string 
 export const importToken = async (chainId: number, address: string, sub: string, logoImgUrl: string) => {
     if (chainId == ChainId.Aptos) {
         const [name, symbol] = await AptosService.getCoinInfo(address);
+        const erc20 = await ERC20.create({
+            sub,
+            name,
+            symbol,
+            address,
+            chainId,
+            logoImgUrl,
+            type: ERC20Type.Unknown,
+        });
+
+        const wallets = await Wallet.find({ sub });
+        for (const wallet of wallets) {
+            await upsertToken(erc20, wallet);
+        }
+    
+        return erc20;
+    }
+    else if (chainId == ChainId.Sui) {
+        const [name, symbol] = await SuiService.getCoinInfo(address);
         const erc20 = await ERC20.create({
             sub,
             name,

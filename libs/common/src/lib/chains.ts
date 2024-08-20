@@ -69,6 +69,12 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://explorer.aptoslabs.com',
         rpc: 'https://fullnode.testnet.aptoslabs.com'
     },
+    [ChainId.Sui]: {
+        chainId: ChainId.Sui,
+        name: 'Sui',
+        blockExplorer: 'https://suiscan.xyz/testnet',
+        rpc: 'https://rpc-testnet.suiscan.xyz:443'
+    },
 };
 
 if (process.env['NODE_ENV'] !== 'production') {

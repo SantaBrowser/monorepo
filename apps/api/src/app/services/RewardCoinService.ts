@@ -18,9 +18,14 @@ import MailService from './MailService';
 import PoolService from './PoolService';
 import SafeService from './SafeService';
 import AptosService from './AptosService';
+import SuiService from './SuiService';
 import { AptosClient, TxnBuilderTypes, BCS, TypeTagParser } from "aptos";
-import { APTOS_NODE_URL } from '../config/secrets';
+import { SuiClient } from "@mysten/sui/client";
+import { coinWithBalance, Transaction as SuiTransaction} from '@mysten/sui/transactions';
+import { MultiSigPublicKey } from '@mysten/sui/multisig';
+import { APTOS_NODE_URL, SUI_NODE_URL } from '../config/secrets';
 import NetworkService from './NetworkService';
+import { logger } from '../util/logger';
 
 const { AccountAddress, EntryFunction, MultiSig, MultiSigTransactionPayload, TransactionPayloadMultisig } =
   TxnBuilderTypes;
@@ -102,6 +107,39 @@ export default class RewardCoinService implements IRewardService {
             await client.generateSignSubmitWaitForTransaction(signer, createMultisigTx.payload);
             
             await client.generateSignSubmitWaitForTransaction(signer, multisigTxExecution);
+
+            logger.debug("Safe TX Executed");
+        }
+        else if (erc20.chainId == ChainId.Sui) {
+            const client = new SuiClient({ url: SUI_NODE_URL });
+            const [, , decimals] = await SuiService.getCoinInfo(erc20.address);
+            const { signer } = NetworkService.getProvider(erc20.chainId);
+            const tx = new SuiTransaction();
+            tx.transferObjects([
+                coinWithBalance({ balance: reward.amount * 10 ** Number(decimals), type: erc20.address }),
+            ], wallet.address);
+            tx.setSender(safe.address);
+            const bytes = await tx.build({ client: client });
+            const signature = (await signer.signTransaction(bytes)).signature;
+            const multiSigPublicKey = MultiSigPublicKey.fromPublicKeys({
+                threshold: 1,
+                publicKeys: [
+                    {
+                        publicKey: signer.getPublicKey(),
+                        weight: 1,
+                    },
+                ],
+            });
+            const combinedSignature = multiSigPublicKey.combinePartialSignatures([signature]);
+            const result = await client.executeTransactionBlock({
+                transactionBlock: bytes,
+                signature: combinedSignature,
+                requestType: 'WaitForLocalExecution',
+                options: {
+                    showEffects: true,
+                },
+            });
+            logger.debug("Safe TX Executed");
         }
         else {
             // TODO Wei should be determined in the FE
@@ -155,6 +193,24 @@ export default class RewardCoinService implements IRewardService {
             const balanceOfPool = await AptosService.getCoinBalance(safe.address, erc20.address);
             const [, , decimals] = await AptosService.getCoinInfo(erc20.address);
             if (balanceOfPool < reward.amount * 10 ** decimals) {
+                const owner = await AccountProxy.findById(safe.sub);
+                const html = `Not enough ${erc20.symbol} available in campaign contract ${safe.address}. Please top up on ${
+                    ChainId[erc20.chainId]
+                }`;
+
+                // Send email to campaign owner
+                await MailService.send(owner.email, `⚠️ Out of ${erc20.symbol}!"`, html);
+
+                return {
+                    result: false,
+                    reason: `We have notified the campaign owner that there is insufficient ${erc20.symbol} in the campaign wallet. Please try again later!`,
+                };
+            }
+        }
+        else if (erc20.chainId == ChainId.Sui) {
+            const balanceOfPool = await SuiService.getCoinBalance(safe.address, erc20.address);
+            const [, , decimals] = await SuiService.getCoinInfo(erc20.address);
+            if (Number(balanceOfPool) < reward.amount * 10 ** Number(decimals)) {
                 const owner = await AccountProxy.findById(safe.sub);
                 const html = `Not enough ${erc20.symbol} available in campaign contract ${safe.address}. Please top up on ${
                     ChainId[erc20.chainId]

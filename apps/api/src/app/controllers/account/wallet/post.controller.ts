@@ -16,7 +16,7 @@ const controller = async (req: Request, res: Response) => {
     const data: Partial<TWallet> = { sub: req.auth.sub, chainId };
 
     // If no message and signature are present prepare a wallet to connect later
-    if (data.chainId == ChainId.Aptos) {
+    if (data.chainId == ChainId.Aptos || data.chainId == ChainId.Sui) {
         data.address = rawAddress;
     }
     else {
