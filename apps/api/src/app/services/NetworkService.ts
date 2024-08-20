@@ -12,7 +12,9 @@ import {
     SKALE_RPC,
     ARBITRUM_RPC,
     APTOS_NODE_URL,
+    SUI_NODE_URL,
     APTOS_PRIVATE_KEY,
+    SUI_PRIVATE_KEY,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
 import { ethers, Wallet } from 'ethers';
@@ -23,6 +25,9 @@ import { DefenderRelayProvider } from '@openzeppelin/defender-relay-client/lib/w
 import { ChainId } from '@thxnetwork/common/enums';
 import { EthersAdapter } from '@safe-global/protocol-kit';
 import { AptosClient, AptosAccount, HexString } from "aptos";
+import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
+import { fromHEX } from '@mysten/bcs';
+import { SuiClient } from '@mysten/sui/client';
 
 class NetworkService {
     config = {
@@ -85,6 +90,17 @@ class NetworkService {
             const defaultAccount = signer.address();
             const client = new AptosClient(APTOS_NODE_URL);
             this.networks[ChainId.Aptos] = {
+                signer,
+                defaultAccount,
+                client
+            };
+        }
+
+        if (SUI_NODE_URL) {
+            const signer = Ed25519Keypair.fromSecretKey(fromHEX('0x26a5ff8079273e83a27ce4860d59745c8678fc5ec0ce74e23c23e78a5d6c4227'));
+            const defaultAccount = signer.toSuiAddress();
+            const client = new SuiClient({ url: SUI_NODE_URL });
+            this.networks[ChainId.Sui] = {
                 signer,
                 defaultAccount,
                 client

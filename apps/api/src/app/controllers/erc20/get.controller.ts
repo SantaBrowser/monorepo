@@ -6,6 +6,7 @@ import NetworkService from '@thxnetwork/api/services/NetworkService';
 import { NotFoundError } from '@thxnetwork/api/util/errors';
 import { ChainId } from '@thxnetwork/common/enums';
 import AptosService from '@thxnetwork/api/services/AptosService';
+import SuiService from '@thxnetwork/api/services/SuiService';
 
 const validation = [param('id').isMongoId()];
 
@@ -23,6 +24,20 @@ const controller = async (req: Request, res: Response) => {
     if (erc20.chainId == ChainId.Aptos) {
         const [ , , decimalsString] = await AptosService.getCoinInfo(erc20.address);
         const adminBalanceInWei = await AptosService.getCoinBalance(defaultAccount, erc20.address);
+        const decimals = Number(decimalsString);
+        const adminBalance = Number(adminBalanceInWei) / 10 ** decimals;
+        const totalSupplyInWei = "";
+
+        res.status(200).json({
+            ...erc20.toJSON(),
+            totalSupplyInWei,
+            decimals,
+            adminBalance,
+        });
+    }
+    else if (erc20.chainId == ChainId.Sui) {
+        const [ , , decimalsString] = await SuiService.getCoinInfo(erc20.address);
+        const adminBalanceInWei = await SuiService.getCoinBalance(defaultAccount, erc20.address);
         const decimals = Number(decimalsString);
         const adminBalance = Number(adminBalanceInWei) / 10 ** decimals;
         const totalSupplyInWei = "";
