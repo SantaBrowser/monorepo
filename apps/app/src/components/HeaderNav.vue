@@ -110,6 +110,13 @@ export default defineComponent({
     watch: {
         'accountStore.participants': function (newVal, oldVal) {
             console.log('Participants changed:', newVal);
+            // Recalculate the balances
+            this.participantSanta = this.accountStore.participants.find(
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === SANTA_CAMPAIGN,
+            );
+            this.participantCP = this.accountStore.participants.find(
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === CP_CAMPAIGN,
+            );
         },
     },
     async created() {
