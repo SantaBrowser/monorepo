@@ -215,7 +215,7 @@ export default defineComponent({
             let merged = [];
             let offerIndex = 0;
             const questBatchSize = 5;
-
+            // const availableQuests = this.quests.filter((q) => q.isAvailable);
             for (let i = 0; i < this.quests.length; i++) {
                 if (i % questBatchSize === 0 && i !== 0) {
                     merged.push({
