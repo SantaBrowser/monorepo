@@ -9,7 +9,9 @@
                     :disabled="
                         w.variant === WalletVariant.Safe ||
                         (chainId == ChainId.Aptos && w.chainId !== ChainId.Aptos) ||
-                        (chainId !== ChainId.Aptos && w.chainId == ChainId.Aptos)
+                        (chainId !== ChainId.Aptos && w.chainId == ChainId.Aptos) ||
+                        (chainId == ChainId.Sui && w.chainId !== ChainId.Sui) ||
+                        (chainId !== ChainId.Sui && w.chainId == ChainId.Sui)
                     "
                 >
                     {{ w.short }}
@@ -66,6 +68,7 @@ export default defineComponent({
     },
     methods: {
         onClickAdd() {
+            this.walletStore.currentChainId = this.chainId;
             this.walletStore.isModalWalletCreateShown = true;
         },
     },

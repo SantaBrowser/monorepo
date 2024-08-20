@@ -64,33 +64,63 @@ export default defineComponent({
             return this.walletStore.account.address;
         },
         async onClickConnect() {
-            console.log(this.walletStore.chainId);
-            console.log(this.walletStore.account);
-            try {
-                await window.martian.disconnect();
-                const accountInfo = await window.martian.connect();
-                console.log(accountInfo);
+            if (this.walletStore.currentChainId == ChainId.Aptos) {
                 try {
-                    await this.walletStore.create({
-                        chainId: ChainId.Aptos,
-                        variant: this.variant,
-                        rawAddress: accountInfo.address,
-                    });
-                    console.log(this.walletStore.wallets);
-                    const wallet = this.walletStore.wallets.find(
-                        (wallet: TWallet) => wallet.address === accountInfo.address,
-                    );
-                    if (!wallet) throw new Error('New wallet not found');
+                    await window.martian.disconnect();
+                    const accountInfo = await window.martian.connect();
+                    console.log(accountInfo);
+                    try {
+                        await this.walletStore.create({
+                            chainId: ChainId.Aptos,
+                            variant: this.variant,
+                            rawAddress: accountInfo.address,
+                        });
+                        console.log(this.walletStore.wallets);
+                        const wallet = this.walletStore.wallets.find(
+                            (wallet: TWallet) => wallet.address === accountInfo.address,
+                        );
+                        if (!wallet) throw new Error('New wallet not found');
 
-                    this.walletStore.setWallet(wallet);
-                    this.$emit('close');
+                        this.walletStore.setWallet(wallet);
+                        this.$emit('close');
+                    } catch (error) {
+                        console.error(error);
+                        this.error = 'An issue occured while creating your wallet. Please try again.';
+                    } finally {
+                        this.isLoading = false;
+                    }
                 } catch (error) {
                     console.error(error);
-                    this.error = 'An issue occured while creating your wallet. Please try again.';
-                } finally {
-                    this.isLoading = false;
                 }
-            } catch (error) {
+            } else if (this.walletStore.currentChainId == ChainId.Sui) {
+                try {
+                    await window.martian.sui.disconnect();
+                    const accountInfo = await window.martian.sui.connect(['viewAccount', 'suggestTransactions']);
+                    console.log(accountInfo);
+                    try {
+                        await this.walletStore.create({
+                            chainId: ChainId.Sui,
+                            variant: this.variant,
+                            rawAddress: accountInfo.address,
+                        });
+                        console.log(this.walletStore.wallets);
+                        const wallet = this.walletStore.wallets.find(
+                            (wallet: TWallet) => wallet.address === accountInfo.address,
+                        );
+                        if (!wallet) throw new Error('New wallet not found');
+
+                        this.walletStore.setWallet(wallet);
+                        this.$emit('close');
+                    } catch (error) {
+                        console.error(error);
+                        this.error = 'An issue occured while creating your wallet. Please try again.';
+                    } finally {
+                        this.isLoading = false;
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
                 try {
                     await this.walletStore.disconnect();
                     await this.walletStore.connect();
@@ -100,6 +130,41 @@ export default defineComponent({
                     this.error = 'An issue occured while connecting your wallet. Please try again.';
                 }
             }
+            // try {
+            //     await window.martian.sui.disconnect();
+            //     const accountInfo = await window.martian.sui.connect(['viewAccount', 'suggestTransactions']);
+            //     // const accountInfo = await window.martian.connect();
+            //     console.log(accountInfo);
+            //     try {
+            //         await this.walletStore.create({
+            //             chainId: ChainId.Sui,
+            //             variant: this.variant,
+            //             rawAddress: accountInfo.address,
+            //         });
+            //         console.log(this.walletStore.wallets);
+            //         const wallet = this.walletStore.wallets.find(
+            //             (wallet: TWallet) => wallet.address === accountInfo.address,
+            //         );
+            //         if (!wallet) throw new Error('New wallet not found');
+
+            //         this.walletStore.setWallet(wallet);
+            //         this.$emit('close');
+            //     } catch (error) {
+            //         console.error(error);
+            //         this.error = 'An issue occured while creating your wallet. Please try again.';
+            //     } finally {
+            //         this.isLoading = false;
+            //     }
+            // } catch (error) {
+            //     try {
+            //         await this.walletStore.disconnect();
+            //         await this.walletStore.connect();
+            //         this.address = await this.getAddress();
+            //     } catch (error) {
+            //         console.error(error);
+            //         this.error = 'An issue occured while connecting your wallet. Please try again.';
+            //     }
+            // }
         },
         async onClickAdd() {
             this.isLoading = true;

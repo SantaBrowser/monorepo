@@ -6,6 +6,7 @@ import { NotFoundError } from '@thxnetwork/api/util/errors';
 import ContractService from '@thxnetwork/api/services/ContractService';
 import { ChainId } from '@thxnetwork/common/enums';
 import AptosService from '@thxnetwork/api/services/AptosService';
+import SuiService from '@thxnetwork/api/services/SuiService';
 import NetworkService from '@thxnetwork/api/services/NetworkService';
 
 const validation = [
@@ -23,6 +24,11 @@ const controller = async (req: Request, res: Response) => {
 
     if(safe.chainId == ChainId.Aptos) {
         const adminBalanceInWei = await AptosService.getCoinBalance(safe.address, req.query.tokenAddress as string);
+        console.log(adminBalanceInWei)
+        res.json({ balanceInWei: adminBalanceInWei });
+    }
+    else if(safe.chainId == ChainId.Sui) {
+        const adminBalanceInWei = await SuiService.getCoinBalance(safe.address, req.query.tokenAddress as string);
         console.log(adminBalanceInWei)
         res.json({ balanceInWei: adminBalanceInWei });
     }

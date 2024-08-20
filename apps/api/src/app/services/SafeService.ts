@@ -16,6 +16,7 @@ import { PRIVATE_KEY } from '../config/secrets';
 import { ethers } from "ethers";
 import * as Gen from "../config/generated";
 import { BCS } from "aptos";
+import { MultiSigPublicKey } from '@mysten/sui/multisig';
 
 class SafeService {
     async create(
@@ -32,7 +33,7 @@ class SafeService {
         let owners = [];
 
         // Add relayer address and consider this a campaign safe
-        if(data.chainId != ChainId.Aptos) {
+        if (data.chainId != ChainId.Aptos && data.chainId != ChainId.Sui) {
             const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
             owners = [toChecksumAddress(defaultAccount)];
 
@@ -64,6 +65,22 @@ class SafeService {
                 arguments: [[], 1, ["Shaka"], [BCS.bcsSerializeStr("Bruh")]],
             });
             await client.generateSignSubmitWaitForTransaction(signer, createMultisig.payload);
+            logger.debug('Deployed Safe :', multisigAddress);
+            return multisigAddress;
+        }
+        else if (wallet.chainId == ChainId.Sui) {
+            const { signer } = NetworkService.getProvider(wallet.chainId);
+            const multiSigPublicKey = MultiSigPublicKey.fromPublicKeys({
+                threshold: 1,
+                publicKeys: [
+                  {
+                    publicKey: signer.getPublicKey(),
+                    weight: 1,
+                  },
+                ],
+            });
+            
+            const multisigAddress = multiSigPublicKey.toSuiAddress();
             logger.debug('Deployed Safe :', multisigAddress);
             return multisigAddress;
         }
