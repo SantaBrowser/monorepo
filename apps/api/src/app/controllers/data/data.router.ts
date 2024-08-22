@@ -9,6 +9,7 @@ const router: express.Router = express.Router();
 const mixpanelProxy = function (options: AxiosRequestConfig) {
     if (!options.url.startsWith('/')) throw new ForbiddenError();
     axios.defaults.baseURL = MIXPANEL_API_URL;
+
     return axios(options);
 };
 

@@ -3,7 +3,10 @@
         <BaseNavbarSecondary v-if="accountStore.isMobile" class="ms-auto" />
 
         <div class="d-flex p-2 m-0 align-items-center">
-            <div class="flex-grow-1 pe-2">Your Wallet</div>
+            <div class="flex-grow-1 pe-2 d-flex">
+                Your Wallet
+                <b-spinner v-if="walletStore.isLoading" class="ms-2" variant="primary" small />
+            </div>
             <b-dropdown variant="primary" size="sm" no-caret>
                 <template #button-content>
                     {{ activeFilter.label }}

@@ -1,4 +1,4 @@
-import { SuiClient } from "@mysten/sui/client";
+import { SuiClient } from '@mysten/sui/client';
 import { SUI_NODE_URL } from '../config/secrets';
 
 class SuiService {
@@ -12,7 +12,7 @@ class SuiService {
             return [coinInfo?.name, coinInfo?.symbol, coinInfo?.decimals];
         } catch (error) {
             console.error('Failed to fetch coin info:', error);
-            return ["", "", 0];
+            return ['', '', 0];
         }
     }
 
@@ -20,12 +20,12 @@ class SuiService {
         const client = new SuiClient({ url: SUI_NODE_URL });
 
         try {
-            const info = await client.getAllCoins({ owner: accountAddress, });
+            const info = await client.getAllCoins({ owner: accountAddress });
             const data = info.data.filter((dt) => dt.coinType == contractAddress);
             return data[0].balance;
         } catch (error) {
             console.error('Failed to fetch coin info:', error);
-            return "0";
+            return '0';
         }
     }
 }
