@@ -102,6 +102,12 @@ export default class RewardCoinService implements IRewardService {
             await client.generateSignSubmitWaitForTransaction(signer, createMultisigTx.payload);
             
             await client.generateSignSubmitWaitForTransaction(signer, multisigTxExecution);
+
+            await Transaction.create({
+                state: TransactionState.Mined,
+                chainId: wallet.chainId,
+                walletId: wallet.id,
+            });
         }
         else {
             // TODO Wei should be determined in the FE
