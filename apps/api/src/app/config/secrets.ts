@@ -71,7 +71,7 @@ export const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
 export const SKALE_RPC = process.env.SKALE_RPC;
 export const LINEA_RPC = process.env.LINEA_RPC;
 export const HARDHAT_RPC = process.env.HARDHAT_RPC || '';
-export const POLYGON_RPC = process.env.POLYGON_RPC || 'https://rpc.ankr.com/polygon';
+export const POLYGON_RPC = process.env.POLYGON_RPC;
 // export const LINEA_RPC =
 //     `https://linea-mainnet.infura.io/v3/${INFURA_PROJECT_ID}` ||
 //     `https://linea-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
