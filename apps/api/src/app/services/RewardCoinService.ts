@@ -18,12 +18,12 @@ import MailService from './MailService';
 import PoolService from './PoolService';
 import SafeService from './SafeService';
 import AptosService from './AptosService';
-import { AptosClient, TxnBuilderTypes, BCS, TypeTagParser } from "aptos";
+import { AptosClient, TxnBuilderTypes, BCS, TypeTagParser } from 'aptos';
 import { APTOS_NODE_URL } from '../config/secrets';
 import NetworkService from './NetworkService';
 
 const { AccountAddress, EntryFunction, MultiSig, MultiSigTransactionPayload, TransactionPayloadMultisig } =
-  TxnBuilderTypes;
+    TxnBuilderTypes;
 
 export default class RewardCoinService implements IRewardService {
     models = {
@@ -73,43 +73,17 @@ export default class RewardCoinService implements IRewardService {
         if (!safe) return { result: false, reason: 'Safe not found' };
 
         if (erc20.chainId == ChainId.Aptos) {
-            const client = new AptosClient(APTOS_NODE_URL);
             const [, , decimals] = await AptosService.getCoinInfo(erc20.address);
-            const { signer } = NetworkService.getProvider(erc20.chainId);
-            const transferTxPayload = new MultiSigTransactionPayload(
-                EntryFunction.natural(
-                  "0x1::aptos_account",
-                  "transfer_coins",
-                  [new TypeTagParser(erc20.address).parseTypeTag()],
-                  [BCS.bcsToBytes(AccountAddress.fromHex(wallet.address)), BCS.bcsSerializeUint64(reward.amount * 10 ** decimals)],
-                ),
-            );
-            const multisigTxExecution = new TransactionPayloadMultisig(
-                new MultiSig(AccountAddress.fromHex(safe.address), transferTxPayload),
-            );
-            // We can simulate the transaction to see if it will succeed without having to create it on chain.
-            const [simulationResp] = await client.simulateTransaction(
-                signer,
-                await client.generateRawTransaction(signer.address(), multisigTxExecution),
-            );
-            
-              // Create the multisig tx on chain.
-            const createMultisigTx = await client.generateTransaction(signer.address(), {
-                function: "0x1::multisig_account::create_transaction",
-                type_arguments: [],
-                arguments: [safe.address, BCS.bcsToBytes(transferTxPayload)],
-            });
-            await client.generateSignSubmitWaitForTransaction(signer, createMultisigTx.payload);
-            
-            await client.generateSignSubmitWaitForTransaction(signer, multisigTxExecution);
 
             await Transaction.create({
-                state: TransactionState.Mined,
+                to: erc20.address,
+                data: safe.address,
+                state: TransactionState.Queued,
+                amount: reward.amount * 10 ** decimals,
                 chainId: wallet.chainId,
                 walletId: wallet.id,
             });
-        }
-        else {
+        } else {
             // TODO Wei should be determined in the FE
             const decimals = await erc20.contract.methods.decimals().call();
             const amount = parseUnits(reward.amount, decimals).toString();
@@ -162,9 +136,9 @@ export default class RewardCoinService implements IRewardService {
             const [, , decimals] = await AptosService.getCoinInfo(erc20.address);
             if (balanceOfPool < reward.amount * 10 ** decimals) {
                 const owner = await AccountProxy.findById(safe.sub);
-                const html = `Not enough ${erc20.symbol} available in campaign contract ${safe.address}. Please top up on ${
-                    ChainId[erc20.chainId]
-                }`;
+                const html = `Not enough ${erc20.symbol} available in campaign contract ${
+                    safe.address
+                }. Please top up on ${ChainId[erc20.chainId]}`;
 
                 // Send email to campaign owner
                 await MailService.send(owner.email, `⚠️ Out of ${erc20.symbol}!"`, html);
@@ -174,8 +148,7 @@ export default class RewardCoinService implements IRewardService {
                     reason: `We have notified the campaign owner that there is insufficient ${erc20.symbol} in the campaign wallet. Please try again later!`,
                 };
             }
-        }
-        else {
+        } else {
             const balanceOfPool = await erc20.contract.methods.balanceOf(safe.address).call();
             const isTransferable = [ERC20Type.Unknown, ERC20Type.Limited].includes(erc20.type);
             const decimals = await erc20.contract.methods.decimals().call();
@@ -184,9 +157,9 @@ export default class RewardCoinService implements IRewardService {
             // Notifiy the campaign owner if token is transferrable and balance is insufficient
             if (isTransferable && isBalanceInsufficient) {
                 const owner = await AccountProxy.findById(safe.sub);
-                const html = `Not enough ${erc20.symbol} available in campaign contract ${safe.address}. Please top up on ${
-                    ChainId[erc20.chainId]
-                }`;
+                const html = `Not enough ${erc20.symbol} available in campaign contract ${
+                    safe.address
+                }. Please top up on ${ChainId[erc20.chainId]}`;
 
                 // Send email to campaign owner
                 await MailService.send(owner.email, `⚠️ Out of ${erc20.symbol}!"`, html);

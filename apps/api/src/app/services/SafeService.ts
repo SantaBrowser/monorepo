@@ -13,9 +13,13 @@ import { Job } from '@hokify/agenda';
 import { agenda } from '../util/agenda';
 import { logger } from '../util/logger';
 import { PRIVATE_KEY } from '../config/secrets';
-import { ethers } from "ethers";
-import * as Gen from "../config/generated";
-import { BCS } from "aptos";
+import { ethers } from 'ethers';
+import * as Gen from '../config/generated';
+import { AptosClient, TxnBuilderTypes, BCS, TypeTagParser } from 'aptos';
+import { APTOS_NODE_URL } from '../config/secrets';
+
+const { AccountAddress, EntryFunction, MultiSig, MultiSigTransactionPayload, TransactionPayloadMultisig } =
+    TxnBuilderTypes;
 
 class SafeService {
     async create(
@@ -32,7 +36,7 @@ class SafeService {
         let owners = [];
 
         // Add relayer address and consider this a campaign safe
-        if(data.chainId != ChainId.Aptos) {
+        if (data.chainId != ChainId.Aptos) {
             const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
             owners = [toChecksumAddress(defaultAccount)];
 
@@ -53,21 +57,20 @@ class SafeService {
         if (wallet.chainId == ChainId.Aptos) {
             const { signer, client } = NetworkService.getProvider(wallet.chainId);
             const payload: Gen.ViewRequest = {
-                function: "0x1::multisig_account::get_next_multisig_account_address",
+                function: '0x1::multisig_account::get_next_multisig_account_address',
                 type_arguments: [],
                 arguments: [signer.address().hex()],
             };
             const multisigAddress = (await client.view(payload))[0] as string;
             const createMultisig = await client.generateTransaction(signer.address(), {
-                function: "0x1::multisig_account::create_with_owners",
+                function: '0x1::multisig_account::create_with_owners',
                 type_arguments: [],
-                arguments: [[], 1, ["Shaka"], [BCS.bcsSerializeStr("Bruh")]],
+                arguments: [[], 1, ['Shaka'], [BCS.bcsSerializeStr('Bruh')]],
             });
             await client.generateSignSubmitWaitForTransaction(signer, createMultisig.payload);
             logger.debug('Deployed Safe :', multisigAddress);
             return multisigAddress;
-        }
-        else if (wallet.chainId == ChainId.Skale) {
+        } else if (wallet.chainId == ChainId.Skale) {
             const { web3, defaultAccount } = NetworkService.getProvider(wallet.chainId);
             const { abi, bytecode } = getArtifact('SafeWallet');
             const contract = new web3.eth.Contract(abi);
@@ -90,13 +93,12 @@ class SafeService {
 
             // Sign the transaction
             const signed = await web3.eth.accounts.signTransaction(tx, privateKey);
-            console.log("Signed Transaction");
-            const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction).on('receipt', receipt => {
+            console.log('Signed Transaction');
+            const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction).on('receipt', (receipt) => {
                 logger.debug('Deployed Safe :', receipt.contractAddress);
             });
             return receipt.contractAddress;
-        }
-        else{
+        } else {
             const { ethAdapter } = NetworkService.getProvider(wallet.chainId);
             const safeAccountConfig: SafeAccountConfig = {
                 owners,
@@ -104,22 +106,22 @@ class SafeService {
             };
             const safeAddress = await this.predictAddress(wallet, safeAccountConfig, safeVersion, saltNonce);
 
-        try {
-            await Safe.create({
-                ethAdapter,
-                safeAddress,
-                contractNetworks,
-            });
-        } catch (error) {
-            await agenda.now(JobType.DeploySafe, { safeAccountConfig, saltNonce, chainId: wallet.chainId });
-        }
+            try {
+                await Safe.create({
+                    ethAdapter,
+                    safeAddress,
+                    contractNetworks,
+                });
+            } catch (error) {
+                await agenda.now(JobType.DeploySafe, { safeAccountConfig, saltNonce, chainId: wallet.chainId });
+            }
 
             return safeAddress;
         }
     }
 
     async deploySafeJob({ attrs }: Job) {
-        logger.debug("Deploying Safe");
+        logger.debug('Deploying Safe');
         const { safeAccountConfig, saltNonce, chainId } = attrs.data as TJobDeploySafe;
         const { ethAdapter, provider } = NetworkService.getProvider(chainId);
         const safeFactory = await SafeFactory.create({
@@ -134,7 +136,7 @@ class SafeService {
 
         try {
             await safeFactory.deploySafe(args);
-            logger.debug("Deployed Safe");
+            logger.debug('Deployed Safe');
         } catch (error) {
             logger.error(error.response ? error.response.data : error.message);
         }
@@ -182,35 +184,68 @@ class SafeService {
     }
 
     async proposeTx(wallet: WalletDocument, tx: TransactionDocument) {
-        await tx.updateOne({ state: TransactionState.Executed });
-        const { web3, provider } = NetworkService.getProvider(wallet.chainId);
-        const { abi } = getArtifact('SafeWallet');
-        const contract = new web3.eth.Contract(abi, wallet.address);
-        const nonce = await contract.methods.getNonce().call();
+        if (wallet.chainId == ChainId.Skale) {
+            await tx.updateOne({ state: TransactionState.Executed });
+            const { web3, provider } = NetworkService.getProvider(wallet.chainId);
+            const { abi } = getArtifact('SafeWallet');
+            const contract = new web3.eth.Contract(abi, wallet.address);
+            const nonce = await contract.methods.getNonce().call();
 
-        const dataField = ethers.utils.defaultAbiCoder.encode(
-            ["address", "bytes", "uint256"],
-            [tx.to, tx.data, nonce]
-        );
-        const hash = ethers.utils.keccak256(dataField);
-        const signatures = web3.eth.accounts.sign(hash, PRIVATE_KEY);
-        const signWallet = new ethers.Wallet(PRIVATE_KEY, provider);
-        const walletContract = new ethers.Contract(wallet.address, abi, signWallet);
-        const gasPriceMode = await provider.getGasPrice();
-        const gasPrice = (2 * gasPriceMode.toNumber()).toString();
-        const res = await walletContract.execTransaction(tx.to, tx.data, signatures.signature, {
-            gasPrice: gasPrice,
-        });
-        await tx.updateOne({ state: TransactionState.Mined });
-        logger.debug("Safe TX Executed");
+            const dataField = ethers.utils.defaultAbiCoder.encode(
+                ['address', 'bytes', 'uint256'],
+                [tx.to, tx.data, nonce],
+            );
+            const hash = ethers.utils.keccak256(dataField);
+            const signatures = web3.eth.accounts.sign(hash, PRIVATE_KEY);
+            const signWallet = new ethers.Wallet(PRIVATE_KEY, provider);
+            const walletContract = new ethers.Contract(wallet.address, abi, signWallet);
+            const gasPriceMode = await provider.getGasPrice();
+            const gasPrice = (2 * gasPriceMode.toNumber()).toString();
+            const res = await walletContract.execTransaction(tx.to, tx.data, signatures.signature, {
+                gasPrice: gasPrice,
+            });
+            await tx.updateOne({ state: TransactionState.Mined });
+            logger.debug('Safe TX Executed');
+        } else {
+            await tx.updateOne({ state: TransactionState.Executed });
+            const client = new AptosClient(APTOS_NODE_URL);
+            const { signer } = NetworkService.getProvider(wallet.chainId);
+            const transferTxPayload = new MultiSigTransactionPayload(
+                EntryFunction.natural(
+                    '0x1::aptos_account',
+                    'transfer_coins',
+                    [new TypeTagParser(tx.to).parseTypeTag()],
+                    [BCS.bcsToBytes(AccountAddress.fromHex(wallet.address)), BCS.bcsSerializeUint64(tx.amount)],
+                ),
+            );
+            const multisigTxExecution = new TransactionPayloadMultisig(
+                new MultiSig(AccountAddress.fromHex(tx.data), transferTxPayload),
+            );
+            // We can simulate the transaction to see if it will succeed without having to create it on chain.
+            const [simulationResp] = await client.simulateTransaction(
+                signer,
+                await client.generateRawTransaction(signer.address(), multisigTxExecution),
+            );
+
+            // Create the multisig tx on chain.
+            const createMultisigTx = await client.generateTransaction(signer.address(), {
+                function: '0x1::multisig_account::create_transaction',
+                type_arguments: [],
+                arguments: [tx.data, BCS.bcsToBytes(transferTxPayload)],
+            });
+            await client.generateSignSubmitWaitForTransaction(signer, createMultisigTx.payload);
+
+            await client.generateSignSubmitWaitForTransaction(signer, multisigTxExecution);
+            await tx.updateOne({ state: TransactionState.Mined });
+            logger.debug('Safe TX Executed');
+        }
     }
 
     async proposeTransaction(wallet: WalletDocument, txs: TransactionDocument[]) {
-        if (wallet.chainId == ChainId.Skale) {
-            Promise.all(txs.map(tx => this.proposeTx(wallet, tx)))
-                .then(() => logger.debug("Skale txs done"))
-                .catch(() => logger.error("Error proposing transaction"));
-
+        if (wallet.chainId == ChainId.Skale || wallet.chainId == ChainId.Aptos) {
+            Promise.all(txs.map((tx) => this.proposeTx(wallet, tx)))
+                .then(() => logger.debug('Proposed and Executed txs'))
+                .catch(() => logger.error('Error proposing transaction'));
         } else {
             const safeTransactionDataPartial = txs.map((tx: TransactionDocument) => {
                 return {
@@ -297,7 +332,6 @@ class SafeService {
     }
 
     async executeTransaction(wallet: WalletDocument, safeTxHash: string) {
-        console.log("#########here");
         try {
             const pendingTx = await this.getTransaction(wallet, safeTxHash);
             if (!pendingTx) throw new Error('Pending TX not found');
@@ -306,18 +340,14 @@ class SafeService {
             if (confirmations && confirmations.length >= confirmationsRequired) {
                 const safe = await this.getSafe(wallet);
                 const safeTx = await safe.toSafeTransactionType(pendingTx);
-                console.log("#########here2");
 
                 try {
                     const { provider } = NetworkService.getProvider(wallet.chainId);
                     const gasPriceMode = await provider.getGasPrice();
                     const gasPrice = (2 * gasPriceMode.toNumber()).toString();
                     const options = { gasPrice: gasPrice };
-                    console.log("#########here3");
                     const response = await safe.executeTransaction(safeTx, options);
-                    console.log("#########here4");
                     const receipt = await response.transactionResponse.wait();
-                    console.log("#########here5");
                     if (!receipt) throw new Error(`No receipt found for ${safeTxHash}`);
                     if (!receipt.transactionHash) throw new Error(`No transactionHash found for ${safeTxHash}`);
 
