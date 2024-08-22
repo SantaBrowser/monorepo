@@ -5,6 +5,7 @@ type TTransaction = {
     from: string;
     to: string;
     data: string;
+    amount: number;
     nonce: number;
     gas: string;
     chainId: ChainId;

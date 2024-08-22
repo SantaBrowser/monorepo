@@ -11,6 +11,7 @@ export const Transaction = mongoose.model<TransactionDocument>(
             nonce: Number,
             walletId: String,
             data: String,
+            amount: Number,
             transactionHash: String,
             safeTxHash: String,
             type: Number,
