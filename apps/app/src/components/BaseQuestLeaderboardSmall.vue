@@ -147,7 +147,9 @@ export default defineComponent({
     border: 0.5px solid rgba(76, 46, 115, 0.4);
 }
 .my-list {
+    max-height: 500px;
     gap: 0.5rem;
+    overflow: scroll;
 }
 
 .my-list .list-group-item {
