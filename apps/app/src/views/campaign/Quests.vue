@@ -9,7 +9,7 @@
                 lg="6"
                 xl="7"
                 offset-xl="0"
-                class="quests-column flex-grow-1"
+                class="quests-column flex-grow-1 my-col-xl-7"
             >
                 <div class="mb-2 align-items-center bg-quests rounded">
                     <div class="quests-title d-flex p-2">
@@ -88,7 +88,7 @@
                     <div
                         v-for="(reward, index) in mergedRewards"
                         :key="index"
-                        class="reward-item gr-2"
+                        class="reward-item gr-2 mb-2"
                         :style="reward?.isPromoted ? 'width: 100%' : 'width: 48% !important'"
                     >
                         <component :is="componentMap[reward?.variant]" :reward="reward" />
@@ -215,7 +215,7 @@ export default defineComponent({
             let merged = [];
             let offerIndex = 0;
             const questBatchSize = 5;
-
+            // const availableQuests = this.quests.filter((q) => q.isAvailable);
             for (let i = 0; i < this.quests.length; i++) {
                 if (i % questBatchSize === 0 && i !== 0) {
                     merged.push({
@@ -558,8 +558,9 @@ export default defineComponent({
 }
 
 @media (max-width: 1400px) {
-    .rewards-column {
-        width: auto;
+    .my-col-xl-7 {
+        flex: 0 0 auto;
+        width: 50%;
     }
 }
 

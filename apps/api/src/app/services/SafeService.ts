@@ -16,7 +16,10 @@ import { PRIVATE_KEY } from '../config/secrets';
 import { ethers } from 'ethers';
 import * as Gen from '../config/generated';
 import { AptosClient, TxnBuilderTypes, BCS, TypeTagParser } from 'aptos';
-import { APTOS_NODE_URL } from '../config/secrets';
+import { SuiClient } from '@mysten/sui/client';
+import { coinWithBalance, Transaction as SuiTransaction } from '@mysten/sui/transactions';
+import { MultiSigPublicKey } from '@mysten/sui/multisig';
+import { APTOS_NODE_URL, SUI_NODE_URL } from '../config/secrets';
 
 const { AccountAddress, EntryFunction, MultiSig, MultiSigTransactionPayload, TransactionPayloadMultisig } =
     TxnBuilderTypes;
@@ -36,7 +39,7 @@ class SafeService {
         let owners = [];
 
         // Add relayer address and consider this a campaign safe
-        if (data.chainId != ChainId.Aptos) {
+        if (data.chainId != ChainId.Aptos && data.chainId != ChainId.Sui) {
             const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
             owners = [toChecksumAddress(defaultAccount)];
 
@@ -68,6 +71,21 @@ class SafeService {
                 arguments: [[], 1, ['Shaka'], [BCS.bcsSerializeStr('Bruh')]],
             });
             await client.generateSignSubmitWaitForTransaction(signer, createMultisig.payload);
+            logger.debug('Deployed Safe :', multisigAddress);
+            return multisigAddress;
+        } else if (wallet.chainId == ChainId.Sui) {
+            const { signer } = NetworkService.getProvider(wallet.chainId);
+            const multiSigPublicKey = MultiSigPublicKey.fromPublicKeys({
+                threshold: 1,
+                publicKeys: [
+                    {
+                        publicKey: signer.getPublicKey(),
+                        weight: 1,
+                    },
+                ],
+            });
+
+            const multisigAddress = multiSigPublicKey.toSuiAddress();
             logger.debug('Deployed Safe :', multisigAddress);
             return multisigAddress;
         } else if (wallet.chainId == ChainId.Skale) {
@@ -206,7 +224,7 @@ class SafeService {
             });
             await tx.updateOne({ state: TransactionState.Mined });
             logger.debug('Safe TX Executed');
-        } else {
+        } else if (wallet.chainId == ChainId.Aptos) {
             await tx.updateOne({ state: TransactionState.Executed });
             const client = new AptosClient(APTOS_NODE_URL);
             const { signer } = NetworkService.getProvider(wallet.chainId);
@@ -238,11 +256,40 @@ class SafeService {
             await client.generateSignSubmitWaitForTransaction(signer, multisigTxExecution);
             await tx.updateOne({ state: TransactionState.Mined });
             logger.debug('Safe TX Executed');
+        } else {
+            await tx.updateOne({ state: TransactionState.Executed });
+            const client = new SuiClient({ url: SUI_NODE_URL });
+            const { signer } = NetworkService.getProvider(wallet.chainId);
+            const safeTx = new SuiTransaction();
+            safeTx.transferObjects([coinWithBalance({ balance: tx.amount, type: tx.to })], wallet.address);
+            safeTx.setSender(tx.data);
+            const bytes = await safeTx.build({ client: client });
+            const signature = (await signer.signTransaction(bytes)).signature;
+            const multiSigPublicKey = MultiSigPublicKey.fromPublicKeys({
+                threshold: 1,
+                publicKeys: [
+                    {
+                        publicKey: signer.getPublicKey(),
+                        weight: 1,
+                    },
+                ],
+            });
+            const combinedSignature = multiSigPublicKey.combinePartialSignatures([signature]);
+            const result = await client.executeTransactionBlock({
+                transactionBlock: bytes,
+                signature: combinedSignature,
+                requestType: 'WaitForLocalExecution',
+                options: {
+                    showEffects: true,
+                },
+            });
+            await tx.updateOne({ state: TransactionState.Mined });
+            logger.debug('Safe TX Executed');
         }
     }
 
     async proposeTransaction(wallet: WalletDocument, txs: TransactionDocument[]) {
-        if (wallet.chainId == ChainId.Skale || wallet.chainId == ChainId.Aptos) {
+        if (wallet.chainId == ChainId.Skale || wallet.chainId == ChainId.Aptos || wallet.chainId == ChainId.Sui) {
             Promise.all(txs.map((tx) => this.proposeTx(wallet, tx)))
                 .then(() => logger.debug('Proposed and Executed txs'))
                 .catch(() => logger.error('Error proposing transaction'));

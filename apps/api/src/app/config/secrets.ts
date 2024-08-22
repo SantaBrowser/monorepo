@@ -26,6 +26,10 @@ if (process.env.NODE_ENV === 'production') {
             'POLYGON_RPC',
             'SEPOLIA_RPC',
             'SKALE_RPC',
+            'APTOS_NODE_URL',
+            'APTOS_PRIVATE_KEY',
+            'SUI_NODE_URL',
+            'SUI_PRIVATE_KEY',
             'ARBITRUM_RPC',
             'RELAYER_SPEED',
             'TWITTER_API_TOKEN',
@@ -81,10 +85,12 @@ export const ETHEREUM_RPC =
     process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth' || `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}` ||  '';
 
 export const APTOS_NODE_URL = process.env.APTOS_NODE_URL || 'https://fullnode.testnet.aptoslabs.com';
+export const SUI_NODE_URL = process.env.SUI_NODE_URL || 'https://rpc-testnet.suiscan.xyz:443';
 
 export const MONGODB_URI = String(process.env.MONGODB_URI) || '';
 export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 export const APTOS_PRIVATE_KEY = process.env.APTOS_PRIVATE_KEY;
+export const SUI_PRIVATE_KEY = process.env.SUI_PRIVATE_KEY;
 export const PORT = process.env.PORT || '';
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID || '';
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET || '';

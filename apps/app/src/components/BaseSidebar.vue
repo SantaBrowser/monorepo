@@ -68,8 +68,8 @@ aside.sidebar {
         border-radius: 0;
 
         //border-left: 1px dotted #20af104d;
-        overflow-x: hidden;
-        overflow-y: auto;
+        //overflow-x: hidden;
+        //overflow-y: auto;
 
         @media (max-width: 991px) {
             border: 0;

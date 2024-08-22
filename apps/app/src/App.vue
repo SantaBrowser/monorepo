@@ -75,13 +75,25 @@ export default defineComponent({
     },
     async mounted() {
         const urlParams = new URLSearchParams(window.location.search);
-        const clid = urlParams.get('clid');
+        let clid = urlParams.get('clid');
+
+        if (!clid) {
+            clid = this.getCookieReduce('clid');
+        }
+
         const user = this.accountStore.isAuthenticated;
         if (clid && !user) {
             await this.authenticateUser(clid);
         }
     },
     methods: {
+        getCookieReduce(name: string): string {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const [n, ...val] = v.split('='); // cookie value can contain "="
+                if (r) return r; // returns first found cookie
+                return n === name ? decodeURIComponent(val.join('=')) : r; // returns last found cookie (overwrites)
+            }, '');
+        },
         async authenticateUser(clid: string) {
             try {
                 await this.accountStore.signinWithClid(clid);

@@ -40,6 +40,7 @@ type TWalletState = {
     isLoading: boolean;
     isModalWalletCreateShown: boolean;
     isModalChainSwitchShown: boolean;
+    currentChainId: ChainId;
 };
 
 type TERC20 = {

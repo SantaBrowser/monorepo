@@ -3,6 +3,7 @@ import { query } from 'express-validator';
 import { ChainId } from '@thxnetwork/common/enums';
 import ContractService from '@thxnetwork/api/services/ContractService';
 import AptosService from '@thxnetwork/api/services/AptosService';
+import SuiService from '@thxnetwork/api/services/SuiService';
 
 const validation = [
     query('chainId').isInt(), 
@@ -14,6 +15,10 @@ const controller = async (req: Request, res: Response) => {
     const contractAddress = req.query.address as string;
     if(chainId == ChainId.Aptos) {
         const [name, symbol] = await AptosService.getCoinInfo(contractAddress);
+        res.json({ name, symbol, totalSupplyInWei: "" });
+    }
+    else if(chainId == ChainId.Sui) {
+        const [name, symbol] = await SuiService.getCoinInfo(contractAddress);
         res.json({ name, symbol, totalSupplyInWei: "" });
     }
     else {
