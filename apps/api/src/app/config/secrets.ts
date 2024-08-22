@@ -70,13 +70,19 @@ export const DASHBOARD_URL = process.env.DASHBOARD_URL || '';
 export const WIDGET_URL = process.env.WIDGET_URL || '';
 export const PUBLIC_URL = process.env.PUBLIC_URL || '';
 
-export const HARDHAT_RPC = process.env.HARDHAT_RPC;
-export const POLYGON_RPC = process.env.POLYGON_RPC;
 export const ARBITRUM_RPC = process.env.ARBITRUM_RPC;
 export const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
 export const SKALE_RPC = process.env.SKALE_RPC;
 export const LINEA_RPC = process.env.LINEA_RPC;
-export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth';
+export const HARDHAT_RPC = process.env.HARDHAT_RPC || '';
+export const POLYGON_RPC = process.env.POLYGON_RPC;
+// export const LINEA_RPC =
+//     `https://linea-mainnet.infura.io/v3/${INFURA_PROJECT_ID}` ||
+//     `https://linea-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
+// export const METIS_RPC = `https://metis-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}` || '';
+export const METIS_RPC = '';
+export const ETHEREUM_RPC =
+    process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth' || `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}` ||  '';
 
 export const APTOS_NODE_URL = process.env.APTOS_NODE_URL || 'https://fullnode.testnet.aptoslabs.com';
 export const SUI_NODE_URL = process.env.SUI_NODE_URL || 'https://rpc-testnet.suiscan.xyz:443';
@@ -109,6 +115,10 @@ export const POLYGON_RELAYER_API_SECRET = process.env.POLYGON_RELAYER_API_SECRET
 export const LINEA_RELAYER = process.env.LINEA_RELAYER || '';
 export const LINEA_RELAYER_API_KEY = process.env.LINEA_RELAYER_API_KEY || '';
 export const LINEA_RELAYER_API_SECRET = process.env.LINEA_RELAYER_API_SECRET || '';
+
+export const METIS_RELAYER = process.env.METIS_RELAYER || '';
+export const METIS_RELAYER_API_KEY = process.env.METIS_RELAYER_API_KEY || '';
+export const METIS_RELAYER_API_SECRET = process.env.METIS_RELAYER_API_SECRET || '';
 
 export const RELAYER_SPEED = 'fast' as Speed;
 

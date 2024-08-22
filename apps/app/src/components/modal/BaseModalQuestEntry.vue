@@ -130,7 +130,6 @@ export default defineComponent({
                 const { email } = this.accountStore.account;
                 this.email = email;
             }
-            // this.questStore.list();
         },
         async onClickSubscribe() {
             this.subscribeError = '';

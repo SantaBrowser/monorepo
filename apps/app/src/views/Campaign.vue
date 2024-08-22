@@ -1,10 +1,5 @@
 <template>
-    <div
-        class="d-flex flex-column h-100 p-0"
-        :class="{
-            'h-vertical': !accountStore.isIFrame,
-        }"
-    >
+    <div class="d-flex flex-column h-100 p-0 h-vertical">
         <BaseNavbarSecondary v-if="accountStore.isMobile" />
         <BaseCardCampaignJumbotron :height="100" />
         <router-view class="order-lg-2 overflow-mobile flex-grow-1" />
@@ -120,9 +115,10 @@ export default defineComponent({
         overflow-y: auto;
     }
 }
-
-.h-vertical {
-    height: calc(100% - 30px) !important;
+@media (min-width: 992px) {
+    .h-vertical {
+        height: calc(100% - 30px) !important;
+    }
 
     @media (min-width: 991px) {
         // height: calc(100% - 30px) !important;

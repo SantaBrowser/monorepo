@@ -14,6 +14,10 @@ import {
     APTOS_NODE_URL,
     SUI_NODE_URL,
     APTOS_PRIVATE_KEY,
+    METIS_RELAYER,
+    METIS_RPC,
+    METIS_RELAYER_API_KEY,
+    METIS_RELAYER_API_SECRET,
     SUI_PRIVATE_KEY,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
@@ -24,7 +28,7 @@ import { Relayer } from '@openzeppelin/defender-relay-client';
 import { DefenderRelayProvider } from '@openzeppelin/defender-relay-client/lib/web3';
 import { ChainId } from '@thxnetwork/common/enums';
 import { EthersAdapter } from '@safe-global/protocol-kit';
-import { AptosClient, AptosAccount, HexString } from "aptos";
+import { AptosClient, AptosAccount, HexString } from 'aptos';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { fromHEX } from '@mysten/bcs';
 import { SuiClient } from '@mysten/sui/client';
@@ -48,13 +52,20 @@ class NetworkService {
                 chainId: ChainId.Skale,
                 defaultAccount: PRIVATE_KEY,
                 rpc: SKALE_RPC,
-                txServiceUrl: "",
+                txServiceUrl: '',
             },
             {
                 chainId: ChainId.Arbitrum,
                 defaultAccount: PRIVATE_KEY,
                 rpc: ARBITRUM_RPC,
                 txServiceUrl: ARBITRUM_SAFE_TXS_SERVICE,
+            },
+            {
+                chainId: ChainId.Metis,
+                defaultAccount: METIS_RELAYER,
+                rpc: METIS_RPC,
+                relayer: { apiKey: METIS_RELAYER_API_KEY, apiSecret: METIS_RELAYER_API_SECRET },
+                txServiceUrl: 'https://safe-transaction-polygon.safe.global',
             },
         ],
     };
@@ -92,20 +103,22 @@ class NetworkService {
             this.networks[ChainId.Aptos] = {
                 signer,
                 defaultAccount,
-                client
+                client,
             };
         }
 
         if (SUI_NODE_URL) {
-            const signer = Ed25519Keypair.fromSecretKey(fromHEX('0x26a5ff8079273e83a27ce4860d59745c8678fc5ec0ce74e23c23e78a5d6c4227'));
+            const signer = Ed25519Keypair.fromSecretKey(
+                fromHEX('0x26a5ff8079273e83a27ce4860d59745c8678fc5ec0ce74e23c23e78a5d6c4227'),
+            );
             const defaultAccount = signer.toSuiAddress();
             const client = new SuiClient({ url: SUI_NODE_URL });
             this.networks[ChainId.Sui] = {
                 signer,
                 defaultAccount,
-                client
+                client,
             };
-        } 
+        }
 
         // Provides all other configured networks for this service
         for (const network of this.config.networks) {
@@ -113,12 +126,7 @@ class NetworkService {
         }
     }
 
-    setNetwork(options: {
-        chainId: ChainId;
-        defaultAccount: string;
-        rpc: string;
-        txServiceUrl: string;
-    }) {
+    setNetwork(options: { chainId: ChainId; defaultAccount: string; rpc: string; txServiceUrl: string }) {
         if (!options.rpc) return;
 
         const web3 = new Web3(options.rpc);

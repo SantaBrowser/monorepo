@@ -2,11 +2,17 @@ import Safe, { EthersAdapter } from '@safe-global/protocol-kit';
 import { useAccountStore } from './Account';
 import { defineStore } from 'pinia';
 import { track } from '@thxnetwork/app/utils/mixpanel';
-import { HARDHAT_RPC, POLYGON_RPC, SEPOLIA_RPC } from '../config/secrets';
+import {
+    HARDHAT_RPC,
+    POLYGON_RPC,
+    SEPOLIA_RPC,
+    API_URL,
+    WALLET_CONNECT_PROJECT_ID,
+    WIDGET_URL,
+} from '../config/secrets';
 import { useAuthStore } from './Auth';
 import { ChainId } from '@thxnetwork/common/enums';
 import { WalletVariant } from '../types/enums/accountVariant';
-import { API_URL, POLYGON_RPC, WALLET_CONNECT_PROJECT_ID, WIDGET_URL } from '../config/secrets';
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi';
 import {
     sendTransaction,
@@ -410,6 +416,18 @@ export const useWalletStore = defineStore('wallet', {
                 to: contractAddress as `0x${string}`,
                 data: encodeFunctionData({ abi, functionName, args }),
             };
+        },
+        async getTransaction(transactionId: string) {
+            if (!this.wallet) return;
+
+            const { api } = useAccountStore();
+            await api.request.get(`/v1/account/wallets/${this.wallet._id}/transactions/${transactionId}`);
+        },
+        async removeTransaction(tx: TTransaction) {
+            if (!this.wallet) return;
+
+            const { api } = useAccountStore();
+            await api.request.delete(`/v1/account/wallets/${this.wallet._id}/transactions/${tx._id}`);
         },
     },
 });

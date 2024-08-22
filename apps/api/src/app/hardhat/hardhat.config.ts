@@ -13,7 +13,8 @@ const ETHERSCAN_BASE_API_KEY = process.env.ETHERSCAN_BASE_API_KEY || '';
 const SEPOLIA_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 const SKALE_PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 const ETHERSCAN_ARBITRUM_API_KEY = process.env.ETHERSCAN_ARBITRUM_API_KEY || '';
-console.log('ETHERSCAN_ARBITRUM_API_KEY', ETHERSCAN_ARBITRUM_API_KEY);
+const ETHERSCAN_BSC_API_KEY = process.env.ETHERSCAN_BSC_API_KEY || '';
+
 const config: HardhatUserConfig = {
     defaultNetwork: 'polygon',
     networks: {
@@ -135,6 +136,7 @@ const config: HardhatUserConfig = {
             polygon: ETHERSCAN_POLYGON_API_KEY,
             arbitrumOne: ETHERSCAN_ARBITRUM_API_KEY,
             base: ETHERSCAN_BASE_API_KEY,
+            bsc: ETHERSCAN_BSC_API_KEY,
         },
         customChains: [
             {
@@ -167,6 +169,11 @@ if (POLYGON_PRIVATE_KEY && ALCHEMY_API_KEY && config.networks) {
     };
     config.networks.iota = {
         url: `https://json-rpc.evm.iotaledger.net`,
+        accounts: [DEPLOYER_PRIVATE_KEY],
+        timeout: 2483647,
+    };
+    config.networks.bsc = {
+        url: `https://rpc.ankr.com/bsc`,
         accounts: [DEPLOYER_PRIVATE_KEY],
         timeout: 2483647,
     };
