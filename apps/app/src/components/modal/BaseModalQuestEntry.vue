@@ -72,6 +72,7 @@ import { PropType, defineComponent } from 'vue';
 import { mapStores } from 'pinia';
 import { useAccountStore } from '../../stores/Account';
 import { useQuestStore } from '../../stores/Quest';
+import { SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseModalQuestEntry',
@@ -146,7 +147,7 @@ export default defineComponent({
             try {
                 this.isSubmitting = true;
                 await this.accountStore.getParticipants();
-                await this.questStore.list();
+                this.questStore.list(SANTA_CAMPAIGN);
                 this.$emit('hidden');
             } catch (error) {
                 console.error(error);
