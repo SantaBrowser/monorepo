@@ -7,12 +7,20 @@ import { IQuestService } from './interfaces/IQuestService';
 import { QuestCashback, QuestCashbackDocument } from '../models/QuestCashback';
 import { QuestCashbackEntry } from '../models/QuestCashbackEntry';
 import { logger } from '../util/logger';
+import { Request } from 'express';
 
 export default class QuestCashbackService implements IQuestService {
     models = {
         quest: QuestCashback,
         entry: QuestCashbackEntry,
     };
+
+    async getDataForRequest(
+        req: Request,
+        options: { quest: TQuest; account: TAccount },
+    ): Promise<Partial<TQuestEntry>> {
+        return {};
+    }
 
     async findEntryMetadata({ quest }: { quest: QuestCashbackDocument }) {
         const uniqueParticipantIds = await QuestCashbackEntry.countDocuments({
@@ -39,7 +47,6 @@ export default class QuestCashbackService implements IQuestService {
             sub: account._id,
             santaQuestId,
             santaQuestType,
-            isClaimed: true,
         });
 
         // Only two entries allowed
