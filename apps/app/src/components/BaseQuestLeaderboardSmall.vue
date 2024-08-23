@@ -71,8 +71,14 @@ export default defineComponent({
         ...mapStores(useQuestStore),
     },
     watch: {
-        $route(to, from) {
+        '$route'(to, from) {
             this.updateLeaderboard();
+        },
+        'accountStore.participants': {
+            handler(newVal) {
+                this.updateLeaderboard();
+            },
+            immediate: true,
         },
     },
     mounted() {
@@ -80,14 +86,15 @@ export default defineComponent({
     },
     methods: {
         async updateLeaderboard() {
-            const url = window.location.href;
-            const poolIdMatch = url.match(/\/c\/([a-f0-9]{24})\//);
-
-            if (poolIdMatch) {
-                await this.accountStore.getLeaderboard(poolIdMatch[1]);
-            } else {
-                await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
-            }
+            // const url = window.location.href;
+            // const poolIdMatch = url.match(/\/c\/([a-f0-9]{24})\//);
+            await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
+            // if (poolIdMatch) {
+            //     await this.accountStore.getLeaderboard(poolIdMatch[1]);
+            // } else {
+            //     await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
+            // }
+            console.log('Leaderboard Data:', this.accountStore.leaderboardPrimary);
         },
         async onClickRefresh() {
             this.isLoading = true;

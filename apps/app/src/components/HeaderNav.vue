@@ -12,14 +12,14 @@
             >
                 <h2>Santa <span style="display: block">Quests</span></h2>
                 <div class="d-flex align-items-center">
-                    <p>{{ numberWithCommas(formattedBalance(participantSanta, SANTA_CAMPAIGN)) }}</p>
+                    <p>{{ numberWithCommas(formattedBalance(participantSantaState, SANTA_CAMPAIGN)) }}</p>
                     <img :src="imgStarCoin" alt="Star Coin" width="24" />
                 </div>
                 <div v-if="showSantaDropdown" class="dropdown-content">
                     <div class="justify-content-between">
                         <p>Total Earnings</p>
                         <div class="d-flex align-items-center total-earnings">
-                            <p>{{ numberWithCommas(formattedScore(participantSanta, SANTA_CAMPAIGN)) }}</p>
+                            <p>{{ numberWithCommas(formattedScore(participantSantaState, SANTA_CAMPAIGN)) }}</p>
                             <img :src="imgStarCoin" alt="Star Coin" width="24" height="24" />
                         </div>
                     </div>
@@ -35,12 +35,12 @@
                 @click="toggleCPDropdown"
             >
                 <h2>Cashback &<span style="display: block">Playwall </span></h2>
-                <p>${{ numberWithCommas(formattedBalance(participantCP, CP_CAMPAIGN)) }}</p>
+                <p>${{ numberWithCommas(formattedBalance(participantCPState, CP_CAMPAIGN)) }}</p>
                 <div v-if="showCPDropdown" class="dropdown-content">
                     <div class="justify-content-between">
                         <p>Total Earnings</p>
                         <div class="d-flex align-items-center total-earnings">
-                            <p>${{ numberWithCommas(formattedScore(participantCP, CP_CAMPAIGN)) }}</p>
+                            <p>${{ numberWithCommas(formattedScore(participantCPState, CP_CAMPAIGN)) }}</p>
                         </div>
                     </div>
                     <div>
@@ -87,36 +87,23 @@ export default defineComponent({
             imgStarCoin,
             showSantaDropdown: false,
             showCPDropdown: false,
+            participantSantaState: null as any,
+            participantCPState: null as any,
         };
     },
     computed: {
         ...mapStores(useAccountStore, useQuestStore),
-        participantSanta() {
-            console.log('this.accountStore.participants', this.accountStore.participants);
-            return this.accountStore.participants.find(
-                (p) => p.sub === this.accountStore.account?.sub && p.poolId === SANTA_CAMPAIGN,
-            );
-        },
-        participantCP() {
-            return this.accountStore.participants.find(
-                (p) => p.sub === this.accountStore.account?.sub && p.poolId === CP_CAMPAIGN,
-            );
-        },
         latestCompletedQuest() {
             const { quests } = this.questStore;
             return quests.find((quest) => !quest.isAvailable);
         },
     },
     watch: {
-        'accountStore.participants': function (newVal, oldVal) {
-            console.log('Participants changed:', newVal);
-            // Recalculate the balances
-            this.participantSanta = this.accountStore.participants.find(
-                (p) => p.sub === this.accountStore.account?.sub && p.poolId === SANTA_CAMPAIGN,
-            );
-            this.participantCP = this.accountStore.participants.find(
-                (p) => p.sub === this.accountStore.account?.sub && p.poolId === CP_CAMPAIGN,
-            );
+        'accountStore.participants': {
+            handler(newVal) {
+                this.updateParticipants();
+            },
+            immediate: true,
         },
     },
     async created() {
@@ -129,6 +116,14 @@ export default defineComponent({
         document.removeEventListener('click', this.handleClickOutside);
     },
     methods: {
+        updateParticipants() {
+            this.participantSantaState = this.accountStore.participants.find(
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === this.SANTA_CAMPAIGN,
+            );
+            this.participantCPState = this.accountStore.participants.find(
+                (p) => p.sub === this.accountStore.account?.sub && p.poolId === this.CP_CAMPAIGN,
+            );
+        },
         toggleSantaDropdown() {
             this.showSantaDropdown = !this.showSantaDropdown;
             this.showCPDropdown = false;
