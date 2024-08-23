@@ -7,9 +7,11 @@
     <div v-else id="main">
         <BaseNavbarTop />
         <div class="d-flex h-100">
-            <transition name="fade" mode="out-in">
-                <router-view class="router-view-app order-lg-0" />
-            </transition>
+            <router-view v-slot="{ Component }">
+                <transition name="fade" mode="out-in">
+                    <component :is="Component" class="router-view-app order-lg-0" />
+                </transition>
+            </router-view>
             <!-- <BaseSidebar /> -->
         </div>
         <BaseModalLogin />
