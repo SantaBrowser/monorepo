@@ -195,6 +195,7 @@ export default class QuestService {
         options: {
             quest: TQuest;
             account?: TAccount;
+            data?: any
         },
     ): Promise<TValidationResult> {
         if (!options.quest.isPublished) {
@@ -324,11 +325,10 @@ export default class QuestService {
             const account = await AccountProxy.findById(sub);
             const quest = await this.findById(variant, questId);
             const pool = await PoolService.getById(quest.poolId);
-            const amount = await this.getAmount(variant, quest, account);
-
+            const amount = await this.getAmount(variant, quest, account, data);
             // Test availabily of quest once more as it could be completed by a job that was scheduled already
             // if the jobs were created in parallel.
-            const isAvailable = await this.isAvailable(variant, { quest, account });
+            const isAvailable = await this.isAvailable(variant, { quest, account, data });
             if (!isAvailable.result) throw new Error(isAvailable.reason);
 
             // Create the quest entry
