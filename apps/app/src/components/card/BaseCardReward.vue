@@ -20,6 +20,7 @@
             class="d-flex flex-column justify-content-between h-100"
             :style="{ padding: '10px' }"
         >
+            <div v-if="reward.isPromoted" class="d-flex align-items-center c-quest-title">PROMOTED</div>
             <b-card-title class="d-flex align-items-center c-quest-title">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
@@ -91,7 +92,7 @@
                                 height="13"
                                 class="me-1"
                             />
-                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Coins</span>
+                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Points</span>
                         </div>
                         <b-progress
                             v-if="reward.limitProgress.max"
@@ -122,6 +123,7 @@
             class="d-flex flex-column justify-content-between cp-campaign-card"
             :style="{ padding: '0', height: 'auto' }"
         >
+            <div v-if="reward.isPromoted" class="d-flex align-items-center c-quest-title">PROMOTED</div>
             <div class="d-flex justify-content-center" style="padding: 3px">
                 <img
                     v-if="!image"
@@ -188,7 +190,7 @@
                                 height="13"
                                 class="me-1"
                             />
-                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Coins</span>
+                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Points</span>
                         </div>
                         <b-progress
                             v-if="reward.limitProgress.max"

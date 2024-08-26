@@ -200,7 +200,7 @@ export default defineComponent({
         },
         mergedRewards() {
             if (this.selectedValue === 'All') {
-                return [...this.reward2Store.rewards, ...this.rewardStore.rewards];
+                return [...this.rewardStore.rewards, ...this.reward2Store.rewards];
             } else if (this.selectedValue === 'Santa') {
                 return this.reward2Store.rewards;
             } else if (this.selectedValue === 'Playwall') {
