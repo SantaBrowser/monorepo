@@ -58,7 +58,7 @@ const aptos = defineChain({
     name: 'Aptos',
     nativeCurrency: { name: 'Aptos', symbol: 'APT', decimals: 6 },
     rpcUrls: {
-        default: { http: ['https://fullnode.testnet.aptoslabs.com'] },
+        default: { http: ['https://fullnode.mainnet.aptoslabs.com'] },
     },
     blockExplorers: {
         default: { name: 'Explorer', url: 'https://explorer.aptoslabs.com' },

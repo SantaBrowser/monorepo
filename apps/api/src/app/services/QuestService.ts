@@ -6,7 +6,6 @@ import { agenda } from '../util/agenda';
 import { logger } from '../util/logger';
 import { Job } from '@hokify/agenda';
 import { IQuestInviteService, serviceMap } from './interfaces/IQuestService';
-import { NODE_ENV } from '../config/secrets';
 import PoolService from './PoolService';
 import NotificationService from './NotificationService';
 import PointBalanceService from './PointBalanceService';
@@ -20,7 +19,6 @@ import DiscordService from './DiscordService';
 import { PromiseParser } from '../util/promise';
 import { getIP } from '../util/ip';
 import { QuestEntryStatus } from '@thxnetwork/common/enums';
-import { add } from 'date-fns';
 
 export default class QuestService {
     static async getDataForRequest(variant: QuestVariant, req: Request, options) {
@@ -195,7 +193,7 @@ export default class QuestService {
         options: {
             quest: TQuest;
             account?: TAccount;
-            data?: any
+            data?: any;
         },
     ): Promise<TValidationResult> {
         if (!options.quest.isPublished) {
