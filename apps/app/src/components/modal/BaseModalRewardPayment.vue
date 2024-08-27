@@ -40,7 +40,8 @@
                 </strong>
             </b-alert>
             <p :class="!isWalletRequired && 'mb-0'">
-                Do you want to use {{ reward.pointPrice }} points for <strong>{{ reward.title }} </strong>?
+                Do you want to use {{ displayRewardAmount }} for <strong>{{ reward.title }}</strong
+                >?
             </p>
             <BaseFormGroupWalletSelect
                 v-if="isWalletRequired"
@@ -59,9 +60,7 @@
             >
                 <b-spinner v-if="isLoading" small variant="primary" />
                 <template v-else-if="reward.isLocked"> <i class="fas fa-lock"></i></template>
-                <template v-else>
-                    Pay {{ reward.pointPrice }} {{ reward.pointPrice === 1 ? 'point' : 'points' }}
-                </template>
+                <template v-else> Pay {{ displayRewardAmount }} </template>
             </b-button>
             <b-button v-else class="w-100" variant="primary" @click="onClickContinue">Continue</b-button>
         </template>
@@ -76,6 +75,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useWalletStore } from '../../stores/Wallet';
 import { RewardVariant } from '@thxnetwork/app/types/enums/rewards';
 import { chainList } from '@thxnetwork/app/utils/chains';
+import { SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseModalRewardPayment',
@@ -99,6 +99,7 @@ export default defineComponent({
             isModalShown: false,
             isLoading: false,
             chainList,
+            SANTA_CAMPAIGN,
         };
     },
     computed: {
@@ -122,6 +123,14 @@ export default defineComponent({
         },
         isWalletRequired() {
             return [RewardVariant.Coin, RewardVariant.NFT].includes(this.reward.variant);
+        },
+        displayRewardAmount() {
+            if (this.reward.poolId === this.SANTA_CAMPAIGN) {
+                return `${this.reward.pointPrice} ${this.reward.pointPrice === 1 ? 'point' : 'points'}`;
+            } else {
+                const dollarAmount = this.reward.pointPrice / 100;
+                return `$${Number.isInteger(dollarAmount) ? dollarAmount : dollarAmount.toFixed(2)}`;
+            }
         },
     },
     watch: {

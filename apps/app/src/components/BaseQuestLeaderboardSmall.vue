@@ -94,7 +94,6 @@ export default defineComponent({
             // } else {
             //     await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
             // }
-            console.log('Leaderboard Data:', this.accountStore.leaderboardPrimary);
         },
         async onClickRefresh() {
             this.isLoading = true;

@@ -8,10 +8,10 @@
         :error="error"
         @modal-close="isModalQuestEntryShown = false"
     >
-        <b-progress v-if="accountStore.isAuthenticated && quest.limit > 0" class="mb-3" :max="quest.limit" show-value>
+        <!-- <b-progress v-if="accountStore.isAuthenticated && quest.limit > 0" class="mb-3" :max="quest.limit" show-value>
             <b-progress-bar variant="primary" :value="quest.entries.length" :label="`${quest.events.length}`" />
             <b-progress-bar variant="success" :value="pendingCount" :label="`${pendingCount}`" />
-        </b-progress>
+        </b-progress> -->
 
         <template #button>
             <b-button variant="primary" block class="w-100" :disabled="isSubmitting" @click="onClickClaim">

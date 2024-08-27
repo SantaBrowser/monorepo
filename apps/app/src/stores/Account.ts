@@ -118,7 +118,6 @@ export const useAccountStore = defineStore('account', {
             this.setTheme(config);
         },
         async onSignedIn(session: Session | null) {
-            console.log(session, 'sess');
             if (session) await this.setSession(session);
             this.setStatus(!!session);
         },
@@ -244,7 +243,6 @@ export const useAccountStore = defineStore('account', {
                     email: `${address}@santa.network`,
                     password,
                 });
-                console.log('n error', address, password);
 
                 // If we find a user for these credentials then login
                 if (data.user) return { data, error };

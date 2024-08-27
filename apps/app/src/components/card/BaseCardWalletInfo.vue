@@ -86,18 +86,18 @@ export default defineComponent({
     computed: {
         ...mapStores(useAuthStore, useAccountStore, useWalletStore),
         list() {
-            console.log(
-                [
-                    ...this.walletStore.erc20,
-                    ...this.walletStore.erc721,
-                    ...this.walletStore.erc1155,
-                    ...this.walletStore.couponCodes,
-                    ...this.walletStore.discordRoles,
-                ].filter((item) => {
-                    if (!this.activeFilter.key.length) return true;
-                    return this.activeFilter.key.includes(item.rewardVariant);
-                }),
-            );
+            // console.log(
+            //     [
+            //         ...this.walletStore.erc20,
+            //         ...this.walletStore.erc721,
+            //         ...this.walletStore.erc1155,
+            //         ...this.walletStore.couponCodes,
+            //         ...this.walletStore.discordRoles,
+            //     ].filter((item) => {
+            //         if (!this.activeFilter.key.length) return true;
+            //         return this.activeFilter.key.includes(item.rewardVariant);
+            //     }),
+            // );
             return [
                 ...this.walletStore.erc20,
                 ...this.walletStore.erc721,
@@ -118,11 +118,9 @@ export default defineComponent({
     },
     methods: {
         mouseover: function () {
-            console.log(this.isOpen);
             this.isOpen = true;
         },
         mouseleave: function () {
-            console.log(this.isOpen);
             this.isOpen = false;
         },
         onClickSignin() {
