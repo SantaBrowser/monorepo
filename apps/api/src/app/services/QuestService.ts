@@ -344,8 +344,8 @@ export default class QuestService {
                 questId: quest.id,
                 poolId: pool.id,
                 status,
-                santaQuestType: data.santaQuestType,
-                santaQuestId: data.santaQuestId,
+                santaQuestType: data?.santaQuestType,
+                santaQuestId: data?.santaQuestId,
                 uuid: v4(),
             } as TQuestEntry);
 
