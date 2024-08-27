@@ -1,7 +1,7 @@
 <template>
     <b-container
         v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
-        class="mt-2 quest-cont pb-3"
+        class="mt-2 quest-cont"
     >
         <b-row>
             <b-col
@@ -33,23 +33,32 @@
                                 </b-badge>
                             </sup>
                         </template>
-                        <div v-for="(item, index) in mergedQuestsAndOffers" :key="index">
-                            <div v-if="item.isOfferRow" class="d-flex flex-wrap offer-row">
-                                <div v-for="offer in item.offers" :key="offer.id" class="offer-item">
-                                    <OfferCard :offer="offer" class="mb-2" />
+                        <div class="quests-box">
+                            <div
+                                v-for="(item, index) in mergedQuestsAndOffers"
+                                :key="index"
+                                :class="item.isDaily || item.isOfferRow ? 'w-100' : 'regular-quest'"
+                            >
+                                <div v-if="item.isOfferRow" class="offers-box">
+                                    <h3>Top performing offers</h3>
+                                    <div class="d-flex flex-wrap offer-row">
+                                        <div v-for="offer in item.offers" :key="offer.id" class="offer-item">
+                                            <OfferCard :offer="offer" class="mb-2" />
+                                        </div>
+                                    </div>
                                 </div>
+                                <component
+                                    :is="questComponentMap[item.quest.variant]"
+                                    v-else
+                                    :quest="item.quest"
+                                    class="mb-2 mx-lg-0 my-lg-3"
+                                />
                             </div>
-                            <component
-                                :is="questComponentMap[item.variant]"
-                                v-else
-                                :quest="item"
-                                class="mb-2 mx-lg-0 my-lg-3"
-                            />
-                        </div>
-                        <div v-if="!availableQuestCount" class="text-center mt-5">
-                            <i class="h1 fas fa-trophy text-accent" />
-                            <p class="lead text-accent">Well done!</p>
-                            <p class="text-opaque">You have completed all available quests</p>
+                            <div v-if="!availableQuestCount" class="text-center mt-5">
+                                <i class="h1 fas fa-trophy text-accent" />
+                                <p class="lead text-accent">Well done!</p>
+                                <p class="text-opaque">You have completed all available quests</p>
+                            </div>
                         </div>
                     </b-tab>
                     <b-tab title="Completed">
@@ -68,7 +77,7 @@
                 lg="5"
                 xl="5"
                 xxl="4"
-                class="h-100 rewards-column flex-grow-1"
+                class="rewards-column flex-grow-1"
                 offset-xl="0"
             >
                 <div class="mb-2 bg-rewards rounded">
@@ -89,7 +98,7 @@
                         v-for="(reward, index) in mergedRewards"
                         :key="index"
                         class="reward-item gr-2 mb-2"
-                        :style="reward?.isPromoted ? 'width: 100%' : 'width: 48% !important'"
+                        :style="reward?.isPromoted ? 'width: 100%' : 'width: 49% !important'"
                     >
                         <component :is="componentMap[reward?.variant]" :reward="reward" />
                     </div>
@@ -107,7 +116,7 @@ import { useWalletStore } from '../../stores/Wallet';
 import { useQuestStore } from '../../stores/Quest';
 import { useRewardStore } from '../../stores/Reward';
 import { useReward2Store } from '../../stores/Reward';
-import { RewardSortVariant } from '../../types/enums/rewards';
+import { QuestVariant, RewardSortVariant } from '../../types/enums/rewards';
 import { questComponentMap, sortMap } from '../../utils/quests';
 import BaseCardQuestInvite from '../../components/card/BaseCardQuestInvite.vue';
 import BaseCardQuestSocial from '../../components/card/BaseCardQuestSocial.vue';
@@ -191,11 +200,11 @@ export default defineComponent({
             return !this.availableQuestCount;
         },
         availableQuestCount() {
-            console.log('availableQuestCount', this.questStore);
             return this.questStore.quests.filter((q: TBaseQuest) => q.isAvailable).length;
         },
         quests() {
             const { quests } = this.questStore;
+            console.log('quests: ', quests);
             return quests.sort(sortMap[this.selectedSort.key]).map((quest, index) => ({ ...quest, index }));
         },
         mergedRewards() {
@@ -214,17 +223,28 @@ export default defineComponent({
         mergedQuestsAndOffers() {
             let merged = [];
             let offerIndex = 0;
-            const questBatchSize = 5;
-            // const availableQuests = this.quests.filter((q) => q.isAvailable);
+            const questBatchSize = 4;
+
             for (let i = 0; i < this.quests.length; i++) {
-                if (i % questBatchSize === 0 && i !== 0) {
+                const quest = this.quests[i];
+                if (quest.variant === QuestVariant.Daily) {
                     merged.push({
-                        isOfferRow: true,
-                        offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
+                        isDaily: true,
+                        quest: quest,
                     });
-                    offerIndex += this.offersPerRow;
+                } else {
+                    if (i % questBatchSize === 0 && i !== 0) {
+                        merged.push({
+                            isOfferRow: true,
+                            offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
+                        });
+                        offerIndex += this.offersPerRow;
+                    }
+                    merged.push({
+                        isDaily: false,
+                        quest: quest,
+                    });
                 }
-                merged.push(this.quests[i]);
             }
 
             while (offerIndex < this.offers.length) {
@@ -234,6 +254,7 @@ export default defineComponent({
                 });
                 offerIndex += this.offersPerRow;
             }
+
             return merged;
         },
     },
@@ -276,7 +297,6 @@ export default defineComponent({
                 const response = await axios.get(
                     `https://offers-api.santabrowser.com/offers/list?pageSize=50&pageNo=0&clid=${clid}`,
                 );
-                // console.log('response', response);
                 this.offers = response.data.trending;
             } catch (error) {
                 console.error('Failed to fetch offers', error);
@@ -459,6 +479,9 @@ export default defineComponent({
 }
 
 .rewards-column {
+    height: calc(100vh - 70px);
+    position: sticky;
+    top: 70px;
     background: rgba(44, 44, 44, 0.3);
     box-shadow: inset rgb(80 7 7 / 42%) 0px -7px 20px 8px;
     border-radius: 7px;
@@ -479,13 +502,15 @@ export default defineComponent({
 }
 
 .rewards-container {
+    height: calc(100vh - 160px);
+    overflow: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;
     padding: 0px;
-    column-gap: 10px;
+    column-gap: 2%;
     margin-bottom: 8px;
 }
 .title-q {
@@ -513,14 +538,12 @@ export default defineComponent({
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    background: linear-gradient(129deg, #572985, #3a0202e6);
-    margin-bottom: 15px;
-    border-radius: 20px;
+    gap: 1%;
 }
 
 .offer-item {
     flex: 1 0 45%;
-    margin: 1%;
+    //margin: 1%;
     max-width: 45%;
     box-sizing: border-box;
     background: #130301 !important;
@@ -536,6 +559,35 @@ export default defineComponent({
             overflow: hidden;
             border: 0.5px solid rgba(13, 92, 226, 0.2705882353);
         }
+    }
+}
+.regular-quest {
+    width: 100%;
+    margin-bottom: 15px;
+}
+.regular-quest > .card {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.quests-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 2%;
+}
+
+.offers-box {
+    background: linear-gradient(129deg, #572985, #3a0202e6);
+    border-radius: 20px;
+    padding: 2%;
+    margin-bottom: 15px;
+    h3 {
+        font-family: 'Kode Mono', monospace;
+        font-size: 1rem;
     }
 }
 @media (max-width: 992px) {
@@ -573,7 +625,11 @@ export default defineComponent({
 @media (min-width: 1350px) {
     .offer-item {
         flex: 1 0 30%;
-        max-width: 30%;
+        //max-width: 30%;
+    }
+
+    .regular-quest {
+        width: 49%;
     }
 }
 </style>

@@ -13,9 +13,9 @@
                 <div class="flex-grow-1 pe-2 offer-description">
                     {{ decodeHTML(offer.title) }}
                 </div>
-                <div v-if="offer.payout" class="text-primary fw-bold" style="white-space: nowrap">
+                <!-- <div v-if="offer.payout" class="text-primary fw-bold" style="white-space: nowrap">
                     {{ offer.payout }} {{ offer.currency }}
-                </div>
+                </div> -->
             </b-card-title>
         </template>
 
@@ -37,12 +37,12 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <b-card-text
                         v-if="offer.description"
-                        class="flex-grow-1 mb-3 offer-description"
+                        class="flex-grow-1 mb-2 offer-description"
                         v-html="decodeHTML(offer.description)"
                     />
                 </div>
 
-                <b-button variant="primary" block class="w-100 mb-3" target="_blank" @click="openModal">
+                <b-button variant="primary" block class="w-100 mb-1" target="_blank" @click="openModal">
                     Claim <strong>${{ offer.payout }}</strong>
                 </b-button>
 
@@ -261,7 +261,7 @@ export default defineComponent({
     border-radius: 50%;
 }
 .offer-card-img {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 @media (max-width: 992px) {
     .modal-info-wrap {

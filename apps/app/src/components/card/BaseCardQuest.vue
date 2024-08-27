@@ -28,6 +28,10 @@
                     rgba(255, 255, 255, 0.02) -2.13%,
                     rgba(42, 42, 42, 0.11) 136.58%
                 ) !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: end;
+                height: 100%;
             "
         >
             <img
@@ -35,7 +39,13 @@
                 class="img-fluid w-100"
                 :src="quest.image"
                 alt="header image"
-                style="border: 1px px solid #000; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px"
+                style="
+                    border: 1px px solid #000;
+                    border-bottom-left-radius: 20px;
+                    border-bottom-right-radius: 20px;
+                    height: 300px;
+                    object-fit: cover;
+                "
             />
 
             <div class="px-3 mt-3">

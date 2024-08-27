@@ -25,7 +25,6 @@ export default defineComponent({
     },
     async mounted() {
         const { account } = this.accountStore;
-        console.log(this.accountStore.account, 'accounttt');
     },
     computed: {
         ...mapStores(useAccountStore),
