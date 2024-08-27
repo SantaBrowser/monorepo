@@ -40,7 +40,16 @@ if (process.env.NODE_ENV === 'production') {
         ],
     );
 } else if (process.env.NODE_ENV === 'development') {
-    required.push(...['PRIVATE_KEY', 'HARDHAT_RPC', 'HARDHAT_SAFE_TXS_SERVICE', 'LOCAL_CERT', 'LOCAL_CERT_KEY', 'TWITTER_API_TOKEN']);
+    required.push(
+        ...[
+            'PRIVATE_KEY',
+            'HARDHAT_RPC',
+            'HARDHAT_SAFE_TXS_SERVICE',
+            'LOCAL_CERT',
+            'LOCAL_CERT_KEY',
+            'TWITTER_API_TOKEN',
+        ],
+    );
 }
 
 required.forEach((value: string) => {
@@ -81,11 +90,10 @@ export const POLYGON_RPC = process.env.POLYGON_RPC;
 //     `https://linea-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
 // export const METIS_RPC = `https://metis-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}` || '';
 export const METIS_RPC = '';
-export const ETHEREUM_RPC =
-    process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth' || `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}` ||  '';
+export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/eth';
 
-export const APTOS_NODE_URL = process.env.APTOS_NODE_URL || 'https://fullnode.testnet.aptoslabs.com';
-export const SUI_NODE_URL = process.env.SUI_NODE_URL || 'https://rpc-testnet.suiscan.xyz:443';
+export const APTOS_NODE_URL = process.env.APTOS_NODE_URL;
+export const SUI_NODE_URL = process.env.SUI_NODE_URL;
 
 export const MONGODB_URI = String(process.env.MONGODB_URI) || '';
 export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';

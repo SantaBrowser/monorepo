@@ -12,7 +12,7 @@ const validationBaseQuest = [
 
     // Coin
     body('erc20Id').optional().isMongoId(),
-    body('amount').optional().isInt({ gt: 0 }),
+    body('amount').optional().isFloat({ gt: 0 }),
 
     // NFT
     body('erc721Id').optional().isString(),

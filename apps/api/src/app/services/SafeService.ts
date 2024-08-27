@@ -68,7 +68,7 @@ class SafeService {
             const createMultisig = await client.generateTransaction(signer.address(), {
                 function: '0x1::multisig_account::create_with_owners',
                 type_arguments: [],
-                arguments: [[], 1, ['Shaka'], [BCS.bcsSerializeStr('Bruh')]],
+                arguments: [[], 1, [], []],
             });
             await client.generateSignSubmitWaitForTransaction(signer, createMultisig.payload);
             logger.debug('Deployed Safe :', multisigAddress);
