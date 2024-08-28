@@ -37,7 +37,10 @@
                             <div
                                 v-for="(item, index) in mergedQuestsAndOffers"
                                 :key="index"
-                                :class="item.isDaily || item.isOfferRow ? 'w-100' : 'regular-quest'"
+                                :class="{
+                                    'w-100': item.isDaily || item.isOfferRow,
+                                    'regular-quest': !item.isDaily && !item.isOfferRow,
+                                }"
                             >
                                 <div v-if="item.isOfferRow" class="offers-box">
                                     <h3>Top performing offers</h3>
@@ -47,12 +50,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- <div v-else :class="{ 'd-none': !item.quest?.isAvailable }"> -->
                                 <component
                                     :is="questComponentMap[item.quest.variant]"
                                     v-else
                                     :quest="item.quest"
-                                    class="mb-2 mx-lg-0 my-lg-3"
+                                    :available-quest="item.quest?.isAvailable"
                                 />
+                                <!-- </div> -->
                             </div>
                             <div v-if="!availableQuestCount" class="text-center mt-5">
                                 <i class="h1 fas fa-trophy text-accent" />
@@ -67,6 +72,7 @@
                                 :is="questComponentMap[quest.variant]"
                                 :quest="quest"
                                 class="mb-2 mx-lg-0 my-lg-3"
+                                :available-quest="!quest?.isAvailable"
                             />
                         </div>
                     </b-tab>
@@ -204,7 +210,6 @@ export default defineComponent({
         },
         quests() {
             const { quests } = this.questStore;
-            console.log('quests: ', quests);
             return quests.sort(sortMap[this.selectedSort.key]).map((quest, index) => ({ ...quest, index }));
         },
         mergedRewards() {
@@ -479,6 +484,7 @@ export default defineComponent({
 }
 
 .rewards-column {
+    max-width: 380px;
     height: calc(100vh - 70px);
     position: sticky;
     top: 70px;
