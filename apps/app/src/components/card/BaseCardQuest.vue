@@ -3,7 +3,7 @@
         class="mb-3 w-100"
         header-class="p-0"
         body-class="d-flex flex-column p-0"
-        :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted }"
+        :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted, 'd-none': !availableQuest }"
         style="background: transparent"
     >
         <template #header>
@@ -15,7 +15,18 @@
                 <div class="d-flex align-items-center justify-content-center" style="width: 25px">
                     <i class="me-2 text-primary" :class="iconMap[quest.variant]"></i>
                 </div>
-                <div class="flex-grow-1 pe-2">{{ decodeHTML(quest.title) }}</div>
+                <div
+                    class="flex-grow-1 pe-2"
+                    style="
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 1;
+                        -webkit-box-orient: vertical;
+                    "
+                >
+                    {{ decodeHTML(quest.title) }}
+                </div>
                 <div v-if="quest.amount" class="text-primary fw-bold">{{ quest.amount }}</div>
             </b-card-title>
         </template>
@@ -30,7 +41,7 @@
                 ) !important;
                 display: flex;
                 flex-direction: column;
-                justify-content: end;
+                justify-content: space-between;
                 height: 100%;
             "
         >
@@ -99,6 +110,20 @@
                 </div>
                 <slot></slot>
 
+                <!-- <div class="d-flex align-items-center justify-content-between mt-2 pb-2" style="opacity: 0.5"> -->
+                <!-- <div class="d-flex align-items-center text-opaque small">
+                        <span v-if="quest.author" class="text-white me-1">
+                            {{ quest.author.username }} &CenterDot;
+                        </span>
+                        <span>{{ format(new Date(quest.createdAt), 'MMMM do') }} </span>
+                    </div>
+                    <div class="d-flex align-items-center text-opaque small">
+                        <i class="fas fa-users me-1" />
+                        {{ quest.entryCount }}
+                    </div> -->
+                <!-- </div> -->
+            </div>
+            <div class="px-3 py-3">
                 <b-button
                     v-if="!accountStore.isAuthenticated"
                     variant="primary"
@@ -118,19 +143,6 @@
 
                 <BaseButtonQuestLocked v-else-if="quest.isLocked" :id="quest._id" :locks="quest.locks" />
                 <slot v-else name="button"></slot>
-
-                <div class="d-flex align-items-center justify-content-between mt-2 pb-2" style="opacity: 0.5">
-                    <!-- <div class="d-flex align-items-center text-opaque small">
-                        <span v-if="quest.author" class="text-white me-1">
-                            {{ quest.author.username }} &CenterDot;
-                        </span>
-                        <span>{{ format(new Date(quest.createdAt), 'MMMM do') }} </span>
-                    </div>
-                    <div class="d-flex align-items-center text-opaque small">
-                        <i class="fas fa-users me-1" />
-                        {{ quest.entryCount }}
-                    </div> -->
-                </div>
             </div>
         </b-collapse>
     </b-card>
@@ -164,6 +176,7 @@ export default defineComponent({
         completing: Boolean,
         error: String,
         quest: { required: true, type: Object as PropType<TBaseQuest & any> },
+        availableQuest: { type: Boolean, default: false },
     },
     data() {
         return {
