@@ -290,9 +290,13 @@ class SafeService {
 
     async proposeTransaction(wallet: WalletDocument, txs: TransactionDocument[]) {
         if (wallet.chainId == ChainId.Skale || wallet.chainId == ChainId.Aptos || wallet.chainId == ChainId.Sui) {
-            Promise.all(txs.map((tx) => this.proposeTx(wallet, tx)))
-                .then(() => logger.debug('Proposed and Executed txs'))
-                .catch(() => logger.error('Error proposing transaction'));
+            for (let tx of txs) {
+                try {
+                    await this.proposeTx(wallet, tx);
+                } catch (err) {
+                    logger.error(err);
+                }
+            }
         } else {
             const safeTransactionDataPartial = txs.map((tx: TransactionDocument) => {
                 return {
