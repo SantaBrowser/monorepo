@@ -142,15 +142,15 @@ export default class RewardCoinService implements IRewardService {
                 { state: TransactionState.Queued },
             ],
         }).sort({ createdAt: 'asc' });
-        if (txs.length) {
-            return { result: false, reason: `Found ${txs.length} pending transactions, please try again later.` };
-        }
+        // if (txs.length) {
+        //     return { result: false, reason: `Found ${txs.length} pending transactions, please try again later.` };
+        // }
 
         // Check balances
         if (erc20.chainId == ChainId.Aptos) {
             const balanceOfPool = await AptosService.getCoinBalance(safe.address, erc20.address);
             const [, , decimals] = await AptosService.getCoinInfo(erc20.address);
-            if (balanceOfPool < reward.amount * 10 ** decimals) {
+            if (balanceOfPool < Number(reward.amount) * 10 ** decimals) {
                 const owner = await AccountProxy.findById(safe.sub);
                 const html = `Not enough ${erc20.symbol} available in campaign contract ${
                     safe.address
@@ -167,7 +167,7 @@ export default class RewardCoinService implements IRewardService {
         } else if (erc20.chainId == ChainId.Sui) {
             const balanceOfPool = await SuiService.getCoinBalance(safe.address, erc20.address);
             const [, , decimals] = await SuiService.getCoinInfo(erc20.address);
-            if (Number(balanceOfPool) < reward.amount * 10 ** Number(decimals)) {
+            if (Number(balanceOfPool) < Number(reward.amount) * 10 ** Number(decimals)) {
                 const owner = await AccountProxy.findById(safe.sub);
                 const html = `Not enough ${erc20.symbol} available in campaign contract ${
                     safe.address
