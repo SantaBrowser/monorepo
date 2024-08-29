@@ -56,7 +56,9 @@
         </b-collapse>
         <b-modal v-model="showModal" size="lg" hide-footer hide-header>
             <div>
-                <button type="button" class="modal-btn-close" aria-label="Close" @click="showModal = false">x</button>
+                <button type="button" class="modal-btn-close" aria-label="Close" @click="showModal = false">
+                    <i class="fas fa-times"></i>
+                </button>
                 <h2 class="modal-title">{{ decodeHTML(offer.title) }}</h2>
                 <div class="modal-body d-flex flex-column">
                     <div class="d-flex align-items-center">
