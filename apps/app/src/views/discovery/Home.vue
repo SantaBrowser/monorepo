@@ -582,7 +582,7 @@ export default defineComponent({
     background: url(/src/assets/top-bg.jpg);
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
-    border: 1px dotted rgb(23 72 208);
+    //border: 1px dotted rgb(23 72 208);
     overflow: hidden;
     box-shadow: inset 1px 20px 20px 15px rgb(8 1 1 / 94%);
     /* border-top-right-radius: 0; */
@@ -637,13 +637,14 @@ export default defineComponent({
 }
 
 .mainComponent {
-    background-image: url('src/assets/bg-secondDiv.jpg');
+    //background-image: url('src/assets/bg-secondDiv.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     padding: 0;
     margin: 0;
     background-blend-mode: color-dodge;
     background-attachment: fixed;
+    background: #000;
 }
 
 .bf-blur {

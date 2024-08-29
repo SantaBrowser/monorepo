@@ -54,8 +54,7 @@
                     border: 1px px solid #000;
                     border-bottom-left-radius: 20px;
                     border-bottom-right-radius: 20px;
-                    height: 300px;
-                    object-fit: cover;
+                    height: 400px;
                 "
             />
 

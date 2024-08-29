@@ -38,14 +38,32 @@
                                 v-for="(item, index) in mergedQuestsAndOffers"
                                 :key="index"
                                 :class="{
-                                    'w-100': item.isDaily || item.isOfferRow,
-                                    'regular-quest': !item.isDaily && !item.isOfferRow,
+                                    'w-100': item.isDaily || item.isOfferRow || item.isAlone,
+                                    'regular-quest': !item.isDaily && !item.isOfferRow && !item.isAlone,
                                 }"
                             >
                                 <div v-if="item.isOfferRow" class="offers-box">
                                     <h3>Top performing offers</h3>
                                     <div class="d-flex flex-wrap offer-row">
-                                        <div v-for="offer in item.offers" :key="offer.id" class="offer-item">
+                                        <div
+                                            v-for="offer in item.offers"
+                                            :key="offer.id"
+                                            class="offer-item"
+                                            :style="{
+                                                width:
+                                                    item.offers.length === 1
+                                                        ? '100%'
+                                                        : offersPerRow === 3
+                                                        ? '30%'
+                                                        : '49%',
+                                                maxWidth:
+                                                    item.offers.length === 1
+                                                        ? '100%'
+                                                        : offersPerRow === 3
+                                                        ? '30%'
+                                                        : '49%',
+                                            }"
+                                        >
                                             <OfferCard :offer="offer" class="mb-2" />
                                         </div>
                                     </div>
@@ -95,7 +113,7 @@
                         <select v-model="selectedValue" class="rewards-select">
                             <option>All</option>
                             <option>Santa</option>
-                            <option>Playwall</option>
+                            <option>Playwall & Cashback</option>
                         </select>
                     </div>
                 </div>
@@ -210,14 +228,16 @@ export default defineComponent({
         },
         quests() {
             const { quests } = this.questStore;
-            return quests.sort(sortMap[this.selectedSort.key]).map((quest, index) => ({ ...quest, index }));
+            return quests
+                .sort(sortMap[this.selectedSort.key])
+                .map((quest: any, index: number) => ({ ...quest, index }));
         },
         mergedRewards() {
             if (this.selectedValue === 'All') {
                 return [...this.rewardStore.rewards, ...this.reward2Store.rewards];
             } else if (this.selectedValue === 'Santa') {
                 return this.reward2Store.rewards;
-            } else if (this.selectedValue === 'Playwall') {
+            } else if (this.selectedValue === 'Playwall & Cashback') {
                 return this.rewardStore.rewards;
             }
             return [];
@@ -229,27 +249,26 @@ export default defineComponent({
             let merged = [];
             let offerIndex = 0;
             const questBatchSize = 4;
+            let rowQuests = [];
 
             for (let i = 0; i < this.quests.length; i++) {
                 const quest = this.quests[i];
-                if (quest.variant === QuestVariant.Daily) {
+                const isEndOfBatch = (i + 1) % questBatchSize === 0;
+                rowQuests.push(quest);
+
+                if (quest.variant === QuestVariant.Daily || isEndOfBatch) {
+                    merged.push(...this.formatQuests(rowQuests));
+                    rowQuests = [];
                     merged.push({
-                        isDaily: true,
-                        quest: quest,
+                        isOfferRow: true,
+                        offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
                     });
-                } else {
-                    if (i % questBatchSize === 0 && i !== 0) {
-                        merged.push({
-                            isOfferRow: true,
-                            offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
-                        });
-                        offerIndex += this.offersPerRow;
-                    }
-                    merged.push({
-                        isDaily: false,
-                        quest: quest,
-                    });
+                    offerIndex += this.offersPerRow;
                 }
+            }
+
+            if (rowQuests.length > 0) {
+                merged.push(...this.formatQuests(rowQuests));
             }
 
             while (offerIndex < this.offers.length) {
@@ -309,6 +328,16 @@ export default defineComponent({
         },
         handleResize() {
             this.offersPerRow = window.innerWidth > 1350 ? 3 : 2;
+        },
+        formatQuests(quests: any) {
+            return quests.map((quest: TBaseQuest, index: number) => {
+                const isLastInRow = index === quests.length - 1;
+                return {
+                    quest,
+                    isAlone: quests.length % 2 !== 0 && isLastInRow,
+                    isDaily: false,
+                };
+            });
         },
     },
 });

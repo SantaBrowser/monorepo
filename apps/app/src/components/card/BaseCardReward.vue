@@ -121,7 +121,7 @@
         <b-card-body
             v-if="reward.poolId === CP_CAMPAIGN"
             class="d-flex flex-column justify-content-between cp-campaign-card"
-            :style="{ padding: '0', height: 'auto' }"
+            :style="{ padding: '10px', height: 'auto' }"
         >
             <div v-if="reward.isPromoted" class="d-flex align-items-center c-quest-title">PROMOTED</div>
             <div class="d-flex justify-content-center" style="padding: 3px">
@@ -154,13 +154,7 @@
                     </template>
                     <strong v-else> Free! </strong>
                 </button>
-                <span
-                    v-else
-                    id="disabled-wrapper"
-                    class="d-block"
-                    tabindex="0"
-                    :style="{ margin: '0px 26px 10px 26px' }"
-                >
+                <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
                     <!-- <BaseButtonQuestLocked
                         v-if="reward.isLocked || isInsufficientPoints"
                         :id="`modalQuestLock${reward._id}`"
