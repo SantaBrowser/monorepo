@@ -665,6 +665,7 @@ export default defineComponent({
 
     .regular-quest {
         width: 49%;
+        flex: 1 1 49%;
     }
 }
 </style>
