@@ -31,7 +31,7 @@
                 <b-row>
                     <b-col cols="8">
                         <BaseFormGroupUsername class="mb-3" />
-                        <BaseFormGroupEmail class="mb-3" />
+                        <!-- <BaseFormGroupEmail class="mb-3" /> -->
                     </b-col>
                     <b-col cols="4" class="d-flex align-items-center justify-content-center">
                         <BaseFormGroupAvatar />
