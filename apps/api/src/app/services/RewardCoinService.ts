@@ -84,7 +84,7 @@ export default class RewardCoinService implements IRewardService {
                 to: erc20.address,
                 data: safe.address,
                 state: TransactionState.Queued,
-                amount: reward.amount * 10 ** decimals,
+                amount: Number(reward.amount) * 10 ** Number(decimals),
                 chainId: wallet.chainId,
                 walletId: wallet.id,
             });
@@ -95,7 +95,7 @@ export default class RewardCoinService implements IRewardService {
                 to: erc20.address,
                 data: safe.address,
                 state: TransactionState.Queued,
-                amount: reward.amount * 10 ** Number(decimals),
+                amount: Number(reward.amount) * 10 ** Number(decimals),
                 chainId: wallet.chainId,
                 walletId: wallet.id,
             });
