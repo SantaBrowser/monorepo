@@ -237,6 +237,7 @@ export default defineComponent({
         async getParticipants() {
             if (this.accountStore.isAuthenticated) {
                 await this.accountStore.getParticipants();
+                // console.log('participants: ', this.accountStore.participants);
             }
         },
         async getCampaigns() {
