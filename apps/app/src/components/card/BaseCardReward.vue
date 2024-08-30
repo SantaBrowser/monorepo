@@ -1,145 +1,28 @@
 <template>
     <b-card no-body class="gr-2 x-lg-0 card-wrapper h-100" :class="{ 'card-promoted': reward.isPromoted }">
-        <!-- <header v-if="image" class="card-img" :style="{ backgroundImage: image && `url(${image})`, height: '240px' }">
-            <b-badge
-                v-if="reward.expiry && reward.expiry.date"
-                v-b-tooltip.hover.left
-                :title="format(new Date(reward.expiry.date), 'MMMM do yyyy hh:mm:ss')"
-                variant="primary"
-                class="badge-expiry p-1 bg-primary"
-            >
-                <i v-if="!reward.isExpired" class="fas fa-clock card-text"></i>
-                <span :class="{ 'text-accent': !reward.isExpired, 'card-text': reward.isExpired }">{{
-                    expiryDate
-                }}</span>
-            </b-badge>
-            <b-img v-if="!image" class="card-img-logo" :src="accountStore.config.logoUrl" widht="auto" height="100" />
-        </header> -->
         <b-card-body
-            v-if="reward.poolId === SANTA_CAMPAIGN"
-            class="d-flex flex-column justify-content-between h-100"
-            :style="{ padding: '10px' }"
+            v-if="reward.poolId === CP_CAMPAIGN || reward.poolId === SANTA_CAMPAIGN"
+            class="d-flex flex-column justify-content-between cp-campaign-card"
+            :style="{ height: 'auto' }"
         >
-            <div v-if="reward.isPromoted" class="d-flex align-items-center c-quest-title">PROMOTED</div>
-            <b-card-title class="d-flex align-items-center c-quest-title">
+            <div v-if="reward.isPromoted" class="d-flex align-items-center promoted-title">Promoted</div>
+            <b-card-title v-if="!reward.isPromoted" class="d-flex align-items-center reward-title px-2 pt-2">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
             </b-card-title>
-            <div class="d-flex justify-content-center" :style="{ marginBottom: '5px' }">
-                <img v-if="!image" :src="randomPlaceholderImage" class="" :style="{ width: '72px', height: '72px' }" />
-                <img v-else :src="image" alt="Image" height="92" width="92" style="object-fit: contain" />
-            </div>
-            <!-- <b-card-text class="card-description" v-html="reward.description" /> -->
-            <div>
-                <!-- <div class="d-flex">
-                    <div v-if="reward.pointPrice" class="d-flex align-items-center me-auto pb-3">
-                        <span class="card-text me-1"> Price: </span>
-                        <span variant="primary" class="ms-1 p-1">
-                            <span class="">
-                                {{ '$' + (reward.pointPrice / 100).toFixed(2) }}
-                            </span>
-                        </span>
-                    </div>
-                    <div v-if="reward.limitSupplyProgress.max" class="d-flex align-items-center pb-3">
-                        <span class="card-text me-1"> Supply: </span>
-                        <b-badge variant="primary" class="ms-1 p-1 px-2 bg-primary">
-                            <span :class="limitSupplyVariant">
-                                {{ reward.limitSupplyProgress.max - reward.limitSupplyProgress.count }}
-                            </span>
-                            <span class="card-text">/{{ reward.limitSupplyProgress.max }}</span>
-                        </b-badge>
-                    </div>
-                </div> -->
-                <button
-                    v-if="!accountStore.isAuthenticated"
-                    class="w-100 my-btn s"
-                    variant="primary"
-                    @click="authStore.isModalLoginShown = !authStore.isModalLoginShown"
-                >
-                    <template v-if="reward.pointPrice">
-                        Pay
-                        <strong>{{ formattedPrice }} <span v-if="reward.poolId !== CP_CAMPAIGN">points</span></strong>
-                    </template>
-                    <strong v-else> Free! </strong>
-                </button>
-                <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
-                    <!-- <BaseButtonQuestLocked
-                        v-if="reward.isLocked"
-                        :id="`modalQuestLock${reward._id}`"
-                        :locks="reward.locks"
-                    /> -->
-                    <button
-                        v-b-modal="`modalRewardPayment${reward._id}`"
-                        variant="primary"
-                        block
-                        :class="`w-100 position-relative mb-0 bg-red ${isInsufficientPoints ? 'locked' : 'my-btn'}`"
-                        :disabled="isDisabled"
-                    >
-                        <div v-if="isInsufficientPoints">Locked</div>
-                        <div
-                            v-if="reward.pointPrice && !isInsufficientPoints"
-                            class="d-flex align-items-center justify-content-center"
-                        >
-                            <!-- <span class="reward-text">
-                                {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
-                            </span> -->
-                            <!-- <div class="pipe"></div> -->
-                            <span class="point me-1">{{ formattedPrice }}</span>
-                            <img
-                                v-if="reward.poolId === SANTA_CAMPAIGN"
-                                :src="StarCoin"
-                                alt="star"
-                                height="13"
-                                class="me-1"
-                            />
-                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Points</span>
-                        </div>
-                        <b-progress
-                            v-if="reward.limitProgress.max"
-                            v-b-tooltip.bottom
-                            :variant="limitVariant"
-                            :title="`You can purchase this reward ${reward.limitProgress.max} times.`"
-                            :value="reward.limitProgress.count"
-                            :max="reward.limitProgress.max"
-                            style="height: 6px"
-                        />
-                    </button>
-                </span>
-                <!--            <div class="d-flex align-items-center justify-content-between pb-2 mt-2" style="opacity: 0.5">-->
-                <!--                <div class="d-flex align-items-center text-opaque small">-->
-                <!--                    <span v-if="reward.author" class="text-white me-1"> {{ reward.author.username }} &CenterDot; </span>-->
-                <!--                    <span v-if="reward.createdAt">{{ format(new Date(reward.createdAt), 'MMMM do') }} </span>-->
-                <!--                </div>-->
-                <!--                <div v-if="reward.paymentCount" class="d-flex align-items-center text-opaque small">-->
-                <!--                    <i class="fas fa-users me-1" />-->
-                <!--                    {{ reward.paymentCount }}-->
-                <!--                </div>-->
-                <!--            </div>-->
-            </div>
-        </b-card-body>
-
-        <b-card-body
-            v-if="reward.poolId === CP_CAMPAIGN"
-            class="d-flex flex-column justify-content-between cp-campaign-card"
-            :style="{ padding: '10px', height: 'auto' }"
-        >
-            <div v-if="reward.isPromoted" class="d-flex align-items-center c-quest-title">PROMOTED</div>
-            <div class="d-flex justify-content-center" style="padding: 3px">
-                <img
+            <div class="d-flex justify-content-center">
+                <div
                     v-if="!image"
-                    :src="randomPlaywallPlaceholderImage"
-                    class=""
-                    :style="{ width: '100%', height: '120px', borderRadius: '4px', objectFit: 'cover' }"
-                />
+                    :class="!reward.isPromoted ? 'reward-image-placeholder' : 'reward-img-promoted-ph'"
+                ></div>
                 <img
                     v-else
                     :src="image"
                     alt="Image"
-                    :style="{ width: '100%', height: '120px', borderRadius: '4px', objectFit: 'cover' }"
+                    :class="!reward.isPromoted ? 'reward-image' : 'reward-img-promoted'"
                 />
             </div>
-            <b-card-title class="d-flex align-items-center c-quest-title">
-                <!-- <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" /> -->
+            <b-card-title v-if="reward.isPromoted" class="d-flex align-items-center reward-title-promoted">
                 <slot name="title" />
             </b-card-title>
             <div>
@@ -154,12 +37,7 @@
                     </template>
                     <strong v-else> Free! </strong>
                 </button>
-                <span v-else id="disabled-wrapper" class="d-block" tabindex="0">
-                    <!-- <BaseButtonQuestLocked
-                        v-if="reward.isLocked || isInsufficientPoints"
-                        :id="`modalQuestLock${reward._id}`"
-                        :locks="reward.locks"
-                    /> -->
+                <span v-else id="disabled-wrapper" class="d-block mx-3 mb-2" tabindex="0">
                     <button
                         v-b-modal="`modalRewardPayment${reward._id}`"
                         variant="primary"
@@ -172,10 +50,6 @@
                             v-if="reward.pointPrice && !isInsufficientPoints"
                             class="d-flex align-items-center justify-content-center"
                         >
-                            <!-- <span class="reward-text">
-                                {{ reward.poolId === CP_CAMPAIGN ? 'Claim' : 'Get Reward' }}
-                            </span>
-                            <div class="pipe"></div> -->
                             <span class="point me-1">{{ formattedPrice }}</span>
                             <img
                                 v-if="reward.poolId === SANTA_CAMPAIGN"
@@ -248,18 +122,17 @@ export default defineComponent({
     },
     computed: {
         ...mapStores(useAccountStore, useAuthStore),
-        randomPlaceholderImage(): string {
-            const images = ['src/assets/logo-coin-1.png', 'src/assets/logo-coin-2.png', 'src/assets/logo-coin-3.png'];
-            return images[Math.floor(Math.random() * images.length)];
-        },
-        randomPlaywallPlaceholderImage(): string {
-            const images = ['src/assets/playwall_1.png', 'src/assets/playwall_1.png', 'src/assets/playwall_3.png'];
-            return images[Math.floor(Math.random() * images.length)];
-        },
         participantBalance() {
             const participant = this.accountStore.participants.find((p) => p.sub === this.accountStore.account?.sub);
             if (!participant) return 0;
-            return participant.balance;
+
+            if (this.reward.poolId === SANTA_CAMPAIGN && participant.poolId === SANTA_CAMPAIGN) {
+                return participant.balance || 0;
+            } else if (this.reward.poolId === CP_CAMPAIGN && participant.poolId === CP_CAMPAIGN) {
+                return participant.balance || 0;
+            }
+
+            return 0;
         },
         isInsufficientPoints() {
             return this.participantBalance < this.reward.pointPrice;
@@ -411,7 +284,7 @@ export default defineComponent({
     line-height: 22px;
 }
 .coins-text {
-    color: rgba(200, 200, 200, 0.5);
+    color: #fff;
     text-align: right;
     font-size: 14px;
     font-style: normal;
@@ -447,10 +320,15 @@ export default defineComponent({
 }
 .card-wrapper .card-body {
     border-radius: 8px;
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    background: transparent !important;
-    backdrop-filter: blur(12.5px);
-    box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
+    border: 1px solid rgba(63, 63, 63, 0.2);
+    background: linear-gradient(
+        182deg,
+        rgba(189, 189, 189, 0.2) -17.86%,
+        rgba(81, 81, 81, 0.15) 36.23%,
+        rgba(42, 42, 42, 0.18) 98.68%
+    );
+    //backdrop-filter: blur(12.5px);
+    //box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
 }
 
 .c-quest-title div {
@@ -486,11 +364,80 @@ export default defineComponent({
 }
 
 .bg-red {
-    background-color: #972e2e !important;
+    background: linear-gradient(180deg, #c54949 0%, #ae3232 100%);
 }
 
 .gr-2 .card-body.cp-campaign-card {
     height: auto;
     max-height: initial !important;
+    padding: 0;
+    overflow: hidden;
+}
+.promoted-title {
+    position: absolute;
+    color: #000;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Poppins';
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(25px);
+    padding: 3px 11px;
+    margin: 5px;
+}
+
+.reward-title-promoted div {
+    color: #e7e7e7;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Poppins;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    margin-left: 10px;
+}
+
+.reward-title div {
+    color: #fff;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: 'Poppins';
+    font-size: 13px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reward-title i {
+    color: rgba(217, 217, 217, 0.2);
+    font-size: 16px;
+}
+.reward-image-placeholder {
+    height: 92px;
+    width: 92px;
+    background-color: #000;
+    border-radius: 50%;
+}
+.reward-img-promoted-ph {
+    width: 100%;
+    background-color: #000;
+    height: 120px;
+}
+.reward-image {
+    height: 92px;
+    width: 92px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.reward-img-promoted {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
 }
 </style>

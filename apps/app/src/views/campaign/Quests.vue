@@ -104,17 +104,20 @@
                 class="rewards-column flex-grow-1"
                 offset-xl="0"
             >
-                <div class="mb-2 bg-rewards rounded">
-                    <div class="align-items-center p-2 quests-title d-flex" style="justify-content: space-between">
+                <div class="mb-2 bg-rewards">
+                    <div class="align-items-center p-2 overflow-hidden d-flex" style="justify-content: space-between">
                         <div>
                             <strong class="title-q">Rewards</strong>
-                            <div class="text-opaque">Spend your points to redeem</div>
+                            <div class="text-opaque">Spend points to redeem</div>
                         </div>
-                        <select v-model="selectedValue" class="rewards-select">
-                            <option>All</option>
-                            <option>Santa</option>
-                            <option>Playwall & Cashback</option>
-                        </select>
+                        <div class="custom-select-wrapper">
+                            <select v-model="selectedValue" class="rewards-select">
+                                <option>All</option>
+                                <option>Santa</option>
+                                <option>Playwall & Cashback</option>
+                            </select>
+                            <i class="fas fa-chevron-down custom-select-icon"></i>
+                        </div>
                     </div>
                 </div>
                 <div v-if="mergedRewards.length > 0" class="rewards-container flex-1">
@@ -292,7 +295,7 @@ export default defineComponent({
                 this.questStore.list(SANTA_CAMPAIGN);
                 this.rewardStore.list(CP_CAMPAIGN);
                 this.reward2Store.list(SANTA_CAMPAIGN);
-                this.accountStore.getParticipants(SANTA_CAMPAIGN);
+                this.accountStore.getParticipants();
             },
             immediate: true,
         },
@@ -367,15 +370,31 @@ export default defineComponent({
     background-image: url('../../assets/bg-mosaic.png');
     background-size: cover;
 }
-
+.custom-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 .rewards-select {
-    background-color: rgb(200 74 16 / 17%);
-    padding: 4px 16px;
-    border-radius: 20px;
-    border: 0px solid black;
-    border-right-width: 10px;
-    border-color: transparent;
-    outline: solid 2px #dcc528ab;
+    appearance: none;
+    width: 100px;
+    border-radius: 4px;
+    border: 1px solid rgba(77, 77, 77, 0.25);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    outline: none;
+    padding: 8px 11px;
+    text-overflow: ellipsis;
+    padding-right: 30px;
+    cursor: pointer;
+}
+.custom-select-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #fff;
 }
 
 .bg-quests {
@@ -396,8 +415,9 @@ export default defineComponent({
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    border: 1px dotted #f31a0760;
-    border-radius: 15px !important;
+    //border: 1px dotted #f31a0760;
+    border-top-left-radius: 13px !important;
+    border-top-right-radius: 13px !important;
     overflow: hidden;
 }
 
@@ -517,13 +537,18 @@ export default defineComponent({
     height: calc(100vh - 70px);
     position: sticky;
     top: 70px;
-    background: rgba(44, 44, 44, 0.3);
-    box-shadow: inset rgb(80 7 7 / 42%) 0px -7px 20px 8px;
-    border-radius: 7px;
-    background: rgb(54 1 83 / 20%);
+    background: radial-gradient(
+            57.91% 58.02% at 50% 50%,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(62, 0, 0, 0.05) 80.65%,
+            rgba(112, 5, 5, 0.11) 100%
+        ),
+        rgba(0, 0, 0, 0.2);
+
+    box-shadow: 0px 0px 49px 0px rgba(0, 7, 72, 0.12);
     border-radius: 15px;
-    border: 1px dotted #865c5c85;
-    padding: 6px;
+    border: 1.5px solid rgba(166, 111, 111, 0.3);
+    padding: 0;
     margin-right: 20px;
 }
 
@@ -544,22 +569,33 @@ export default defineComponent({
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;
-    padding: 0px;
+    padding: 15px;
     column-gap: 2%;
     margin-bottom: 8px;
 }
 .title-q {
-    font-size: 30px;
-    line-height: 23px;
-    color: #00ffe7;
+    font-size: 25px;
+    line-height: 25px;
+    color: #fff;
     //color: #feff00;
-    font-weight: 400;
-    font-family: 'Kode Mono', monospace;
+    font-weight: 600;
+    font-family: 'Poppins';
+    font-style: italic;
 }
 
 .card-title {
     font-family: 'Kode Mono', monospace;
     font-size: 1rem;
+}
+
+.text-opaque {
+    color: #fff;
+    font-family: Poppins;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%;
+    margin: 7px 0 7px 7px;
 }
 
 .quests-title .text-opaque {
@@ -638,6 +674,7 @@ export default defineComponent({
     .rewards-column {
         width: 100% !important;
         margin: 0 12px;
+        max-width: 100%;
     }
     .quest-cont .row {
         height: 100%;
