@@ -14,6 +14,7 @@ import {
     APTOS_NODE_URL,
     SUI_NODE_URL,
     APTOS_PRIVATE_KEY,
+    SUI_PRIVATE_KEY,
     METIS_RELAYER,
     METIS_RPC,
     METIS_RELAYER_API_KEY,
@@ -107,9 +108,7 @@ class NetworkService {
         }
 
         if (SUI_NODE_URL) {
-            const signer = Ed25519Keypair.fromSecretKey(
-                fromHEX('0x26a5ff8079273e83a27ce4860d59745c8678fc5ec0ce74e23c23e78a5d6c4227'),
-            );
+            const signer = Ed25519Keypair.fromSecretKey(fromHEX(SUI_PRIVATE_KEY));
             const defaultAccount = signer.toSuiAddress();
             const client = new SuiClient({ url: SUI_NODE_URL });
             this.networks[ChainId.Sui] = {
