@@ -18,7 +18,6 @@ import {
     METIS_RPC,
     METIS_RELAYER_API_KEY,
     METIS_RELAYER_API_SECRET,
-    SUI_PRIVATE_KEY,
 } from '@thxnetwork/api/config/secrets';
 import Web3 from 'web3';
 import { ethers, Wallet } from 'ethers';
