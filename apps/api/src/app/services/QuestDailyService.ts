@@ -158,10 +158,11 @@ export default class QuestDailyService implements IQuestService {
             lastEntry = await QuestDailyEntry.findOne({
                 questId: quest._id,
                 sub: account.sub,
-                createdAt: {
-                    $gt: new Date(timestamp - ONE_DAY_MS * 2),
-                    $lt: new Date(timestamp - ONE_DAY_MS),
-                },
+                // createdAt: {
+                //     $gt: new Date(timestamp - ONE_DAY_MS * 2),
+                //     $lt: new Date(timestamp - ONE_DAY_MS),
+                // },
+                createdAt: { $lt: new Date(timestamp) }
             });
             if (!lastEntry) break;
             claims.push(lastEntry);
@@ -171,19 +172,19 @@ export default class QuestDailyService implements IQuestService {
     }
 
     private async getLastEntry(account: TAccount, quest: TQuestDaily, start: number, end: number) {
-        let lastEntry = await QuestDailyEntry.findOne({
+        const lastEntry = await QuestDailyEntry.findOne({
             questId: quest._id,
             sub: account.sub,
-            createdAt: { $gt: new Date(start), $lt: new Date(end) },
-        });
+            // createdAt: { $gt: new Date(start), $lt: new Date(end) },
+        }).sort({ createdAt: -1 });
 
-        if (!lastEntry) {
-            lastEntry = await QuestDailyEntry.findOne({
-                questId: quest._id,
-                sub: account.sub,
-                createdAt: { $gt: new Date(start - ONE_DAY_MS), $lt: new Date(end - ONE_DAY_MS) },
-            });
-        }
+        // if (!lastEntry) {
+        //     lastEntry = await QuestDailyEntry.findOne({
+        //         questId: quest._id,
+        //         sub: account.sub,
+        //         createdAt: { $gt: new Date(start - ONE_DAY_MS), $lt: new Date(end - ONE_DAY_MS) },
+        //     });
+        // }
         return lastEntry;
     }
 }
