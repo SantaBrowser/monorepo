@@ -31,10 +31,12 @@ if (process.env.NODE_ENV === 'production') {
             'SUI_NODE_URL',
             'SUI_PRIVATE_KEY',
             'ARBITRUM_RPC',
+            'OPTIMISM_RPC',
             'RELAYER_SPEED',
             'TWITTER_API_TOKEN',
             'POLYGON_SAFE_TXS_SERVICE',
             'ARBITRUM_SAFE_TXS_SERVICE',
+            'OPTIMISM_SAFE_TXS_SERVICE',
             'SEPOLIA_SAFE_TXS_SERVICE',
             'LINEA_SAFE_TXS_SERVICE',
         ],
@@ -80,6 +82,7 @@ export const WIDGET_URL = process.env.WIDGET_URL || '';
 export const PUBLIC_URL = process.env.PUBLIC_URL || '';
 
 export const ARBITRUM_RPC = process.env.ARBITRUM_RPC;
+export const OPTIMISM_RPC = process.env.OPTIMISM_RPC;
 export const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
 export const SKALE_RPC = process.env.SKALE_RPC;
 export const LINEA_RPC = process.env.LINEA_RPC;
@@ -145,6 +148,7 @@ export const WEBHOOK_MILESTONE = process.env.WEBHOOK_MILESTONE || '';
 export const HARDHAT_SAFE_TXS_SERVICE = process.env.HARDHAT_SAFE_TXS_SERVICE || '';
 export const POLYGON_SAFE_TXS_SERVICE = process.env.POLYGON_SAFE_TXS_SERVICE || '';
 export const ARBITRUM_SAFE_TXS_SERVICE = process.env.ARBITRUM_SAFE_TXS_SERVICE || '';
+export const OPTIMISM_SAFE_TXS_SERVICE = process.env.OPTIMISM_SAFE_TXS_SERVICE || '';
 export const SEPOLIA_SAFE_TXS_SERVICE = process.env.SEPOLIA_SAFE_TXS_SERVICE || '';
 export const LINEA_SAFE_TXS_SERVICE = process.env.LINEA_SAFE_TXS_SERVICE || '';
 export const BOT_TOKEN = process.env.BOT_TOKEN || '';
