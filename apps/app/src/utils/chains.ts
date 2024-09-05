@@ -1,5 +1,6 @@
 import ImgLogoEthereum from '../assets/thx_logo_ethereum.svg';
 import ImgLogoArbitrum from '../assets/thx_logo_arbitrum.svg';
+import ImgLogoOptimism from '../assets/thx_logo_optimism.svg';
 import ImgLogoBinanceSmartChain from '../assets/thx_logo_bsc.svg';
 import ImgLogoPolygon from '../assets/thx_logo_polygon.svg';
 import ImgLogoHardhat from '../assets/thx_logo_hardhat.svg';
@@ -13,6 +14,7 @@ import ImgLogoAptos from '../assets/thx_logo_aptos.svg';
 import ImgLogoSui from '../assets/thx_logo_sui.svg';
 import {
     arbitrum,
+    optimism,
     mainnet,
     bsc,
     polygon,
@@ -100,6 +102,13 @@ const chainList: { [chainId: number]: ChainInfo } = {
         logo: ImgLogoArbitrum,
         blockExplorer: 'https://arbiscan.io',
         chain: arbitrum,
+    },
+    [ChainId.Optimism]: {
+        chainId: ChainId.Optimism,
+        name: 'Optimism',
+        logo: ImgLogoOptimism,
+        blockExplorer: 'https://optimistic.etherscan.io',
+        chain: optimism,
     },
     [ChainId.Sepolia]: {
         chainId: ChainId.Sepolia,

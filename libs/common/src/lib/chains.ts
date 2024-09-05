@@ -21,6 +21,12 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://arbiscan.io',
         rpc: 'https://arbitrum.llamarpc.com',
     },
+    [ChainId.Optimism]: {
+        chainId: ChainId.Optimism,
+        name: 'Optimism',
+        blockExplorer: 'https://optimistic.etherscan.io',
+        rpc: 'https://mainnet.optimism.io',
+    },
     [ChainId.Sepolia]: {
         chainId: ChainId.Sepolia,
         name: 'Sepolia',
