@@ -3,7 +3,7 @@
         <b-card-body
             v-if="reward.poolId === CP_CAMPAIGN || reward.poolId === SANTA_CAMPAIGN"
             class="d-flex flex-column justify-content-between cp-campaign-card"
-            :style="{ height: 'auto' }"
+            :style="{ height: 'auto', background: !reward.isPromoted ? backgroundColor : '' }"
         >
             <div v-if="reward.isPromoted" class="d-flex align-items-center promoted-title">Promoted</div>
             <b-card-title v-if="!reward.isPromoted" class="d-flex align-items-center reward-title px-2 pt-2">
@@ -189,6 +189,15 @@ export default defineComponent({
                 return Number.isInteger(price) ? `${price} $` : `${price.toFixed(2)} $`;
             } else {
                 return this.reward.pointPrice;
+            }
+        },
+        backgroundColor() {
+            const lowerTitle = this.reward.title.toLowerCase();
+
+            if (lowerTitle.includes('polygon')) {
+                return 'linear-gradient(182deg, rgba(81, 106, 255, 0.16) 2.31%, rgba(42, 42, 42, 0.12) 81.91%)';
+            } else if (lowerTitle.includes('sepolia')) {
+                return 'linear-gradient(186deg, rgba(77, 162, 255, 0.20) -5.91%, rgba(42, 42, 42, 0.12) 71.01%)';
             }
         },
     },

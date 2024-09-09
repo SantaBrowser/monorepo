@@ -52,7 +52,7 @@ aside.sidebar {
     margin-right: 10px;
     /* overflow: hidden; */
     /* width: 350px; */
-    box-shadow: -9px -5px 20px 20px rgb(63 77 202 / 12%);
+    //box-shadow: -9px -5px 20px 20px rgb(63 77 202 / 12%);
     backdrop-filter: blur(5px);
 }
 .sidebar {

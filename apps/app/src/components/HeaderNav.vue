@@ -182,11 +182,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header-nav {
     position: fixed;
-    top: 3px;
+    //top: 3px;
     left: 0.5%;
     width: 99% !important;
     z-index: 1000;
-    padding: 8px;
+    padding: 6px;
     /* border-bottom: 1px dotted #dd1e1e66; */
     border-radius: 30px;
     margin: 0.1% 0.5% 0.1% 0;
@@ -194,6 +194,7 @@ export default defineComponent({
     //padding-right: 60px;
     background: rgba(0, 0, 0, 0.8);
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.7);
+    padding-right: 50px;
 }
 
 .header-nav h2 {
