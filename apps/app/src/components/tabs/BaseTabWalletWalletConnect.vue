@@ -75,7 +75,6 @@ export default defineComponent({
                             variant: this.variant,
                             rawAddress: accountInfo.address,
                         });
-                        console.log(this.walletStore.wallets);
                         const wallet = this.walletStore.wallets.find(
                             (wallet: TWallet) => wallet.address === accountInfo.address,
                         );
@@ -103,9 +102,36 @@ export default defineComponent({
                             variant: this.variant,
                             rawAddress: accountInfo.address,
                         });
-                        console.log(this.walletStore.wallets);
                         const wallet = this.walletStore.wallets.find(
                             (wallet: TWallet) => wallet.address === accountInfo.address,
+                        );
+                        if (!wallet) throw new Error('New wallet not found');
+
+                        this.walletStore.setWallet(wallet);
+                        this.$emit('close');
+                    } catch (error) {
+                        console.error(error);
+                        this.error = 'An issue occured while creating your wallet. Please try again.';
+                    } finally {
+                        this.isLoading = false;
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (this.walletStore.currentChainId == ChainId.Solana) {
+                try {
+                    const provider = window.phantom?.solana;
+                    const resp = await provider.connect();
+                    const accountAddress = resp.publicKey.toString();
+                    console.log(accountAddress);
+                    try {
+                        await this.walletStore.create({
+                            chainId: ChainId.Solana,
+                            variant: this.variant,
+                            rawAddress: accountAddress,
+                        });
+                        const wallet = this.walletStore.wallets.find(
+                            (wallet: TWallet) => wallet.address === accountAddress,
                         );
                         if (!wallet) throw new Error('New wallet not found');
 

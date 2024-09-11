@@ -11,7 +11,9 @@
                         (chainId == ChainId.Aptos && w.chainId !== ChainId.Aptos) ||
                         (chainId !== ChainId.Aptos && w.chainId == ChainId.Aptos) ||
                         (chainId == ChainId.Sui && w.chainId !== ChainId.Sui) ||
-                        (chainId !== ChainId.Sui && w.chainId == ChainId.Sui)
+                        (chainId !== ChainId.Sui && w.chainId == ChainId.Sui) ||
+                        (chainId == ChainId.Solana && w.chainId !== ChainId.Solana) ||
+                        (chainId !== ChainId.Solana && w.chainId == ChainId.Solana)
                     "
                 >
                     {{ w.short }}

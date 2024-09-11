@@ -30,6 +30,8 @@ if (process.env.NODE_ENV === 'production') {
             'APTOS_PRIVATE_KEY',
             'SUI_NODE_URL',
             'SUI_PRIVATE_KEY',
+            'SOLANA_URL',
+            'SOLANA_PRIVATE_KEY',
             'ARBITRUM_RPC',
             'OPTIMISM_RPC',
             'BASE_RPC',
@@ -100,11 +102,13 @@ export const ETHEREUM_RPC = process.env.ETHEREUM_RPC || 'https://rpc.ankr.com/et
 
 export const APTOS_NODE_URL = process.env.APTOS_NODE_URL;
 export const SUI_NODE_URL = process.env.SUI_NODE_URL;
+export const SOLANA_URL = process.env.SOLANA_URL;
 
 export const MONGODB_URI = String(process.env.MONGODB_URI) || '';
 export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 export const APTOS_PRIVATE_KEY = process.env.APTOS_PRIVATE_KEY;
 export const SUI_PRIVATE_KEY = process.env.SUI_PRIVATE_KEY;
+export const SOLANA_PRIVATE_KEY = process.env.SOLANA_PRIVATE_KEY;
 export const PORT = process.env.PORT || '';
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID || '';
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET || '';

@@ -7,6 +7,7 @@ import { NotFoundError } from '@thxnetwork/api/util/errors';
 import { ChainId } from '@thxnetwork/common/enums';
 import AptosService from '@thxnetwork/api/services/AptosService';
 import SuiService from '@thxnetwork/api/services/SuiService';
+import SolanaService from '@thxnetwork/api/services/SolanaService';
 
 const validation = [param('id').isMongoId()];
 
@@ -22,11 +23,11 @@ const controller = async (req: Request, res: Response) => {
 
     const { defaultAccount } = NetworkService.getProvider(erc20.chainId);
     if (erc20.chainId == ChainId.Aptos) {
-        const [ , , decimalsString] = await AptosService.getCoinInfo(erc20.address);
+        const [, , decimalsString] = await AptosService.getCoinInfo(erc20.address);
         const adminBalanceInWei = await AptosService.getCoinBalance(defaultAccount, erc20.address);
         const decimals = Number(decimalsString);
         const adminBalance = Number(adminBalanceInWei) / 10 ** decimals;
-        const totalSupplyInWei = "";
+        const totalSupplyInWei = '';
 
         res.status(200).json({
             ...erc20.toJSON(),
@@ -34,13 +35,12 @@ const controller = async (req: Request, res: Response) => {
             decimals,
             adminBalance,
         });
-    }
-    else if (erc20.chainId == ChainId.Sui) {
-        const [ , , decimalsString] = await SuiService.getCoinInfo(erc20.address);
+    } else if (erc20.chainId == ChainId.Sui) {
+        const [, , decimalsString] = await SuiService.getCoinInfo(erc20.address);
         const adminBalanceInWei = await SuiService.getCoinBalance(defaultAccount, erc20.address);
         const decimals = Number(decimalsString);
         const adminBalance = Number(adminBalanceInWei) / 10 ** decimals;
-        const totalSupplyInWei = "";
+        const totalSupplyInWei = '';
 
         res.status(200).json({
             ...erc20.toJSON(),
@@ -48,8 +48,20 @@ const controller = async (req: Request, res: Response) => {
             decimals,
             adminBalance,
         });
-    }
-    else {
+    } else if (erc20.chainId == ChainId.Solana) {
+        const [, , decimalsString] = await SolanaService.getCoinInfo(erc20.address);
+        const adminBalanceInWei = await SolanaService.getCoinBalance(defaultAccount, erc20.address);
+        const decimals = Number(decimalsString);
+        const adminBalance = Number(adminBalanceInWei) / 10 ** decimals;
+        const totalSupplyInWei = '';
+
+        res.status(200).json({
+            ...erc20.toJSON(),
+            totalSupplyInWei,
+            decimals,
+            adminBalance,
+        });
+    } else {
         const [totalSupplyInWei, decimalsString, adminBalanceInWei] = await Promise.all([
             erc20.contract.methods.totalSupply().call(),
             erc20.contract.methods.decimals().call(),

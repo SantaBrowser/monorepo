@@ -12,6 +12,7 @@ import ImgLogoSepolia from '../assets/thx_logo_sepolia.svg';
 import ImgLogoSkale from '../assets/thx_logo_skale.svg';
 import ImgLogoAptos from '../assets/thx_logo_aptos.svg';
 import ImgLogoSui from '../assets/thx_logo_sui.svg';
+import ImgLogoSolana from '../assets/thx_logo_solana.svg';
 import {
     arbitrum,
     optimism,
@@ -77,6 +78,19 @@ const sui = defineChain({
     },
     blockExplorers: {
         default: { name: 'Explorer', url: 'https://suiscan.xyz/testnet' },
+    },
+    contracts: {},
+});
+
+const solana = defineChain({
+    id: ChainId.Solana,
+    name: 'Solana',
+    nativeCurrency: { name: 'SOL', symbol: 'SOL', decimals: 9 },
+    rpcUrls: {
+        default: { http: ['https://api.mainnet-beta.solana.com'] },
+    },
+    blockExplorers: {
+        default: { name: 'Explorer', url: 'https://explorer.solana.com' },
     },
     contracts: {},
 });
@@ -172,6 +186,13 @@ const chainList: { [chainId: number]: ChainInfo } = {
         logo: ImgLogoSui,
         blockExplorer: 'https://suiscan.xyz/testnet',
         chain: sui,
+    },
+    [ChainId.Solana]: {
+        chainId: ChainId.Solana,
+        name: 'Solana',
+        logo: ImgLogoSolana,
+        blockExplorer: 'https://explorer.solana.com',
+        chain: solana,
     },
     [ChainId.Skale]: {
         chainId: ChainId.Skale,

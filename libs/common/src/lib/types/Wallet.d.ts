@@ -8,6 +8,7 @@ type TNetworkConfig = {
     relayer?: Relayer;
     provider?: DefenderRelayProvider;
     client?: any;
+    connection?: any;
 };
 
 type TWallet = {

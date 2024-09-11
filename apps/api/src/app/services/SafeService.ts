@@ -20,6 +20,8 @@ import { SuiClient } from '@mysten/sui/client';
 import { coinWithBalance, Transaction as SuiTransaction } from '@mysten/sui/transactions';
 import { MultiSigPublicKey } from '@mysten/sui/multisig';
 import { APTOS_NODE_URL, SUI_NODE_URL } from '../config/secrets';
+import { createMultisig, getOrCreateAssociatedTokenAccount, transfer } from '@solana/spl-token';
+import solanaWeb3 from '@solana/web3.js';
 
 const { AccountAddress, EntryFunction, MultiSig, MultiSigTransactionPayload, TransactionPayloadMultisig } =
     TxnBuilderTypes;
@@ -39,7 +41,7 @@ class SafeService {
         let owners = [];
 
         // Add relayer address and consider this a campaign safe
-        if (data.chainId != ChainId.Aptos && data.chainId != ChainId.Sui) {
+        if (data.chainId != ChainId.Aptos && data.chainId != ChainId.Sui && data.chainId != ChainId.Solana) {
             const { defaultAccount } = NetworkService.getProvider(wallet.chainId);
             owners = [toChecksumAddress(defaultAccount)];
 
@@ -86,6 +88,13 @@ class SafeService {
             });
 
             const multisigAddress = multiSigPublicKey.toSuiAddress();
+            logger.debug('Deployed Safe :', multisigAddress);
+            return multisigAddress;
+        } else if (wallet.chainId == ChainId.Solana) {
+            const { signer, connection } = NetworkService.getProvider(wallet.chainId);
+            const multisigKey = await createMultisig(connection, signer, [signer.publicKey], 1);
+
+            const multisigAddress = multisigKey.toBase58();
             logger.debug('Deployed Safe :', multisigAddress);
             return multisigAddress;
         } else if (wallet.chainId == ChainId.Skale) {
@@ -256,7 +265,7 @@ class SafeService {
             await client.generateSignSubmitWaitForTransaction(signer, multisigTxExecution);
             await tx.updateOne({ state: TransactionState.Mined });
             logger.debug('Safe TX Executed');
-        } else {
+        } else if (wallet.chainId == ChainId.Sui) {
             await tx.updateOne({ state: TransactionState.Executed });
             const client = new SuiClient({ url: SUI_NODE_URL });
             const { signer } = NetworkService.getProvider(wallet.chainId);
@@ -285,11 +294,44 @@ class SafeService {
             });
             await tx.updateOne({ state: TransactionState.Mined });
             logger.debug('Safe TX Executed');
+        } else if (wallet.chainId == ChainId.Solana) {
+            await tx.updateOne({ state: TransactionState.Executed });
+            const { signer, connection } = NetworkService.getProvider(wallet.chainId);
+            const mint = new solanaWeb3.PublicKey(tx.to);
+            const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+                connection,
+                signer,
+                mint,
+                new solanaWeb3.PublicKey(tx.data),
+            );
+            const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+                connection,
+                signer,
+                mint,
+                new solanaWeb3.PublicKey(wallet.address),
+            );
+            const signature = await transfer(
+                connection,
+                signer,
+                fromTokenAccount.address,
+                toTokenAccount.address,
+                new solanaWeb3.PublicKey(tx.data),
+                tx.amount,
+                [signer],
+            );
+
+            await tx.updateOne({ state: TransactionState.Mined });
+            logger.debug('Safe TX Executed');
         }
     }
 
     async proposeTransaction(wallet: WalletDocument, txs: TransactionDocument[]) {
-        if (wallet.chainId == ChainId.Skale || wallet.chainId == ChainId.Aptos || wallet.chainId == ChainId.Sui) {
+        if (
+            wallet.chainId == ChainId.Skale ||
+            wallet.chainId == ChainId.Aptos ||
+            wallet.chainId == ChainId.Sui ||
+            wallet.chainId == ChainId.Solana
+        ) {
             for (let tx of txs) {
                 try {
                     await this.proposeTx(wallet, tx);

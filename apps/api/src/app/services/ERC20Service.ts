@@ -22,6 +22,7 @@ import { fromWei } from 'web3-utils';
 import { PromiseParser } from '@thxnetwork/api/util';
 import AptosService from './AptosService';
 import SuiService from './SuiService';
+import SolanaService from './SolanaService';
 
 async function decorate(token: ERC20TokenDocument, wallet: WalletDocument) {
     const erc20 = await getById(token.erc20Id);
@@ -198,10 +199,9 @@ export const importToken = async (chainId: number, address: string, sub: string,
         for (const wallet of wallets) {
             await upsertToken(erc20, wallet);
         }
-    
+
         return erc20;
-    }
-    else if (chainId == ChainId.Sui) {
+    } else if (chainId == ChainId.Sui) {
         const [name, symbol] = await SuiService.getCoinInfo(address);
         const erc20 = await ERC20.create({
             sub,
@@ -217,10 +217,27 @@ export const importToken = async (chainId: number, address: string, sub: string,
         for (const wallet of wallets) {
             await upsertToken(erc20, wallet);
         }
-    
+
         return erc20;
-    }
-    else {
+    } else if (chainId == ChainId.Solana) {
+        const [name, symbol] = await SolanaService.getCoinInfo(address);
+        const erc20 = await ERC20.create({
+            sub,
+            name,
+            symbol,
+            address,
+            chainId,
+            logoImgUrl,
+            type: ERC20Type.Unknown,
+        });
+
+        const wallets = await Wallet.find({ sub });
+        for (const wallet of wallets) {
+            await upsertToken(erc20, wallet);
+        }
+
+        return erc20;
+    } else {
         const { web3 } = NetworkService.getProvider(chainId);
         const contract = new web3.eth.Contract(getArtifact('THXERC20_LimitedSupply').abi, address);
         const [name, symbol] = await Promise.all([contract.methods.name().call(), contract.methods.symbol().call()]);

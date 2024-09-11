@@ -81,6 +81,12 @@ const chainList: { [chainId: number]: ChainInfo } = {
         blockExplorer: 'https://suiscan.xyz/testnet',
         rpc: 'https://rpc-testnet.suiscan.xyz:443',
     },
+    [ChainId.Solana]: {
+        chainId: ChainId.Solana,
+        name: 'Solana',
+        blockExplorer: 'https://explorer.solana.com',
+        rpc: 'https://api.mainnet-beta.solana.com',
+    },
 };
 
 if (process.env['NODE_ENV'] !== 'production') {
