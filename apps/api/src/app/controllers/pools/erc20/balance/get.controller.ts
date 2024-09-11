@@ -7,12 +7,12 @@ import ContractService from '@thxnetwork/api/services/ContractService';
 import { ChainId } from '@thxnetwork/common/enums';
 import AptosService from '@thxnetwork/api/services/AptosService';
 import SuiService from '@thxnetwork/api/services/SuiService';
-import NetworkService from '@thxnetwork/api/services/NetworkService';
+import SolanaService from '@thxnetwork/api/services/SolanaService';
 
 const validation = [
     param('id').isMongoId(),
-    // query('tokenAddress').isEthereumAddress(), 
-    query('walletId').isMongoId()
+    // query('tokenAddress').isEthereumAddress(),
+    query('walletId').isMongoId(),
 ];
 
 const controller = async (req: Request, res: Response) => {
@@ -22,17 +22,16 @@ const controller = async (req: Request, res: Response) => {
     const safe = await SafeService.findById(req.query.walletId as string);
     if (!safe) throw new NotFoundError('Campaign Safe not found.');
 
-    if(safe.chainId == ChainId.Aptos) {
+    if (safe.chainId == ChainId.Aptos) {
         const adminBalanceInWei = await AptosService.getCoinBalance(safe.address, req.query.tokenAddress as string);
-        console.log(adminBalanceInWei)
         res.json({ balanceInWei: adminBalanceInWei });
-    }
-    else if(safe.chainId == ChainId.Sui) {
+    } else if (safe.chainId == ChainId.Sui) {
         const adminBalanceInWei = await SuiService.getCoinBalance(safe.address, req.query.tokenAddress as string);
-        console.log(adminBalanceInWei)
         res.json({ balanceInWei: adminBalanceInWei });
-    }
-    else {
+    } else if (safe.chainId == ChainId.Solana) {
+        const adminBalanceInWei = await SolanaService.getCoinBalance(safe.address, req.query.tokenAddress as string);
+        res.json({ balanceInWei: adminBalanceInWei });
+    } else {
         const contract = ContractService.getContract(
             'THXERC20_LimitedSupply',
             safe.chainId,

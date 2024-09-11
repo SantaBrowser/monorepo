@@ -17,8 +17,10 @@ import {
     BASE_RPC,
     APTOS_NODE_URL,
     SUI_NODE_URL,
+    SOLANA_URL,
     APTOS_PRIVATE_KEY,
     SUI_PRIVATE_KEY,
+    SOLANA_PRIVATE_KEY,
     METIS_RELAYER,
     METIS_RPC,
     METIS_RELAYER_API_KEY,
@@ -36,6 +38,8 @@ import { AptosClient, AptosAccount, HexString } from 'aptos';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { fromHEX } from '@mysten/bcs';
 import { SuiClient } from '@mysten/sui/client';
+import solanaWeb3 from '@solana/web3.js';
+import bs58 from 'bs58';
 
 class NetworkService {
     config = {
@@ -131,6 +135,21 @@ class NetworkService {
                 signer,
                 defaultAccount,
                 client,
+            };
+        }
+
+        if (SOLANA_URL) {
+            const signer = solanaWeb3.Keypair.fromSecretKey(
+                new Uint8Array(bs58.decode(process.env.SOLANA_PRIVATE_KEY)),
+            );
+            const defaultAccount = signer.publicKey;
+            const connection = new solanaWeb3.Connection(SOLANA_URL, {
+                commitment: 'confirmed',
+            });
+            this.networks[ChainId.Solana] = {
+                signer,
+                defaultAccount,
+                connection,
             };
         }
 
