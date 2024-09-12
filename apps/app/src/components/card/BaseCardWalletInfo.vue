@@ -207,9 +207,9 @@ export default defineComponent({
     color: #fff;
     text-decoration: none;
     cursor: pointer;
-    background: #000;
+    background: #000 !important;
     border-radius: 20px;
-    border: 1px dotted #ffcd06;
+    border: 1px dotted #ffcd06 !important;
 }
 
 .dropdown-box {

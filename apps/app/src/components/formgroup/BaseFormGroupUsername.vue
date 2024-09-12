@@ -5,14 +5,18 @@
                 v-model="value"
                 :state="isValidUsername"
                 placeholder="JohnDoe123"
+                style="border-radius: 0.375rem; padding-right: 40px"
                 @input="onInput"
                 @change="onChange"
             />
-            <b-input-group-append v-if="isLoading">
+            <!-- <b-input-group-append v-if="isLoading">
                 <b-button size="sm" variant="primary" class="px-3" :disabled="true">
                     <b-spinner small />
                 </b-button>
-            </b-input-group-append>
+            </b-input-group-append> -->
+            <div v-if="isLoading" class="username-loader d-flex align-items-center px-2">
+                <b-spinner small />
+            </div>
         </b-input-group>
     </b-form-group>
 </template>
@@ -80,3 +84,11 @@ export default defineComponent({
     },
 });
 </script>
+<style lang="scss" scoped>
+.username-loader {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+</style>
