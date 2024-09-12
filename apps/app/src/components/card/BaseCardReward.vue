@@ -195,9 +195,13 @@ export default defineComponent({
             const lowerTitle = this.reward.title.toLowerCase();
 
             if (lowerTitle.includes('polygon')) {
-                return 'linear-gradient(182deg, rgba(81, 106, 255, 0.16) 2.31%, rgba(42, 42, 42, 0.12) 81.91%)';
+                return 'linear-gradient(182deg, rgba(211, 30, 172, 0.16) 2.31%, rgba(42, 42, 42, 0.12) 81.91%)';
             } else if (lowerTitle.includes('sepolia')) {
                 return 'linear-gradient(186deg, rgba(77, 162, 255, 0.20) -5.91%, rgba(42, 42, 42, 0.12) 71.01%)';
+            } else if (lowerTitle.includes('optimism')) {
+                return 'linear-gradient(186deg, rgba(255, 81, 81, 0.2) -5.91%, rgba(42, 42, 42, 0.12) 71.01%)';
+            } else if (lowerTitle.includes('base')) {
+                return 'linear-gradient(182deg, rgba(30, 81, 211, 0.16) 2.31%, rgba(42, 42, 42, 0.12) 81.91%)';
             }
         },
     },

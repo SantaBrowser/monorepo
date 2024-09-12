@@ -1,7 +1,7 @@
 <template>
     <div v-if="accountStore.isAuthenticated" class="d-flex h-wallet">
         <b-dropdown
-            v-model="isOpenWallet"
+            v-model="dropdownModel"
             variant="link"
             class="w-100 rounded"
             :style="{
@@ -135,7 +135,7 @@
         <b-dropdown
             v-model="isOpen"
             variant="link"
-            menu-class="w-100 fade-in"
+            menu-class="w-100 fade-in wallet-dropdown"
             no-caret
             end
             :disabled="!accountStore.isAuthenticated"
@@ -242,6 +242,18 @@ export default defineComponent({
             url.searchParams.append('backgroundType', 'gradientLinear');
             return url.toString();
         },
+        dropdownModel: {
+            get() {
+                return this.walletStore.wallet ? this.isOpenWallet : this.isOpen;
+            },
+            set(value) {
+                if (this.walletStore.wallet) {
+                    this.isOpenWallet = value;
+                } else {
+                    this.isOpen = value;
+                }
+            },
+        },
     },
     watch: {
         'accountStore.account': {
@@ -287,6 +299,9 @@ export default defineComponent({
             this.walletStore.setWallet(wallet);
             this.accountStore.setGlobals({ activeWalletId: wallet._id });
             this.walletStore.list();
+        },
+        toggleModal() {
+            this.isOpen = !this.isOpen;
         },
     },
 });

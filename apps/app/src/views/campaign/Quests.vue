@@ -513,7 +513,7 @@ export default defineComponent({
     //background: #0e0f19;
     border-radius: 15px;
     border: 1px dotted #865c5c85;
-    padding: 0px;
+    padding: 0px !important;
     margin-left: 12px;
 }
 
@@ -548,7 +548,7 @@ export default defineComponent({
     box-shadow: 0px 0px 49px 0px rgba(0, 7, 72, 0.12);
     border-radius: 15px;
     border: 1.5px solid rgba(166, 111, 111, 0.3);
-    padding: 0;
+    padding: 0 !important;
     margin-right: 20px;
 }
 

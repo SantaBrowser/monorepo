@@ -1,5 +1,6 @@
 import { useAccountStore } from '../stores/Account';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import Home from '../views/discovery/Home.vue';
 
 async function beforeEnter(to: any, from: any, next: any) {
     // Redirect to last match
@@ -29,7 +30,8 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: '/',
                 name: 'home',
-                component: () => import(/* webpackChunkName: "home" */ '../views/discovery/Home.vue'),
+                // component: () => import(/* webpackChunkName: "home" */ '../views/discovery/Home.vue'),
+                component: Home,
             },
             {
                 path: '/i/:code',
