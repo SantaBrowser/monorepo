@@ -59,7 +59,7 @@
                     Quest ends in <strong>{{ expiryDate }} </strong>!
                 </b-alert>
                 <b-alert v-model="isAlertMinFollowersShown" variant="primary" class="px-2 py-1">
-                    <i class="fab fa-twitter me-1" />
+                    <i class="fab fa-x-twitter me-1" />
                     A minimum of <strong>{{ quest.contentMetadata.minFollowersCount }} followers</strong> is required.
                 </b-alert>
                 <b-alert v-model="isAlertDangerShown" variant="primary" class="p-2">
@@ -181,7 +181,7 @@ export default defineComponent({
                 [QuestVariant.Daily]: 'fas fa-calendar',
                 [QuestVariant.Invite]: 'fas fa-comments',
                 [QuestVariant.Discord]: 'fab fa-discord',
-                [QuestVariant.Twitter]: 'fab fa-twitter',
+                [QuestVariant.Twitter]: 'fab fa-x-twitter',
                 [QuestVariant.YouTube]: 'fab fa-youtube',
                 [QuestVariant.Custom]: 'fas fa-flag',
                 [QuestVariant.Web3]: 'fab fa-ethereum',

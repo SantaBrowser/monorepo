@@ -98,7 +98,7 @@ export default defineComponent({
         return {
             kinds: {
                 [AccessTokenKind.Google]: 'YouTube',
-                [AccessTokenKind.Twitter]: 'Twitter',
+                [AccessTokenKind.Twitter]: 'X',
                 [AccessTokenKind.Discord]: 'Discord',
             } as any,
             error: '',

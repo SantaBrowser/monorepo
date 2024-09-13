@@ -468,7 +468,6 @@ export default defineComponent({
     box-shadow: rgba(0, 0, 0, 0.25) 0px 8px 16px 0px, rgba(255, 255, 255, 0.2) 0px 8px 16px 0px inset;
     background: rgb(248, 69, 69) !important;
     color: white;
-    border-radius: 25px;
 }
 
 .btn-primary:hover::before {
