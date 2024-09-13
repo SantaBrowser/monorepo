@@ -56,7 +56,15 @@ export default defineComponent({
     methods: {
         reset() {
             this.isLoading = false;
-            this.error = '';
+            if (!this.value || !this.value.length) {
+                this.error = 'Username is required.';
+            } else if (this.value.length < 3) {
+                this.error = 'Username must be at least 3 characters long.';
+            } else if (this.value.length > 50) {
+                this.error = 'Username must not exceed 50 characters.';
+            } else {
+                this.error = '';
+            }
         },
         onInput() {
             this.isLoading = true;
