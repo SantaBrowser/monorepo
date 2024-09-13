@@ -1,6 +1,6 @@
 <template>
     <b-button size="sm" class="btn-share" @click="openShareWindow">
-        <i class="fab fa-twitter" />
+        <i class="fab fa-x-twitter" />
     </b-button>
 </template>
 
