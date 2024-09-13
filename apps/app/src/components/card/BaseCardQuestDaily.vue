@@ -112,7 +112,6 @@ export default defineComponent({
         this.interval = setInterval(() => {
             this.secondsToSubtract = this.secondsToSubtract + 1;
         }, 1000);
-        console.log('Quest entries on create:', this.quest.entries);
     },
     beforeUnmount() {
         clearInterval(this.interval);

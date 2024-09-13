@@ -60,7 +60,13 @@
                 </b-alert>
                 <b-alert v-model="isAlertMinFollowersShown" variant="primary" class="px-2 py-1">
                     <i class="fab fa-x-twitter me-1" />
-                    A minimum of <strong>{{ quest.contentMetadata.minFollowersCount }} followers</strong> is required.
+                    A minimum of
+                    <strong>{{
+                        quest.contentMetadata.minFollowersCount === '1'
+                            ? '1 follower'
+                            : quest.contentMetadata.minFollowersCount + ' followers'
+                    }}</strong>
+                    is required.
                 </b-alert>
                 <b-alert v-model="isAlertDangerShown" variant="primary" class="p-2">
                     <i class="fas fa-exclamation-circle me-1"></i> {{ error }}
