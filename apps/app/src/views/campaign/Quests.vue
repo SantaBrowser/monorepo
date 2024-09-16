@@ -506,6 +506,7 @@ export default defineComponent({
 }
 
 .quests-column {
+    min-height: 100vh;
     box-shadow: inset rgb(182 9 153 / 15%) 0px -7px 20px 8px;
     margin-right: 20px;
     border-radius: 7px;
