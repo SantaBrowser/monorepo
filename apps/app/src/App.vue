@@ -1,12 +1,19 @@
 <template>
-    <b-alert v-if="isOffline" v-model="isOffline" class="m-3" variant="primary">
+    <b-alert v-show="isOffline" v-model="isOffline" class="m-3" variant="primary">
         <i class="fas fa-tools me-2" />
         We are running some maintenance and will be back shortly. See you soon! ❤️
     </b-alert>
     <!-- <div v-else id="main" :class="{ 'overflow-hidden': accountStore.isMobile }"> -->
-    <div v-else id="main">
+    <div v-show="!isOffline" id="main">
         <BaseNavbarTop />
-        <div class="d-flex h-100">
+        <div class="h-100">
+            <HeaderNav :is-visible="true" />
+            <div class="bg-santa">
+                <div class="bg-blur">
+                    <div class="unwrap">UNWRAP</div>
+                </div>
+            </div>
+
             <router-view v-slot="{ Component }">
                 <transition name="fade" mode="out-in">
                     <component :is="Component" class="router-view-app order-lg-0" />
@@ -115,6 +122,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+#app {
+    background-color: #000;
+}
 .router-view-app {
     display: flex;
     flex-grow: 1;
@@ -122,5 +132,44 @@ export default defineComponent({
     // overflow-x: hidden;
     // overflow-y: auto;
     height: 100% !important;
+}
+.unwrap {
+    padding: 50px 0 0;
+    line-height: 35vh;
+    font-size: 21vw;
+    color: #3b3306;
+    font-weight: 800;
+    border-radius: 15px;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-color: rgba(255, 205, 7, 0.9);
+    -webkit-text-stroke-width: 6px;
+    background-position: top;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    transition: 1s all ease-in-out;
+    -moz-transition: 1s all ease-in-out;
+    -webkit-transition: 1s all ease-in-out;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.bg-santa {
+    background: url(/src/assets/top-bg.jpg);
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    //border: 1px dotted rgb(23 72 208);
+    overflow: hidden;
+    box-shadow: inset 1px 20px 20px 15px rgb(8 1 1 / 94%);
+    /* border-top-right-radius: 0; */
+    /* border-top-left-radius: 0; */
+    /* border-top: 0; */
+    background-position: center 20%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bg-blur {
+    backdrop-filter: blur(5px);
 }
 </style>

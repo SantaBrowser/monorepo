@@ -1,48 +1,10 @@
 <template>
     <div ref="mainComponent" class="mainComponent">
-        <HeaderNav :is-visible="true" />
-        <div class="bf-blur">
-            <div ref="firstDiv" class="landing-page w-100">
-                <div
-                    :class="{ blurred: isBlurred }"
-                    :style="{
-                        opacity: isLoadingSearch || isLoadingPage ? 0.5 : 1,
-                        margin: 0,
-                    }"
-                    class="h-100 bg-santa"
-                    @transitionend="onTransitionEnd"
-                >
-                    <div class="bg-blur">
-                        <div class="unwrap">UNWRAP</div>
-                    </div>
-                    <!--                <div class="d-flex flex-column gap-4 landing-top hidden">-->
-                    <!--                    <h1>Santa <span>Rewards</span></h1>-->
-                    <!--                    <p>Browse, Earn, Enjoy: Your Rewards Dashboard Awaits!</p>-->
-                    <!--                </div>-->
-                    <!--                <div class="d-flex gap-4 campaigns-box" style="margin-top: 75px">-->
-                    <!--                    <div v-for="campaign in filteredCampaigns" :key="campaign._id">-->
-                    <!--                        <CampaignCard :campaign="campaign" @scrollToSecondDiv="scrollToSecondDiv" />-->
-                    <!--                    </div>-->
-                    <!--                </div>-->
-
-                    <!--                <div class="d-flex flex-wrap bestofwrapper" style="margin-top: 0px">-->
-                    <!--                    <div class="bestoftheweb">The Best of the Web With Santa's Rewards!</div>-->
-
-                    <!--                    <QuestsCarousel :quest-lists="questLists" class="hidden" @scrollToSecondDiv="scrollToSecondDiv" />-->
-                    <!--                </div>-->
-                    <!--                <div style="height: 100px"></div>-->
-                    <!-- <BaseCardCampaign :campaign="campaign" /> -->
-                </div>
-            </div>
-
-            <div
-                ref="secondDiv"
-                :class="{ 'slides-up': isSecondDivVisible }"
-                class="d-flex window-container bg-secondDiv"
-            >
+        <div>
+            <div ref="secondDiv" class="d-flex window-container bg-secondDiv">
                 <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
-                <div class="d-flex bf-blur w-100">
-                    <Quests :selected-part="selectedPart" :is-second-div-visible="isSecondDivVisible" />
+                <div class="d-flex w-100">
+                    <Quests :selected-part="selectedPart" />
 
                     <BaseSidebar />
                     <div
@@ -154,7 +116,6 @@ import * as html from 'html-entities';
 // import CampaignCard from '@thxnetwork/app/components/CampaignCard.vue';
 // import QuestsCarousel from '@thxnetwork/app/components/homepage/QuestsCarousel.vue';
 import Quests from '../campaign/Quests.vue';
-import HeaderNav from '@thxnetwork/app/components/HeaderNav.vue';
 import BaseNavbarPrimary from '@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue';
 import BaseQuestLeaderboardSmall from '@thxnetwork/app/components/BaseQuestLeaderboardSmall.vue';
 import BaseCardRewards from '@thxnetwork/app/components/card/BaseCardRewards.vue';
@@ -164,7 +125,7 @@ const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 export default defineComponent({
     name: 'Home',
     components: {
-        HeaderNav,
+        // HeaderNav,
         // QuestsCarousel,
         // CampaignCard,
         Quests,
@@ -196,9 +157,6 @@ export default defineComponent({
             brands: [],
             earningsIcon,
             currentIndex: 0,
-            isSecondDivVisible: false,
-            isBlurred: false,
-            isHidden: false,
             selectedPart: 'Quests',
         };
     },
@@ -323,31 +281,6 @@ export default defineComponent({
                 this.isLoadingSearch = false;
             }, 1000);
         },
-        scrollToSecondDiv() {
-            const secondDiv = this.$refs.secondDiv as HTMLElement;
-            secondDiv.scrollIntoView({ behavior: 'smooth' });
-        },
-        handleScroll() {
-            const scrollPosition =
-                window.scrollY || document.documentElement.scrollTop || this.$refs.mainComponent.scrollTop;
-            if (scrollPosition > 100) {
-                this.isSecondDivVisible = true;
-                this.isHeaderVisible = true;
-                this.isLandingPageHidden = true;
-                this.isBlurred = true;
-            } else {
-                this.isSecondDivVisible = false;
-                this.isHeaderVisible = false;
-                this.isLandingPageHidden = false;
-                this.isBlurred = false;
-                this.isHidden = false;
-            }
-        },
-        onTransitionEnd() {
-            if (this.isBlurred) {
-                this.isHidden = true;
-            }
-        },
         checkWidth() {
             this.accountStore.onResize();
         },
@@ -368,11 +301,6 @@ export default defineComponent({
     transition: transform 0.5s ease;
     //height: 100vh;
     //padding: 12px;
-}
-
-.blurred {
-    filter: blur(8px);
-    transition: filter 0.5s ease;
 }
 
 .hidden {
@@ -421,10 +349,6 @@ export default defineComponent({
     transition: bottom 0.5s ease-in-out;
     z-index: 11;
     //overflow: hidden;
-}
-
-.slide-up {
-    bottom: -20%;
 }
 
 .campaigns-box {
@@ -579,45 +503,6 @@ export default defineComponent({
     margin: 0;
 }
 
-.bg-santa {
-    background: url(/src/assets/top-bg.jpg);
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-    //border: 1px dotted rgb(23 72 208);
-    overflow: hidden;
-    box-shadow: inset 1px 20px 20px 15px rgb(8 1 1 / 94%);
-    /* border-top-right-radius: 0; */
-    /* border-top-left-radius: 0; */
-    /* border-top: 0; */
-    background-position: center 20%;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.bg-blur {
-    backdrop-filter: blur(5px);
-}
-
-.unwrap {
-    padding: 50px 0 0;
-    line-height: 35vh;
-    font-size: 21vw;
-    color: #3b3306;
-    font-weight: 800;
-    border-radius: 15px;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke-color: rgba(255, 205, 7, 0.9);
-    -webkit-text-stroke-width: 6px;
-    background-position: top;
-    top: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    transition: 1s all ease-in-out;
-    -moz-transition: 1s all ease-in-out;
-    -webkit-transition: 1s all ease-in-out;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-}
 .bestoftheweb {
     font-family: 'Kode Mono', monospace;
     font-size: 3vw;
@@ -646,10 +531,6 @@ export default defineComponent({
     background-blend-mode: color-dodge;
     background-attachment: fixed;
     background: #000;
-}
-
-.bf-blur {
-    backdrop-filter: blur(30px);
 }
 
 @media (max-width: 424px) {
