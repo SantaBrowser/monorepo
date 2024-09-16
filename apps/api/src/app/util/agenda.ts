@@ -52,13 +52,13 @@ db.connection.once('open', async () => {
     await agenda.every('5 seconds', JobType.Execute);
     await agenda.every('5 seconds', JobType.Callback);
 
-    await agenda.every('1 minutes', JobType.UpdatePrices);
+    // await agenda.every('1 minutes', JobType.UpdatePrices);
     await agenda.every('5 minutes', JobType.UpdateCampaignRanks);
-    await agenda.every('15 minutes', JobType.UpsertInvoices);
-    await agenda.every('15 minutes', JobType.UpdateAPR);
+    // await agenda.every('15 minutes', JobType.UpsertInvoices);
+    // await agenda.every('15 minutes', JobType.UpdateAPR);
 
-    await agenda.every('0 9 * * *', JobType.AssertPayments);
-    await agenda.every('0 9 * * *', JobType.ClaimExternalRewards);
+    // await agenda.every('0 9 * * *', JobType.AssertPayments);
+    // await agenda.every('0 9 * * *', JobType.ClaimExternalRewards);
     await agenda.every('0 9 * * MON', JobType.SendCampaignReport);
 
     logger.info('AgendaJS started job processor');
