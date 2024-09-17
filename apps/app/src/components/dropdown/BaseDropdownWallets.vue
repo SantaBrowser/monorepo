@@ -193,13 +193,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toDisplayString } from 'vue';
+import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
 import { useWalletStore, walletLogoMap } from '../../stores/Wallet';
 import { useAccountStore } from '../../stores/Account';
 import { WalletVariant } from '../../types/enums/accountVariant';
 import { chainList } from '@thxnetwork/app/utils/chains';
-import { is } from 'date-fns/locale';
 
 export default defineComponent({
     name: 'BaseDropdownWallets',
@@ -225,7 +224,7 @@ export default defineComponent({
             return this.walletStore.wallet?.variant === WalletVariant.WalletConnect;
         },
         isConnected() {
-            const { chainId, account, wallet } = this.walletStore;
+            const { account, wallet } = this.walletStore;
             if (!account || !wallet) return false;
 
             const isAddressCorrect = account.address === wallet.address;

@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { AUTH_URL, GTM, MAINTENANCE } from './config/secrets';
+import { GTM, MAINTENANCE } from './config/secrets';
 import { initGTM } from './utils/ga';
 import { mapStores } from 'pinia';
 import { useAuthStore } from './stores/Auth';

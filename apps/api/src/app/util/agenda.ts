@@ -39,11 +39,11 @@ agenda.define(JobType.SendCampaignReport, () => NotificationService.sendWeeklyDi
 agenda.define(JobType.RequestAttemp, (job: Job) => WebhookService.requestAttemptJob(job));
 agenda.define(JobType.UpdateTwitterRepostCache, (job: Job) => TwitterCacheService.updateRepostCacheJob(job));
 agenda.define(JobType.UpdateLeaderboard, (job: Job) => AnalyticsService.updateLeaderboardJob(job));
-agenda.define(JobType.UpsertInvoices, () => InvoiceService.upsertJob());
-agenda.define(JobType.UpdatePrices, () => BalancerService.updatePricesJob());
-agenda.define(JobType.UpdateAPR, () => BalancerService.updateMetricsJob());
-agenda.define(JobType.AssertPayments, () => PaymentService.assertPaymentsJob());
-agenda.define(JobType.ClaimExternalRewards, () => VoteEscrowService.claimExternalRewardsJob());
+// agenda.define(JobType.UpsertInvoices, () => InvoiceService.upsertJob());
+// agenda.define(JobType.UpdatePrices, () => BalancerService.updatePricesJob());
+// agenda.define(JobType.UpdateAPR, () => BalancerService.updateMetricsJob());
+// agenda.define(JobType.AssertPayments, () => PaymentService.assertPaymentsJob());
+// agenda.define(JobType.ClaimExternalRewards, () => VoteEscrowService.claimExternalRewardsJob());
 
 db.connection.once('open', async () => {
     await agenda.start();
