@@ -8,8 +8,6 @@
                 >
                     <b-img v-if="icon" :src="icon" width="30" height="30" class="rounded" />
                     <div
-                        v-b-tooltip
-                        :title="RewardVariant[rewardVariant]"
                         :class="
                             icon
                                 ? 'small position-absolute bg-primary rounded-circle d-flex align-items-center justify-content-center'
@@ -17,7 +15,7 @@
                         "
                         style="right: -5px; bottom: -5px; width: 20px; height: 20px"
                     >
-                        <i class="text-opaque" :class="(icon ? 'small mt-1 ' : ' ') + iconMap[rewardVariant]" />
+                        <i class="" :class="(icon ? '' : ' ') + iconMap[rewardVariant]" />
                     </div>
                 </div>
                 <div class="d-flex flex-grow-1 justify-content-between pe-3">

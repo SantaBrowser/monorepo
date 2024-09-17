@@ -71,9 +71,9 @@ export default defineComponent({
         ...mapStores(useQuestStore),
     },
     watch: {
-        '$route'(to, from) {
-            this.updateLeaderboard();
-        },
+        // '$route'(to, from) {
+        //     this.updateLeaderboard();
+        // },
         'accountStore.participants': {
             handler(newVal) {
                 this.updateLeaderboard();
@@ -95,11 +95,11 @@ export default defineComponent({
             //     await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
             // }
         },
-        async onClickRefresh() {
-            this.isLoading = true;
-            await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
-            this.isLoading = false;
-        },
+        // async onClickRefresh() {
+        //     this.isLoading = true;
+        //     await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
+        //     this.isLoading = false;
+        // },
         formatScore(score: number) {
             if (this.accountStore.poolId === CP_CAMPAIGN) {
                 const dollars = score / 100;

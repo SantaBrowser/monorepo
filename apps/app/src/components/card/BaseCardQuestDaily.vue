@@ -118,7 +118,6 @@ export default defineComponent({
     },
     methods: {
         formatAmount(amount: number): string {
-            console.log('quest entries: ', this.quest.entries);
             if (this.quest.poolId === CP_CAMPAIGN) {
                 const formattedAmount = (amount / 100).toFixed(2);
                 return `$${formattedAmount}`;
