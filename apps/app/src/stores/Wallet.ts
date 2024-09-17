@@ -2,14 +2,7 @@ import Safe, { EthersAdapter } from '@safe-global/protocol-kit';
 import { useAccountStore } from './Account';
 import { defineStore } from 'pinia';
 import { track } from '@thxnetwork/app/utils/mixpanel';
-import {
-    HARDHAT_RPC,
-    POLYGON_RPC,
-    SEPOLIA_RPC,
-    API_URL,
-    WALLET_CONNECT_PROJECT_ID,
-    WIDGET_URL,
-} from '../config/secrets';
+import { POLYGON_RPC, API_URL, WALLET_CONNECT_PROJECT_ID, WIDGET_URL } from '../config/secrets';
 import { useAuthStore } from './Auth';
 import { ChainId } from '@thxnetwork/common/enums';
 import { WalletVariant } from '../types/enums/accountVariant';
@@ -47,12 +40,6 @@ type TRequestBodyApproval = {
 export const walletLogoMap: { [variant: string]: string } = {
     [WalletVariant.WalletConnect]: imgWalletConnectLogo,
     [WalletVariant.Safe]: imgSafeLogo,
-};
-
-const rpcMap: { [chainId: number]: string } = {
-    [ChainId.Hardhat]: HARDHAT_RPC,
-    [ChainId.Polygon]: POLYGON_RPC,
-    [ChainId.Sepolia]: SEPOLIA_RPC,
 };
 
 const wagmiConfig = defaultWagmiConfig({

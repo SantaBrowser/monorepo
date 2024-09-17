@@ -86,8 +86,6 @@ import { RewardVariant } from '../../types/enums/rewards';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import StarCoin from '../../assets/star-coin.png';
 import { SANTA_CAMPAIGN, CP_CAMPAIGN } from '@thxnetwork/app/config/secrets';
-import { getApprovalBasedPaymasterInput } from 'viem/zksync';
-import { is } from 'date-fns/locale';
 export const iconMap = {
     [RewardVariant.Coin]: 'fas fa-coins',
     [RewardVariant.NFT]: 'fas fa-palette',

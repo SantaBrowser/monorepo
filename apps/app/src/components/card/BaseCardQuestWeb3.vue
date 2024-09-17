@@ -56,7 +56,6 @@ import { chainList, getAddressURL } from '../../utils/chains';
 import { ChainId } from '@thxnetwork/common/enums';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
 import { WalletVariant } from '@thxnetwork/app/types/enums/accountVariant';
-import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseCardQuestWeb3',

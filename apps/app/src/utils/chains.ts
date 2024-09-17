@@ -27,7 +27,6 @@ import {
     sepolia,
 } from '@wagmi/core/chains';
 import { ChainId } from '@thxnetwork/common/enums';
-import { PROD } from '../config/secrets';
 import { defineChain } from 'viem';
 
 const iota = defineChain({
