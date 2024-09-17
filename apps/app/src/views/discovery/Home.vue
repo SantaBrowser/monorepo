@@ -1,7 +1,7 @@
 <template>
     <div ref="mainComponent" class="mainComponent">
         <div>
-            <div ref="secondDiv" class="d-flex window-container bg-secondDiv">
+            <div ref="secondDiv" class="d-flex window-container">
                 <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
                 <div class="d-flex w-100">
                     <Quests :selected-part="selectedPart" />
@@ -28,78 +28,6 @@
         />
     </div>
 </template>
-<!-- <BaseCardHeaderHome /> -->
-<!--        <b-row class="mt-5 mb-3">-->
-<!--            <b-col xs="12" md="6">-->
-<!--                <h2>Earnings Dashboard</h2>-->
-<!--            </b-col>-->
-<!--            <b-col xs="12" md="4" offset-md="2" class="d-flex align-items-center justify-content-end">-->
-<!--                <b-input-group class="mb-3 mb-md-0">-->
-<!--                    <template #prepend>-->
-<!--                        <b-input-group-text class="bg-primary">-->
-<!--                            <b-spinner v-if="isLoadingSearch" small variant="white" />-->
-<!--                            <i v-else class="fas fa-search"></i>-->
-<!--                        </b-input-group-text>-->
-<!--                    </template>-->
-<!--                    <b-form-input v-model="search" placeholder="Search..." @input="onInputSearch" />-->
-<!--                </b-input-group>-->
-<!--            </b-col>-->
-<!--        </b-row>-->
-
-<!-- <b-link to="/" style="text-decoration: none" class="d-flex align-items-center">
-                    <img :src="earningsIcon" alt="Earnings Icon" class="me-2" height="40" />
-                    <span class="earnings-link">Earnings</span>
-                </b-link> -->
-<!-- <div v-if="isLoading" class="justify-content-center d-flex">
-                        <b-spinner small variant="primary" />
-                    </div>
-                    <p v-if="!isLoading && !filteredCampaigns.length" class="text-opaque">
-                        Could not find a campaign with that name...
-                    </p> -->
-
-<!-- <div class="mb-4 mt-4">
-                        <b-col xs="12" md="6">
-                            <h2 class="trending-title">Trending Quests</h2>
-                        </b-col>
-                    </div> -->
-
-<!--        <b-pagination v-model="page" :per-page="limit" :total-rows="campaigns.total" align="center" class="mt-3 mb-0" />-->
-<!-- </b-row>
-    </b-container> -->
-<!--    <BaseCardHeader row-class="py-md-0" class="my-5">-->
-<!--        <template #primary>-->
-<!--            <b-img :src="imgHeader" fluid />-->
-<!--        </template>-->
-<!--        <template #secondary>-->
-<!--            <div class="py-lg-5 pe-lg-5">-->
-<!--                <h1 class="mt-lg-3">-->
-<!--                    Quest<br />-->
-<!--                    Campaigns-->
-<!--                </h1>-->
-<!--                <p class="lead mb-4">-->
-<!--                    Give back to your community while increasing engagement with effective Quest Campaigns.-->
-<!--                </p>-->
-<!--                <b-button :href="`${publicURL}/pricing`" variant="primary" class="me-3 px-5" target="_blank">-->
-<!--                    Campaign Pricing-->
-<!--                </b-button>-->
-<!--                <b-button-->
-<!--                    href="https://discord.com/invite/TzbbSmkE7Y"-->
-<!--                    target="_blank"-->
-<!--                    variant="link"-->
-<!--                    class="text-white"-->
-<!--                >-->
-<!--                    Reach out! We don't bite😉-->
-<!--                </b-button>-->
-<!--            </div>-->
-<!--        </template>-->
-<!--    </BaseCardHeader>-->
-
-<!-- <div class="mb-4 mt-4">
-                        <b-col xs="12" md="6">
-                            <h2 class="trending-title">Top Brands</h2>
-                        </b-col>
-                    </div>
-                    <TopBrands :brands="brands" /> -->
 
 <script lang="ts">
 import { defineComponent } from 'vue';
@@ -108,9 +36,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useAuthStore } from '../../stores/Auth';
 import { mapStores } from 'pinia';
 import { decodeHTML } from '../../utils/decode-html';
-import imgJumbotron from '../../assets/thx_token_governance.png';
 import imgLogo from '../../assets/logo.png';
-import imgHeader from '../../assets/thx_token_governance.png';
 import earningsIcon from '../../assets/earnings-logo.png';
 import * as html from 'html-entities';
 // import CampaignCard from '@thxnetwork/app/components/CampaignCard.vue';
@@ -135,7 +61,6 @@ export default defineComponent({
     },
     data(): any {
         return {
-            imgHeader,
             decodeHTML,
             publicURL: PUBLIC_URL,
             dashboardURL: DASHBOARD_URL,
@@ -143,7 +68,6 @@ export default defineComponent({
             isLoadingSearch: false,
             isLoadingPage: false,
             isAlertShown: true,
-            imgJumbotron,
             imgLogo,
             isLoading: true,
             page: 1,
@@ -523,7 +447,6 @@ export default defineComponent({
 }
 
 .mainComponent {
-    //background-image: url('src/assets/bg-secondDiv.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     padding: 0;
