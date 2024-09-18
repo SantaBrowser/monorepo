@@ -1,9 +1,9 @@
 <template>
     <div
         v-if="list.length"
+        ref="dropdown"
         class="d-flex gap-2 dropdown-menu wal-dropdown align-items-center justify-content-between equal-divs m-0 white-btn"
-        @mouseover="mouseover"
-        @mouseleave="mouseleave"
+        @click="toggleDropdown"
     >
         <div class="fst-italic">WALLET</div>
         <div class="flex-icons">
@@ -115,13 +115,20 @@ export default defineComponent({
     },
     mounted() {
         this.listRewards();
+        document.addEventListener('click', this.handleClickOutside);
+    },
+    beforeUnmount() {
+        document.removeEventListener('click', this.handleClickOutside);
     },
     methods: {
-        mouseover: function () {
-            this.isOpen = true;
+        toggleDropdown() {
+            this.isOpen = !this.isOpen;
         },
-        mouseleave: function () {
-            this.isOpen = false;
+        handleClickOutside(event: Event) {
+            const dropdown = this.$refs.dropdown as HTMLElement;
+            if (!dropdown.contains(event.target as Node)) {
+                this.isOpen = false;
+            }
         },
         onClickSignin() {
             this.accountStore.signin();
@@ -175,7 +182,7 @@ export default defineComponent({
 }
 
 .dropdown {
-    position: absolute;
+    position: absolute !important;
     top: 110%;
     left: 0;
     display: none;

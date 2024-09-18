@@ -9,7 +9,7 @@
                 <div class="text-success fw-bold me-auto">
                     {{ token.walletBalance }}
                 </div>
-                <div class="small text-opaque">{{ token.erc20.symbol }}</div>
+                <div class="small">{{ token.erc20.symbol }}</div>
             </div>
         </template>
 
