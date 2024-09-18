@@ -62,6 +62,7 @@
                                                     v-if="campaign._id === SANTA_CAMPAIGN"
                                                     :src="StarCoin"
                                                     alt="star coin"
+                                                    loading="lazy"
                                                     height="24"
                                                 />
                                             </div>

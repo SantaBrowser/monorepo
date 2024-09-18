@@ -11,7 +11,7 @@
         >
             <div class="d-flex align-items-center justify-content-center" style="">
                 <!-- <i class="fa fa-trophy me-2 text-opaque" /> -->
-                <img :src="`src/assets/trophy.png`" alt="" width="17" height="17" class="me-2" />
+                <img :src="`src/assets/trophy.png`" alt="" loading="lazy" width="17" height="17" class="me-2" />
             </div>
             <div class="flex-grow-1 pe-2">Leaderboard</div>
             <!-- <b-button class="text-primary refresh-color" variant="link" @click="onClickRefresh">

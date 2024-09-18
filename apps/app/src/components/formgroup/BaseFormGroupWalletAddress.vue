@@ -12,6 +12,7 @@
                     style="border-radius: 3px"
                     class="me-2"
                     alt="Safe Logo"
+                    loading="lazy"
                 />
                 Address on {{ chainList[walletStore.chainId].name }}
             </div>

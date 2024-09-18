@@ -19,6 +19,7 @@
                     v-else
                     :src="image"
                     alt="Image"
+                    loading="lazy"
                     :class="!reward.isPromoted ? 'reward-image' : 'reward-img-promoted'"
                 />
             </div>
@@ -55,6 +56,7 @@
                                 v-if="reward.poolId === SANTA_CAMPAIGN"
                                 :src="StarCoin"
                                 alt="star"
+                                loading="lazy"
                                 height="13"
                                 class="me-1"
                             />

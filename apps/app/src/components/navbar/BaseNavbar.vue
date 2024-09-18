@@ -10,7 +10,7 @@
     >
         <b-navbar-brand href="#" class="dashboard-heading">
             <!-- <b-link to="/"> Rewards Dashboard </b-link> -->
-            <b-link to="/"> <img :src="earningsIcon" alt="Earnings Icon" class="me-2" height="40" />Earnings </b-link>
+            <b-link to="/"> <img :src="earningsIcon" alt="Earnings Icon" loading="lazy" class="me-2" height="40" />Earnings </b-link>
         </b-navbar-brand>
         <b-collapse id="nav-collapse" is-nav>
             <!--            <b-button-->

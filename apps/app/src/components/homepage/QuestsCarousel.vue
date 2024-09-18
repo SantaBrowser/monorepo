@@ -9,7 +9,7 @@
                 class="list-card quest-card"
                 style="height: 240px; width: 180px"
             >
-                <img :src="getQuestImage(quest)" class="quest-image" />
+                <img :src="getQuestImage(quest)" class="quest-image" alt="QuestImage" loading="lazy" />
                 <h3 class="quest-title">{{ quest.title }}</h3>
                 <div class="quest-info">
                     <span class="quest-description">{{ formattedAmount(quest) }}</span>
@@ -24,7 +24,7 @@
                     :class="['carousel-slide', getSlideClass(index)]"
                 >
                     <div class="quest-card" @click="goToSecondDiv(quest)">
-                        <img :src="getQuestImage(quest)" class="quest-image" />
+                        <img :src="getQuestImage(quest)" class="quest-image" alt="QuestImage" loading="lazy" />
                         <h3 class="quest-title">{{ quest.title }}</h3>
                         <div class="quest-info">
                             <span class="quest-description">{{ formattedAmount(quest) }}</span>
@@ -32,8 +32,8 @@
                     </div>
                 </div>
             </transition-group>
-            <img src="../../assets/leftBtn.png" class="carousel-control prev" @click="prevSlide" />
-            <img src="../../assets/rightBtn.png" class="carousel-control next" @click="nextSlide" />
+            <img src="../../assets/leftBtn.png" class="carousel-control prev" alt="leftBtn" loading="lazy" @click="prevSlide" />
+            <img src="../../assets/rightBtn.png" class="carousel-control next" alt="rightBtn" loading="lazy" @click="nextSlide" />
         </div>
 
         <div class="scrollable-quests">
@@ -44,7 +44,7 @@
                 class="list-card quest-card"
                 style="height: 240px; width: 180px"
             >
-                <img :src="getQuestImage(quest)" class="quest-image" />
+                <img :src="getQuestImage(quest)" class="quest-image" alt="QuestImage" loading="lazy" />
                 <h3 class="quest-title">{{ quest.title }}</h3>
                 <div class="quest-info">
                     <span class="quest-description">{{ formattedAmount(quest) }}</span>
