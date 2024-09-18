@@ -6,7 +6,7 @@
                 :key="index"
                 class="p-2 text-center d-flex brand-card gap-3 align-items-center"
             >
-                <img :src="brand.logo" alt="Brand Logo" class="brand-logo" />
+                <img :src="brand.logo" alt="Brand Logo" loading="lazy" class="brand-logo" />
                 <div class="w-100 d-flex flex-column align-items-start">
                     <p class="brand-name">{{ brand.name }}</p>
                     <p class="brand-percentage">{{ brand.cashback_amount }}%</p>
