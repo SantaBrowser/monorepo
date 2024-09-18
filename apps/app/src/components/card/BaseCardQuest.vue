@@ -50,6 +50,7 @@
                 class="img-fluid w-100"
                 :src="quest.image"
                 alt="header image"
+                loading="lazy"
                 style="border: 1px px solid #000; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px"
             />
 

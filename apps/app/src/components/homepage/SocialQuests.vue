@@ -10,6 +10,7 @@
                 <img
                     :src="activity.icon"
                     :alt="activity.platform"
+                    loading="lazy"
                     :class="['activity-icon', activity.platform.toLowerCase()]"
                 />
                 <!-- <i :class="['fa', activity.icon]"></i>

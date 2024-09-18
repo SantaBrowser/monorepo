@@ -4,13 +4,13 @@
             <div class="cp-card-header d-flex align-items-center justify-content-between">
                 <h3>{{ campaign.title }}</h3>
 
-                <img v-if="campaign._id === SANTA_CAMPAIGN" :src="imgSantaHat" alt="Santa Hat" width="40" />
-                <img v-if="campaign._id === CP_CAMPAIGN" :src="imgDiamond" alt="Santa Hat" width="40" />
+                <img v-if="campaign._id === SANTA_CAMPAIGN" :src="imgSantaHat" alt="Santa Hat" loading="lazy" width="40" />
+                <img v-if="campaign._id === CP_CAMPAIGN" :src="imgDiamond" alt="Santa Hat" loading="lazy" width="40" />
             </div>
             <div class="cp-card-body d-flex align-items-center justify-content-between">
                 <h4 class="d-flex align-items-center">
                     {{ formattedBalance }}
-                    <img v-if="campaign._id === SANTA_CAMPAIGN" :src="imgStarCoin" alt="Star Coin" width="24" />
+                    <img v-if="campaign._id === SANTA_CAMPAIGN" :src="imgStarCoin" alt="Star Coin" loading="lazy" width="24" />
                 </h4>
                 <p v-if="campaign._id === SANTA_CAMPAIGN && score !== 0 && !Number.isNaN(score)">
                     {{ formattedScore }} <span>Total Earnings</span>

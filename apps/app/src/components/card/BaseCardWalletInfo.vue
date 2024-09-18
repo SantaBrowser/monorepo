@@ -8,7 +8,7 @@
         <div class="fst-italic">WALLET</div>
         <div class="flex-icons">
             <div v-for="(token, key) of list">
-                <img :key="key" :src="token.erc20.logoImgUrl" alt="ERC20" class="img-circle" />
+                <img :key="key" :src="token.erc20.logoImgUrl" alt="ERC20" loading="lazy" class="img-circle" />
             </div>
         </div>
         <ul class="dropdown" :class="{ isOpen }">

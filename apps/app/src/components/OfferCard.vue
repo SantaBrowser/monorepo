@@ -30,7 +30,7 @@
             "
         >
             <div class="d-flex justify-content-center w-100 offer-card-img">
-                <img v-if="offer.imageUrl" class="img-fluid" :src="offer.imageUrl" alt="header image" />
+                <img v-if="offer.imageUrl" class="img-fluid" :src="offer.imageUrl" alt="header image" loading="lazy" />
             </div>
 
             <div class="px-3 mt-3">
@@ -67,6 +67,7 @@
                             class="img-fluid mb-3"
                             :src="offer.imageUrl"
                             alt="header image"
+                            loading="lazy"
                             width="156"
                             height="156"
                             style="border-radius: 5px; object-fit: cover"

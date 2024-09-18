@@ -13,14 +13,14 @@
                 <h2>Santa <span style="display: block">Quests</span></h2>
                 <div class="d-flex align-items-center">
                     <p>{{ numberWithCommas(formattedBalance(participantSantaState, SANTA_CAMPAIGN)) }}</p>
-                    <img :src="imgStarCoin" alt="Star Coin" width="24" />
+                    <img :src="imgStarCoin" alt="Star Coin" loading="lazy" width="24" />
                 </div>
                 <div v-if="showSantaDropdown" class="dropdown-content">
                     <div class="justify-content-between">
                         <p>Total Earnings</p>
                         <div class="d-flex align-items-center total-earnings">
                             <p>{{ numberWithCommas(formattedScore(participantSantaState, SANTA_CAMPAIGN)) }}</p>
-                            <img :src="imgStarCoin" alt="Star Coin" width="24" height="24" />
+                            <img :src="imgStarCoin" alt="Star Coin" loading="lazy" width="24" height="24" />
                         </div>
                     </div>
                     <div>
