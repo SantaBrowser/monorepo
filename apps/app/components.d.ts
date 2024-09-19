@@ -125,6 +125,7 @@ declare module 'vue' {
     BaseQuestLeaderboard: typeof import('./src/components/BaseQuestLeaderboard.vue')['default']
     BaseQuestLeaderboardSmall: typeof import('./src/components/BaseQuestLeaderboardSmall.vue')['default']
     BaseReferral: typeof import('./src/components/BaseReferral.vue')['default']
+    BaseSetDefault: typeof import('./src/components/BaseSetDefault.vue')['default']
     BaseSidebar: typeof import('./src/components/BaseSidebar.vue')['default']
     BaseTabLiquidityCreate: typeof import('./src/components/tabs/BaseTabLiquidityCreate.vue')['default']
     BaseTabLiquidityLock: typeof import('./src/components/tabs/BaseTabLiquidityLock.vue')['default']
