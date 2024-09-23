@@ -23,10 +23,10 @@
             <b-list-group-item
                 v-for="(entry, key) of accountStore.leaderboardPrimary"
                 :key="key"
-                class="d-flex px-0 pe-3"
+                class="d-flex px-0 pe-3 align-items-center"
             >
                 <span class="list-item-field-rank">{{ entry.rank }}</span>
-                <span class="list-item-field-address flex-grow-1 ps-2 d-flex">
+                <span class="list-item-field-address flex-grow-1 ps-2 d-flex align-items-center">
                     <b-avatar
                         size="sm"
                         variant="primary"
@@ -137,6 +137,7 @@ export default defineComponent({
 .list-item-field-questcount {
     width: 50px;
     text-align: right;
+    white-space: nowrap;
 }
 .list-item-field-score {
     width: 50px;
@@ -153,7 +154,7 @@ export default defineComponent({
     border: 0.5px solid rgba(76, 46, 115, 0.4);
 }
 .my-list {
-    max-height: 500px;
+    max-height: 320px;
     gap: 0.5rem;
     overflow: scroll;
 }

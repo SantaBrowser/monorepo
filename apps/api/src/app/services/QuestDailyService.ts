@@ -46,8 +46,12 @@ export default class QuestDailyService implements IQuestService {
     > {
         const amount = await this.getAmount({ quest, account });
         const entries = account ? await this.findEntries({ quest, account }) : [];
-        const claimAgainTime = entries.length ? new Date(entries[0].createdAt).getTime() + ONE_DAY_MS : null;
+        
+        // Use the last completed quest time + 24 hours for claimAgainTime
+        const lastEntryTime = entries.length ? new Date(entries[0].createdAt).getTime() : null;
+        const claimAgainTime = lastEntryTime ? lastEntryTime + ONE_DAY_MS : null;
         const now = Date.now();
+        
         const isAvailable = await this.isAvailable({ quest, account });
 
         return {
@@ -56,25 +60,41 @@ export default class QuestDailyService implements IQuestService {
             amount,
             entries,
             claimAgainDuration:
-                claimAgainTime && claimAgainTime - now > 0 ? Math.floor((claimAgainTime - now) / 1000) : null, // Convert and floor to S,
+                claimAgainTime && claimAgainTime - now > 0 ? Math.floor((claimAgainTime - now) / 1000) : null, // Convert to seconds
         };
     }
 
     async isAvailable({ quest, account }: { quest: TQuestDaily; account: TAccount }): Promise<TValidationResult> {
         if (!account) return { result: true, reason: '' };
-        const now = Date.now(),
-            start = now - ONE_DAY_MS,
-            end = now;
-
-        const isCompleted = await QuestDailyEntry.findOne({
+        
+        // Fetch all completed entries for the quest
+        const entries = await QuestDailyEntry.find({
             questId: quest._id,
             sub: account.sub,
-            createdAt: { $gt: new Date(start), $lt: new Date(end) },
-        });
-
-        if (!isCompleted) return { result: true, reason: '' };
-
-        return { result: false, reason: 'You have completed this quest within the last 24 hours.' };
+        }).sort({ createdAt: -1 });
+    
+        // If the number of completed entries is equal to the number of days in the `amounts` array, mark the quest as unavailable
+        if (entries.length >= Object.keys(quest.amounts).length) {
+            return { result: false, reason: 'All quest entries have been completed.' };
+        }
+    
+        const now = Date.now();
+    
+        // Get the last quest entry for this user
+        const lastEntry = entries.length ? entries[0] : null;
+    
+        // If there is no last entry, allow the quest to be completed
+        if (!lastEntry) return { result: true, reason: '' };
+    
+        // Calculate if 24 hours have passed since the last completion
+        const claimAgainTime = new Date(lastEntry.createdAt).getTime() + ONE_DAY_MS;
+    
+        if (now >= claimAgainTime) {
+            return { result: true, reason: '' };
+        }
+    
+        // Otherwise, the quest is unavailable until 24 hours have passed
+        return { result: false, reason: 'You need to wait 24 hours before completing the next quest.' };
     }
 
     async getAmount({ quest, account }: { quest: TQuestDaily; account: TAccount }): Promise<number> {
@@ -128,15 +148,11 @@ export default class QuestDailyService implements IQuestService {
             createdAt: { $gt: new Date(data.start), $lt: new Date(data.end) },
         });
 
-        // If no events are found we invalidate
         if (!events.length) {
             return { result: false, reason: 'No events found for this account' };
         }
 
-        // If events are found we validate true
-        else {
-            return { result: true, reason: '' };
-        }
+        return { result: true, reason: '' };
     }
 
     private async findIdentities({ pool, account }: { pool: TPool; account: TAccount }) {
@@ -144,49 +160,20 @@ export default class QuestDailyService implements IQuestService {
     }
 
     private async findEntries({ account, quest }: { account: TAccount; quest: TQuestDaily }) {
-        const claims = [];
-        // const now = Date.now(),
-        //     start = now - ONE_DAY_MS,
-        //     end = now;
-
-        // let lastEntry = await this.getLastEntry(account, quest, start, end);
-        let lastEntry = await this.getLastEntry(account, quest);
-        if (!lastEntry) return [];
-        claims.push(lastEntry);
-
-        while (lastEntry) {
-            const timestamp = new Date(lastEntry.createdAt).getTime();
-            lastEntry = await QuestDailyEntry.findOne({
-                questId: quest._id,
-                sub: account.sub,
-                createdAt: {
-                    // $gt: new Date(timestamp - ONE_DAY_MS * 2),
-                    // $lt: new Date(timestamp - ONE_DAY_MS),
-                    $lt: new Date(timestamp),
-                },
-            });
-            if (!lastEntry) break;
-            claims.push(lastEntry);
-        }
-
+        // Fetch all entries for the quest, sorted by creation date (latest first)
+        const claims = await QuestDailyEntry.find({
+            questId: quest._id,
+            sub: account.sub,
+        }).sort({ createdAt: -1 });
+    
         return claims;
     }
 
-    // private async getLastEntry(account: TAccount, quest: TQuestDaily, start: number, end: number) {
     private async getLastEntry(account: TAccount, quest: TQuestDaily) {
         const lastEntry = await QuestDailyEntry.findOne({
             questId: quest._id,
             sub: account.sub,
-            // createdAt: { $gt: new Date(start), $lt: new Date(end) },
         }).sort({ createdAt: -1 });
-
-        // if (!lastEntry) {
-        //     lastEntry = await QuestDailyEntry.findOne({
-        //         questId: quest._id,
-        //         sub: account.sub,
-        //         createdAt: { $gt: new Date(start - ONE_DAY_MS), $lt: new Date(end - ONE_DAY_MS) },
-        //     });
-        // }
         return lastEntry;
     }
 }
