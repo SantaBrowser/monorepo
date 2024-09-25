@@ -74,12 +74,12 @@ export default defineComponent({
         // '$route'(to, from) {
         //     this.updateLeaderboard();
         // },
-        'accountStore.participants': {
-            handler(newVal) {
-                this.updateLeaderboard();
-            },
-            immediate: true,
-        },
+        // 'accountStore.participants': {
+        //     handler(newVal) {
+        //         this.updateLeaderboard();
+        //     },
+        //     immediate: true,
+        // },
     },
     mounted() {
         this.updateLeaderboard();

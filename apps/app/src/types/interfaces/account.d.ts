@@ -11,8 +11,8 @@ type TAuthState = {
     isModalWalletRecoveryShown: boolean;
     isDeviceShareAvailable: boolean | null;
     isSecurityQuestionAvailable: boolean | null;
-    userManager: UserManager;
-    user: Partial<User> | null;
+    userManager?: UserManager;
+    user?: Partial<User> | null;
     privateKey: string;
     oAuthShare: string;
     securityQuestion: string;

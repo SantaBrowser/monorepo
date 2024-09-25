@@ -292,10 +292,12 @@ export default defineComponent({
                 if (!this.accountStore.account) {
                     await this.accountStore.getAccount();
                 }
-                this.questStore.list(SANTA_CAMPAIGN);
-                this.rewardStore.list(CP_CAMPAIGN);
-                this.reward2Store.list(SANTA_CAMPAIGN);
-                this.accountStore.getParticipants();
+                await Promise.all([
+                    this.questStore.list(SANTA_CAMPAIGN),
+                    this.rewardStore.list(CP_CAMPAIGN),
+                    this.reward2Store.list(SANTA_CAMPAIGN),
+                    // this.accountStore.getParticipants();
+                ]);
             },
             immediate: true,
         },
@@ -322,7 +324,7 @@ export default defineComponent({
                 // const user = await this.userManager.getUser();
                 const clid = this.accountStore.account?.providerUserId;
                 const response = await axios.get(
-                    `https://offers-api.santabrowser.com/offers/list?pageSize=50&pageNo=0&clid=${clid}`,
+                    `https://offers-api.santabrowser.com/offers/list?pageSize=10&pageNo=0&clid=${clid}`,
                 );
                 this.offers = response.data.trending;
             } catch (error) {
