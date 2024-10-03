@@ -7,7 +7,7 @@ import eslintPlugin from 'vite-plugin-eslint';
 import Components from 'unplugin-vue-components/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
-
+import { compression } from 'vite-plugin-compression2';
 const isProd = process.env.NODE_ENV === 'production';
 
 const config: UserConfigExport = {
@@ -23,6 +23,7 @@ const config: UserConfigExport = {
         Components({
             resolvers: [BootstrapVueNextResolver()],
         }),
+        compression(),
     ],
     server: {
         https: {

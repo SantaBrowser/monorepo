@@ -30,7 +30,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { API_URL, CP_CAMPAIGN, DASHBOARD_URL, PUBLIC_URL, SANTA_CAMPAIGN } from '../../config/secrets';
 import { useAccountStore } from '../../stores/Account';
 import { useAuthStore } from '../../stores/Auth';
@@ -39,25 +38,21 @@ import { decodeHTML } from '../../utils/decode-html';
 import imgLogo from '../../assets/logo.png';
 import earningsIcon from '../../assets/earnings-logo.png';
 import * as html from 'html-entities';
-// import CampaignCard from '@thxnetwork/app/components/CampaignCard.vue';
-// import QuestsCarousel from '@thxnetwork/app/components/homepage/QuestsCarousel.vue';
-import Quests from '../campaign/Quests.vue';
-import BaseNavbarPrimary from '@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue';
-import BaseQuestLeaderboardSmall from '@thxnetwork/app/components/BaseQuestLeaderboardSmall.vue';
-import BaseCardRewards from '@thxnetwork/app/components/card/BaseCardRewards.vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
 export default defineComponent({
     name: 'Home',
     components: {
-        // HeaderNav,
-        // QuestsCarousel,
-        // CampaignCard,
-        Quests,
-        BaseNavbarPrimary,
-        BaseQuestLeaderboardSmall,
-        BaseCardRewards,
+        Quests: defineAsyncComponent(() => import('../campaign/Quests.vue')),
+        BaseNavbarPrimary: defineAsyncComponent(
+            () => import('@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue'),
+        ),
+        BaseQuestLeaderboardSmall: defineAsyncComponent(
+            () => import('@thxnetwork/app/components/BaseQuestLeaderboardSmall.vue'),
+        ),
+        BaseCardRewards: defineAsyncComponent(() => import('@thxnetwork/app/components/card/BaseCardRewards.vue')),
     },
     data(): any {
         return {
