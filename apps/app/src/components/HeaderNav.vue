@@ -16,15 +16,15 @@
                     <img :src="imgStarCoin" alt="Star Coin" loading="lazy" width="24" />
                 </div>
                 <div v-if="showSantaDropdown" class="dropdown-content">
-                    <div class="justify-content-between">
-                        <p>Total Earnings</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <p>Total Earnings:</p>
                         <div class="d-flex align-items-center total-earnings">
                             <p>{{ numberWithCommas(formattedScore(participantSantaState, SANTA_CAMPAIGN)) }}</p>
                             <img :src="imgStarCoin" alt="Star Coin" loading="lazy" width="24" height="24" />
                         </div>
                     </div>
                     <div>
-                        Latest Completed Quest
+                        Latest Completed Quest:
                         <p>{{ latestCompletedQuest?.title }}</p>
                     </div>
                 </div>
@@ -37,14 +37,14 @@
                 <h2>Cashback &<span style="display: block">Playwall </span></h2>
                 <p>${{ numberWithCommas(formattedBalance(participantCPState, CP_CAMPAIGN)) }}</p>
                 <div v-if="showCPDropdown" class="dropdown-content">
-                    <div class="justify-content-between">
-                        <p>Total Earnings</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <p>Total Earnings:</p>
                         <div class="d-flex align-items-center total-earnings">
                             <p>${{ numberWithCommas(formattedScore(participantCPState, CP_CAMPAIGN)) }}</p>
                         </div>
                     </div>
                     <div>
-                        Latest Activity
+                        Latest Activity:
                         <p>-</p>
                     </div>
                 </div>
@@ -313,10 +313,6 @@ export default defineComponent({
     //.balance-wrap {
     //  width: auto !important;
     //}
-}
-
-.total-earnings {
-    margin: 10px 0;
 }
 
 .total-earnings p {

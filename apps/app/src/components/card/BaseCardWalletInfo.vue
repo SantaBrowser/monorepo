@@ -2,7 +2,7 @@
     <div
         v-if="list.length"
         ref="dropdown"
-        class="d-flex gap-2 dropdown-menu wal-dropdown align-items-center justify-content-between equal-divs m-0 white-btn"
+        class="d-flex gap-2 dropdown-menu-wallet wal-dropdown align-items-center justify-content-between m-0 white-btn"
         @click="toggleDropdown"
     >
         <div class="fst-italic">WALLET</div>
@@ -159,16 +159,6 @@ export default defineComponent({
     --bs-primary-rgb: #515151 !important;
 }
 
-.equal-divs {
-    background: rgba(255, 255, 255, 0.03);
-    flex: 1;
-    min-width: 0;
-    min-height: 0;
-    padding: 7px 20px;
-    border-radius: 22px;
-    border: 1px dotted #4b4bc0;
-}
-
 .white-btn {
     padding: 12px;
     font-feature-settings: 'clig' off, 'liga' off;
@@ -206,17 +196,21 @@ export default defineComponent({
     text-decoration: none;
 }
 
-.dropdown-menu {
+.dropdown-menu-wallet {
     position: relative;
     display: block;
     height: auto;
-    /* padding: 20px; */
     color: #fff;
     text-decoration: none;
     cursor: pointer;
-    background: #000 !important;
-    border-radius: 20px;
-    border: 1px dotted #ffcd06 !important;
+    background: #000;
+    border-radius: 22px;
+    border: 1px dotted #ffcd06;
+    transition: all 0.3s ease-in-out;
+}
+.dropdown-menu-wallet:hover {
+    background: rgba(255, 205, 7, 0.3);
+    box-shadow: 0 0 10px rgba(255, 205, 7, 0.5);
 }
 
 .dropdown-box {
