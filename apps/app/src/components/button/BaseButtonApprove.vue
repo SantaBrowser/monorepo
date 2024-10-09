@@ -17,7 +17,7 @@ import { contractNetworks } from '@thxnetwork/app/config/constants';
 import { ChainId } from '@thxnetwork/common/enums';
 import { track } from '@thxnetwork/app/utils/mixpanel';
 import poll from 'promise-poller';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseButtonApprove',

@@ -34,7 +34,7 @@ import { formatUnits } from 'ethers/lib/utils';
 import { toFiatPrice } from '@thxnetwork/app/utils/price';
 import { contractNetworks } from '@thxnetwork/app/config/constants';
 import { chainList } from '@thxnetwork/app/utils/chains';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 type TMetricReward = {
     week: string;

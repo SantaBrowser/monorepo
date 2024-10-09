@@ -38,7 +38,7 @@ import { contractNetworks } from '../../config/constants';
 import { parseUnits } from 'ethers/lib/utils';
 import { WalletVariant } from '@thxnetwork/app/types/enums/accountVariant';
 import { BigNumber } from 'ethers/lib/ethers';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseModalIncreaseAmount',

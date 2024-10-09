@@ -36,7 +36,7 @@ import { BigNumber } from 'ethers/lib/ethers';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
 import { contractNetworks } from '@thxnetwork/app/config/constants';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseDropdownMetricAPR',

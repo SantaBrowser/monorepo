@@ -83,7 +83,7 @@ import { useWalletStore } from '../../stores/Wallet';
 import { useLiquidityStore } from '../../stores/Liquidity';
 import { contractNetworks } from '../../config/constants';
 import { formatUnits } from 'ethers/lib/utils';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseCardMembership',

@@ -15,7 +15,7 @@ import { useLiquidityStore } from '@thxnetwork/app/stores/Liquidity';
 import { useVeStore } from '@thxnetwork/app/stores/VE';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { ChainId } from '@thxnetwork/common/enums';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseButtonLiquidityStake',

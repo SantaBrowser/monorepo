@@ -40,7 +40,7 @@ import { ChainId } from '@thxnetwork/common/enums';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { mapStores } from 'pinia';
 import { defineComponent } from 'vue';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseFormGroupLockAmount',

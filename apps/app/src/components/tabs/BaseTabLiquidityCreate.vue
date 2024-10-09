@@ -125,7 +125,7 @@ import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { BigNumber } from 'ethers/lib/ethers';
 import { parseError } from '@thxnetwork/app/utils/toast';
-import { NODE_ENV } from "@thxnetwork/app/config/secrets";
+import { NODE_ENV } from '@thxnetwork/app/config/secrets';
 
 export default defineComponent({
     name: 'BaseTabLiquidity',
