@@ -1,5 +1,5 @@
 <template>
-    <b-card class="bg-default">
+    <b-card v-if="!isDefault" class="bg-default">
         <div class="align-items-center">
             <div>
                 <div class="default-text">
@@ -18,16 +18,49 @@
 </template>
 <script>
 export default {
+    data() {
+        return {
+            isDefault: false,
+            intervalId: null,
+        };
+    },
+    mounted() {
+        this.checkIfDefault();
+    },
+    beforeUnmount() {
+        if (this.intervalId) clearInterval(this.intervalId);
+    },
     methods: {
-        setAsDefault() {
-            const extensionId = 'ehlpnjcddkggjcbeonecfdfdbeiiopoh';
-            chrome.runtime.sendMessage(extensionId, { message: 'setAsDefaultBrowser' }, (response) => {
-                if (chrome.runtime.lastError) {
-                    console.error('Error sending message:', chrome.runtime.lastError);
-                } else {
-                    console.log('Message sent to extension:', response);
+        chromeSendMessage(message, callback) {
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                const extensionId = 'ehlpnjcddkggjcbeonecfdfdbeiiopoh';
+                chrome.runtime.sendMessage(extensionId, message, callback);
+            } else {
+                console.warn('chrome.runtime.sendMessage is not available.');
+            }
+        },
+        checkIfDefault() {
+            this.chromeSendMessage({ message: 'isDefaultBrowser' }, (response) => {
+                if (response && response.isDefault) {
+                    this.isDefault = true;
+                    if (this.intervalId) clearInterval(this.intervalId);
                 }
             });
+        },
+        setAsDefault() {
+            this.chromeSendMessage({ message: 'setAsDefaultBrowser' }, () => {
+                console.log('Setting Santa as default...');
+                this.startCheckingDefault();
+            });
+        },
+        startCheckingDefault() {
+            this.intervalId = setInterval(() => {
+                this.checkIfDefault();
+            }, 2000);
+
+            setTimeout(() => {
+                if (this.intervalId) clearInterval(this.intervalId);
+            }, 30000);
         },
     },
 };
