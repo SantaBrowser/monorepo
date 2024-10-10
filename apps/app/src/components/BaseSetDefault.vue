@@ -11,11 +11,27 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end mt-2">
-                <button class="set-button">Set as Default</button>
+                <button class="set-button" @click="setAsDefault">Set as Default</button>
             </div>
         </div>
     </b-card>
 </template>
+<script>
+export default {
+    methods: {
+        setAsDefault() {
+            const extensionId = 'ehlpnjcddkggjcbeonecfdfdbeiiopoh';
+            chrome.runtime.sendMessage(extensionId, { message: 'setAsDefaultBrowser' }, (response) => {
+                if (chrome.runtime.lastError) {
+                    console.error('Error sending message:', chrome.runtime.lastError);
+                } else {
+                    console.log('Message sent to extension:', response);
+                }
+            });
+        },
+    },
+};
+</script>
 
 <style scoped>
 .card {
