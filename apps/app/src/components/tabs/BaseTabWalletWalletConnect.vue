@@ -66,9 +66,8 @@ export default defineComponent({
         async onClickConnect() {
             if (this.walletStore.currentChainId == ChainId.Aptos) {
                 try {
-                    await window.martian.disconnect();
+                    if (window.martian._isConnected) await window.martian.disconnect();
                     const accountInfo = await window.martian.connect();
-                    console.log(accountInfo);
                     try {
                         await this.walletStore.create({
                             chainId: ChainId.Aptos,
@@ -93,9 +92,8 @@ export default defineComponent({
                 }
             } else if (this.walletStore.currentChainId == ChainId.Sui) {
                 try {
-                    await window.martian.sui.disconnect();
+                    if (window.martian.sui._isConnected) await window.martian.sui.disconnect();
                     const accountInfo = await window.martian.sui.connect(['viewAccount', 'suggestTransactions']);
-                    console.log(accountInfo);
                     try {
                         await this.walletStore.create({
                             chainId: ChainId.Sui,
