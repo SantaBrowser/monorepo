@@ -106,9 +106,15 @@
                             <p class="offer-steps">{{ offer.terms }}</p>
                         </div>
                     </div>
-                    <div class="qr-code mt-4">
+                    <div v-if="!accountStore.isMobile" class="qr-code mt-4">
                         <h3 class="modal-title">Scan on your mobile</h3>
                         <Qrcode :value="offer.santaClickUrl" :size="200" />
+                    </div>
+
+                    <div v-else>
+                        <b-button variant="primary" block class="w-100" @click="openOffer">
+                            Earn ${{ offer.payout }}
+                        </b-button>
                     </div>
                 </div>
             </div>
@@ -120,6 +126,8 @@
 import { PropType, defineComponent } from 'vue';
 import { decodeHTML } from '@thxnetwork/app/utils/decode-html';
 import Qrcode from 'vue-qrcode';
+import { useAccountStore } from '../stores/Account';
+import { mapStores } from 'pinia';
 export default defineComponent({
     name: 'OfferCard',
     components: {
@@ -127,6 +135,9 @@ export default defineComponent({
     },
     props: {
         offer: { required: true, type: Object as PropType<any> },
+    },
+    computed: {
+        ...mapStores(useAccountStore),
     },
     data() {
         return {
@@ -143,6 +154,9 @@ export default defineComponent({
     methods: {
         openModal() {
             this.showModal = true;
+        },
+        openOffer() {
+            window.open(this.offer.santaClickUrl, '_blank');
         },
     },
 });
