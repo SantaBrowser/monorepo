@@ -88,7 +88,6 @@ export default defineComponent({
 </script>
 <style>
 .disc-black {
-    position: absolute;
     bottom: 0;
     width: 92%;
 }

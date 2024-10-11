@@ -91,4 +91,9 @@ aside.sidebar {
     border-radius: 10px;
     border: 0.5px solid rgba(76, 46, 115, 0.4);
 }
+@media (max-height: 900px) {
+    .sidebar-panel {
+        overflow-y: auto;
+    }
+}
 </style>
