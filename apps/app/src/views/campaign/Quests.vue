@@ -566,6 +566,7 @@ export default defineComponent({
 .rewards-container {
     height: calc(100vh - 160px);
     overflow: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;

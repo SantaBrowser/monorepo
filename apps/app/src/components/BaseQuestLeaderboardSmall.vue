@@ -157,7 +157,8 @@ export default defineComponent({
 .my-list {
     max-height: 320px;
     gap: 0.5rem;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .my-list .list-group-item {
@@ -192,6 +193,11 @@ export default defineComponent({
     }
     .my-list {
         max-height: calc(100vh - 220px);
+    }
+}
+@media (max-height: 894px) {
+    .my-list {
+        max-height: 200px;
     }
 }
 </style>

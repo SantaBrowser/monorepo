@@ -1,13 +1,11 @@
 <template>
     <aside v-if="isShown" class="sidebar">
-        <div class="sidebar-panel h-100">
-            <!-- <BaseCardAccount /> -->
-            <BaseSetDefault />
-            <BaseReferral />
-            <!-- <hr class="mt-2 mb-0" style="opacity: 0.1" /> -->
-            <!-- <BaseCardRewards /> -->
-            <BaseQuestLeaderboardSmall />
-            <div style="height: 10px"></div>
+        <div class="sidebar-panel h-100 d-flex flex-column justify-between">
+            <div>
+                <BaseSetDefault />
+                <BaseReferral />
+                <BaseQuestLeaderboardSmall />
+            </div>
             <BaseCardDiscord class="mt-auto" />
         </div>
     </aside>
@@ -91,9 +89,10 @@ aside.sidebar {
     border-radius: 10px;
     border: 0.5px solid rgba(76, 46, 115, 0.4);
 }
-@media (max-height: 900px) {
+@media (max-height: 750px) {
     .sidebar-panel {
         overflow-y: auto;
+        overflow-x: hidden;
     }
 }
 </style>

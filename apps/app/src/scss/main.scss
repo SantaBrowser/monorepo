@@ -65,3 +65,27 @@
 
 // Toastify
 @import '../../../../node_modules/vue3-toastify/dist/index.css';
+
+/* Custom scrollbar styles */
+*::-webkit-scrollbar {
+    display: block !important;
+    height: 15px;
+    width: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #49494b;
+    border: 5.5px solid transparent;
+    border-radius: 9px;
+    background-clip: content-box;
+}
+*::-webkit-scrollbar-track {
+    margin-top: 60px;
+    border-left: 6.75px solid transparent;
+    border-right: 6.75px solid transparent;
+    border-top: 6.75px solid transparent;
+    border-bottom: 6.75px solid transparent;
+    background-color: #393939;
+    border-radius: 2px;
+    background-clip: content-box;
+}
