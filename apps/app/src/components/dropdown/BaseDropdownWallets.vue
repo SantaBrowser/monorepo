@@ -332,6 +332,10 @@ export default defineComponent({
 .dropdown-move {
     transform: translate(-95px, 43px) !important;
 }
+.dropdown-menu {
+    background-color: #000000 !important;
+    border: 1px dotted #ffcd06 !important;
+}
 @keyframes fadeIn {
     from {
         opacity: 0;

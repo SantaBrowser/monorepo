@@ -24,9 +24,9 @@
                     <i class="fas fa-exclamation-circle mx-2" />
                     Please, set a username!
                 </b-alert>
-                <b-alert v-model="isProfileImgPlaceholder" variant="danger" class="p-2">
-                    <i class="fas fa-exclamation-circle mx-2" />
-                    Please, upload a profile picture!
+                <b-alert v-model="isProfileImgPlaceholder" variant="dark" class="p-2">
+                    <i class="fas fa-info-circle mx-2" />
+                    No profile picture yet? Upload now!
                 </b-alert>
                 <b-row>
                     <b-col cols="8">
