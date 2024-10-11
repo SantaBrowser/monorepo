@@ -681,6 +681,13 @@ export default defineComponent({
     .quest-cont .row {
         height: 100%;
     }
+    .rewards-column {
+        position: relative;
+        height: calc(100vh - 140px);
+    }
+    .rewards-container {
+        height: calc(100vh - 205px);
+    }
 }
 
 @media (max-width: 1400px) {

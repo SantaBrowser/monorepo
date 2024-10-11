@@ -7,13 +7,6 @@
     <div v-show="!isOffline" id="main">
         <BaseNavbarTop />
         <div class="h-100">
-            <HeaderNav :is-visible="true" />
-            <div class="bg-santa">
-                <div class="bg-blur">
-                    <div class="unwrap">UNWRAP</div>
-                </div>
-            </div>
-
             <router-view v-slot="{ Component }">
                 <transition name="fade" mode="out-in">
                     <component :is="Component" class="router-view-app order-lg-0" />

@@ -1,8 +1,13 @@
 <template>
     <div ref="mainComponent" class="mainComponent">
         <div>
+            <HeaderNav :is-visible="true" />
+            <div v-if="selectedPart === 'Quests' || !accountStore.isMobile" class="bg-santa">
+                <div class="bg-blur">
+                    <div class="unwrap">UNWRAP</div>
+                </div>
+            </div>
             <div ref="secondDiv" class="d-flex window-container">
-                <!-- <HeaderNav :is-visible="isHeaderVisible" /> -->
                 <div class="d-flex w-100">
                     <Quests :selected-part="selectedPart" />
 
@@ -10,6 +15,7 @@
                     <div
                         v-if="accountStore.isMobile && (selectedPart === 'Leaderboard' || selectedPart === 'Wallet')"
                         class="w-100"
+                        style="height: calc(100vh - 140px); position: relative; top: 70px"
                     >
                         <div v-if="selectedPart === 'Leaderboard'" class="leaderboard-cont">
                             <BaseQuestLeaderboardSmall :selected-part="selectedPart" />

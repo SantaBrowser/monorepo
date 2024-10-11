@@ -190,5 +190,8 @@ export default defineComponent({
         height: 100%;
         margin: 0;
     }
+    .my-list {
+        max-height: calc(100vh - 220px);
+    }
 }
 </style>
