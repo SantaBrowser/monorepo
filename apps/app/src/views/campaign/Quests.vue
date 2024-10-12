@@ -28,7 +28,7 @@
                         <template #title>
                             Available
                             <sup v-if="availableQuestCount">
-                                <b-badge class="px-1 py-1 text-white" variant="danger">
+                                <b-badge class="px-1 py-1 text-white" variant="danger" style="font-size: 8px">
                                     {{ availableQuestCount }}
                                 </b-badge>
                             </sup>

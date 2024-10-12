@@ -21,14 +21,16 @@ export default {
     data() {
         return {
             isDefault: false,
-            intervalId: null,
+            poller: null,
         };
     },
     mounted() {
         this.checkIfDefault();
     },
     beforeUnmount() {
-        if (this.intervalId) clearInterval(this.intervalId);
+        if (this.poller) {
+            this.poller.stop();
+        }
     },
     methods: {
         chromeSendMessage(message, callback) {
@@ -43,7 +45,9 @@ export default {
             this.chromeSendMessage({ message: 'isDefaultBrowser' }, (response) => {
                 if (response && response.isDefault) {
                     this.isDefault = true;
-                    if (this.intervalId) clearInterval(this.intervalId);
+                    if (this.poller) {
+                        this.poller.stop();
+                    }
                 }
             });
         },
@@ -54,16 +58,101 @@ export default {
             });
         },
         startCheckingDefault() {
-            this.intervalId = setInterval(() => {
-                this.checkIfDefault();
-            }, 2000);
+            this.poller = new Poller({
+                name: 'default-browser',
+                timeout: 60000,
+                interval: 2000,
+                onUpdate: () => {
+                    this.checkIfDefault();
+                },
+                onError: (error) => {
+                    console.error('Polling error:', error);
+                },
+            });
 
-            setTimeout(() => {
-                if (this.intervalId) clearInterval(this.intervalId);
-            }, 30000);
+            this.poller.poll(async () => {
+                this.checkIfDefault();
+            });
         },
     },
 };
+class Poller {
+    constructor(options = {}) {
+        this.options = {
+            timeout: options.timeout || 60000,
+            interval: options.interval || 2000,
+            onUpdate:
+                options.onUpdate ||
+                (() => {
+                    //empty arrow function no update needed
+                }),
+            onError: options.onError || console.error,
+            name: options.name || 'unnamed-poll',
+        };
+
+        this.controller = null;
+        this.isPolling = false;
+    }
+
+    async poll(checkFn) {
+        if (this.isPolling) {
+            console.warn(`Poller ${this.options.name} is already running`);
+            return;
+        }
+
+        this.controller = new AbortController();
+        const { signal } = this.controller;
+        this.isPolling = true;
+        const startTime = Date.now();
+
+        try {
+            while (!signal.aborted) {
+                try {
+                    if (Date.now() - startTime >= this.options.timeout) {
+                        this.stop();
+                        break;
+                    }
+
+                    await checkFn(signal);
+                    await this.options.onUpdate();
+                    await this.delay(this.options.interval, signal);
+                } catch (error) {
+                    if (error.name === 'AbortError') throw error;
+
+                    this.options.onError(error);
+                    await this.delay(this.options.interval, signal);
+                }
+            }
+        } finally {
+            this.cleanup();
+        }
+    }
+
+    async delay(ms, signal) {
+        return new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(resolve, ms);
+            signal?.addEventListener(
+                'abort',
+                () => {
+                    clearTimeout(timeoutId);
+                    reject(new Error('AbortError'));
+                },
+                { once: true },
+            );
+        });
+    }
+
+    stop() {
+        if (this.controller) {
+            this.controller.abort();
+        }
+    }
+
+    cleanup() {
+        this.isPolling = false;
+        this.controller = null;
+    }
+}
 </script>
 
 <style scoped>
