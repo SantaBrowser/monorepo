@@ -105,10 +105,10 @@
                 offset-xl="0"
             >
                 <div class="mb-2 bg-rewards">
-                    <div class="align-items-center p-2 overflow-hidden d-flex" style="justify-content: space-between">
+                    <div class="align-items-center p-3 overflow-hidden d-flex" style="justify-content: space-between">
                         <div>
                             <strong class="title-q">Rewards</strong>
-                            <div class="text-opaque">Spend points to redeem</div>
+                            <div class="text-opaque m-0 mt-1">Spend points to redeem</div>
                         </div>
                         <div class="custom-select-wrapper">
                             <select v-model="selectedValue" class="rewards-select">
@@ -413,10 +413,6 @@ export default defineComponent({
 }
 
 .bg-rewards {
-    background-image: url('/src/assets/bg-rewards.png');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
     //border: 1px dotted #f31a0760;
     border-top-left-radius: 13px !important;
     border-top-right-radius: 13px !important;

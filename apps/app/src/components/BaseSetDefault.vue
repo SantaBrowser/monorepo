@@ -191,7 +191,7 @@ class Poller {
 }
 
 .bg-default {
-    border-radius: 5px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: linear-gradient(142deg, rgba(3, 129, 84, 0.85) 19.63%, rgba(3, 73, 112, 0.85) 83.01%);
     box-shadow: 0px 5px 20px 0px rgba(20, 127, 89, 0.38);

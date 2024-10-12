@@ -109,7 +109,7 @@ export default {
     background-color: #cdc40c;
     color: black;
     margin: 15px;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 0.5px solid rgba(76, 46, 115, 0.4);
     display: block;
 }
