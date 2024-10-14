@@ -2,8 +2,8 @@
     <aside v-if="isShown" class="sidebar">
         <div class="sidebar-panel h-100 d-flex flex-column justify-between">
             <div>
-                <BaseSetDefault />
-                <BaseReferral />
+                <!-- <BaseSetDefault />
+                <BaseReferral /> -->
                 <BaseQuestLeaderboardSmall />
             </div>
             <BaseCardDiscord class="mt-auto" />

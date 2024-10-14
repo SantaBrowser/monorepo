@@ -257,9 +257,15 @@ export default defineComponent({
             for (let i = 0; i < this.quests.length; i++) {
                 const quest = this.quests[i];
                 const isEndOfBatch = (i + 1) % questBatchSize === 0;
+
+                if (quest.variant === QuestVariant.Daily) {
+                    merged.push({ quest, isDaily: true });
+                    continue;
+                }
+
                 rowQuests.push(quest);
 
-                if (quest.variant === QuestVariant.Daily || isEndOfBatch) {
+                if (isEndOfBatch) {
                     merged.push(...this.formatQuests(rowQuests));
                     rowQuests = [];
                     merged.push({

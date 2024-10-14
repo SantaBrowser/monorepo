@@ -3,7 +3,7 @@
         v-if="!accountStore.isMobile || selectedPart === 'Leaderboard'"
         header-class="p-0"
         body-class="d-flex flex-column pt-0"
-        class="leaderboard-wrapper"
+        class="leaderboard-wrapper mt-3"
     >
         <b-card-title class="d-flex m-0 align-items-center bg-leaderboard">
             <div class="d-flex align-items-center justify-content-center" style="">
