@@ -5,10 +5,7 @@
         body-class="d-flex flex-column pt-0"
         class="leaderboard-wrapper"
     >
-        <b-card-title
-            class="d-flex m-0 align-items-center"
-            :style="{ backgroundImage: `url('src/assets/bg_leaderboard.png')` }"
-        >
+        <b-card-title class="d-flex m-0 align-items-center bg-leaderboard">
             <div class="d-flex align-items-center justify-content-center" style="">
                 <!-- <i class="fa fa-trophy me-2 text-opaque" /> -->
                 <img :src="trophyImage" alt="trophy" loading="lazy" width="17" height="17" class="me-2" />
@@ -112,6 +109,9 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+.bg-leaderboard {
+    background-image: url('/src/assets/bg_leaderboard.png');
+}
 .card-header {
     border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
 }
