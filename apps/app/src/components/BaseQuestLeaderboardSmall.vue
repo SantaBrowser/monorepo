@@ -155,10 +155,10 @@ export default defineComponent({
     border: 0.5px solid rgba(76, 46, 115, 0.4);
 }
 .my-list {
-    max-height: 320px;
+    //max-height: 320px;
     gap: 0.5rem;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    //overflow-y: scroll;
+    //overflow-x: hidden;
 }
 
 .my-list .list-group-item {
@@ -195,9 +195,9 @@ export default defineComponent({
         max-height: calc(100vh - 220px);
     }
 }
-@media (max-height: 894px) {
-    .my-list {
-        max-height: 200px;
-    }
-}
+//@media (max-height: 894px) {
+//.my-list {
+//    max-height: 200px;
+//  }
+//}
 </style>
