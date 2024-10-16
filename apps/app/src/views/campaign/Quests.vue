@@ -294,6 +294,7 @@ export default defineComponent({
                 if (!this.accountStore.account) {
                     await this.accountStore.getAccount();
                 }
+                console.log('account: ', this.accountStore.account);
                 await Promise.all([
                     this.questStore.list(SANTA_CAMPAIGN),
                     this.rewardStore.list(CP_CAMPAIGN),
@@ -323,6 +324,9 @@ export default defineComponent({
     methods: {
         async fetchOffers() {
             try {
+                while (!this.accountStore.account) {
+                    await this.accountStore.getAccount();
+                }
                 const clid = this.accountStore.account?.providerUserId;
                 const response = await axios.get(
                     `https://offers-api.santabrowser.com/offers/list?pageSize=10&pageNo=0&clid=${clid}`,
