@@ -31,6 +31,7 @@
         >
             <div class="d-flex justify-content-center w-100 offer-card-img">
                 <img v-if="offer.imageUrl" class="img-fluid" :src="offer.imageUrl" alt="header image" loading="lazy" />
+                <div v-else class="placeholder"></div>
             </div>
 
             <div class="px-3 mt-3">

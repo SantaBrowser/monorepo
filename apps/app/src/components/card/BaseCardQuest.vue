@@ -3,7 +3,7 @@
         class="mb-3 w-100"
         header-class="p-0"
         body-class="d-flex flex-column p-0"
-        :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted, 'd-none': !availableQuest }"
+        :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted }"
         style="background: transparent"
     >
         <template #header>
@@ -177,7 +177,6 @@ export default defineComponent({
         completing: Boolean,
         error: String,
         quest: { required: true, type: Object as PropType<TBaseQuest & any> },
-        availableQuest: { type: Boolean, default: false },
     },
     data() {
         return {

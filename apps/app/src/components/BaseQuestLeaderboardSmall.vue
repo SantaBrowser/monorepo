@@ -168,6 +168,7 @@ export default defineComponent({
 
     box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.05);
 }
+
 .username-text {
     white-space: nowrap;
     overflow: hidden;

@@ -40,6 +40,7 @@
                                 :class="{
                                     'w-100': item.isDaily || item.isOfferRow || item.isAlone,
                                     'regular-quest': !item.isDaily && !item.isOfferRow && !item.isAlone,
+                                    'd-none': item.quest?.isAvailable === false,
                                 }"
                             >
                                 <div v-if="item.isOfferRow" class="offers-box">
@@ -69,12 +70,7 @@
                                     </div>
                                 </div>
                                 <!-- <div v-else :class="{ 'd-none': !item.quest?.isAvailable }"> -->
-                                <component
-                                    :is="questComponentMap[item.quest.variant]"
-                                    v-else
-                                    :quest="item.quest"
-                                    :available-quest="item.quest?.isAvailable"
-                                />
+                                <component :is="questComponentMap[item.quest.variant]" v-else :quest="item.quest" />
                                 <!-- </div> -->
                             </div>
                             <div v-if="!availableQuestCount" class="text-center mt-5">
@@ -327,12 +323,13 @@ export default defineComponent({
     methods: {
         async fetchOffers() {
             try {
-                // const user = await this.userManager.getUser();
                 const clid = this.accountStore.account?.providerUserId;
                 const response = await axios.get(
                     `https://offers-api.santabrowser.com/offers/list?pageSize=10&pageNo=0&clid=${clid}`,
                 );
-                this.offers = response.data.trending;
+                this.offers = response.data.trending.filter(
+                    (offer) => offer.imageUrl !== 'https://banners.hangmyads.com/files/uploads/Off_A_86634.png',
+                );
             } catch (error) {
                 console.error('Failed to fetch offers', error);
             }
