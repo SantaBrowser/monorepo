@@ -66,6 +66,13 @@ export default defineComponent({
         async onClickConnect() {
             if (this.walletStore.currentChainId == ChainId.Aptos) {
                 try {
+                    if (!window.martian) {
+                        window.open(
+                            'https://chromewebstore.google.com/detail/martian-aptos-sui-wallet/efbglgofoippbgcjepnhiblaibcnclgk',
+                            '_blank',
+                        );
+                        return;
+                    }
                     if (window.martian._isConnected) await window.martian.disconnect();
                     const accountInfo = await window.martian.connect();
                     try {
