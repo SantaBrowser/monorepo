@@ -236,7 +236,7 @@ export default defineComponent({
                 return [...this.rewardStore.rewards, ...this.reward2Store.rewards];
             } else if (this.selectedValue === 'Santa') {
                 return this.reward2Store.rewards;
-            } else if (this.selectedValue === 'Playwall & Cashback') {
+            } else if (this.selectedValue === 'Cash Rewards') {
                 return this.rewardStore.rewards;
             }
             return [];
