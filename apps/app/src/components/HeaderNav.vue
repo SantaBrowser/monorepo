@@ -10,7 +10,7 @@
                 class="d-flex align-items-center justify-content-between equal-divs"
                 @click="toggleSantaDropdown"
             >
-                <h2>Santa <span style="display: block">Quests</span></h2>
+                <h2>Santa <span style="display: block">Points</span></h2>
                 <div class="d-flex align-items-center">
                     <p>{{ numberWithCommas(formattedBalance(participantSantaState, SANTA_CAMPAIGN)) }}</p>
                     <img :src="imgStarCoin" alt="Star Coin" loading="lazy" width="24" />

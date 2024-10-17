@@ -15,7 +15,7 @@
                     <div class="quests-title d-flex p-2">
                         <div>
                             <strong class="title-q">Quests</strong>
-                            <div class="text-opaque">Earn points with tasks</div>
+                            <div class="text-opaque m-0 mt-1">Earn points with tasks</div>
                         </div>
                         <i class="fas fa-tasks text-opaque ms-auto me-3" style="font-size: 1.2rem" />
                     </div>
@@ -602,10 +602,6 @@ export default defineComponent({
     font-weight: 400;
     line-height: 100%;
     margin: 7px 0 7px 7px;
-}
-
-.quests-title .text-opaque {
-    font-size: 11px;
 }
 
 .offer-row {
