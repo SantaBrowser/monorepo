@@ -110,7 +110,7 @@
                             <select v-model="selectedValue" class="rewards-select">
                                 <option>All</option>
                                 <option>Santa</option>
-                                <option>Playwall & Cashback</option>
+                                <option>Cash Rewards</option>
                             </select>
                             <i class="fas fa-chevron-down custom-select-icon"></i>
                         </div>
