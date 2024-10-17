@@ -45,6 +45,7 @@ import { mapStores } from 'pinia';
 import { defineComponent } from 'vue';
 import { useWalletStore } from '../../stores/Wallet';
 import { useAccountStore } from '../../stores/Account';
+import axios from 'axios';
 
 function shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -79,10 +80,12 @@ export default defineComponent({
         // this.presenceCount = data.presence_count;
         // this.members = data.members;
         // this.inviteURL = data.instant_invite;
-        // const { data } = await axios('https://discord.com/api/guilds/836147176270856243/widget.json');
-        this.presenceCount = 1219432;
+        const { data } = await axios('https://discord.com/api/guilds/997069800092225576/widget.json');
+        this.presenceCount = data.presence_count;
+        console.log(this.presenceCount);
         this.members = [];
-        this.inviteURL = 'data.instant_invite';
+        this.inviteURL = data.instant_invite;
+        // this.inviteURL = 'https://www.santabrowser.com/faq';
     },
 });
 </script>
