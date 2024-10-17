@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { param } from 'express-validator';
-import { subWeeks } from 'date-fns';
+import { subMonths, subWeeks } from 'date-fns';
 import PoolService from '@thxnetwork/api/services/PoolService';
 
 const validation = [param('campaignId').isMongoId()];
@@ -8,8 +8,9 @@ const validation = [param('campaignId').isMongoId()];
 const controller = async (req: Request, res: Response) => {
     const pool = await PoolService.getById(req.params.campaignId);
     const endDate = new Date();
-    //1 week range
-    const startDate = subWeeks(endDate, 1);
+    // const startDate = subWeeks(endDate, pool.settings.leaderboardInWeeks);
+    // Monthly
+    const startDate = subMonths(endDate, 1);
     const options = { startDate, endDate };
     const leaderboard = await PoolService.getLeaderboardFromCache(pool, options);
     const result = await PoolService.getLeaderboardTop(leaderboard, 10);

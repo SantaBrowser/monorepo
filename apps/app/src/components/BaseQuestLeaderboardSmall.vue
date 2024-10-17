@@ -10,7 +10,7 @@
                 <!-- <i class="fa fa-trophy me-2 text-opaque" /> -->
                 <img :src="trophyImage" alt="trophy" loading="lazy" width="17" height="17" class="me-2" />
             </div>
-            <div class="flex-grow-1 pe-2">Leaderboard(recent)</div>
+            <div class="flex-grow-1 pe-2">Leaderboard<span class="flex-grow-1 pe-2 fa-xs"> Monthly</span></div>
             <!-- <b-button class="text-primary refresh-color" variant="link" @click="onClickRefresh">
                 <b-spinner v-if="isLoading" small />
                 <i v-else class="fas fa-sync-alt" />
