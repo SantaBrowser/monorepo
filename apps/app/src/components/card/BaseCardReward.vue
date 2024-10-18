@@ -5,7 +5,9 @@
             class="d-flex flex-column justify-content-between cp-campaign-card"
             :style="{ height: 'auto', background: !reward.isPromoted ? backgroundColor : '' }"
         >
-            <div v-if="reward.isPromoted" class="d-flex align-items-center promoted-title">Promoted</div>
+            <b-button v-if="reward.isPromoted" class="d-flex align-items-center promoted-title" variant="success">
+                Promoted
+            </b-button>
             <b-card-title v-if="!reward.isPromoted" class="d-flex align-items-center reward-title px-2 pt-2">
                 <i class="me-2 text-opaque small" :class="iconMap[reward.variant]" />
                 <slot name="title" />
@@ -395,8 +397,6 @@ export default defineComponent({
     font-style: normal;
     font-weight: 400;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.58);
-    backdrop-filter: blur(25px);
     padding: 3px 11px;
     margin: 5px;
 }
