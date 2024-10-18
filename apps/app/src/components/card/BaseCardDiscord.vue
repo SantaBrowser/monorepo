@@ -5,8 +5,8 @@
             <div>
                 <span>Got questions?</span>
                 <div>
-                    <strong class="me-1 text-accent">{{ presenceCount }}</strong>
-                    <span class="text-opaque">Online</span>
+                    <strong class="me-1 text-accent">{{ presenceCount.toLocaleString() }}</strong>
+                    <span class="text-opaque">Members</span>
                 </div>
             </div>
             <b-button
@@ -81,8 +81,13 @@ export default defineComponent({
         // this.members = data.members;
         // this.inviteURL = data.instant_invite;
         const { data } = await axios('https://discord.com/api/guilds/997069800092225576/widget.json');
-        this.presenceCount = data.presence_count;
-        console.log(this.presenceCount);
+        // this.presenceCount = data.presence_count;
+        const server_data = await axios(
+            `https://discord.com/api/v9/invites/${
+                data.instant_invite.split('/')[data.instant_invite.split('/').length - 1]
+            }?with_counts=true&with_expiration=true`,
+        );
+        this.presenceCount = server_data.data.approximate_member_count;
         this.members = [];
         this.inviteURL = data.instant_invite;
         // this.inviteURL = 'https://www.santabrowser.com/faq';
