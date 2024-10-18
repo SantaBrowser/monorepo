@@ -215,10 +215,18 @@ export const useAccountStore = defineStore('account', {
                         return reject('account_not_found');
                     }
 
+                    if (!this.account.tokens || this.account.tokens.length === 0) {
+                        setTimeout(poll, 1000);
+                        return;
+                    }
+
                     const isAuthorized = this.account.tokens.find(
                         (token) => token.kind === kind && scopes.every((scope) => token.scopes.includes(scope)),
                     );
-                    if (!isAuthorized) setTimeout(poll, 1000);
+                    if (!isAuthorized) {
+                        setTimeout(poll, 1000);
+                        return;
+                    }
 
                     return isAuthorized ? resolve('') : reject('token_invalid');
                 };
