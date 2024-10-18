@@ -13,6 +13,7 @@ import ImageService from './ImageService';
 import PointBalanceService from './PointBalanceService';
 import MailService from './MailService';
 import PoolService from './PoolService';
+import { CacheService } from './CacheService';
 
 export default class RewardService {
     static async count({ poolId }) {
@@ -27,6 +28,11 @@ export default class RewardService {
     }
 
     static async list({ pool, account }) {
+        const rewardCacheKey = `reward-${pool._id}-${account?.sub || 'public'}`;
+        const cachedData = CacheService.get(rewardCacheKey);
+        if (cachedData) {
+            return cachedData;
+        }
         const owner = await AccountProxy.findById(pool.sub);
         const rewardVariants = Object.keys(RewardVariant).filter((v) => !isNaN(Number(v)));
         const callback: any = async (variant: RewardVariant) => {
@@ -93,8 +99,9 @@ export default class RewardService {
                 }),
             );
         };
-
-        return await Promise.all(rewardVariants.map(callback));
+        const result = await Promise.all(rewardVariants.map(callback));
+        CacheService.set(rewardCacheKey, result);
+        return result;
     }
 
     static async findPaymentsBySub(
