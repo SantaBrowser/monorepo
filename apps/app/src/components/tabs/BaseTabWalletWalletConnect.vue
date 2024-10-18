@@ -65,7 +65,7 @@ export default defineComponent({
         },
         async onClickConnect() {
             console.log(window);
-            console.log(top.window.martian);
+            console.log(top.martian);
             if (this.walletStore.currentChainId == ChainId.Aptos) {
                 try {
                     if (!window.martian) {
