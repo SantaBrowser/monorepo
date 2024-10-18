@@ -37,8 +37,8 @@
                         <BaseFormGroupAvatar />
                     </b-col>
                 </b-row>
-                <BaseFormGroupAccountId :account="accountStore.account" />
-                <BaseFormGroupProviderUserId :account="accountStore.account" />
+                <!-- <BaseFormGroupAccountId :account="accountStore.account" /> -->
+                <!-- <BaseFormGroupProviderUserId :account="accountStore.account" /> -->
             </b-tab>
             <b-tab title="Connected">
                 <BaseFormGroupConnected class="mb-3" />
