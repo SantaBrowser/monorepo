@@ -20,8 +20,14 @@
                         <i class="fas fa-tasks text-opaque ms-auto me-3" style="font-size: 1.2rem" />
                     </div>
                 </div>
-                <div v-if="questStore.isLoading" class="d-flex justify-content-center py-5">
-                    <b-spinner variant="primary" small />
+                <div v-if="questStore.isLoading" class="d-flex justify-content-center p-3">
+                    <div class="w-100">
+                        <div v-for="n in 8" :key="n" class="quest-skeleton-loader mb-3">
+                            <div class="skeleton-title"></div>
+                            <div class="skeleton-description"></div>
+                            <div class="skeleton-button"></div>
+                        </div>
+                    </div>
                 </div>
                 <b-tabs v-else content-class="mt-3" justified class="mt-3">
                     <b-tab active>
@@ -100,7 +106,7 @@
                 class="rewards-column flex-grow-1"
                 offset-xl="0"
             >
-                <div class="mb-2 bg-rewards">
+                <div class="mb-2 bg-rewards rounded">
                     <div class="align-items-center p-3 overflow-hidden d-flex" style="justify-content: space-between">
                         <div>
                             <strong class="title-q">Rewards</strong>
@@ -113,6 +119,15 @@
                                 <option>Cash Rewards</option>
                             </select>
                             <i class="fas fa-chevron-down custom-select-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="rewardStore.isLoading || reward2Store.isLoading" class="d-flex justify-content-center p-3">
+                    <div class="w-100">
+                        <div v-for="n in 8" :key="n" class="quest-skeleton-loader mb-3">
+                            <div class="skeleton-title"></div>
+                            <div class="skeleton-description"></div>
+                            <div class="skeleton-button"></div>
                         </div>
                     </div>
                 </div>
@@ -134,26 +149,26 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
-import { useAccountStore } from '../../stores/Account';
-import { useWalletStore } from '../../stores/Wallet';
-import { useQuestStore } from '../../stores/Quest';
-import { useRewardStore } from '../../stores/Reward';
-import { useReward2Store } from '../../stores/Reward';
-import { QuestVariant, RewardSortVariant } from '../../types/enums/rewards';
-import { questComponentMap, sortMap } from '../../utils/quests';
-import BaseCardQuestInvite from '../../components/card/BaseCardQuestInvite.vue';
-import BaseCardQuestSocial from '../../components/card/BaseCardQuestSocial.vue';
-import BaseCardQuestCustom from '../../components/card/BaseCardQuestCustom.vue';
-import BaseCardQuestDaily from '../../components/card/BaseCardQuestDaily.vue';
-import BaseCardQuestWeb3 from '../../components/card/BaseCardQuestWeb3.vue';
-import BaseCardQuestGitcoin from '../../components/card/BaseCardQuestGitcoin.vue';
-import BaseCardQuestWebhook from '../../components/card/BaseCardQuestWebhook.vue';
-import { RewardVariant } from '../../types/enums/rewards';
-import BaseCardRewardCoin from '../../components/card/BaseCardRewardCoin.vue';
-import BaseCardRewardNFT from '../../components/card/BaseCardRewardNFT.vue';
-import BaseCardRewardCustom from '../../components/card/BaseCardRewardCustom.vue';
-import BaseCardRewardCoupon from '../../components/card/BaseCardRewardCoupon.vue';
-import BaseCardRewardDiscordRole from '../../components/card/BaseCardRewardDiscordRole.vue';
+import { useAccountStore } from '@thxnetwork/app/stores/Account';
+import { useWalletStore } from '@thxnetwork/app/stores/Wallet';
+import { useQuestStore } from '@thxnetwork/app/stores/Quest';
+import { useRewardStore } from '@thxnetwork/app/stores/Reward';
+import { useReward2Store } from '@thxnetwork/app/stores/Reward';
+import { QuestVariant, RewardSortVariant } from '@thxnetwork/app/types/enums/rewards';
+import { questComponentMap, sortMap } from '@thxnetwork/app/utils/quests';
+import BaseCardQuestInvite from '@thxnetwork/app/components/card/BaseCardQuestInvite.vue';
+import BaseCardQuestSocial from '@thxnetwork/app/components/card/BaseCardQuestSocial.vue';
+import BaseCardQuestCustom from '@thxnetwork/app/components/card/BaseCardQuestCustom.vue';
+import BaseCardQuestDaily from '@thxnetwork/app/components/card/BaseCardQuestDaily.vue';
+import BaseCardQuestWeb3 from '@thxnetwork/app/components/card/BaseCardQuestWeb3.vue';
+import BaseCardQuestGitcoin from '@thxnetwork/app/components/card/BaseCardQuestGitcoin.vue';
+import BaseCardQuestWebhook from '@thxnetwork/app/components/card/BaseCardQuestWebhook.vue';
+import { RewardVariant } from '@thxnetwork/app/types/enums/rewards';
+import BaseCardRewardCoin from '@thxnetwork/app/components/card/BaseCardRewardCoin.vue';
+import BaseCardRewardNFT from '@thxnetwork/app/components/card/BaseCardRewardNFT.vue';
+import BaseCardRewardCustom from '@thxnetwork/app/components/card/BaseCardRewardCustom.vue';
+import BaseCardRewardCoupon from '@thxnetwork/app/components/card/BaseCardRewardCoupon.vue';
+import BaseCardRewardDiscordRole from '@thxnetwork/app/components/card/BaseCardRewardDiscordRole.vue';
 import { CP_CAMPAIGN, SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 import { ref } from 'vue';
 import { useAuthStore } from '@thxnetwork/app/stores/Auth';
@@ -294,7 +309,7 @@ export default defineComponent({
                 if (!this.accountStore.account) {
                     await this.accountStore.getAccount();
                 }
-                console.log('account: ', this.accountStore.account);
+
                 await Promise.all([
                     this.questStore.list(SANTA_CAMPAIGN),
                     this.rewardStore.list(CP_CAMPAIGN),
@@ -332,7 +347,7 @@ export default defineComponent({
                     `https://offers-api.santabrowser.com/offers/list?pageSize=10&pageNo=0&clid=${clid}`,
                 );
                 this.offers = response.data.trending.filter(
-                    (offer) => offer.imageUrl !== 'https://banners.hangmyads.com/files/uploads/Off_A_86634.png',
+                    (offer: any) => offer.imageUrl !== 'https://banners.hangmyads.com/files/uploads/Off_A_86634.png',
                 );
             } catch (error) {
                 console.error('Failed to fetch offers', error);
@@ -663,6 +678,51 @@ export default defineComponent({
         font-size: 1rem;
     }
 }
+
+.quest-skeleton-loader {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #393939; /* Light gray background */
+    animation: pulse 1.5s infinite;
+}
+
+.skeleton-title {
+    height: 20px;
+    width: 60%;
+    margin-bottom: 10px;
+    background-color: #c0c0c0; /* Slightly darker gray */
+    border-radius: 4px;
+}
+
+.skeleton-description {
+    height: 15px;
+    width: 80%;
+    margin-bottom: 10px;
+    background-color: #c0c0c0;
+    border-radius: 4px;
+}
+
+.skeleton-button {
+    height: 25px;
+    width: 40%;
+    background-color: #c0c0c0;
+    border-radius: 4px;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 @media (max-width: 992px) {
     .quest-cont .row > * {
         flex-shrink: unset;

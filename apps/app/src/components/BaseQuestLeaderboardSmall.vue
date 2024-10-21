@@ -20,7 +20,14 @@
                 <i v-else class="fas fa-sync-alt" />
             </b-button> -->
         </b-card-title>
-        <b-list-group class="my-list d-flex flex-column">
+        <b-list-group v-if="isLoading" class="skeleton-loader my-list">
+            <div v-for="n in 10" :key="n" class="skeleton-item d-flex p-2 align-items-center">
+                <div class="skeleton-rank">{{ n }}</div>
+                <div class="skeleton-avatar"></div>
+                <div class="skeleton-username"></div>
+            </div>
+        </b-list-group>
+        <b-list-group v-else class="my-list d-flex flex-column">
             <b-list-group-item
                 v-for="(entry, key) of accountStore.leaderboardPrimary"
                 :key="key"
@@ -90,7 +97,10 @@ export default defineComponent({
         async updateLeaderboard() {
             // const url = window.location.href;
             // const poolIdMatch = url.match(/\/c\/([a-f0-9]{24})\//);
+            if (this.isLoading) return;
+            this.isLoading = true;
             await this.accountStore.getLeaderboard(SANTA_CAMPAIGN);
+            this.isLoading = false;
             // if (poolIdMatch) {
             //     await this.accountStore.getLeaderboard(poolIdMatch[1]);
             // } else {
@@ -189,6 +199,53 @@ export default defineComponent({
 
 .leaderboard-wrapper .list-group {
     padding: 13.5px 7.5px;
+}
+.skeleton-loader {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.skeleton-item {
+    border-radius: 5px;
+    border: 0.2px solid rgba(255, 255, 255, 0.1);
+    background: rgba($color: #000000, $alpha: 0.5);
+    box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.05);
+}
+
+.skeleton-avatar,
+.skeleton-username {
+    background-color: #c0c0c0;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite;
+}
+
+.skeleton-rank {
+    width: 10px;
+}
+
+.skeleton-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+.skeleton-username {
+    flex-grow: 1;
+    height: 20px;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 @media (max-width: 992px) {

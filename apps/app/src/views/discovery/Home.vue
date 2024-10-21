@@ -44,21 +44,12 @@ import { decodeHTML } from '../../utils/decode-html';
 import imgLogo from '../../assets/logo.png';
 import earningsIcon from '../../assets/earnings-logo.png';
 import * as html from 'html-entities';
-import { defineAsyncComponent, defineComponent } from 'vue';
-import BaseQuestLeaderboardSmall from '@thxnetwork/app/components/BaseQuestLeaderboardSmall.vue';
+import { defineComponent } from 'vue';
 
 const CACHE_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
 export default defineComponent({
     name: 'Home',
-    components: {
-        Quests: defineAsyncComponent(() => import('../campaign/Quests.vue')),
-        BaseNavbarPrimary: defineAsyncComponent(
-            () => import('@thxnetwork/app/components/navbar/BaseNavbarPrimary.vue'),
-        ),
-        BaseQuestLeaderboardSmall,
-        BaseCardRewards: defineAsyncComponent(() => import('@thxnetwork/app/components/card/BaseCardRewards.vue')),
-    },
     data(): any {
         return {
             decodeHTML,

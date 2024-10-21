@@ -58,7 +58,14 @@
                 class="d-flex align-items-center justify-content-between equal-divs name-avatar"
                 @click="accountStore.isModalAccountShown = true"
             >
-                <h2 v-if="!accountStore.isMobile" class="username">{{ accountStore?.account?.username }}</h2>
+                <h2 v-if="!accountStore.isMobile" class="username">
+                    <template v-if="accountStore?.account?.username">
+                        {{ accountStore.account.username }}
+                    </template>
+                    <template v-else>
+                        <span class="typing-placeholder">{{ typingDots }}</span>
+                    </template>
+                </h2>
                 <b-avatar class="b-avatar-header" size="40" :src="accountStore?.account?.profileImg" variant="dark" />
             </div>
         </div>
@@ -89,6 +96,8 @@ export default defineComponent({
             showCPDropdown: false,
             participantSantaState: null as any,
             participantCPState: null as any,
+            dotCount: 0,
+            typingInterval: undefined as ReturnType<typeof setInterval> | undefined,
         };
     },
     computed: {
@@ -96,6 +105,9 @@ export default defineComponent({
         latestCompletedQuest() {
             const { quests } = this.questStore;
             return quests.find((quest) => !quest.isAvailable);
+        },
+        typingDots() {
+            return '.'.repeat(this.dotCount);
         },
     },
     watch: {
@@ -111,9 +123,11 @@ export default defineComponent({
     },
     mounted() {
         document.addEventListener('click', this.handleClickOutside);
+        this.startTypingAnimation();
     },
     beforeUnmount() {
         document.removeEventListener('click', this.handleClickOutside);
+        clearInterval(this.typingInterval);
     },
     methods: {
         updateParticipants() {
@@ -174,6 +188,11 @@ export default defineComponent({
         },
         numberWithCommas(x: number | string) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        },
+        startTypingAnimation() {
+            this.typingInterval = setInterval(() => {
+                this.dotCount = (this.dotCount + 1) % 12;
+            }, 100);
         },
     },
 });
