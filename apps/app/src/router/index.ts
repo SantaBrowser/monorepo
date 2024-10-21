@@ -43,7 +43,7 @@ const routes: Array<RouteRecordRaw> = [
 
                     next({ name: 'questsInvite', params: { slug: accountStore.invite?.campaign.slug, code } });
                 },
-                component: () => import(/* webpackChunkName: "invite" */ '../views/campaign/Quests.vue'),
+                component: () => import(/* webpackChunkName: "invite" */ '../components/Quests.vue'),
             },
             {
                 path: '/learn',
@@ -113,13 +113,13 @@ const routes: Array<RouteRecordRaw> = [
                 path: '/c/:slug/quests',
                 name: 'quests',
                 beforeEnter,
-                component: () => import(/* webpackChunkName: "quests" */ '../views/campaign/Quests.vue'),
+                component: () => import(/* webpackChunkName: "quests" */ '../components/Quests.vue'),
             },
             {
                 path: '/c/:slug/quests/i/:code',
                 name: 'questsInvite',
                 beforeEnter,
-                component: () => import(/* webpackChunkName: "questsInvite" */ '../views/campaign/Quests.vue'),
+                component: () => import(/* webpackChunkName: "questsInvite" */ '../components/Quests.vue'),
             },
             {
                 path: '/c/:slug/ranking',
