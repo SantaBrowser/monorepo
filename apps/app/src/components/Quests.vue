@@ -1,17 +1,14 @@
 <template>
-    <b-container
-        v-if="!accountStore.isMobile || selectedPart === 'Quests' || selectedPart === 'Rewards'"
-        class="mt-2 quest-cont"
-    >
+    <b-container v-if="selectedPart === 'quests' || selectedPart === 'rewards'" class="mt-2 quest-cont">
         <b-row>
             <b-col
-                v-if="!accountStore.isMobile || selectedPart === 'Quests'"
+                v-if="selectedPart === 'quests'"
                 lg="6"
                 xl="7"
                 offset-xl="0"
                 class="quests-column flex-grow-1 my-col-xl-7"
             >
-                <div class="mb-2 align-items-center bg-quests rounded">
+                <!-- <div class="mb-2 align-items-center bg-quests rounded">
                     <div class="quests-title d-flex p-2">
                         <div>
                             <strong class="title-q">Quests</strong>
@@ -19,7 +16,7 @@
                         </div>
                         <i class="fas fa-tasks text-opaque ms-auto me-3" style="font-size: 1.2rem" />
                     </div>
-                </div>
+                </div> -->
                 <div v-if="questStore.isLoading" class="d-flex justify-content-center p-3">
                     <div class="w-100">
                         <div v-for="n in 8" :key="n" class="quest-skeleton-loader mb-3">
@@ -99,14 +96,14 @@
                 </b-tabs>
             </b-col>
             <b-col
-                v-if="!accountStore.isMobile || selectedPart === 'Rewards'"
+                v-if="selectedPart === 'rewards'"
                 lg="5"
                 xl="5"
                 xxl="4"
                 class="rewards-column flex-grow-1"
                 offset-xl="0"
             >
-                <div class="mb-2 bg-rewards rounded">
+                <!-- <div class="mb-2 bg-rewards rounded">
                     <div class="align-items-center p-3 overflow-hidden d-flex" style="justify-content: space-between">
                         <div>
                             <strong class="title-q">Rewards</strong>
@@ -121,7 +118,7 @@
                             <i class="fas fa-chevron-down custom-select-icon"></i>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div v-if="rewardStore.isLoading || reward2Store.isLoading" class="d-flex justify-content-center p-3">
                     <div class="w-100">
                         <div v-for="n in 8" :key="n" class="quest-skeleton-loader mb-3">
@@ -526,7 +523,7 @@ export default defineComponent({
 }
 
 .quests-column {
-    min-height: 100vh;
+    height: calc(100vh - 70px);
     box-shadow: inset rgb(182 9 153 / 15%) 0px -7px 20px 8px;
     margin-right: 20px;
     border-radius: 7px;
@@ -553,7 +550,6 @@ export default defineComponent({
 }
 
 .rewards-column {
-    max-width: 380px;
     height: calc(100vh - 70px);
     position: sticky;
     top: 70px;
@@ -662,10 +658,12 @@ export default defineComponent({
 }
 
 .quests-box {
+    height: calc(100vh - 180px);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     column-gap: 2%;
+    overflow-y: auto;
 }
 
 .offers-box {

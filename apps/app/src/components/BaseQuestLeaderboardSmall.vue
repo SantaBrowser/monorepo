@@ -125,6 +125,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .bg-leaderboard {
     background-image: url('/src/assets/bg_leaderboard.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 .card-header {
     border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);

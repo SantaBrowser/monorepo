@@ -1,13 +1,25 @@
 <template>
-    <div ref="mainComponent" class="mainComponent">
-        <div>
+    <div ref="mainComponent" class="mainComponent pt-3 px-3">
+        <div class="d-flex flex-column h-100">
             <HeaderNav :is-visible="true" />
-            <div v-if="selectedPart === 'Quests' || !accountStore.isMobile" class="bg-santa">
+            <div class="d-flex h-100 overflow-hidden">
+                <Sidebar @nav-clicked="handleNavClick" />
+                <Quests :selected-part="selectedPart" />
+                <div v-if="selectedPart === 'leaderboard'" class="w-100">
+                    <BaseQuestLeaderboardSmall :selected-part="selectedPart" />
+                </div>
+                <div v-if="selectedPart === 'wallet'">
+                    <BaseCardRewards />
+                </div>
+            </div>
+        </div>
+
+        <!-- <div v-if="selectedPart === 'Quests' || !accountStore.isMobile" class="bg-santa">
                 <div class="bg-blur">
                     <div class="unwrap">UNWRAP</div>
                 </div>
-            </div>
-            <div ref="secondDiv" class="d-flex window-container">
+            </div> -->
+        <!-- <div ref="secondDiv" class="d-flex window-container">
                 <div class="d-flex w-100">
                     <Quests :selected-part="selectedPart" />
 
@@ -25,8 +37,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> -->
+
         <BaseNavbarPrimary
             v-if="accountStore.isMobile"
             style="width: 100%; position: fixed; bottom: 0; z-index: 22"
@@ -72,7 +84,7 @@ export default defineComponent({
             brands: [],
             earningsIcon,
             currentIndex: 0,
-            selectedPart: 'Quests',
+            selectedPart: 'quests',
         };
     },
     computed: {
@@ -444,7 +456,7 @@ export default defineComponent({
     margin: 0;
     background-blend-mode: color-dodge;
     background-attachment: fixed;
-    background: #000;
+    height: 100vh;
 }
 
 @media (max-width: 424px) {
