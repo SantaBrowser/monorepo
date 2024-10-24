@@ -6,7 +6,7 @@
         :class="{ 'card-collapsed': isVisible, 'card-promoted': quest.isPromoted }"
         style="background: transparent"
     >
-        <template #header>
+        <!-- <template #header>
             <b-card-title
                 class="d-flex p-3 m-0 align-items-center"
                 style="cursor: pointer; background-color: #0e0f19"
@@ -29,33 +29,21 @@
                 </div>
                 <div v-if="quest.amount" class="text-primary fw-bold">{{ quest.amount }}</div>
             </b-card-title>
-        </template>
+        </template> -->
 
-        <b-collapse
-            v-model="isVisible"
-            style="
-                background: linear-gradient(
-                    155deg,
-                    rgba(255, 255, 255, 0.02) -2.13%,
-                    rgba(42, 42, 42, 0.11) 136.58%
-                ) !important;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                height: 100%;
-            "
-        >
+        <b-collapse v-model="isVisible">
             <img
                 v-if="quest.image"
-                class="img-fluid w-100"
+                class="w-100"
                 :src="quest.image"
                 alt="header image"
                 loading="lazy"
-                style="border: 1px px solid #000; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px"
+                style="border-radius: 4px"
+                height="167"
             />
 
             <div class="px-3 mt-3">
-                <b-alert v-model="hasExpiry" variant="primary" class="px-2 py-1 flex-grow-1 mb-2">
+                <!-- <b-alert v-model="hasExpiry" variant="primary" class="px-2 py-1 flex-grow-1 mb-2">
                     <i class="fas fa-clock me-1" />
                     Quest ends in <strong>{{ expiryDate }} </strong>!
                 </b-alert>
@@ -75,13 +63,19 @@
                 <b-alert v-model="isAlertEntriesPendingReviewShown" variant="primary" class="p-2">
                     <i class="fas fa-info-circle me-1"></i> You have
                     <strong>{{ quest.entriesPendingReview.length }}</strong> entries pending a review.
-                </b-alert>
+                </b-alert> -->
 
                 <div class="d-flex align-items-start justify-content-between">
                     <b-card-text
                         v-if="quest.description"
-                        class="flex-grow-1 mb-3"
-                        style="white-space: pre-line"
+                        class="flex-grow-1 mb-2"
+                        style="
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        "
                         v-html="decodeHTML(quest.description)"
                     />
                     <b-dropdown
@@ -124,7 +118,7 @@
                     </div> -->
                 <!-- </div> -->
             </div>
-            <div class="px-3 py-3">
+            <div class="px-3 quest-card-btns">
                 <b-button
                     v-if="!accountStore.isAuthenticated"
                     variant="primary"
@@ -232,3 +226,11 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.quest-card-btns .btn {
+    border-radius: 5px;
+    background: linear-gradient(290deg, #b13030 30.17%, #de5947 97.55%);
+    padding: 7px 32px;
+}
+</style>

@@ -1,12 +1,12 @@
 <template>
-    <b-container v-if="selectedPart === 'quests' || selectedPart === 'rewards'" class="mt-2 quest-cont">
+    <b-container v-if="selectedPart === 'quests' || selectedPart === 'rewards'" class="mt-2 quest-cont p-3">
         <b-row>
             <b-col
                 v-if="selectedPart === 'quests'"
                 lg="6"
                 xl="7"
                 offset-xl="0"
-                class="quests-column flex-grow-1 my-col-xl-7"
+                class="quests-column flex-grow-1 my-col-xl-7 p-3 pt-2"
             >
                 <!-- <div class="mb-2 align-items-center bg-quests rounded">
                     <div class="quests-title d-flex p-2">
@@ -30,14 +30,37 @@
                     <b-tab active>
                         <template #title>
                             Available
-                            <sup v-if="availableQuestCount">
+                            <!-- <sup v-if="availableQuestCount">
                                 <b-badge class="px-1 py-1 text-white" variant="danger" style="font-size: 8px">
                                     {{ availableQuestCount }}
                                 </b-badge>
-                            </sup>
+                            </sup> -->
                         </template>
                         <div class="quests-box">
                             <div
+                                v-for="group in mergedQuestsAndOffers"
+                                :key="group.title"
+                                :class="{
+                                    'd-none': group.quests.every((quest: TBaseQuest) => quest.isAvailable === false),
+                                }"
+                            >
+                                <h3>{{ group.title }}</h3>
+                                <div class="quest-group">
+                                    <div
+                                        v-for="quest in group.quests"
+                                        :key="quest._id"
+                                        :class="{
+                                            'd-none': quest.isAvailable === false,
+                                            'quest-item': true,
+                                            'quest-item-daily': quest.variant === 0,
+                                        }"
+                                        class="quest-group-item"
+                                    >
+                                        <component :is="questComponentMap[quest.variant]" :quest="quest" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div
                                 v-for="(item, index) in mergedQuestsAndOffers"
                                 :key="index"
                                 :class="{
@@ -71,11 +94,11 @@
                                             <OfferCard :offer="offer" class="mb-2" />
                                         </div>
                                     </div>
-                                </div>
-                                <!-- <div v-else :class="{ 'd-none': !item.quest?.isAvailable }"> -->
-                                <component :is="questComponentMap[item.quest.variant]" v-else :quest="item.quest" />
-                                <!-- </div> -->
-                            </div>
+                                </div> -->
+                            <!-- <div v-else :class="{ 'd-none': !item.quest?.isAvailable }"> -->
+                            <!-- <component :is="questComponentMap[item.quest.variant]" v-else :quest="item.quest" /> -->
+                            <!-- </div> -->
+                            <!-- </div> -->
                             <div v-if="!availableQuestCount" class="text-center mt-5">
                                 <i class="h1 fas fa-trophy text-accent" />
                                 <p class="lead text-accent">Well done!</p>
@@ -256,47 +279,86 @@ export default defineComponent({
         userManager() {
             return useAuthStore().userManager;
         },
+        // mergedQuestsAndOffers() {
+        //     let merged = [];
+        //     let offerIndex = 0;
+        //     const questBatchSize = 4;
+        //     let rowQuests = [];
+
+        //     for (let i = 0; i < this.quests.length; i++) {
+        //         const quest = this.quests[i];
+        //         const isEndOfBatch = (i + 1) % questBatchSize === 0;
+
+        //         if (quest.variant === QuestVariant.Daily) {
+        //             merged.push({ quest, isDaily: true });
+        //             continue;
+        //         }
+
+        //         rowQuests.push(quest);
+
+        //         if (isEndOfBatch) {
+        //             merged.push(...this.formatQuests(rowQuests));
+        //             rowQuests = [];
+        //             merged.push({
+        //                 isOfferRow: true,
+        //                 offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
+        //             });
+        //             offerIndex += this.offersPerRow;
+        //         }
+        //     }
+
+        //     if (rowQuests.length > 0) {
+        //         merged.push(...this.formatQuests(rowQuests));
+        //     }
+
+        //     while (offerIndex < this.offers.length) {
+        //         merged.push({
+        //             isOfferRow: true,
+        //             offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
+        //         });
+        //         offerIndex += this.offersPerRow;
+        //     }
+
+        //     return merged;
+        // },
         mergedQuestsAndOffers() {
-            let merged = [];
-            let offerIndex = 0;
-            const questBatchSize = 4;
-            let rowQuests = [];
+            const santaQuests: TBaseQuest[] = [];
+            const xQuests: TBaseQuest[] = [];
+            const discordQuests: TBaseQuest[] = [];
+            const youtubeQuests: TBaseQuest[] = [];
+            const otherQuests: TBaseQuest[] = [];
 
-            for (let i = 0; i < this.quests.length; i++) {
-                const quest = this.quests[i];
-                const isEndOfBatch = (i + 1) % questBatchSize === 0;
-
-                if (quest.variant === QuestVariant.Daily) {
-                    merged.push({ quest, isDaily: true });
-                    continue;
+            this.quests.forEach((quest: TBaseQuest) => {
+                switch (quest.variant) {
+                    case QuestVariant.Daily:
+                    case QuestVariant.Invite:
+                    case QuestVariant.Custom:
+                    case QuestVariant.Web3:
+                    case QuestVariant.Gitcoin:
+                    case QuestVariant.Webhook:
+                        santaQuests.push(quest);
+                        break;
+                    case QuestVariant.Twitter:
+                        xQuests.push(quest);
+                        break;
+                    case QuestVariant.Discord:
+                        discordQuests.push(quest);
+                        break;
+                    case QuestVariant.YouTube:
+                        youtubeQuests.push(quest);
+                        break;
+                    default:
+                        otherQuests.push(quest);
                 }
+            });
 
-                rowQuests.push(quest);
-
-                if (isEndOfBatch) {
-                    merged.push(...this.formatQuests(rowQuests));
-                    rowQuests = [];
-                    merged.push({
-                        isOfferRow: true,
-                        offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
-                    });
-                    offerIndex += this.offersPerRow;
-                }
-            }
-
-            if (rowQuests.length > 0) {
-                merged.push(...this.formatQuests(rowQuests));
-            }
-
-            while (offerIndex < this.offers.length) {
-                merged.push({
-                    isOfferRow: true,
-                    offers: this.offers.slice(offerIndex, offerIndex + this.offersPerRow).filter(Boolean),
-                });
-                offerIndex += this.offersPerRow;
-            }
-
-            return merged;
+            return [
+                { title: 'Santa Quests', quests: santaQuests },
+                { title: 'X Quests', quests: xQuests },
+                { title: 'Discord Quests', quests: discordQuests },
+                { title: 'YouTube Quests', quests: youtubeQuests },
+                { title: 'Other Quests', quests: otherQuests },
+            ];
         },
     },
     watch: {
@@ -427,9 +489,6 @@ export default defineComponent({
     border: 1px dotted #f3d40760;
     margin: 6px;
 }
-.nav-tabs .nav-item {
-    margin-left: 10px;
-}
 
 .bg-rewards {
     //border: 1px dotted #f31a0760;
@@ -459,7 +518,6 @@ export default defineComponent({
 
 .btn-primary {
     box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px 0px, rgba(255, 255, 255, 0.12) 0px 4px 4px 0px inset;
-    background: rgb(212, 70, 70) !important;
     border-radius: 20px;
     transition: all 0.3s ease;
     position: relative;
@@ -479,17 +537,6 @@ export default defineComponent({
     border-radius: 50%;
     transform: translate(-50%, -50%) scale(0);
     z-index: -1;
-}
-
-.btn-primary:hover {
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 8px 16px 0px, rgba(255, 255, 255, 0.2) 0px 8px 16px 0px inset;
-    background: rgb(248, 69, 69) !important;
-    color: white;
-}
-
-.btn-primary:hover::before {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0;
 }
 
 .my-leader {
@@ -524,27 +571,13 @@ export default defineComponent({
 
 .quests-column {
     height: calc(100vh - 70px);
-    box-shadow: inset rgb(182 9 153 / 15%) 0px -7px 20px 8px;
     margin-right: 20px;
-    border-radius: 7px;
-    //background: #0e0f19;
-    border-radius: 15px;
-    border: 1px dotted #865c5c85;
-    padding: 0px !important;
+    border-radius: 10px;
+    border: 1px solid #1a1a1a;
     margin-left: 12px;
 }
 
-.quests-column .nav-item .nav-link.active {
-    background-color: #0e0f19 !important;
-}
-
-.quests-column .tab-content {
-    padding: 10px;
-}
-
 .quests-column .tab-content .card {
-    border-radius: 10px;
-    border: 1px dotted #f39696a1;
     overflow: hidden;
     margin-bottom: 15px;
 }
@@ -660,8 +693,7 @@ export default defineComponent({
 .quests-box {
     height: calc(100vh - 180px);
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     column-gap: 2%;
     overflow-y: auto;
 }
@@ -707,6 +739,57 @@ export default defineComponent({
     width: 40%;
     background-color: #c0c0c0;
     border-radius: 4px;
+}
+
+.quests-column .nav-item {
+    flex-grow: 0;
+}
+
+.quests-column .nav-link {
+    width: 158px !important;
+    display: flex;
+    justify-content: center;
+    background: #202020;
+    border-bottom-color: transparent;
+    border-bottom-width: 0px;
+    color: #8e8e8e;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+}
+
+.quests-column .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: #5b5b5b;
+    border-bottom-color: #1c1b1c;
+    border-bottom-width: 1px;
+    font-weight: 600;
+}
+
+.quests-column .nav {
+    border-bottom-color: #5b5b5b;
+}
+
+.quest-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.quest-item {
+    width: 250px;
+    height: 280px;
+
+    overflow: hidden;
+    background-color: #202020;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.quest-item-daily {
+    grid-column: span 2;
+    width: 550px;
 }
 
 @keyframes pulse {

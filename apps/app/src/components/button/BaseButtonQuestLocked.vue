@@ -53,7 +53,6 @@ export default defineComponent({
 <style>
 .my-btn {
     box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px 0px, rgba(255, 255, 255, 0.12) 0px 4px 4px 0px inset;
-    background: rgb(212, 70, 70) !important;
     border-radius: 20px;
     padding: 6px !important;
     height: auto;
