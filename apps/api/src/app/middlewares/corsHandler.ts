@@ -8,6 +8,8 @@ export const corsHandler = cors(async (req: any, callback: any) => {
         API_URL,
         DASHBOARD_URL,
         WIDGET_URL,
+        'chrome://verification.top-chrome',
+        'chrome://mobile-ntp',
         'https://localhost:8080',
         // 'https://thx.network',
         // 'https://www.thx.network',
@@ -18,7 +20,9 @@ export const corsHandler = cors(async (req: any, callback: any) => {
         // 'https://dev-dashboard.thx.network',
     ];
 
-    if (!origin || allowedOrigins.includes(origin)) {
+    const isChromeExtension = origin && origin.startsWith('chrome-extension://');
+
+    if (!origin || allowedOrigins.includes(origin) || isChromeExtension) {
         allowedOrigins.push(origin);
         callback(null, { credentials: true, origin: allowedOrigins });
     } else {

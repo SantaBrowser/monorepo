@@ -75,6 +75,18 @@
                                                     :group-title="group.title"
                                                 />
                                             </div>
+                                            <div
+                                                class="quest-item quest-group-item"
+                                                v-if="group.title === 'Santa\'s Quests'"
+                                            >
+                                                <BaseCardQuestReferral
+                                                    :referral="
+                                                        'https://santabrowser.com/download?install_referrer=' +
+                                                        hashedCode
+                                                    "
+                                                    :imageurl="'https://thx-public.s3.ap-south-1.amazonaws.com/newreferral-neGnhMMfjymfApS8jx7BaJ.jpg'"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                     <div v-else class="offers-box">
@@ -281,6 +293,9 @@ import { useAuthStore } from '@thxnetwork/app/stores/Auth';
 import axios from 'axios';
 import OfferCard from '@thxnetwork/app/components/OfferCard.vue';
 import { useTrackPageview } from '../utils/snowplowTracker';
+import BaseCardQuestReferral from './card/BaseCardQuestReferral.vue';
+import imgRefferal from '@thxnetwork/app/assets/referral.jpg';
+import * as crypto from 'crypto';
 
 const selectedValue = ref<string>('All');
 const componentMap: { [variant: string]: string } = {
@@ -340,6 +355,7 @@ export default defineComponent({
             ],
             showDropdown: false,
             activeTab: 0,
+            hashedCode: '',
         };
     },
     computed: {
@@ -573,6 +589,7 @@ export default defineComponent({
             this.isLoadingOffers = true;
             try {
                 const clid = this.accountStore.account?.providerUserId;
+                this.hashedCode = this.hashClid(clid);
                 const response = await axios.get(
                     `https://offers-api.santabrowser.com/offers/list?pageSize=15&pageNo=0&clid=${clid}`,
                 );
@@ -587,6 +604,13 @@ export default defineComponent({
             } finally {
                 this.isLoadingOffers = false;
             }
+        },
+        hashClid(clientId: any) {
+            // Create a SHA1 hash of the clid
+            const sha1Hash = crypto.createHash('sha1').update(Buffer.from(clientId, 'utf-8')).digest('hex');
+            // Take the substring from position 6 to 20
+            const substring = sha1Hash.substring(6, 20);
+            return substring;
         },
         formatQuests(quests: any) {
             return quests.map((quest: TBaseQuest, index: number) => {
