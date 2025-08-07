@@ -43,7 +43,11 @@ class AptosService {
                     await request();
                     this.lastRequestTime = Date.now();
                 } catch (error) {
-                    console.error('AptosService queue request failed:', error);
+                    if (error instanceof Error) {
+                        console.error('AptosService queue request failed:', error.message, error.stack);
+                    } else {
+                        console.error('AptosService queue request failed:', JSON.stringify(error));
+                    }
                 }
             }
         }

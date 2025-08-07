@@ -78,7 +78,7 @@ if (NODE_ENV !== 'production') {
     );
 }
 
-export const logger = winston.createLogger({
+const winstonLogger = winston.createLogger({
     level: NODE_ENV === 'production' ? 'info' : 'debug',
     levels,
     format: formatWinston,
@@ -94,6 +94,45 @@ export const logger = winston.createLogger({
 // Create a stream object with a 'write' function that will be used by Morgan
 export const stream = {
     write: (message: string) => {
-        logger.http(message.trim());
-    },
+        // Use winstonLogger directly to avoid circular reference
+        winstonLogger.http(message.trim());
+    }
 };
+
+function getCallerInfo() {
+    const err = new Error();
+    if (!err.stack) return '';
+    const stackLines = err.stack.split('\n');
+    // stackLines[0] is 'Error', stackLines[1] is this function, stackLines[2] is the logger wrapper, stackLines[3] is the actual caller
+    return stackLines[3]?.trim() || '';
+}
+
+function formatLogArgs(args: unknown[]) {
+    if (args.length === 1 && typeof args[0] === 'object' && args[0] && Object.keys(args[0]).length === 0) {
+        return ['[WARNING: Empty error object]', getCallerInfo()];
+    }
+    return [getCallerInfo(), ...args.map(arg => {
+        if (arg instanceof Error) {
+            return `${arg.message}\n${arg.stack}`;
+        }
+        if (typeof arg === 'object') {
+            try {
+                return JSON.stringify(arg);
+            } catch {
+                return '[Unserializable Object]';
+            }
+        }
+        return arg;
+    })];
+}
+
+const logger = {
+    error: (...args: unknown[]) => winstonLogger.error(formatLogArgs(args).join(' ')),
+    warn: (...args: unknown[]) => winstonLogger.warn(formatLogArgs(args).join(' ')),
+    info: (...args: unknown[]) => winstonLogger.info(formatLogArgs(args).join(' ')),
+    debug: (...args: unknown[]) => winstonLogger.debug(formatLogArgs(args).join(' ')),
+    http: (...args: unknown[]) => winstonLogger.http(formatLogArgs(args).join(' ')),
+};
+
+export { logger };
+

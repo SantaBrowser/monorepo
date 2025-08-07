@@ -31,7 +31,11 @@ class TransactionService {
 
                 await SafeService.proposeTransaction(wallet, transactions);
             } catch (error) {
-                logger.error({ error });
+                if (error instanceof Error) {
+                    logger.error('TransactionService confirmJob error', { walletId, error });
+                } else {
+                    logger.error('TransactionService confirmJob non-Error thrown', { walletId, error: JSON.stringify(error) });
+                }
             }
             logger.debug(`ConfirmJob Duration: ${Date.now() - now}ms`);
         });
@@ -62,7 +66,11 @@ class TransactionService {
                     logger.debug(`Executed transaction: ${transactionHash}`);
                 }
             } catch (error) {
-                logger.error({ error });
+                if (error instanceof Error) {
+    logger.error(error);
+} else {
+    logger.error('Non-Error thrown:', JSON.stringify(error));
+}
             }
             logger.debug(`ExecuteJob Duration: ${Date.now() - now}ms`);
         }
@@ -88,7 +96,11 @@ class TransactionService {
                     await SafeService.updateTransactionState(wallet, safeTxHash);
                 }
             } catch (error) {
-                logger.error({ error });
+                if (error instanceof Error) {
+    logger.error(error);
+} else {
+    logger.error('Non-Error thrown:', JSON.stringify(error));
+}
             }
             logger.debug(`ExecuteJob Duration: ${Date.now() - now}ms`);
         }

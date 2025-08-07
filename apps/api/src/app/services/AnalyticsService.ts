@@ -61,7 +61,11 @@ class AnalyticsService {
 
             this.cacheLeaderboard(poolId, leaderboard);
         } catch (error) {
-            logger.error('UpdateLeaderboard Failed:', error);
+            if (error instanceof Error) {
+    logger.error('UpdateLeaderboard Failed:', error.message, error.stack);
+} else {
+    logger.error('UpdateLeaderboard Failed:', JSON.stringify(error));
+}
         }
     }
 

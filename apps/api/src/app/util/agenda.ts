@@ -26,9 +26,9 @@ const agenda = new Agenda({
     processEvery: '1 second',
 });
 
-agenda.define(JobType.Confirm, () => TransactionService.confirmJob());
-agenda.define(JobType.Execute, () => TransactionService.executeJob());
-agenda.define(JobType.Callback, () => TransactionService.callbackJob());
+// agenda.define(JobType.Confirm, () => TransactionService.confirmJob());
+// agenda.define(JobType.Execute, () => TransactionService.executeJob());
+// agenda.define(JobType.Callback, () => TransactionService.callbackJob());
 
 agenda.define(JobType.UpdateCampaignRanks, updateCampaignRanks);
 agenda.define(JobType.UpdateParticipantRanks, (job: Job) => ParticipantService.updateRanksJob(job));
@@ -48,13 +48,13 @@ agenda.define(JobType.UpdateLeaderboard, (job: Job) => AnalyticsService.updateLe
 db.connection.once('open', async () => {
     await agenda.start();
 
-    await agenda.every('5 seconds', JobType.Confirm);
-    await agenda.every('5 seconds', JobType.Execute);
-    await agenda.every('5 seconds', JobType.Callback);
+    // await agenda.every('5 seconds', JobType.Confirm);
+    // await agenda.every('5 seconds', JobType.Execute);
+    // await agenda.every('5 seconds', JobType.Callback);
 
     // await agenda.every('1 minutes', JobType.UpdatePrices);
     await agenda.every('5 minutes', JobType.UpdateCampaignRanks);
-    await agenda.every('5 minutes', JobType.UpdateLeaderboard);
+    await agenda.every('5 minutes', JobType.UpdateLeaderboard, { poolId: process.env.SANTA_CAMPAIGN_ID });
     // await agenda.every('15 minutes', JobType.UpsertInvoices);
     // await agenda.every('15 minutes', JobType.UpdateAPR);
 
