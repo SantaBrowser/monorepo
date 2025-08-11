@@ -30,9 +30,23 @@ const initializeTracker = (endpoint: string, clid: string) => {
     setUserId(clid);
 };
 
+/**
+ * Track a page view event
+ * This should be called on route changes
+ */
+const trackPageViewEvent = () => {
+    if (tracker) {
+        console.log('Tracking page view');
+        trackPageView();
+    }
+};
+
+/**
+ * @deprecated Use trackPageViewEvent directly instead
+ */
 const useTrackPageview = () => {
     if (tracker) {
-        trackPageView();
+        trackPageViewEvent();
     }
 };
 

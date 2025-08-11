@@ -223,35 +223,149 @@ export default defineComponent({
 
         async function onWalletConnected({ wallet, response }: any) {
             // 1. Sign a message with the connected Aptos wallet
-            const message = 'Sign to connect your wallet to Santa Rewards';
+            let message = 'Sign to connect your wallet to Santa Rewards';
             let signature, publicKey, address;
+
+            // Extract address and publicKey from the connection response
+            console.log('Wallet connection response:', response);
+            address = response.address || response.publicAddress || response.args?.address;
+            publicKey = response.publicKey || response.args?.publicKey;
+
+            console.log('Initial extracted values:', { address, publicKey });
+
             try {
-                // Petra and Martian have signMessage, Santa uses signMessage
-                if (wallet.provider.signMessage) {
+                // Check if this is the Santa wallet
+                const isSantaWallet =
+                    wallet.key === 'santa' ||
+                    wallet.name === 'Santa' ||
+                    (typeof window !== 'undefined' && window.santaAptos && wallet.provider === window.santaAptos);
+
+                // Handle Santa wallet separately
+                if (isSantaWallet) {
+                    console.log('Using Santa wallet for signing');
+                    // Format message the way Santa wallet expects it
+                    const formattedMessage = `APTOS\nmessage: ${message}\nnonce: random`;
+                    console.log('Signing with formatted message:', formattedMessage);
+
+                    const signResp = await wallet.provider.signMessage(formattedMessage);
+                    console.log('Santa wallet sign response:', signResp);
+
+                    // Extract signature from response - try all possible locations
+                    signature =
+                        signResp.signature ||
+                        signResp.signatureHex ||
+                        signResp.args?.signature ||
+                        signResp.args?.signatureHex;
+                    console.log('Extracted signature:', signature);
+
+                    if (!signature && typeof signResp === 'object') {
+                        // Try to find signature in any property of the response
+                        console.log('Searching for signature in response object...');
+                        for (const key in signResp) {
+                            if (key.toLowerCase().includes('signature')) {
+                                signature = signResp[key];
+                                console.log(`Found signature in signResp.${key}:`, signature);
+                                break;
+                            }
+
+                            // Check if there's an args object with signature
+                            if (key === 'args' && typeof signResp.args === 'object') {
+                                for (const argsKey in signResp.args) {
+                                    if (argsKey.toLowerCase().includes('signature')) {
+                                        signature = signResp.args[argsKey];
+                                        console.log(`Found signature in signResp.args.${argsKey}:`, signature);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Use address from sign response if available
+                    address = address || signResp.address || signResp.args?.address;
+                    publicKey = publicKey || signResp.publicKey || signResp.args?.publicKey;
+
+                    // Use the formatted message
+                    message = formattedMessage;
+                } else if (wallet.provider.signMessage) {
+                    // Handle other wallets (Petra/Martian)
+                    console.log('Using standard wallet for signing');
                     // Petra/Martian signMessage expects an object with message and nonce
                     const signResp = await wallet.provider.signMessage({ message, nonce: 'random' });
+                    console.log('Standard wallet sign response:', signResp);
+
+                    // Extract signature from response - check all possible locations
                     signature = signResp.signature || signResp.signatureHex;
-                    publicKey = signResp.publicKey;
-                    address = signResp.address || response.address;
+
+                    // Check if signature is in args object
+                    if (!signature && signResp.args) {
+                        console.log('Checking for signature in args object:', signResp.args);
+                        signature = signResp.args.signature || signResp.args.signatureHex;
+                    }
+
+                    // Try to find signature in any property of the response
+                    if (!signature && typeof signResp === 'object') {
+                        console.log('Searching for signature in response object...');
+                        for (const key in signResp) {
+                            if (key.toLowerCase().includes('signature')) {
+                                signature = signResp[key];
+                                console.log(`Found signature in signResp.${key}:`, signature);
+                                break;
+                            }
+
+                            // Check if there's an args object with signature
+                            if (key === 'args' && typeof signResp.args === 'object') {
+                                for (const argsKey in signResp.args) {
+                                    if (argsKey.toLowerCase().includes('signature')) {
+                                        signature = signResp.args[argsKey];
+                                        console.log(`Found signature in signResp.args.${argsKey}:`, signature);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    publicKey = publicKey || signResp.publicKey || signResp.args?.publicKey;
+                    address = address || signResp.address || signResp.args?.address;
                 } else {
                     throw new Error('Wallet does not support message signing');
                 }
+
+                console.log('Final extracted values:', { address, publicKey, signature });
             } catch (err) {
                 error.value = 'Failed to sign message: ' + (err.message || err);
                 return;
             }
 
+            // Validate required fields before proceeding
+            if (!signature) {
+                console.error('Missing signature after wallet signing');
+                error.value = 'Failed to get signature from wallet';
+                return;
+            }
+
+            if (!address) {
+                console.error('Missing wallet address');
+                error.value = 'Failed to get wallet address';
+                return;
+            }
+
             // 2. Create wallet on server and refresh wallet list
             try {
-                await walletStore.create({
+                const walletData = {
                     variant: 'aptos',
                     message,
                     publicKey,
                     signature,
                     rawAddress: address,
+                    address: address, // Explicitly add address field for the API
                     chainId: 1000000001, // Aptos chainId as used in your app
-                    provider: wallet.name || wallet.key, // Track which wallet was used (e.g., 'Petra', 'Martian', 'Santa Wallet')
-                });
+                    provider: wallet.name || wallet.key, // Track which wallet was used
+                };
+
+                console.log('Creating wallet with data:', walletData);
+                await walletStore.create(walletData);
                 // 3. Wait for wallets to update and set as active
                 await walletStore.listWallets();
                 const newWallet = walletStore.wallets.find((w: any) => w.address === address);
