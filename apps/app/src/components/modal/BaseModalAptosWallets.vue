@@ -1,0 +1,515 @@
+<template>
+    <b-modal
+        :model-value="show"
+        centered
+        hide-footer
+        size="sm"
+        content-class="wallet-modal-content"
+        @update:model-value="onModalUpdate"
+        @hidden="emit('close')"
+    >
+        <template #header>
+            <h5 class="modal-title"><i class="fas fa-wallet me-2"></i> Connect Wallet</h5>
+            <b-link class="btn-close" @click="emit('close')"><i class="fas fa-times"></i></b-link>
+        </template>
+        <div class="wallet-list">
+            <!-- Top wallets section (Santa, Google, Apple) -->
+            <div class="wallet-top-section">
+                <div
+                    v-for="wallet in topWalletsArray"
+                    :key="wallet.key"
+                    class="wallet-card"
+                    :class="[
+                        { 'wallet-card-dark': isDarkMode, 'wallet-card-light': !isDarkMode },
+                        wallet.key === 'santaAptos' ? 'santa-priority' : '',
+                    ]"
+                    @click="wallet.injected && connect(wallet)"
+                >
+                    <div class="wallet-card-content">
+                        <img :src="wallet.icon" :alt="wallet.name" class="wallet-icon" />
+                        <div class="wallet-name">{{ wallet.name }}</div>
+                    </div>
+                    <div v-if="wallet.injected" class="wallet-status connected"></div>
+                    <div v-else class="wallet-status not-connected"></div>
+                </div>
+            </div>
+
+            <!-- More wallets section (collapsible) -->
+            <div class="more-wallets-section">
+                <div
+                    class="more-wallets-header"
+                    :class="{ 'dark-mode': isDarkMode, 'light-mode': !isDarkMode }"
+                    @click="toggleMoreWallets"
+                >
+                    <span>MORE WALLETS</span>
+                    <i :class="[showMoreWallets ? 'fas fa-chevron-up' : 'fas fa-chevron-down']"></i>
+                </div>
+
+                <div v-if="showMoreWallets">
+                    <div class="more-wallets-grid">
+                        <div
+                            v-for="wallet in moreWalletsArray"
+                            :key="wallet.key"
+                            class="wallet-option d-flex align-items-center p-2 position-relative"
+                            :class="{ 'dark-mode': isDarkMode, 'light-mode': !isDarkMode }"
+                            @click="wallet.injected && connect(wallet)"
+                        >
+                            <div v-if="wallet.injected" class="wallet-status-dot connected"></div>
+                            <img
+                                :src="wallet.icon"
+                                :alt="wallet.name"
+                                class="wallet-icon me-2"
+                                style="width: 28px; height: 28px"
+                            />
+                            <span class="fw-bold wallet-name-list">{{ wallet.name }}</span>
+                            <template v-if="wallet.injected">
+                                <span class="wallet-button connect-button ms-auto">Connect</span>
+                            </template>
+                            <template v-else>
+                                <a
+                                    :href="wallet.installUrl"
+                                    target="_blank"
+                                    class="wallet-button install-button ms-auto"
+                                >
+                                    Install
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="wallets.length === 0" class="text-center text-muted py-3">No Aptos wallets detected.</div>
+        </div>
+    </b-modal>
+</template>
+
+<script setup lang="ts">
+import logo from '../../assets/wallets/santa.png';
+import petraLogo from '../../assets/wallets/petra.png';
+import okxLogo from '../../assets/wallets/okx.png';
+import pontemLogo from '../../assets/wallets/pontem.png';
+import nightlyLogo from '../../assets/wallets/nightly.png';
+
+// Use the actual Google and Apple wallet icons
+import googleLogo from '../../assets/wallets/google.png';
+import appleLogo from '../../assets/wallets/apple.png';
+// If you have a Martian or Fewcha icon, import here as well.
+import { ref, defineEmits, onMounted, computed } from 'vue';
+import { useThemeStore } from '../../stores/Stores';
+
+const emit = defineEmits(['close', 'connected']);
+const props = defineProps<{ show: boolean }>();
+const show = computed(() => props.show);
+
+function onModalUpdate(val: boolean) {
+    if (!val) emit('close');
+}
+
+interface WalletInfo {
+    key: string;
+    name: string;
+    icon: string;
+    provider: any;
+    injected: boolean;
+    installUrl: string;
+    priority?: boolean;
+}
+
+const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injectedKey: string }[] = [
+    {
+        key: 'santaAptos',
+        name: 'Santa Wallet',
+        icon: logo,
+        installUrl: 'https://chrome.google.com/webstore/detail/santa-wallet/ibnejdfjmmkpcnlpebklmnkoeoihofec',
+        injectedKey: 'santaAptos',
+        priority: true,
+    },
+    {
+        key: 'google',
+        name: 'Google Wallet',
+        icon: googleLogo,
+        installUrl: 'https://wallet.google.com/',
+        injectedKey: 'googleWallet',
+        priority: true,
+    },
+    {
+        key: 'apple',
+        name: 'Apple Wallet',
+        icon: appleLogo,
+        installUrl: 'https://www.apple.com/wallet/',
+        injectedKey: 'appleWallet',
+        priority: true,
+    },
+    {
+        key: 'aptos',
+        name: 'Petra',
+        icon: petraLogo,
+        installUrl: 'https://petra.app/download',
+        injectedKey: 'aptos',
+    },
+    {
+        key: 'okx',
+        name: 'OKX',
+        icon: okxLogo,
+        installUrl: 'https://www.okx.com/web3',
+        injectedKey: 'okxwallet',
+    },
+    {
+        key: 'pontem',
+        name: 'Pontem',
+        icon: pontemLogo,
+        installUrl: 'https://pontem.network/wallet',
+        injectedKey: 'pontem',
+    },
+    {
+        key: 'nightly',
+        name: 'Nightly',
+        icon: nightlyLogo,
+        installUrl: 'https://nightly.app/',
+        injectedKey: 'nightly',
+    },
+];
+
+function getAptosWalletsForPopup(): WalletInfo[] {
+    return KNOWN_APTOS_WALLETS.map((wallet) => {
+        const injected = typeof window !== 'undefined' && (window as any)[wallet.injectedKey];
+        return {
+            ...wallet,
+            injected: !!injected,
+            provider: injected ? (window as any)[wallet.injectedKey] : null,
+        };
+    });
+}
+
+const wallets = ref<WalletInfo[]>([]);
+
+onMounted(() => {
+    wallets.value = getAptosWalletsForPopup();
+    console.log(
+        'Wallets for popup:',
+        wallets.value.map((w) => w.key),
+    );
+    wallets.value.forEach((w, i) => {
+        console.log(`wallet[${i}]`, w);
+    });
+});
+
+// Define computed properties with direct array access (no .value needed in template)
+// Check if dark mode is enabled based on URL query param or system preference
+const isDarkMode = computed(() => {
+    if (typeof window !== 'undefined') {
+        // First check URL parameter (highest priority)
+        const urlParams = new URLSearchParams(window.location.search);
+        const themeParam = urlParams.get('theme');
+
+        if (themeParam === 'dark') return true;
+        if (themeParam === 'light') return false;
+
+        // Then check theme store if available
+        try {
+            const themeStore = useThemeStore();
+            if (themeStore && themeStore.currentTheme) {
+                return themeStore.currentTheme === 'dark';
+            }
+        } catch (e) {
+            console.log('Theme store not available, falling back to system preference');
+        }
+
+        // Finally check system preference
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+});
+
+// Toggle more wallets section
+const showMoreWallets = ref(false);
+const toggleMoreWallets = () => {
+    showMoreWallets.value = !showMoreWallets.value;
+};
+
+// Priority wallets array (Santa, Google, Apple)
+const topWalletsArray = computed(() => {
+    if (!wallets.value || !wallets.value.length) return [];
+    return wallets.value.filter((w) => w.priority === true);
+});
+
+// More wallets (all non-priority wallets)
+const moreWalletsArray = computed(() => {
+    if (!wallets.value || !wallets.value.length) return [];
+    return wallets.value.filter((w) => !w.priority);
+});
+
+function connect(wallet: WalletInfo) {
+    if (!wallet.provider) return;
+    wallet.provider
+        .connect()
+        .then((response: any) => {
+            emit('connected', { wallet, response });
+            emit('close');
+        })
+        .catch((err: any) => {
+            console.error('Wallet connect error:', wallet.name, err);
+        });
+}
+</script>
+
+<style scoped>
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.wallet-list {
+    margin-top: 1rem;
+}
+
+/* Top wallet section styling */
+.wallet-top-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.wallet-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    height: 100%;
+}
+
+.wallet-card-light {
+    background: #f8f9fa;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.wallet-card-dark {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.wallet-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    border-color: var(--bs-primary, #007bff);
+}
+
+.wallet-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.wallet-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    margin-bottom: 0.25rem;
+    object-fit: contain;
+    background: #fff;
+    padding: 3px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.wallet-card:hover .wallet-icon {
+    transform: scale(1.05);
+}
+
+.wallet-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.wallet-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.wallet-status-dot {
+    position: absolute;
+    top: 50%;
+    right: 80px; /* Position before the Connect button */
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.connected {
+    background: #28a745;
+}
+
+.not-connected {
+    background: #dc3545;
+}
+
+/* More wallets section styling */
+.more-wallets-section {
+    margin-top: 1rem;
+}
+
+.wallet-name-list {
+    font-size: 0.8rem;
+}
+
+.more-wallets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.more-wallets-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--bs-primary, #007bff), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.more-wallets-header:hover::after {
+    transform: translateX(0);
+}
+
+.dark-mode {
+    background: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
+}
+
+.dark-mode:hover {
+    background: #3a3a3a;
+}
+
+.light-mode {
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #e5e5e5;
+}
+
+.light-mode:hover {
+    background: #e9ecef;
+}
+
+.more-wallets-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.wallet-option {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.wallet-option:hover {
+    transform: translateX(4px);
+}
+
+/* Keep 3 columns for all screen sizes */
+.wallet-top-section {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Wallet button styling */
+.wallet-button {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    min-width: 60px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.wallet-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.connect-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.install-button {
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+}
+
+.install-button:hover {
+    background-color: #0069d9;
+    color: white;
+    text-decoration: none;
+}
+
+/* Modal animation */
+.wallet-modal-content {
+    animation: modalFadeIn 0.3s ease-out;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Adjust spacing for smaller screens */
+@media (max-width: 768px) {
+    .wallet-top-section {
+        gap: 8px;
+    }
+
+    .wallet-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .wallet-card {
+        padding: 0.75rem;
+    }
+}
+</style>

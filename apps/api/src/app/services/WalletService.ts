@@ -13,7 +13,7 @@ export default class WalletService {
         // List all wallets owned by the account but filter out wallets used for the campaign
         const wallets = await Wallet.find({
             sub: account.sub,
-            variant: { $in: [WalletVariant.Safe, WalletVariant.WalletConnect] },
+            variant: { $in: [WalletVariant.Safe, WalletVariant.WalletConnect, WalletVariant.Aptos] },
             address: { $exists: true, $ne: null },
             poolId: { $exists: false },
         });
@@ -43,8 +43,19 @@ export default class WalletService {
         const map = {
             [WalletVariant.Safe]: WalletService.createSafe,
             [WalletVariant.WalletConnect]: WalletService.createWalletConnect,
+            [WalletVariant.Aptos]: WalletService.createAptos,
         };
+        if (!map[variant]) throw new Error(`Unsupported wallet variant: ${variant}`);
         return map[variant](data);
+    }
+
+    static async createAptos({ sub, address, chainId, provider }: { sub?: string; address?: string; chainId?: number; provider?: string }) {
+        if (!sub || !address || !chainId || !provider) throw new Error('Missing required fields for Aptos wallet');
+        await Wallet.findOneAndUpdate(
+            { sub, address, chainId, variant: WalletVariant.Aptos },
+            { sub, address, chainId, variant: WalletVariant.Aptos, provider },
+            { upsert: true, new: true },
+        );
     }
 
     static async createSafe({ sub, chainId, address }: Partial<TWallet>) {

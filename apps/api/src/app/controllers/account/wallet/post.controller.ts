@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { TWallet } from '@thxnetwork/api/models/Wallet';
 import { body } from 'express-validator';
 import NetworkService from '@thxnetwork/api/services/NetworkService';
 import WalletService from '@thxnetwork/api/services/WalletService';
@@ -12,12 +13,13 @@ const validation = [
 ];
 
 const controller = async (req: Request, res: Response) => {
-    const { message, signature, variant, chainId, rawAddress } = req.body;
+    const { message, signature, variant, chainId, rawAddress, provider } = req.body;
     const data: Partial<TWallet> = { sub: req.auth.sub, chainId };
 
     // If no message and signature are present prepare a wallet to connect later
     if (data.chainId == ChainId.Aptos || data.chainId == ChainId.Sui || data.chainId == ChainId.Solana) {
         data.address = rawAddress;
+        if (provider) data.provider = provider;
     } else {
         if (signature && message) {
             data.address = NetworkService.recoverSigner(message, signature);

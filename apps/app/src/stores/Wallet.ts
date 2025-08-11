@@ -30,6 +30,13 @@ import { abi } from '../utils/abi';
 import { contractNetworks } from '../config/constants';
 import imgSafeLogo from '../assets/safe-logo.jpg';
 import imgWalletConnectLogo from '../assets/walletconnect-logo.png';
+import petraLogo from '../assets/wallets/petra.png';
+import okxLogo from '../assets/wallets/okx.png';
+import pontemLogo from '../assets/wallets/pontem.png';
+import nightlyLogo from '../assets/wallets/nightly.png';
+import aptosConnectLogo from '../assets/wallets/aptos.png';
+import santaLogo from '../assets/wallets/santa.png';
+// Add more as needed (e.g., Martian, Fewcha)
 
 type TRequestBodyApproval = {
     tokenAddress: string;
@@ -37,9 +44,17 @@ type TRequestBodyApproval = {
     amountInWei: string;
 };
 
-export const walletLogoMap: { [variant: string]: string } = {
+export const walletLogoMap: { [variantOrProvider: string]: string } = {
     [WalletVariant.WalletConnect]: imgWalletConnectLogo,
     [WalletVariant.Safe]: imgSafeLogo,
+    // Aptos wallet providers by provider key (backend/frontend)
+    santaaptos: santaLogo,
+    petra: petraLogo,
+    okx: okxLogo,
+    pontem: pontemLogo,
+    nightly: nightlyLogo,
+    aptos: aptosConnectLogo,
+    // Add more as needed: martian, fewcha, etc.
 };
 
 const wagmiConfig = defaultWagmiConfig({
@@ -188,6 +203,7 @@ export const useWalletStore = defineStore('wallet', {
             signature?: string;
             rawAddress?: string;
             chainId?: ChainId;
+            provider?: string;
         }) {
             const { api } = useAccountStore();
             await api.request.post('/v1/account/wallets', { data });
