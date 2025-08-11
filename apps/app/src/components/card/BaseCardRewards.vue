@@ -43,16 +43,35 @@
                                 style="filter: drop-shadow(0px 2px 7px rgba(187, 255, 175, 0.3))"
                                 class="wallet-online"
                             />
-                            <div class="wallet-online-word">
+                            <div class="selected-wallet">
+                                <img
+                                    v-if="walletStore.wallet"
+                                    :src="
+                                        walletLogoMap[
+                                            walletStore.wallet.variant === 'walletconnect' &&
+                                            !walletStore.wallet.provider
+                                                ? 'santaaptos'
+                                                : walletStore.wallet.provider?.toLowerCase() ||
+                                                  walletStore.wallet.variant
+                                        ]
+                                    "
+                                    width="15"
+                                    height="15"
+                                    class="me-2"
+                                    style="border-radius: 3px"
+                                />
                                 {{ walletStore.wallet.short }}
                             </div>
                         </div>
                         <div v-else>
                             <div class="wallet-online-word">Connect Wallet</div>
                         </div>
-                        <button class="new-wallet-btn" @click="walletStore.isModalChainSelectShown = true">
-                            + New Wallet
-                        </button>
+                        <button class="new-wallet-btn" @click="showWalletModal = true">+ New Wallet</button>
+                        <BaseModalAptosWallets
+                            :show="showWalletModal"
+                            @close="showWalletModal = false"
+                            @connected="onWalletConnected"
+                        />
                     </div>
                     <div class="d-flex gap-3 wallet-boxes">
                         <div class="d-flex flex-column wallet-connected w-100">
@@ -70,7 +89,13 @@
                                         @click="wallet._id !== walletStore.wallet?._id ? onClickWallet(wallet) : null"
                                     >
                                         <b-img
-                                            :src="walletLogoMap[wallet.variant]"
+                                            :src="
+                                                walletLogoMap[
+                                                    wallet.variant === 'walletconnect' && !wallet.provider
+                                                        ? 'santaaptos'
+                                                        : wallet.provider?.toLowerCase() || wallet.variant
+                                                ]
+                                            "
                                             width="15"
                                             height="15"
                                             style="border-radius: 3px"
@@ -172,33 +197,74 @@
 </template>
 
 <script lang="ts">
+import BaseModalAptosWallets from '../modal/BaseModalAptosWallets.vue';
+import { ref } from 'vue';
+import { useWalletStore, walletLogoMap } from '../../stores/Wallet';
 import { defineComponent } from 'vue';
 import { mapStores } from 'pinia';
-import { useWalletStore, walletLogoMap } from '../../stores/Wallet';
-import { useAuthStore } from '../../stores/Auth';
-import { RewardVariant } from '@thxnetwork/common/enums';
 import { useAccountStore } from '../../stores/Account';
-import BaseCardCoin from '../../components/card/BaseCardCoin.vue';
-import BaseCardNFT from '../../components/card/BaseCardNFT.vue';
-import BaseCardCouponCode from '../../components/card/BaseCardCouponCode.vue';
-import BaseCardDiscordRole from '../../components/card/BaseCardDiscordRole.vue';
+import { useAuthStore } from '../../stores/Auth';
+import copyIcon from '@thxnetwork/app/assets/copy.png';
 import { useTrackPageview } from '@thxnetwork/app/utils/snowplowTracker';
 import onlineEllipse from '@thxnetwork/app/assets/online-ellipse.png';
 import { WalletVariant } from '@thxnetwork/app/types/enums/accountVariant';
-import { chainList } from '@thxnetwork/app/utils/chains';
-import copyIcon from '@thxnetwork/app/assets/copy.png';
+import { RewardVariant } from '@thxnetwork/app/types/enums/rewards';
 import shareIcon from '@thxnetwork/app/assets/share.png';
+import { chainList } from '@thxnetwork/app/utils/chains';
 export default defineComponent({
     name: 'BaseViewWallet',
     components: {
-        // BaseCardCoin,
-        // BaseCardNFT,
-        // BaseCardCouponCode,
-        // BaseCardDiscordRole,
+        BaseModalAptosWallets,
+    },
+    setup() {
+        const showWalletModal = ref(false);
+        const error = ref('');
+        const walletStore = useWalletStore();
+
+        async function onWalletConnected({ wallet, response }: any) {
+            // 1. Sign a message with the connected Aptos wallet
+            const message = 'Sign to connect your wallet to Santa Rewards';
+            let signature, publicKey, address;
+            try {
+                // Petra and Martian have signMessage, Santa uses signMessage
+                if (wallet.provider.signMessage) {
+                    // Petra/Martian signMessage expects an object with message and nonce
+                    const signResp = await wallet.provider.signMessage({ message, nonce: 'random' });
+                    signature = signResp.signature || signResp.signatureHex;
+                    publicKey = signResp.publicKey;
+                    address = signResp.address || response.address;
+                } else {
+                    throw new Error('Wallet does not support message signing');
+                }
+            } catch (err) {
+                error.value = 'Failed to sign message: ' + (err.message || err);
+                return;
+            }
+
+            // 2. Create wallet on server and refresh wallet list
+            try {
+                await walletStore.create({
+                    variant: 'aptos',
+                    message,
+                    publicKey,
+                    signature,
+                    rawAddress: address,
+                    chainId: 1000000001, // Aptos chainId as used in your app
+                    provider: wallet.name || wallet.key, // Track which wallet was used (e.g., 'Petra', 'Martian', 'Santa Wallet')
+                });
+                // 3. Wait for wallets to update and set as active
+                await walletStore.listWallets();
+                const newWallet = walletStore.wallets.find((w: any) => w.address === address);
+                if (newWallet) await walletStore.setWallet(newWallet);
+                showWalletModal.value = false;
+            } catch (err) {
+                error.value = 'Failed to create wallet: ' + (err.message || err);
+            }
+        }
+        return { showWalletModal, onWalletConnected, error };
     },
     data() {
         return {
-            error: '',
             isSubmitting: false,
             isRefreshing: false,
             activeFilter: { label: 'All', key: [] } as { label: string; key: number[] },
