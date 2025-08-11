@@ -22,12 +22,14 @@
                     :class="[
                         { 'wallet-card-dark': isDarkMode, 'wallet-card-light': !isDarkMode },
                         wallet.key === 'santaAptos' ? 'santa-priority' : '',
+                        { 'wallet-disabled': wallet.disabled },
                     ]"
-                    @click="wallet.injected && connect(wallet)"
+                    @click="!wallet.disabled && wallet.injected && connect(wallet)"
                 >
                     <div class="wallet-card-content">
                         <img :src="wallet.icon" :alt="wallet.name" class="wallet-icon" />
                         <div class="wallet-name">{{ wallet.name }}</div>
+                        <div v-if="wallet.comingSoon" class="coming-soon-badge">Coming Soon</div>
                     </div>
                     <div v-if="wallet.injected" class="wallet-status connected"></div>
                     <div v-else class="wallet-status not-connected"></div>
@@ -109,11 +111,35 @@ interface WalletInfo {
     key: string;
     name: string;
     icon: string;
-    provider: any;
-    injected: boolean;
     installUrl: string;
+    injected?: boolean;
+    provider?: any;
     priority?: boolean;
+    disabled?: boolean;
+    comingSoon?: boolean;
 }
+
+// Detect mobile device and platform
+const isMobile = computed(() => {
+    if (typeof window !== 'undefined') {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    return false;
+});
+
+const isAndroid = computed(() => {
+    if (typeof window !== 'undefined') {
+        return /Android/i.test(navigator.userAgent);
+    }
+    return false;
+});
+
+const isIOS = computed(() => {
+    if (typeof window !== 'undefined') {
+        return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+    return false;
+});
 
 const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injectedKey: string }[] = [
     {
@@ -126,19 +152,23 @@ const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injecte
     },
     {
         key: 'google',
-        name: 'Google Wallet',
+        name: 'Google',
         icon: googleLogo,
-        installUrl: 'https://wallet.google.com/',
+        installUrl: '#',
         injectedKey: 'googleWallet',
         priority: true,
+        disabled: true,
+        comingSoon: true,
     },
     {
         key: 'apple',
-        name: 'Apple Wallet',
+        name: 'Apple',
         icon: appleLogo,
-        installUrl: 'https://www.apple.com/wallet/',
+        installUrl: '#',
         injectedKey: 'appleWallet',
         priority: true,
+        disabled: true,
+        comingSoon: true,
     },
     {
         key: 'aptos',
@@ -170,6 +200,49 @@ const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injecte
     },
 ];
 
+const mobileStoreUrls = {
+    // Santa Wallet is not available on mobile stores, use desktop URL
+    // Petra Wallet
+    aptos: {
+        android: 'https://play.google.com/store/apps/details?id=com.aptoslabs.petra.wallet',
+        ios: 'https://apps.apple.com/app/petra-aptos-crypto-wallet/id6446259840',
+    },
+    // Pontem Wallet
+    pontem: {
+        android: 'https://play.google.com/store/apps/details?id=com.pontemmobilewallet',
+        ios: 'https://apps.apple.com/app/pontem-defi-wallet-for-aptos/id1643525786',
+    },
+    // Nightly Wallet
+    nightly: {
+        android: 'https://play.google.com/store/apps/details?id=com.nightlymobile',
+        ios: 'https://apps.apple.com/app/nightly-multichain-wallet/id6444768157',
+    },
+    // OKX Wallet
+    okxwallet: {
+        android: 'https://play.google.com/store/apps/details?id=com.okx.wallet',
+        ios: 'https://apps.apple.com/app/okx-wallet/id6463797825?mt=12',
+    },
+};
+
+function getInstallUrl(wallet: any) {
+    // For Santa Wallet, always use the desktop URL regardless of device
+    if (wallet.key === 'santaAptos') {
+        return wallet.installUrl;
+    }
+
+    // For other wallets, use mobile app store URLs on mobile devices
+    if (isMobile.value) {
+        if (isAndroid.value && mobileStoreUrls[wallet.injectedKey]?.android) {
+            return mobileStoreUrls[wallet.injectedKey].android;
+        } else if (isIOS.value && mobileStoreUrls[wallet.injectedKey]?.ios) {
+            return mobileStoreUrls[wallet.injectedKey].ios;
+        }
+    }
+
+    // Default to the original install URL
+    return wallet.installUrl;
+}
+
 function getAptosWalletsForPopup(): WalletInfo[] {
     return KNOWN_APTOS_WALLETS.map((wallet) => {
         const injected = typeof window !== 'undefined' && (window as any)[wallet.injectedKey];
@@ -177,6 +250,7 @@ function getAptosWalletsForPopup(): WalletInfo[] {
             ...wallet,
             injected: !!injected,
             provider: injected ? (window as any)[wallet.injectedKey] : null,
+            installUrl: getInstallUrl(wallet),
         };
     });
 }
@@ -227,16 +301,50 @@ const toggleMoreWallets = () => {
     showMoreWallets.value = !showMoreWallets.value;
 };
 
-// Priority wallets array (Santa, Google, Apple)
-const topWalletsArray = computed(() => {
-    if (!wallets.value || !wallets.value.length) return [];
-    return wallets.value.filter((w) => w.priority === true);
+// Check if Santa wallet is available/injected
+const hasSantaWallet = computed(() => {
+    if (!wallets.value || !wallets.value.length) return false;
+    return wallets.value.some((w) => w.key === 'santaAptos' && w.injected);
 });
 
-// More wallets (all non-priority wallets)
+// Priority wallets array (Google, Apple, and conditionally Petra or Santa)
+const topWalletsArray = computed(() => {
+    if (!wallets.value || !wallets.value.length) return [];
+
+    // Filter out Santa if it's not injected
+    const filteredWallets = wallets.value.filter((w) => {
+        // Include all priority wallets except Santa when it's not injected
+        if (w.key === 'santaAptos') {
+            return w.injected;
+        }
+        return w.priority === true;
+    });
+
+    // If Santa wallet is not available, add Petra to the top section
+    if (!hasSantaWallet.value) {
+        const petra = wallets.value.find((w) => w.key === 'aptos');
+        if (petra) {
+            // Create a copy of Petra with priority flag
+            const petraPriority = { ...petra, priority: true };
+            // Add Petra to the beginning of the array
+            return [petraPriority, ...filteredWallets];
+        }
+    }
+
+    return filteredWallets;
+});
+
+// More wallets array (all non-priority wallets)
+// We want to show Petra in both sections if Santa is not available
 const moreWalletsArray = computed(() => {
     if (!wallets.value || !wallets.value.length) return [];
-    return wallets.value.filter((w) => !w.priority);
+
+    // Get all non-priority wallets
+    const nonPriorityWallets = wallets.value.filter((w) => !w.priority);
+
+    // We still want to show Petra in the MORE WALLETS section even if it's in the top section
+    // when Santa is not available
+    return nonPriorityWallets;
 });
 
 function connect(wallet: WalletInfo) {
@@ -360,6 +468,27 @@ function connect(wallet: WalletInfo) {
 
 .not-connected {
     background: #dc3545;
+}
+
+.wallet-disabled {
+    filter: blur(1px);
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.coming-soon-badge {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 /* More wallets section styling */
