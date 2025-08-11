@@ -75,7 +75,8 @@
                     <BaseFormGroupWalletSelect
                         v-if="accountStore.isAuthenticated"
                         :chain-id="qrcodeStore.erc721.chainId"
-                        @update="wallet = $event"
+                        :variants="[WalletVariant.Safe, WalletVariant.WalletConnect, WalletVariant.Web3Auth]"
+                        @update:model-value="wallet = $event"
                     />
 
                     <b-button
@@ -112,6 +113,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useAuthStore } from '../../stores/Auth';
 import { useQRCodeStore } from '../../stores/QRCode';
 import { useWalletStore } from '../../stores/Wallet';
+import { WalletVariant } from '../../types/enums/accountVariant';
 import ConfettiExplosion from 'vue-confetti-explosion';
 
 export default defineComponent({
@@ -125,6 +127,7 @@ export default defineComponent({
             isLoadingImage: true,
             isLoadingCollect: false,
             isLoadingCollectComplete: false,
+            WalletVariant,
         };
     },
     computed: {

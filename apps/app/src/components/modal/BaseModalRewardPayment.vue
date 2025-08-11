@@ -47,6 +47,12 @@
                 v-if="isWalletRequired"
                 v-model="wallet"
                 :chain-id="reward.erc20.chainId"
+                :variants="[
+                    WalletVariant.Safe,
+                    WalletVariant.WalletConnect,
+                    WalletVariant.Web3Auth,
+                    WalletVariant.Aptos,
+                ]"
                 class="mb-0"
             />
         </template>
@@ -68,6 +74,7 @@ import { useRewardStore } from '../../stores/Reward';
 import { useAccountStore } from '../../stores/Account';
 import { useWalletStore } from '../../stores/Wallet';
 import { RewardVariant } from '@thxnetwork/app/types/enums/rewards';
+import { WalletVariant } from '../../types/enums/accountVariant';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 
@@ -87,6 +94,7 @@ export default defineComponent({
     data() {
         return {
             RewardVariant,
+            WalletVariant,
             isAlertSuccessShown: false,
             error: '',
             wallet: undefined,

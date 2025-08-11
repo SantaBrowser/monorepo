@@ -31,9 +31,14 @@
                 </template>
             </ul>
 
-            <b-button variant="primary" class="rounded" style="padding: 0.75rem" @click="onClickAdd">
+            <b-button variant="primary" class="rounded" style="padding: 0.75rem" @click="showAptosWalletModal = true">
                 <i class="fas fa-plus"></i>
             </b-button>
+            <BaseModalAptosWallets
+                :show="showAptosWalletModal"
+                @close="showAptosWalletModal = false"
+                @connected="onWalletConnected"
+            />
         </div>
     </div>
 </template>
@@ -45,9 +50,11 @@ import { chainList } from '../../utils/chains';
 import { WalletVariant } from '../../types/enums/accountVariant';
 import { useWalletStore } from '../../stores/Wallet';
 import { ChainId } from '@thxnetwork/common/enums';
+import BaseModalAptosWallets from '../modal/BaseModalAptosWallets.vue';
 
 export default defineComponent({
     name: 'CustomWalletDropdown',
+    components: { BaseModalAptosWallets },
     props: {
         chainId: Number,
         description: String,
@@ -66,6 +73,7 @@ export default defineComponent({
             WalletVariant,
             ChainId,
             dropdownVisible: false,
+            showAptosWalletModal: false,
         };
     },
     computed: {
@@ -118,6 +126,125 @@ export default defineComponent({
         onClickAdd() {
             this.walletStore.currentChainId = this.chainId;
             this.walletStore.isModalWalletCreateShown = true;
+        },
+        async onWalletConnected({ wallet, response }: any) {
+            let message = 'Sign to connect your wallet to Santa Rewards';
+            let signature, publicKey, address;
+
+            console.log('Wallet connected:', wallet);
+            console.log('Response:', response);
+
+            try {
+                // Special handling for Santa wallet
+                if (wallet.key === 'santaAptos' || wallet.name === 'Santa Wallet') {
+                    console.log('Handling Santa wallet connection');
+                    // Santa wallet stores address in response.args
+                    address = response?.args?.address || response?.address;
+                    publicKey = response?.args?.publicKey || response?.publicKey;
+
+                    // Santa wallet uses a different format for signMessage
+                    if (wallet.provider.signMessage) {
+                        // Format message the way Santa wallet expects it
+                        const formattedMessage = `APTOS\nmessage: ${message}\nnonce: random`;
+                        console.log('Signing with Santa wallet using formatted message:', formattedMessage);
+
+                        const signResp = await wallet.provider.signMessage(formattedMessage);
+                        console.log('Santa wallet sign response:', signResp);
+
+                        // Extract signature from response - try all possible locations
+                        signature =
+                            signResp.signature ||
+                            signResp.signatureHex ||
+                            signResp.args?.signature ||
+                            signResp.args?.signatureHex;
+                        console.log('Extracted signature:', signature);
+
+                        if (!signature && typeof signResp === 'object') {
+                            // Try to find signature in any property of the response
+                            console.log('Searching for signature in response object...');
+                            for (const key in signResp) {
+                                if (key.toLowerCase().includes('signature')) {
+                                    signature = signResp[key];
+                                    console.log(`Found signature in signResp.${key}:`, signature);
+                                    break;
+                                }
+
+                                // Check if there's an args object with signature
+                                if (key === 'args' && typeof signResp.args === 'object') {
+                                    for (const argsKey in signResp.args) {
+                                        if (argsKey.toLowerCase().includes('signature')) {
+                                            signature = signResp.args[argsKey];
+                                            console.log(`Found signature in signResp.args.${argsKey}:`, signature);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Use address from sign response if available
+                        address = address || signResp.address || signResp.args?.address;
+                        publicKey = publicKey || signResp.publicKey || signResp.args?.publicKey;
+
+                        // Update message to match what was actually signed
+                        message = formattedMessage;
+                    }
+                }
+                // Standard handling for other Aptos wallets (Petra, Martian, etc.)
+                else if (wallet.provider.signMessage) {
+                    const signResp = await wallet.provider.signMessage({ message, nonce: 'random' });
+                    console.log('Standard wallet sign response:', signResp);
+                    signature = signResp.signature || signResp.signatureHex;
+                    publicKey = signResp.publicKey;
+                    address = signResp.address || response.address;
+                } else {
+                    throw new Error('Wallet does not support message signing');
+                }
+
+                // Ensure we have an address
+                if (!address) {
+                    console.error('Failed to get wallet address');
+                    throw new Error('Failed to get wallet address');
+                }
+
+                console.log('Final extracted values:', { address, publicKey, signature });
+            } catch (err) {
+                console.error('Failed to sign message:', err);
+                return;
+            }
+
+            // 2. Create wallet on server and refresh wallet list
+            try {
+                console.log('Creating Aptos wallet with address:', address);
+                const walletData = {
+                    variant: 'aptos',
+                    message,
+                    publicKey,
+                    signature,
+                    rawAddress: address, // The API controller expects rawAddress for Aptos wallets
+                    address: address, // Explicitly add address field for the API
+                    chainId: this.chainId || 1000000001, // Use the component's chainId or default to Aptos
+                    provider: wallet.name || wallet.key, // Track which wallet was used
+                };
+                console.log('Wallet data:', walletData);
+                await this.walletStore.create(walletData);
+
+                // 3. Refresh the wallet list
+                await this.walletStore.listWallets();
+
+                // 4. Select the newly connected wallet if available
+                if (this.wallets.length > 0) {
+                    const matchingWallet = this.wallets.find((w) => !this.isDisabled(w));
+                    if (matchingWallet) {
+                        this.selectWallet(matchingWallet);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to create wallet:', err);
+            } finally {
+                // Close the modal
+                this.showAptosWalletModal = false;
+            }
         },
         handleClickOutside(event: MouseEvent) {
             const dropdown = this.$refs.dropdown as HTMLElement;

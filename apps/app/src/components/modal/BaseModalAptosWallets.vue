@@ -349,15 +349,45 @@ const moreWalletsArray = computed(() => {
 
 function connect(wallet: WalletInfo) {
     if (!wallet.provider) return;
-    wallet.provider
-        .connect()
-        .then((response: any) => {
-            emit('connected', { wallet, response });
-            emit('close');
-        })
-        .catch((err: any) => {
-            console.error('Wallet connect error:', wallet.name, err);
-        });
+    console.log(`Connecting to ${wallet.name} wallet...`);
+
+    // Special handling for Santa wallet
+    if (wallet.key === 'santaAptos') {
+        console.log('Using Santa wallet connection flow');
+        wallet.provider
+            .connect()
+            .then((response: any) => {
+                console.log('Santa wallet connect raw response:', response);
+
+                // Extract data from response
+                const processedResponse = {
+                    ...response,
+                    // Make sure address is available
+                    address: response.address || response.args?.address,
+                    // Make sure publicKey is available
+                    publicKey: response.publicKey || response.args?.publicKey,
+                };
+
+                console.log('Processed Santa wallet response:', processedResponse);
+                emit('connected', { wallet, response: processedResponse });
+                emit('close');
+            })
+            .catch((err: any) => {
+                console.error('Santa wallet connect error:', err);
+            });
+    } else {
+        // Standard flow for other wallets
+        wallet.provider
+            .connect()
+            .then((response: any) => {
+                console.log(`${wallet.name} connect response:`, response);
+                emit('connected', { wallet, response });
+                emit('close');
+            })
+            .catch((err: any) => {
+                console.error('Wallet connect error:', wallet.name, err);
+            });
+    }
 }
 </script>
 

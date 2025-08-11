@@ -1,7 +1,7 @@
 import { BootstrapVueNext, vBTooltip } from 'bootstrap-vue-next';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { GCLOUD_RECAPTCHA_SITE_KEY, API_URL, MIXPANEL_TOKEN } from './config/secrets';
+import { GCLOUD_RECAPTCHA_SITE_KEY, API_URL, MIXPANEL_TOKEN, SNOWPLOW_URL } from './config/secrets';
 import App from './App.vue';
 import VueClipboard from 'vue3-clipboard';
 import Vue3Toastify from 'vue3-toastify';
@@ -16,7 +16,12 @@ declare global {
     }
 }
 // Snowplow
-initializeTracker('https://snowplow-test.santabrowser.com');
+if (SNOWPLOW_URL) {
+    console.log(`Initializing Snowplow with endpoint: ${SNOWPLOW_URL}`);
+    initializeTracker(SNOWPLOW_URL);
+} else {
+    console.log('Snowplow tracking disabled - no URL provided');
+}
 
 const pinia = createPinia();
 const app = createApp(App);

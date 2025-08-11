@@ -202,11 +202,47 @@ export const useWalletStore = defineStore('wallet', {
             publicKey?: string;
             signature?: string;
             rawAddress?: string;
+            address?: string;
             chainId?: ChainId;
             provider?: string;
         }) {
             const { api } = useAccountStore();
-            await api.request.post('/v1/account/wallets', { data });
+            console.log('Wallet store create method called with data:', data);
+
+            // Validate required fields for Aptos wallets
+            if (data.variant === 'aptos') {
+                // Check for required fields
+                if (!data.rawAddress && !data.address) {
+                    console.error('Missing address for Aptos wallet creation');
+                    throw new Error('Missing address for Aptos wallet');
+                }
+
+                if (!data.signature) {
+                    console.error('Missing signature for Aptos wallet creation');
+
+                    // Try to extract signature from other fields if available
+                    if (data.rawData && typeof data.rawData === 'object' && data.rawData.signature) {
+                        console.log('Found signature in rawData, using it instead');
+                        data.signature = data.rawData.signature;
+                    } else {
+                        throw new Error('Missing signature for Aptos wallet');
+                    }
+                }
+
+                // Add address field explicitly for Aptos wallets if not already present
+                const apiData = {
+                    ...data,
+                    // Use address if provided, otherwise use rawAddress
+                    address: data.address || data.rawAddress,
+                    // Ensure rawAddress is also set
+                    rawAddress: data.rawAddress || data.address,
+                };
+                console.log('Sending modified data to API:', apiData);
+                await api.request.post('/v1/account/wallets', { data: apiData });
+            } else {
+                await api.request.post('/v1/account/wallets', { data });
+            }
+
             await this.listWallets();
         },
         async setWallet(wallet: TWallet | null) {
