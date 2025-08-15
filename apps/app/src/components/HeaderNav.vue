@@ -6,7 +6,7 @@
         <!-- <h1>Header Navigation</h1> -->
         <div class="d-flex media-header">
             <div class="d-flex align-items-center gap-2 media-header-first rewards-navbar">
-                <img :src="rewardsIcon" alt="rewards" width="40" height="40" />
+                <img :src="rewardsIcon" alt="rewards" width="40" height="40" loading="lazy" />
                 <h1 class="m-0 fs-3 fw-bold" :class="{ 'hide-on-small': !showHeaderTitle }">Rewards</h1>
             </div>
         </div>
@@ -27,20 +27,43 @@
                     <p>${{ numberWithCommas(formattedBalance(participantCPState, CP_CAMPAIGN)) }}</p>
                 </div>
             </div>
+            <!-- Username + Avatar (together) -->
             <div
-                class="d-flex align-items-center justify-content-between name-avatar media-header-second"
+                class="d-flex align-items-center justify-content-between name-avatar media-header-second cursor-pointer"
                 @click="accountStore.isModalAccountShown = true"
             >
                 <h2 class="username">
                     <template v-if="accountStore?.account?.username">
                         {{ accountStore.account.username }}
                     </template>
-                    <template v-else>
-                        <!-- <span class="typing-placeholder">{{ typingDots }}</span> -->
-                    </template>
                 </h2>
-                <b-avatar class="b-avatar-header" size="24" :src="accountStore?.account?.profileImg" variant="dark" />
+                <b-avatar
+                    class="b-avatar-header clickable-avatar"
+                    size="24"
+                    :src="accountStore?.account?.profileImg"
+                    variant="dark"
+                    role="button"
+                    aria-label="Open account"
+                    @click.stop="accountStore.isModalAccountShown = true"
+                />
             </div>
+
+            <!-- Theme toggle (separate container) -->
+            <div class="media-header-toggle">
+                <button
+                    class="btn btn-sm d-flex align-items-center theme-toggle-btn"
+                    type="button"
+                    :aria-label="themeStore.currentTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+                    :title="themeStore.currentTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+                    :class="themeStore.currentTheme === 'dark' ? 'text-light' : 'text-dark'"
+                    @click="toggleTheme"
+                >
+                    <i v-if="themeStore.currentTheme === 'dark'" class="fas fa-sun"></i>
+                    <i v-else class="fas fa-moon"></i>
+                </button>
+            </div>
+
+            <!-- Avatar moved inside name-avatar -->
         </div>
     </nav>
 </template>
@@ -54,6 +77,7 @@ import imgStarCoin from '../assets/star-coin.png';
 import { useQuestStore } from '../stores/Quest';
 import rewardsIcon from '../assets/rewards-icon.png';
 import { useTrackPageview } from '../utils/snowplowTracker';
+import { useThemeStore } from '../stores/Stores';
 export default defineComponent({
     name: 'HeaderNav',
     props: {
@@ -78,7 +102,7 @@ export default defineComponent({
         };
     },
     computed: {
-        ...mapStores(useAccountStore, useQuestStore),
+        ...mapStores(useAccountStore, useQuestStore, useThemeStore),
         latestCompletedQuest() {
             const { quests } = this.questStore;
             return quests.find((quest: any) => !quest.isAvailable);
@@ -89,13 +113,13 @@ export default defineComponent({
     },
     watch: {
         'accountStore.participants': {
-            handler(newVal) {
+            handler() {
                 this.updateParticipants();
             },
             immediate: true,
         },
         'accountStore.account': {
-            handler(newVal) {
+            handler() {
                 this.updateParticipants();
             },
             immediate: true,
@@ -112,6 +136,10 @@ export default defineComponent({
         clearInterval(this.typingInterval);
     },
     methods: {
+        toggleTheme() {
+            const next = this.themeStore.currentTheme === 'dark' ? 'light' : 'dark';
+            this.themeStore.applyTheme(next);
+        },
         updateParticipants() {
             if (!this.accountStore.account?.sub) {
                 return;
@@ -201,6 +229,9 @@ export default defineComponent({
     border: 2px dotted #064f17;
     margin-left: 2px;
 }
+.clickable-avatar {
+    cursor: pointer;
+}
 
 .name-avatar {
     width: 100%;
@@ -209,6 +240,10 @@ export default defineComponent({
     border: 0.5px solid #834bc4;
     background: var(--avatar-background);
     min-width: 140px;
+}
+.name-avatar,
+.cursor-pointer {
+    cursor: pointer;
 }
 
 .name-avatar:hover h2 {
@@ -310,7 +345,7 @@ export default defineComponent({
         right: 0;
     }
     .name-avatar {
-        padding-right: 10px !important;
+        padding-right: 6px !important;
     }
     .balance-wrap {
         width: 100% !important;
@@ -324,12 +359,26 @@ export default defineComponent({
     .media-header-first {
         order: 1;
     }
+    /* Mobile layout: show avatar (without name) at top-right and separate toggle to its left */
     .media-header-second {
         order: 2;
         position: absolute;
-        right: 0;
-        top: 0;
-        width: 100px;
+        right: 8px;
+        top: 8px;
+        z-index: 30;
+        min-width: 40px;
+        width: 40px;
+        padding-right: 0 !important;
+        justify-content: center;
+    }
+    .username {
+        display: none !important;
+    }
+    .media-header-toggle {
+        position: absolute;
+        right: 48px; /* sits left of avatar */
+        top: 8px;
+        z-index: 30;
     }
     .media-header-third {
         order: 3;
@@ -359,5 +408,45 @@ export default defineComponent({
     text-align: right;
     display: block;
     width: 100%;
+}
+
+/* Theme toggle button: transparent background and inherit text color for contrast */
+.theme-toggle-btn {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 6px 10px; /* bigger tap target */
+    border-radius: 6px;
+}
+.theme-toggle-btn i {
+    font-size: 18px;
+}
+.theme-toggle-btn:hover,
+.theme-toggle-btn:focus,
+.theme-toggle-btn:active {
+    background: rgba(255, 255, 255, 0.08) !important; /* subtle hover on dark */
+    box-shadow: none !important;
+}
+[data-theme='light'] .theme-toggle-btn:hover,
+[data-theme='light'] .theme-toggle-btn:focus,
+[data-theme='light'] .theme-toggle-btn:active {
+    background: rgba(0, 0, 0, 0.06) !important; /* subtle hover on light */
+}
+.theme-toggle-btn i,
+.theme-toggle-btn .small {
+    color: currentColor !important; /* ensure icon/label follow text-dark/text-light */
+}
+
+/* Mobile: place toggle next to name-avatar at the top-right */
+@media (max-width: 992px) {
+    .theme-toggle-btn {
+        background: rgba(0, 0, 0, 0.25) !important; /* subtle bg for visibility on mixed headers */
+        backdrop-filter: saturate(150%) blur(2px);
+        margin-right: 6px; /* keep clear of avatar */
+    }
+    [data-theme='light'] .theme-toggle-btn {
+        background: rgba(255, 255, 255, 0.6) !important;
+    }
+    /* username hidden handled above */
 }
 </style>

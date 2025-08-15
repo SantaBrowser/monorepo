@@ -1,5 +1,6 @@
 <template>
     <b-modal
+        v-if="show"
         :model-value="show"
         centered
         hide-footer
@@ -24,10 +25,16 @@
                         wallet.key === 'santaAptos' ? 'santa-priority' : '',
                         { 'wallet-disabled': wallet.disabled },
                     ]"
+                    role="button"
+                    tabindex="0"
+                    :aria-disabled="wallet.disabled ? 'true' : 'false'"
+                    :aria-label="(wallet.injected ? 'Connect to ' : 'Install ') + wallet.name"
                     @click="!wallet.disabled && wallet.injected && connect(wallet)"
+                    @keydown.enter.prevent="!wallet.disabled && wallet.injected && connect(wallet)"
+                    @keydown.space.prevent="!wallet.disabled && wallet.injected && connect(wallet)"
                 >
                     <div class="wallet-card-content">
-                        <img :src="wallet.icon" :alt="wallet.name" class="wallet-icon" />
+                        <img :src="wallet.icon" :alt="wallet.name" class="wallet-icon" loading="lazy" />
                         <div class="wallet-name">{{ wallet.name }}</div>
                         <div v-if="wallet.comingSoon" class="coming-soon-badge">Coming Soon</div>
                     </div>
@@ -54,7 +61,12 @@
                             :key="wallet.key"
                             class="wallet-option d-flex align-items-center p-2 position-relative"
                             :class="{ 'dark-mode': isDarkMode, 'light-mode': !isDarkMode }"
+                            role="button"
+                            tabindex="0"
+                            :aria-label="(wallet.injected ? 'Connect to ' : 'Install ') + wallet.name"
                             @click="wallet.injected && connect(wallet)"
+                            @keydown.enter.prevent="wallet.injected && connect(wallet)"
+                            @keydown.space.prevent="wallet.injected && connect(wallet)"
                         >
                             <div v-if="wallet.injected" class="wallet-status-dot connected"></div>
                             <img
@@ -62,16 +74,21 @@
                                 :alt="wallet.name"
                                 class="wallet-icon me-2"
                                 style="width: 28px; height: 28px"
+                                loading="lazy"
                             />
                             <span class="fw-bold wallet-name-list">{{ wallet.name }}</span>
                             <template v-if="wallet.injected">
-                                <span class="wallet-button connect-button ms-auto">Connect</span>
+                                <span class="wallet-button connect-button ms-auto" role="button" aria-label="Connect"
+                                    >Connect</span
+                                >
                             </template>
                             <template v-else>
                                 <a
                                     :href="wallet.installUrl"
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     class="wallet-button install-button ms-auto"
+                                    aria-label="Install"
                                 >
                                     Install
                                 </a>
@@ -96,7 +113,7 @@ import nightlyLogo from '../../assets/wallets/nightly.png';
 import googleLogo from '../../assets/wallets/google.png';
 import appleLogo from '../../assets/wallets/apple.png';
 // If you have a Martian or Fewcha icon, import here as well.
-import { ref, defineEmits, onMounted, computed } from 'vue';
+import { ref, defineEmits, onMounted, computed, markRaw } from 'vue';
 import { useThemeStore } from '../../stores/Stores';
 
 const emit = defineEmits(['close', 'connected']);
@@ -141,64 +158,67 @@ const isIOS = computed(() => {
     return false;
 });
 
-const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injectedKey: string }[] = [
-    {
-        key: 'santaAptos',
-        name: 'Santa Wallet',
-        icon: logo,
-        installUrl: 'https://chrome.google.com/webstore/detail/santa-wallet/ibnejdfjmmkpcnlpebklmnkoeoihofec',
-        injectedKey: 'santaAptos',
-        priority: true,
-    },
-    {
-        key: 'google',
-        name: 'Google',
-        icon: googleLogo,
-        installUrl: '#',
-        injectedKey: 'googleWallet',
-        priority: true,
-        disabled: true,
-        comingSoon: true,
-    },
-    {
-        key: 'apple',
-        name: 'Apple',
-        icon: appleLogo,
-        installUrl: '#',
-        injectedKey: 'appleWallet',
-        priority: true,
-        disabled: true,
-        comingSoon: true,
-    },
-    {
-        key: 'aptos',
-        name: 'Petra',
-        icon: petraLogo,
-        installUrl: 'https://petra.app/download',
-        injectedKey: 'aptos',
-    },
-    {
-        key: 'okx',
-        name: 'OKX',
-        icon: okxLogo,
-        installUrl: 'https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
-        injectedKey: 'okxwallet',
-    },
-    {
-        key: 'pontem',
-        name: 'Pontem',
-        icon: pontemLogo,
-        installUrl: 'https://pontem.network/wallet',
-        injectedKey: 'pontem',
-    },
-    {
-        key: 'nightly',
-        name: 'Nightly',
-        icon: nightlyLogo,
-        installUrl: 'https://nightly.app/',
-        injectedKey: 'nightly',
-    },
-];
+// Freeze and mark as non-reactive to avoid unnecessary tracking
+const KNOWN_APTOS_WALLETS: ReadonlyArray<Omit<WalletInfo, 'provider' | 'injected'> & { injectedKey: string }> = markRaw(
+    Object.freeze([
+        {
+            key: 'santaAptos',
+            name: 'Santa Wallet',
+            icon: logo,
+            installUrl: 'https://chrome.google.com/webstore/detail/santa-wallet/ibnejdfjmmkpcnlpebklmnkoeoihofec',
+            injectedKey: 'santaAptos',
+            priority: true,
+        },
+        {
+            key: 'google',
+            name: 'Google',
+            icon: googleLogo,
+            installUrl: '#',
+            injectedKey: 'googleWallet',
+            priority: true,
+            disabled: true,
+            comingSoon: true,
+        },
+        {
+            key: 'apple',
+            name: 'Apple',
+            icon: appleLogo,
+            installUrl: '#',
+            injectedKey: 'appleWallet',
+            priority: true,
+            disabled: true,
+            comingSoon: true,
+        },
+        {
+            key: 'aptos',
+            name: 'Petra',
+            icon: petraLogo,
+            installUrl: 'https://petra.app/download',
+            injectedKey: 'aptos',
+        },
+        {
+            key: 'okx',
+            name: 'OKX',
+            icon: okxLogo,
+            installUrl: 'https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
+            injectedKey: 'okxwallet',
+        },
+        {
+            key: 'pontem',
+            name: 'Pontem',
+            icon: pontemLogo,
+            installUrl: 'https://pontem.network/wallet',
+            injectedKey: 'pontem',
+        },
+        {
+            key: 'nightly',
+            name: 'Nightly',
+            icon: nightlyLogo,
+            installUrl: 'https://nightly.app/',
+            injectedKey: 'nightly',
+        },
+    ]),
+);
 
 const mobileStoreUrls = {
     // Santa Wallet is not available on mobile stores, use desktop URL
@@ -222,9 +242,9 @@ const mobileStoreUrls = {
         android: 'https://play.google.com/store/apps/details?id=com.okx.wallet',
         ios: 'https://apps.apple.com/app/okx-wallet/id6463797825?mt=12',
     },
-};
+} as const;
 
-function getInstallUrl(wallet: any) {
+function getInstallUrl(wallet: { key: string; injectedKey: string; installUrl: string }) {
     // For Santa Wallet, always use the desktop URL regardless of device
     if (wallet.key === 'santaAptos') {
         return wallet.installUrl;
@@ -232,10 +252,11 @@ function getInstallUrl(wallet: any) {
 
     // For other wallets, use mobile app store URLs on mobile devices
     if (isMobile.value) {
-        if (isAndroid.value && mobileStoreUrls[wallet.injectedKey]?.android) {
-            return mobileStoreUrls[wallet.injectedKey].android;
-        } else if (isIOS.value && mobileStoreUrls[wallet.injectedKey]?.ios) {
-            return mobileStoreUrls[wallet.injectedKey].ios;
+        const key = wallet.injectedKey as keyof typeof mobileStoreUrls;
+        if (isAndroid.value && mobileStoreUrls[key]?.android) {
+            return mobileStoreUrls[key].android;
+        } else if (isIOS.value && mobileStoreUrls[key]?.ios) {
+            return mobileStoreUrls[key].ios;
         }
     }
 
@@ -259,13 +280,15 @@ const wallets = ref<WalletInfo[]>([]);
 
 onMounted(() => {
     wallets.value = getAptosWalletsForPopup();
-    console.log(
-        'Wallets for popup:',
-        wallets.value.map((w) => w.key),
-    );
-    wallets.value.forEach((w, i) => {
-        console.log(`wallet[${i}]`, w);
-    });
+    if (import.meta.env.DEV) {
+        console.log(
+            'Wallets for popup:',
+            wallets.value.map((w) => w.key),
+        );
+        wallets.value.forEach((w, i) => {
+            console.log(`wallet[${i}]`, w);
+        });
+    }
 });
 
 // Define computed properties with direct array access (no .value needed in template)
@@ -349,40 +372,43 @@ const moreWalletsArray = computed(() => {
 
 function connect(wallet: WalletInfo) {
     if (!wallet.provider) return;
-    console.log(`Connecting to ${wallet.name} wallet...`);
+    if (import.meta.env.DEV) console.log(`Connecting to ${wallet.name} wallet...`);
 
     // Special handling for Nightly wallet
     if (wallet.key === 'nightly') {
-        console.log('Using Nightly wallet specific connection flow');
-        console.log('Nightly wallet provider:', wallet.provider);
+        if (import.meta.env.DEV) {
+            console.log('Using Nightly wallet specific connection flow');
+            console.log('Nightly wallet provider:', wallet.provider);
 
-        // Log all available methods and properties on the Nightly wallet provider
-        console.log('Available methods and properties on Nightly wallet:');
-        for (const prop in wallet.provider) {
-            try {
-                const type = typeof wallet.provider[prop];
-                console.log(`- ${prop}: ${type}`);
+            // Log all available methods and properties on the Nightly wallet provider (DEV only)
+            console.log('Available methods and properties on Nightly wallet:');
+            for (const prop in wallet.provider) {
+                try {
+                    const type = typeof wallet.provider[prop];
+                    console.log(`- ${prop}: ${type}`);
 
-                // If it's an object, log its properties too
-                if (type === 'object' && wallet.provider[prop]) {
-                    console.log(`  Properties of ${prop}:`);
-                    for (const subProp in wallet.provider[prop]) {
-                        console.log(`  - ${subProp}: ${typeof wallet.provider[prop][subProp]}`);
+                    // If it's an object, log its properties too
+                    if (type === 'object' && wallet.provider[prop]) {
+                        console.log(`  Properties of ${prop}:`);
+                        for (const subProp in wallet.provider[prop]) {
+                            console.log(`  - ${subProp}: ${typeof wallet.provider[prop][subProp]}`);
+                        }
                     }
+                } catch (err) {
+                    console.log(`- ${prop}: [Error accessing property]`);
                 }
-            } catch (err) {
-                console.log(`- ${prop}: [Error accessing property]`);
             }
         }
 
         try {
             // Check for Nightly's specific API structure
             if (wallet.provider.aptos) {
-                console.log('Found Nightly aptos namespace');
-
-                // Log all methods in the aptos namespace
-                for (const prop in wallet.provider.aptos) {
-                    console.log(`- aptos.${prop}: ${typeof wallet.provider.aptos[prop]}`);
+                if (import.meta.env.DEV) {
+                    console.log('Found Nightly aptos namespace');
+                    // Log all methods in the aptos namespace
+                    for (const prop in wallet.provider.aptos) {
+                        console.log(`- aptos.${prop}: ${typeof wallet.provider.aptos[prop]}`);
+                    }
                 }
 
                 // Try using connect from aptos namespace
@@ -533,12 +559,13 @@ function connect(wallet: WalletInfo) {
     transition: all 0.2s ease;
     position: relative;
     height: 100%;
+    outline: none;
 }
 
 .wallet-card-light {
-    background: #f8f9fa;
-    border: 1px solid #e5e5e5;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background: var(--surface-alt, #f8fafc);
+    border: 1px solid var(--card-border, rgba(2, 6, 23, 0.06));
+    box-shadow: var(--card-shadow, 0 8px 24px rgba(17, 24, 39, 0.08), 0 2px 8px rgba(17, 24, 39, 0.04));
     transition: all 0.3s ease;
 }
 
@@ -551,8 +578,13 @@ function connect(wallet: WalletInfo) {
 
 .wallet-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    border-color: var(--bs-primary, #007bff);
+    box-shadow: var(--card-shadow-hover, 0 16px 32px rgba(17, 24, 39, 0.12), 0 6px 16px rgba(17, 24, 39, 0.08));
+    border-color: var(--primary, #2563eb);
+}
+
+.wallet-card:focus-visible {
+    box-shadow: 0 0 0 3px var(--focus-ring-color, rgba(37, 99, 235, 0.4)),
+        var(--card-shadow, 0 8px 24px rgba(17, 24, 39, 0.08));
 }
 
 .wallet-card-content {
@@ -568,10 +600,10 @@ function connect(wallet: WalletInfo) {
     border-radius: 10px;
     margin-bottom: 0.25rem;
     object-fit: contain;
-    background: #fff;
+    background: var(--surface, #ffffff);
     padding: 3px;
-    border: 1px solid #eee;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--card-border, rgba(2, 6, 23, 0.06));
+    box-shadow: 0 2px 4px rgba(17, 24, 39, 0.05);
     transition: transform 0.2s ease;
 }
 
@@ -606,11 +638,11 @@ function connect(wallet: WalletInfo) {
 }
 
 .connected {
-    background: #28a745;
+    background: var(--success, #16a34a);
 }
 
 .not-connected {
-    background: #dc3545;
+    background: var(--danger, #ef4444);
 }
 
 .wallet-disabled {
@@ -665,7 +697,7 @@ function connect(wallet: WalletInfo) {
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--bs-primary, #007bff), transparent);
+    background: linear-gradient(90deg, transparent, var(--primary, #2563eb), transparent);
     transform: translateX(-100%);
     transition: transform 0.3s ease;
 }
@@ -685,13 +717,13 @@ function connect(wallet: WalletInfo) {
 }
 
 .light-mode {
-    background: #f8f9fa;
-    color: #333;
-    border: 1px solid #e5e5e5;
+    background: var(--surface-alt, #f8fafc);
+    color: var(--text, #0f172a);
+    border: 1px solid var(--card-border, rgba(2, 6, 23, 0.06));
 }
 
 .light-mode:hover {
-    background: #e9ecef;
+    background: #eef2f7;
 }
 
 .more-wallets-grid {
@@ -703,10 +735,25 @@ function connect(wallet: WalletInfo) {
 .wallet-option {
     border-radius: 8px;
     transition: all 0.2s ease;
+    min-height: 44px;
+    outline: none;
+    cursor: pointer;
 }
 
 .wallet-option:hover {
     transform: translateX(4px);
+}
+
+.wallet-option.light-mode:hover {
+    background: #eef2f7;
+}
+
+.wallet-option.dark-mode:hover {
+    background: #3a3a3a;
+}
+
+.wallet-option:focus-visible {
+    box-shadow: 0 0 0 3px var(--focus-ring-color, rgba(37, 99, 235, 0.35));
 }
 
 /* Keep 3 columns for all screen sizes */
@@ -726,36 +773,44 @@ function connect(wallet: WalletInfo) {
     vertical-align: middle;
     cursor: pointer;
     min-width: 60px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(17, 24, 39, 0.1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
 .wallet-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--btn-primary-shadow-hover, 0 16px 32px rgba(17, 24, 39, 0.12), 0 6px 16px rgba(17, 24, 39, 0.08));
+    filter: brightness(1.03);
 }
 
 .connect-button {
-    background-color: #28a745;
-    color: white;
+    background-color: var(--success, #16a34a);
+    color: #fff;
+}
+.connect-button:focus-visible,
+.install-button:focus-visible {
+    outline: 2px solid var(--focus-ring-color, rgba(37, 99, 235, 0.35));
+    outline-offset: 2px;
 }
 
 .install-button {
-    background-color: #007bff;
-    color: white;
+    background-color: var(--primary, #2563eb);
+    color: #fff;
     text-decoration: none;
 }
 
 .install-button:hover {
-    background-color: #0069d9;
-    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--btn-primary-shadow-hover, 0 16px 32px rgba(17, 24, 39, 0.12), 0 6px 16px rgba(17, 24, 39, 0.08));
+    filter: brightness(1.03);
+    color: #fff;
     text-decoration: none;
 }
 
 /* Modal animation */
 .wallet-modal-content {
     animation: modalFadeIn 0.3s ease-out;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--card-shadow, 0 8px 24px rgba(17, 24, 39, 0.08), 0 2px 8px rgba(17, 24, 39, 0.04));
 }
 
 @keyframes modalFadeIn {

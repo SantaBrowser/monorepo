@@ -201,6 +201,8 @@ export default defineComponent({
                 }
 
                 this.completing = true;
+                // Confetti on success
+                this.fireConfetti();
                 this.referralCode = '';
             } catch (error: any) {
                 const message = error.response?.data?.reason || error.message;
@@ -209,6 +211,32 @@ export default defineComponent({
                 this.isClaimMode = false;
             } finally {
                 this.isSubmitting = false;
+            }
+        },
+        async loadConfettiScript() {
+            if ((window as any).confetti) return;
+            await new Promise<void>((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+                s.async = true;
+                s.onload = () => resolve();
+                s.onerror = () => reject(new Error('Confetti failed to load'));
+                document.head.appendChild(s);
+            });
+        },
+        async fireConfetti() {
+            try {
+                await this.loadConfettiScript();
+                const confetti = (window as any).confetti;
+                confetti({
+                    particleCount: 80,
+                    spread: 60,
+                    origin: { y: 0.25 },
+                    scalar: 0.8,
+                    colors: ['#00C8FF', '#6EE7FF', '#FFFFFF', '#99F6E4'],
+                });
+            } catch (e) {
+                // no-op if script fails
             }
         },
 

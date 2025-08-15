@@ -24,12 +24,12 @@
                         class="filter-wrapper"
                         @click="toggleDropdown"
                     >
-                        <div class="custom-dropdown">
+                        <div class="custom-dropdown" role="button" :aria-expanded="showDropdown ? 'true' : 'false'">
                             <span class="selected-option">{{ selectedQuestFilterLabel }}</span>
                             <img :src="dropdownIcon" alt="dropdown" height="3.91" width="6.76" />
                         </div>
                         <transition name="fade">
-                            <ul v-if="showDropdown" class="custom-dropdown-options" @click.stop>
+                            <ul v-if="showDropdown" class="custom-dropdown-options" @click.stop @mousedown.stop>
                                 <li
                                     v-for="filter in questFilters"
                                     :key="filter.value"
@@ -40,8 +40,12 @@
                             </ul>
                         </transition>
                     </div>
-                    <div ref="tabDropdown" class="filter-wrapper" @click="toggleTabDropdown">
-                        <div class="custom-dropdown tabs-wrapper">
+                    <div ref="tabDropdown" class="filter-wrapper" @click.stop.prevent="toggleTabDropdown">
+                        <div
+                            class="custom-dropdown tabs-wrapper"
+                            role="button"
+                            :aria-expanded="showTabDropdown ? 'true' : 'false'"
+                        >
                             <span class="selected-option">{{ currentTabLabel }}</span>
                             <img
                                 :src="dropdownIcon"
@@ -52,14 +56,183 @@
                             />
                         </div>
                         <transition name="fade">
-                            <ul v-if="showTabDropdown" class="custom-dropdown-options" @click.stop>
+                            <ul v-if="showTabDropdown" class="custom-dropdown-options" @click.stop @mousedown.stop>
                                 <li v-for="tab in tabs" :key="tab.index" @click="setActiveTab(tab.index)">
                                     {{ tab.label }}
                                 </li>
                             </ul>
                         </transition>
                     </div>
+                    <!-- Mobile-only Filters toggle to reveal search/sort -->
+                    <b-button
+                        v-if="accountStore.isMobile"
+                        size="sm"
+                        variant="dark"
+                        class="ms-auto px-2 d-flex align-items-center"
+                        aria-expanded="showFiltersMobile ? 'true' : 'false'"
+                        @click.stop="showFiltersMobile = !showFiltersMobile"
+                    >
+                        <i class="fas fa-sliders-h me-1" aria-hidden="true"></i>
+                        <span>Filters</span>
+                        <span
+                            v-if="activeFilterCountMobile"
+                            class="filters-badge ms-2"
+                            aria-label="Active filters count"
+                        >
+                            {{ activeFilterCountMobile }}
+                        </span>
+                    </b-button>
                 </div>
+                <!-- New row for search + sort (Desktop: always visible) -->
+                <div class="d-none d-md-flex gap-2 sticky-tabs mt-2 align-items-center filters-row">
+                    <div class="flex-grow-1 position-relative search-wrap">
+                        <span class="search-icon" aria-hidden="true">
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M21 21L16.65 16.65"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                        </span>
+                        <b-form-input
+                            ref="searchInput"
+                            v-model.trim="qInput"
+                            type="search"
+                            size="sm"
+                            placeholder="Search quests…"
+                            class="search-input ps-5"
+                            aria-label="Search quests"
+                        />
+                        <button
+                            v-if="qInput"
+                            class="clear-btn"
+                            type="button"
+                            aria-label="Clear search"
+                            @click="
+                                qInput = '';
+                                $refs.searchInput &&
+                                    ($refs.searchInput as any).focus &&
+                                    ($refs.searchInput as any).focus();
+                            "
+                        >
+                            &times;
+                        </button>
+                    </div>
+                    <div ref="sortDropdown" class="filter-wrapper" @click.stop="toggleSortDropdown">
+                        <div
+                            class="custom-dropdown tabs-wrapper"
+                            role="button"
+                            :aria-expanded="showSortDropdown ? 'true' : 'false'"
+                        >
+                            <span class="selected-option">{{ selectedSort.label }}</span>
+                            <img
+                                :src="dropdownIcon"
+                                alt="dropdown"
+                                height="3.91"
+                                width="6.76"
+                                style="filter: var(--invert-img)"
+                            />
+                        </div>
+                        <transition name="fade">
+                            <ul v-if="showSortDropdown" class="custom-dropdown-options" @click.stop @mousedown.stop>
+                                <li v-for="opt in sortOptions" :key="opt.key" @click="selectSort(opt)">
+                                    {{ opt.label }}
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
+                </div>
+                <!-- New row for search + sort (Mobile: toggled) -->
+                <transition name="filters-slide">
+                    <div
+                        :class="[
+                            'd-md-none',
+                            'gap-2',
+                            'sticky-tabs',
+                            'mt-2',
+                            'align-items-center',
+                            'filters-row',
+                            showFiltersMobile ? 'd-flex' : 'd-none',
+                        ]"
+                    >
+                        <div class="flex-grow-1 position-relative search-wrap">
+                            <span class="search-icon" aria-hidden="true">
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M21 21L16.65 16.65"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                                </svg>
+                            </span>
+                            <b-form-input
+                                ref="searchInputMobile"
+                                v-model.trim="qInput"
+                                type="search"
+                                size="sm"
+                                placeholder="Search quests…"
+                                class="search-input ps-5"
+                                aria-label="Search quests"
+                            />
+                            <button
+                                v-if="qInput"
+                                class="clear-btn"
+                                type="button"
+                                aria-label="Clear search"
+                                @click="
+                                    qInput = '';
+                                    $refs.searchInputMobile &&
+                                        ($refs.searchInputMobile as any).focus &&
+                                        ($refs.searchInputMobile as any).focus();
+                                "
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div ref="sortDropdown" class="filter-wrapper" @click.stop="toggleSortDropdown">
+                            <div
+                                class="custom-dropdown tabs-wrapper"
+                                role="button"
+                                :aria-expanded="showSortDropdown ? 'true' : 'false'"
+                            >
+                                <span class="selected-option">{{ selectedSort.label }}</span>
+                                <img
+                                    :src="dropdownIcon"
+                                    alt="dropdown"
+                                    height="3.91"
+                                    width="6.76"
+                                    style="filter: var(--invert-img)"
+                                />
+                            </div>
+                            <transition name="fade">
+                                <ul v-if="showSortDropdown" class="custom-dropdown-options" @click.stop @mousedown.stop>
+                                    <li v-for="opt in sortOptions" :key="opt.key" @click="selectSort(opt)">
+                                        {{ opt.label }}
+                                    </li>
+                                </ul>
+                            </transition>
+                        </div>
+                    </div>
+                </transition>
                 <div v-if="activeTab === 0">
                     <!-- Available content -->
                     <div class="quests-box">
@@ -323,7 +496,6 @@ import axios from 'axios';
 import OfferCard from '@thxnetwork/app/components/OfferCard.vue';
 import { useTrackPageview } from '../utils/snowplowTracker';
 import BaseCardQuestReferral from './card/BaseCardQuestReferral.vue';
-import imgRefferal from '@thxnetwork/app/assets/referral.jpg';
 import * as crypto from 'crypto';
 import dropdownIcon from '@thxnetwork/app/assets/dropdown.png';
 import { detectDevice, isCompatibleWithOffer } from '@thxnetwork/app/utils/device';
@@ -352,6 +524,7 @@ export default defineComponent({
         BaseCardRewardCustom,
         BaseCardRewardCoupon,
         BaseCardRewardDiscordRole,
+        BaseCardQuestReferral,
         OfferCard,
     },
     props: {
@@ -371,11 +544,19 @@ export default defineComponent({
             questComponentMap,
             isLgScreen: window.innerWidth > 1000,
             selectedSort: { label: 'Default', key: RewardSortVariant.Default },
+            sortOptions: [
+                { label: 'Default', key: RewardSortVariant.Default },
+                { label: 'Points', key: RewardSortVariant.Amount },
+                { label: 'Newest', key: RewardSortVariant.Created },
+            ],
             activeFilters: [],
             entry: null,
             offers: [] as any[],
             offersPerRow: this.calculateOffersPerRow(),
             isLoadingOffers: false,
+            qInput: '',
+            qDebounced: '',
+            qDebounceId: null as any,
             selectedQuestFilter: 'all', // initial selection
             questFilters: [
                 { label: 'All Quests', value: 'all' },
@@ -393,6 +574,8 @@ export default defineComponent({
             ],
             showTabDropdown: false,
             dropdownIcon,
+            showSortDropdown: false,
+            showFiltersMobile: false,
             activeRewardTab: 0,
             rewardTabs: [
                 { label: 'Available', index: 0 },
@@ -464,10 +647,34 @@ export default defineComponent({
                 });
             }
 
+            // Apply search filter
+            if (this.qDebounced && this.qDebounced.trim().length) {
+                const qq = this.qDebounced.trim().toLowerCase();
+                completedQuests = completedQuests
+                    .map((group: any) => ({
+                        ...group,
+                        quests: (group.quests || []).filter((quest: any) => this.matchesSearch(quest, qq)),
+                    }))
+                    .filter((g: any) => g.quests && g.quests.length > 0);
+            }
+
             return completedQuests;
         },
         filteredQuests() {
             let filterQuests = this.mergedQuestsAndOffers('available');
+
+            // When searching, hide offers and filter quests within groups
+            if (this.qDebounced && this.qDebounced.trim().length) {
+                const qq = this.qDebounced.trim().toLowerCase();
+                filterQuests = filterQuests
+                    .filter((group: any) => !group.isOfferRow)
+                    .map((group: any) => ({
+                        ...group,
+                        quests: (group.quests || []).filter((quest: any) => this.matchesSearch(quest, qq)),
+                    }))
+                    .filter((g: any) => g.quests && g.quests.length > 0);
+            }
+
             if (this.selectedQuestFilter === 'all') return filterQuests;
 
             return filterQuests.filter((group) => {
@@ -506,8 +713,32 @@ export default defineComponent({
         completedRewards() {
             return this.mergedRewards.filter((reward) => !reward.isAvailable || reward.isLimitReached);
         },
+        activeFilterCountMobile(): number {
+            let c = 0;
+            if (this.qDebounced && this.qDebounced.trim().length) c += 1;
+            if (this.selectedSort?.key !== RewardSortVariant.Default) c += 1;
+            if (this.selectedQuestFilter && this.selectedQuestFilter !== 'all') c += 1;
+            return c;
+        },
     },
     watch: {
+        'qInput': {
+            handler(v: string) {
+                if (this.qDebounceId) clearTimeout(this.qDebounceId);
+                this.qDebounceId = window.setTimeout(() => {
+                    this.qDebounced = v || '';
+                }, 250);
+            },
+            immediate: true,
+        },
+        'showFiltersMobile'(val: boolean) {
+            if (val) {
+                this.$nextTick(() => {
+                    const el = this.$refs.searchInputMobile as any;
+                    if (el && typeof el.focus === 'function') el.focus();
+                });
+            }
+        },
         'accountStore.isAuthenticated': {
             async handler(isAuthenticated: boolean) {
                 if (!isAuthenticated) return;
@@ -542,6 +773,14 @@ export default defineComponent({
         document.removeEventListener('click', this.handleClickOutside);
     },
     methods: {
+        matchesSearch(quest: any, qq: string) {
+            try {
+                const fields = [quest?.title, quest?.description, quest?.name];
+                return fields.some((v) => typeof v === 'string' && v.toLowerCase().includes(qq));
+            } catch (e) {
+                return false;
+            }
+        },
         async fetchOffers() {
             this.isLoadingOffers = true;
             try {
@@ -582,17 +821,25 @@ export default defineComponent({
         },
         selectFilter(value: string) {
             this.selectedQuestFilter = value;
+            // Close after selection for reliability
             this.showDropdown = false;
         },
         handleClickOutside(event: MouseEvent) {
-            try {
-                const dropdown = this.$refs.filterDropdown as HTMLElement;
-                if (!dropdown.contains(event.target as Node)) {
-                    this.showDropdown = false;
-                }
-            } catch (error) {
-                const errorMessage = error;
-            }
+            const target = event.target as Node;
+            const closeIfOutside = (refName: string, setter: () => void) => {
+                const refVal = (this.$refs as any)[refName] as HTMLElement | HTMLElement[] | undefined;
+                if (!refVal) return;
+                // Normalize to array to support duplicate refs (e.g., desktop + mobile)
+                const refEls: HTMLElement[] = Array.isArray(refVal) ? refVal : [refVal];
+                // If click target is not inside any of the ref elements, close it
+                const isInside = refEls.some((el) => el && el.contains(target));
+                if (!isInside) setter();
+            };
+
+            closeIfOutside('filterDropdown', () => (this.showDropdown = false));
+            closeIfOutside('tabDropdown', () => (this.showTabDropdown = false));
+            closeIfOutside('sortDropdown', () => (this.showSortDropdown = false));
+            closeIfOutside('rewardTabDropdown', () => (this.showRewardTabDropdown = false));
         },
         setActiveTab(index: number) {
             this.activeTab = index;
@@ -601,12 +848,19 @@ export default defineComponent({
         toggleTabDropdown() {
             this.showTabDropdown = !this.showTabDropdown;
         },
+        toggleSortDropdown() {
+            this.showSortDropdown = !this.showSortDropdown;
+        },
         toggleRewardTabDropdown() {
             this.showRewardTabDropdown = !this.showRewardTabDropdown;
         },
         setActiveRewardTab(index: number) {
             this.activeRewardTab = index;
             this.showRewardTabDropdown = false;
+        },
+        selectSort(opt: { label: string; key: number }) {
+            this.selectedSort = opt;
+            this.showSortDropdown = false;
         },
 
         calculateOffersPerRow() {
@@ -671,15 +925,6 @@ export default defineComponent({
             if (filterType === 'completed') {
                 return groupedQuests;
             }
-
-            const visibleGroups = groupedQuests.filter((group) => {
-                return (
-                    group.quests &&
-                    group.quests.some((quest: TBaseQuest) => {
-                        return quest.isAvailable;
-                    })
-                );
-            });
 
             const merged = [] as any[];
             let offerIndex = 0;
@@ -877,7 +1122,7 @@ export default defineComponent({
 .quests-column {
     height: calc(100vh - 70px);
     margin-right: 20px;
-    overflow: hidden;
+    overflow: visible;
     padding: 0;
 }
 
@@ -1455,5 +1700,131 @@ export default defineComponent({
         flex-wrap: nowrap;
         scrollbar-width: none;
     }
+}
+
+/* Search input with leading icon */
+.search-wrap {
+    position: relative;
+}
+.search-wrap .search-icon {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: var(--text-opaque, rgba(255, 255, 255, 0.6));
+    pointer-events: none;
+}
+
+/* Slide down/up transition for filters row */
+.filters-slide-enter-active,
+.filters-slide-leave-active {
+    transition: all 180ms ease;
+}
+.filters-slide-enter-from,
+.filters-slide-leave-to {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+/* Clear search button */
+.clear-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--text-opaque, rgba(255, 255, 255, 0.6));
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 2px;
+    cursor: pointer;
+}
+.clear-btn:hover {
+    color: var(--text, #fff);
+}
+
+/* Filters badge */
+.filters-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--primary, #0d6efd);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Ensure search input and dropdown have the same height */
+.filters-row .search-input.form-control {
+    height: 36px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    font-size: 14px;
+}
+.filters-row .custom-dropdown.tabs-wrapper {
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border-radius: 6px;
+}
+
+/* Light theme overrides for search bar visibility */
+:root[data-theme='light'] .search-wrap .search-icon,
+[data-bs-theme='light'] .search-wrap .search-icon,
+body.light .search-wrap .search-icon,
+html.light .search-wrap .search-icon {
+    color: var(--text-muted, #475569);
+}
+
+:root[data-theme='light'] .filters-row .search-input.form-control,
+[data-bs-theme='light'] .filters-row .search-input.form-control,
+body.light .filters-row .search-input.form-control,
+html.light .filters-row .search-input.form-control {
+    background: var(--surface, #ffffff);
+    color: var(--text, #0f172a);
+    border: 1px solid var(--border-subtle, rgba(2, 6, 23, 0.06));
+    box-shadow: none;
+}
+
+:root[data-theme='light'] .filters-row .search-input.form-control::placeholder,
+[data-bs-theme='light'] .filters-row .search-input.form-control::placeholder,
+body.light .filters-row .search-input.form-control::placeholder,
+html.light .filters-row .search-input.form-control::placeholder {
+    color: var(--text-muted, #475569);
+    opacity: 0.8;
+}
+
+:root[data-theme='light'] .clear-btn,
+[data-bs-theme='light'] .clear-btn,
+body.light .clear-btn,
+html.light .clear-btn {
+    color: var(--text-muted, #475569);
+}
+:root[data-theme='light'] .clear-btn:hover,
+[data-bs-theme='light'] .clear-btn:hover,
+body.light .clear-btn:hover,
+html.light .clear-btn:hover {
+    color: var(--text, #0f172a);
+}
+
+/* Section dividers between quest groups */
+.quests-box .quest-group-title {
+    position: relative;
+    border-top: 1px dashed var(--card-border, var(--border-subtle, rgba(2, 6, 23, 0.08)));
+    padding-top: var(--space-4, 16px);
+    margin-top: var(--space-5, 20px);
+}
+/* Remove divider for the first section only */
+.quests-box > div:first-of-type .quest-group-title {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
 }
 </style>

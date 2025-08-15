@@ -1,0 +1,233 @@
+/* Global light theme tokens and card styles for consistency across components */
+
+:root[data-theme='light'],
+[data-bs-theme='light'],
+body.light,
+html.light {
+  /* Surfaces */
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --border-subtle: rgba(2, 6, 23, 0.06);
+
+  /* Text */
+  --text: #0f172a;
+  --text-muted: #475569;
+
+  /* Brand */
+  --primary: #2563eb;
+  --primary-contrast: #ffffff;
+  --accent: #06b6d4;
+
+  /* Status */
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Cards */
+  --card-bg: var(--surface);
+  --card-border: var(--border-subtle);
+  --card-shadow: 0 8px 24px rgba(17, 24, 39, 0.08), 0 2px 8px rgba(17, 24, 39, 0.04);
+  --card-shadow-hover: 0 16px 32px rgba(17, 24, 39, 0.12), 0 6px 16px rgba(17, 24, 39, 0.08);
+
+  /* Quest info / chips */
+  --quest-info-wrap-bg-light: rgba(255, 255, 255, 0.96);
+  --quest-desc-color-light: #5a5a5a;
+  --chip-bg: #eef2ff;
+  --chip-text: #1e293b;
+  --chip-border: rgba(2, 6, 23, 0.08);
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+
+  /* Radii */
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+
+  /* Typography */
+  --font-xs: 11px;
+  --font-sm: 12px;
+  --font-base: 14px;
+  --font-lg: 16px;
+  --lh-tight: 1.2;
+  --lh-normal: 1.45;
+
+  /* Buttons */
+  --btn-primary-bg: var(--primary);
+  --btn-primary-text: var(--primary-contrast);
+  --btn-primary-shadow: var(--card-shadow);
+  --btn-primary-shadow-hover: var(--card-shadow-hover);
+
+  /* Focus */
+  --focus-ring-color: rgba(37, 99, 235, 0.35);
+  /* Background texture */
+  --noise-opacity: 0.04;
+}
+
+/* Subtle background textures */
+/* Light */
+:root[data-theme='light'] body,
+[data-bs-theme='light'] body,
+body.light,
+html.light body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(37, 99, 235, 0.06), transparent 60%),
+    radial-gradient(800px 400px at 110% 0%, rgba(6, 182, 212, 0.05), transparent 60%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.02), rgba(2, 6, 23, 0.02))
+    , var(--surface-alt);
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Dark */
+:root[data-theme='dark'] body,
+[data-bs-theme='dark'] body,
+body.dark,
+html.dark body {
+  background:
+    radial-gradient(1000px 500px at 5% -10%, rgba(122, 162, 255, 0.10), transparent 60%),
+    radial-gradient(900px 450px at 120% -10%, rgba(34, 211, 238, 0.08), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01))
+    , var(--surface);
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Dark theme tokens */
+:root[data-theme='dark'],
+[data-bs-theme='dark'],
+body.dark,
+html.dark {
+  /* Surfaces */
+  --surface: #0b1020;
+  --surface-alt: #121833;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* Text */
+  --text: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  /* Brand */
+  --primary: #7aa2ff;
+  --primary-contrast: #0b1020;
+  --accent: #22d3ee;
+
+  /* Status */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #f87171;
+
+  /* Cards */
+  --card-bg: var(--surface);
+  --card-border: var(--border-subtle);
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --card-shadow-hover: 0 16px 32px rgba(0, 0, 0, 0.45), 0 6px 16px rgba(0, 0, 0, 0.35);
+
+  /* Quest info / chips */
+  --quest-info-wrap-bg-light: rgba(255, 255, 255, 0.96); /* unused in dark */
+  --quest-desc-color-light: #5a5a5a; /* unused in dark */
+  --chip-bg: rgba(255, 255, 255, 0.08);
+  --chip-text: #e5e7eb;
+  --chip-border: rgba(255, 255, 255, 0.08);
+
+  /* Buttons */
+  --btn-primary-bg: var(--primary);
+  --btn-primary-text: #0b1020;
+  --btn-primary-shadow: var(--card-shadow);
+  --btn-primary-shadow-hover: var(--card-shadow-hover);
+
+  /* Focus */
+  --focus-ring-color: rgba(122, 162, 255, 0.45);
+  /* Background texture */
+  --noise-opacity: 0.06;
+}
+
+/* Primary button treatment (Bootstrap compatible) */
+:root[data-theme='light'] .btn-primary,
+[data-bs-theme='light'] .btn-primary,
+body.light .btn-primary,
+html.light .btn-primary {
+  background-color: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  box-shadow: var(--btn-primary-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+/* Noise overlay layer */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--noise-opacity, 0.05);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  mix-blend-mode: soft-light;
+  z-index: 0;
+}
+
+:root[data-theme='light'] .btn-primary:hover,
+[data-bs-theme='light'] .btn-primary:hover,
+body.light .btn-primary:hover,
+html.light .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--btn-primary-shadow-hover);
+  filter: brightness(1.03);
+}
+
+:root[data-theme='light'] .btn:focus-visible,
+[data-bs-theme='light'] .btn:focus-visible,
+body.light .btn:focus-visible,
+html.light .btn:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* Global light card treatment for any .card-3d */
+:root[data-theme='light'] .card-3d,
+[data-bs-theme='light'] .card-3d,
+body.light .card-3d,
+html.light .card-3d,
+:root[data-theme='light'] .card.card-3d,
+[data-bs-theme='light'] .card.card-3d,
+body.light .card.card-3d,
+html.light .card.card-3d {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--card-shadow);
+  filter: none;
+}
+
+:root[data-theme='light'] .card-3d:hover,
+[data-bs-theme='light'] .card-3d:hover,
+body.light .card-3d:hover,
+html.light .card-3d:hover,
+:root[data-theme='light'] .card.card-3d:hover,
+[data-bs-theme='light'] .card.card-3d:hover,
+body.light .card.card-3d:hover,
+html.light .card.card-3d:hover {
+  box-shadow: var(--card-shadow-hover);
+  filter: none;
+}
+
+/* Quest info panel global adjustment */
+:root[data-theme='light'] .quest-info-wrap,
+[data-bs-theme='light'] .quest-info-wrap,
+body.light .quest-info-wrap,
+html.light .quest-info-wrap {
+  background: var(--quest-info-wrap-bg-light);
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.08));
+}
+
+:root[data-theme='light'] .quest-desc-wrap,
+[data-bs-theme='light'] .quest-desc-wrap,
+body.light .quest-desc-wrap,
+html.light .quest-desc-wrap {
+  color: var(--quest-desc-color-light);
+}
