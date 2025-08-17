@@ -2,8 +2,8 @@
     <b-card no-body class="gr-2 x-lg-0 card-wrapper h-100" :class="{ 'card-promoted': reward.isPromoted }">
         <b-card-body
             v-if="reward.poolId === CP_CAMPAIGN || reward.poolId === SANTA_CAMPAIGN"
-            class="d-flex flex-column justify-content-between cp-campaign-card"
-            :style="{ height: '100%', background: !reward.isPromoted ? backgroundColor : '' }"
+            class="d-flex flex-column justify-content-between cp-campaign-card reward-card-body"
+            :style="{ height: '100%' }"
         >
             <b-button v-if="reward.isPromoted" class="d-flex align-items-center promoted-title" variant="success">
                 Promoted
@@ -60,14 +60,14 @@
                         accountStore.isMobile ? 'justify-content-center' : 'justify-content-end',
                         'ps-2 pb-2',
                     ]"
-                    style="color: var(--body-text)"
                 >
-                    <span class="me-1" style="color: var(--reward-supply-text)"> Supply: </span>
-                    <div>
-                        <span :class="limitSupplyVariant" style="color: var(--green-highlight-color) !important">
+                    <div class="supply-pill">
+                        <span class="supply-left" :class="limitSupplyVariant">
                             {{ reward.limitSupplyProgress.max - reward.limitSupplyProgress.count }}
                         </span>
-                        <span style="color: var(--reward-supply-limit)">/{{ reward.limitSupplyProgress.max }}</span>
+                        <span class="supply-sep">/</span>
+                        <span class="supply-max">{{ reward.limitSupplyProgress.max }}</span>
+                        <span class="supply-label">&nbsp;left</span>
                     </div>
                 </div>
                 <button
@@ -99,17 +99,10 @@
                             v-else-if="reward.pointPrice && !isInsufficientPoints"
                             class="d-flex align-items-center justify-content-center"
                         >
-                            <span class="point me-1">Buy now</span>
-                            <!-- <span class="point me-1">{{ formattedPrice }}</span>
-                            <img
-                                v-if="reward.poolId === SANTA_CAMPAIGN"
-                                :src="StarCoin"
-                                alt="star"
-                                loading="lazy"
-                                height="13"
-                                class="me-1"
-                            />
-                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text">Points</span> -->
+                            <span class="point me-1">Redeem</span>
+                            <span class="mx-2" style="opacity: 0.6">•</span>
+                            <span class="points">{{ formattedPrice }}</span>
+                            <span v-if="reward.poolId === SANTA_CAMPAIGN" class="coins-text ms-1">Points</span>
                         </div>
                         <div v-else-if="!reward.pointPrice" class="d-flex align-items-center justify-content-center">
                             Free!
@@ -229,19 +222,7 @@ export default defineComponent({
                 return this.reward.pointPrice;
             }
         },
-        backgroundColor() {
-            const lowerTitle = this.reward.title.toLowerCase();
-
-            // if (lowerTitle.includes('polygon')) {
-            //     return 'linear-gradient(182deg, rgba(211, 30, 172, 0.16) 2.31%, rgba(42, 42, 42, 0.12) 81.91%)';
-            // } else if (lowerTitle.includes('sepolia')) {
-            //     return 'linear-gradient(186deg, rgba(77, 162, 255, 0.20) -5.91%, rgba(42, 42, 42, 0.12) 71.01%)';
-            // } else if (lowerTitle.includes('optimism')) {
-            //     return 'linear-gradient(186deg, rgba(255, 81, 81, 0.2) -5.91%, rgba(42, 42, 42, 0.12) 71.01%)';
-            // } else if (lowerTitle.includes('base')) {
-            //     return 'linear-gradient(182deg, rgba(30, 81, 211, 0.16) 2.31%, rgba(42, 42, 42, 0.12) 81.91%)';
-            // }
-        },
+        // removed unused backgroundColor computed
     },
 });
 </script>
@@ -378,6 +359,14 @@ export default defineComponent({
     //box-shadow: inset rgb(115 59 74 / 42%) 0px -7px 20px 8px;
 }
 
+.reward-card-body {
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card-wrapper:hover .reward-card-body {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
+}
+
 .c-quest-title div {
     margin-left: 10px;
     background: linear-gradient(90deg, #f5f5f5 0%, #8f8f8f 100%);
@@ -394,6 +383,7 @@ export default defineComponent({
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 1;
+    line-clamp: 1; /* standard property for compatibility */
     -webkit-box-orient: vertical;
 }
 .c-quest-title .fas {
@@ -448,6 +438,7 @@ export default defineComponent({
     font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2; /* standard property for compatibility */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -487,5 +478,36 @@ export default defineComponent({
 }
 .progress {
     background-color: var(--nav-link-bg);
+}
+
+/* Supply pill styles */
+.supply-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--wallet-connected-border-color);
+    background: var(--wallet-connected-bg);
+    color: var(--body-text);
+    font-size: 12px;
+}
+.supply-left {
+    color: var(--green-highlight-color) !important;
+    font-weight: 600;
+}
+.supply-sep {
+    opacity: 0.6;
+}
+.supply-max {
+    opacity: 0.85;
+}
+.supply-label {
+    opacity: 0.6;
+}
+
+/* Points emphasis */
+.points {
+    font-weight: 600;
 }
 </style>

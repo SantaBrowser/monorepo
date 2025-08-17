@@ -32,10 +32,67 @@ function ensureDomPurify(): Promise<void> {
 
 function getConfig() {
     return {
-        ALLOWED_TAGS: ['b', 'strong', 'i', 'em', 'u', 'br', 'span'],
-        ALLOWED_ATTR: ['class'], // minimal; no styles, no events, no href/src
+        // Allow structural/content tags used in About content
+        ALLOWED_TAGS: [
+            'b',
+            'strong',
+            'i',
+            'em',
+            'u',
+            'br',
+            'span',
+            'p',
+            'ul',
+            'ol',
+            'li',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'div',
+            'section',
+            'article',
+            'blockquote',
+            'pre',
+            'code',
+            'figure',
+            'figcaption',
+            'small',
+            'sup',
+            'sub',
+            'hr',
+            'table',
+            'thead',
+            'tbody',
+            'tr',
+            'th',
+            'td',
+            'img',
+            'a',
+        ],
+        // Allow only safe attributes; keep styles and events forbidden
+        ALLOWED_ATTR: [
+            'class',
+            // links
+            'href',
+            'target',
+            'rel',
+            // images
+            'src',
+            'srcset',
+            'sizes',
+            'alt',
+            'loading',
+            // tables
+            'colspan',
+            'rowspan',
+            'scope',
+        ],
         FORBID_ATTR: ['style', 'on*'],
-        KEEP_CONTENT: false,
+        // Keep inner text when stripping unknown wrappers (e.g., <section>)
+        KEEP_CONTENT: true,
         RETURN_TRUSTED_TYPE: false,
     } as any;
 }

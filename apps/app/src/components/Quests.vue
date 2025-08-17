@@ -233,6 +233,28 @@
                         </div>
                     </div>
                 </transition>
+                <!-- One-time hero welcome (below search bar) -->
+                <section v-if="showHero" class="hero-welcome my-2" role="region" aria-label="Welcome message">
+                    <div class="hero-inner d-flex flex-column flex-md-row align-items-md-center gap-3">
+                        <div class="flex-grow-1">
+                            <h2 class="m-0 hero-title">Welcome to Santa Quests</h2>
+                            <p class="m-0 mt-2 text-opaque hero-sub">
+                                Complete tasks, earn points, and unlock rewards.
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <b-button
+                                size="lg"
+                                variant="primary"
+                                class="px-3 py-2"
+                                aria-label="Dismiss welcome"
+                                @click="dismissHero"
+                            >
+                                Got it
+                            </b-button>
+                        </div>
+                    </div>
+                </section>
                 <div v-if="activeTab === 0">
                     <!-- Available content -->
                     <div class="quests-box">
@@ -377,6 +399,8 @@
                         </div>
                     </div>
                 </div>
+                <!-- Mobile-only bottom spacer to clear fixed bottom navbar -->
+                <div class="mobile-bottom-spacer d-md-none" aria-hidden="true"></div>
             </b-col>
             <b-col
                 v-if="selectedPart === 'rewards'"
@@ -583,6 +607,7 @@ export default defineComponent({
             ],
             showRewardTabDropdown: false,
             deviceInfo: detectDevice(),
+            showHero: false,
         };
     },
     computed: {
@@ -625,6 +650,11 @@ export default defineComponent({
         },
         filteredOffers() {
             return this.offers.filter((offer) => isCompatibleWithOffer(offer, this.deviceInfo));
+        },
+        heroStorageKey(): string {
+            // Keyed per campaign so users see it once per pool
+            const pid = this.accountStore.poolId || 'default';
+            return `snt:${pid}:welcome_shown:v1`;
         },
         filteredCompletedQuests() {
             let completedQuests = this.mergedQuestsAndOffers('completed');
@@ -768,6 +798,13 @@ export default defineComponent({
     mounted() {
         useTrackPageview();
         document.addEventListener('click', this.handleClickOutside);
+        // Show hero if not yet dismissed
+        try {
+            const stored = window.localStorage.getItem(this.heroStorageKey);
+            this.showHero = !stored;
+        } catch (e) {
+            this.showHero = true;
+        }
     },
     beforeUnmount() {
         document.removeEventListener('click', this.handleClickOutside);
@@ -857,6 +894,14 @@ export default defineComponent({
         setActiveRewardTab(index: number) {
             this.activeRewardTab = index;
             this.showRewardTabDropdown = false;
+        },
+        dismissHero() {
+            try {
+                window.localStorage.setItem(this.heroStorageKey, String(Date.now()));
+            } catch (e) {
+                // noop
+            }
+            this.showHero = false;
         },
         selectSort(opt: { label: string; key: number }) {
             this.selectedSort = opt;
@@ -1155,6 +1200,28 @@ export default defineComponent({
     overflow: hidden;
 }
 
+.hero-welcome {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 100%), var(--tabs-bg);
+    border: 1px solid var(--dropdown-border-color);
+    border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+.hero-inner {
+    align-items: center;
+}
+.hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--title-color);
+}
+.hero-sub {
+    font-size: clamp(15px, 2.2vw, 20px);
+    line-height: 1.4;
+}
+
 .quests-title i {
     line-height: 2;
 }
@@ -1309,45 +1376,18 @@ export default defineComponent({
 .quests-column .nav {
     position: relative;
     border-bottom-color: var(--nav-border-color);
-    gap: 3px;
-    border: none;
 }
 
 .quests-column .nav-item .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 157px;
-    width: 70%;
-    height: 1px;
-    background: var(--border-tab-gradient);
-}
-.quests-column .nav-item .nav-link.active::before {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    height: 1px;
-    background: var(--nav-border-color);
-}
-.quests-column .nav-item:nth-child(1) .nav-link.active::before {
     display: none;
 }
-.quests-column .nav-item:nth-child(2) .nav-link.active::after {
+
+.quests-column .nav-item .nav-link.active::before {
+    display: none;
     left: 319px;
     width: 60%;
 }
-.quests-column .nav-item:nth-child(2) .nav-link.active::before {
-    left: 0;
-    width: 161px;
-}
-.quests-column .nav-item:nth-child(3) .nav-link.active::after {
-    left: 480px;
-    width: 50%;
-}
-.quests-column .nav-item:nth-child(3) .nav-link.active::before {
-    left: 0;
-    width: 322px;
-}
+/* removed: nth-child underline adjustments for pseudo elements */
 
 .quest-group,
 .reward-group {
@@ -1525,8 +1565,9 @@ export default defineComponent({
         height: calc(100vh - 205px);
     }
     .quests-box {
-        height: 100%;
-        overflow: hidden;
+        height: auto;
+        /* let the page scroll; do not clip children */
+        overflow: visible;
         margin: 0;
         margin-top: 22px;
     }
@@ -1826,5 +1867,42 @@ html.light .clear-btn:hover {
     border-top: none;
     padding-top: 0;
     margin-top: 0;
+}
+/* One-time hero welcome styles */
+.hero-welcome {
+    background: var(--tabs-bg);
+    border: 1px solid var(--dropdown-border-color);
+    border-radius: 12px;
+    padding: 16px;
+}
+.hero-inner {
+    align-items: center;
+}
+.hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    font-size: clamp(18px, 2.6vw, 24px);
+    line-height: 1.2;
+}
+.hero-sub {
+    font-size: 14px;
+    color: var(--about-nav-item-color);
+}
+/* Ensure page bottom has space above fixed bottom nav */
+.quest-cont {
+    padding-bottom: 72px;
+}
+/* Spacer element for extra safety on mobile */
+.mobile-bottom-spacer {
+    height: 96px; /* approx navbar height + safe area */
+}
+@media (min-width: 992px) {
+    .hero-welcome {
+        padding: 18px 20px;
+    }
+    .quest-cont {
+        padding-bottom: 56px;
+    }
 }
 </style>

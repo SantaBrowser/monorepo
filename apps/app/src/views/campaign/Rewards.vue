@@ -1,13 +1,13 @@
 <template>
-    <b-container>
+    <b-container class="pb-5 pb-md-4">
         <b-row>
             <b-col lg="10" offset-lg="1">
                 <div v-if="rewardStore.isLoading" class="d-flex justify-content-center py-5">
                     <b-spinner variant="primary" small />
                 </div>
-                <b-row v-else>
+                <b-row v-else class="g-3 g-md-4">
                     <b-col v-for="(reward, key) of rewardStore.rewards" :key="key" lg="4">
-                        <component :is="componentMap[reward.variant]" :reward="reward" class="mb-2" />
+                        <component :is="componentMap[reward.variant]" :reward="reward" class="mb-4" />
                     </b-col>
                 </b-row>
             </b-col>

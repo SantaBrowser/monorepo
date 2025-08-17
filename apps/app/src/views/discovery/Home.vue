@@ -483,7 +483,8 @@ export default defineComponent({
     background-blend-mode: color-dodge;
     background-attachment: fixed;
     height: 100vh;
-    overflow: hidden;
+    /* allow main container to scroll instead of children */
+    overflow: auto;
 }
 .mainComponent::-webkit-scrollbar {
     display: none !important;
@@ -491,12 +492,14 @@ export default defineComponent({
 .main-content {
     flex-grow: 1;
     padding: 8px 0 16px 16px;
-    overflow: hidden;
+    /* allow child content (hero, shadows, etc.) to render fully */
+    overflow: visible;
     border-top: 1px solid var(--main-content-border-color);
 }
 .component-wrap {
     height: 100%;
-    overflow: hidden;
+    /* prevent clipping of children like hero and tabs */
+    overflow: visible;
 }
 .components-wrap {
     height: 100%;
@@ -544,6 +547,8 @@ export default defineComponent({
         border: none;
         margin-top: 0;
         padding-left: 0;
+        /* ensure content clears fixed bottom navbar on mobile */
+        padding-bottom: max(96px, env(safe-area-inset-bottom));
         // margin-bottom: 98px;
         // overflow: hidden;
     }
@@ -551,7 +556,7 @@ export default defineComponent({
         overflow: unset;
     }
     .main-content {
-        overflow: unset;
+        overflow: unset; /* keep mobile scroll natural */
     }
     .mainComponent {
         overflow: auto;

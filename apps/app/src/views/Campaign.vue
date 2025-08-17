@@ -113,6 +113,8 @@ export default defineComponent({
     .overflow-mobile {
         overflow-x: none;
         overflow-y: auto;
+        /* Ensure scroll area clears fixed bottom navbar (height ~56-64px + safe areas) */
+        padding-bottom: max(88px, env(safe-area-inset-bottom));
     }
 }
 @media (min-width: 992px) {

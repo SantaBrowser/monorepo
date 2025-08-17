@@ -27,7 +27,10 @@
                     :class="[`about-section-${section.ref}`]"
                     :style="{ marginBottom: section.ref === 'help' ? marginBottomLastSection + 'px' : '0' }"
                 >
-                    <div v-html="section.content"></div>
+                    <div class="about-card">
+                        <!-- eslint-disable-next-line vue/no-v-html -->
+                        <div v-html="section.content"></div>
+                    </div>
                 </section>
             </template>
 
@@ -38,7 +41,9 @@
                     class="about-section"
                     :class="[`about-section-${section.ref}`]"
                 >
-                    <div v-html="section.content"></div>
+                    <div class="about-card">
+                        <div v-html="section.content"></div>
+                    </div>
                 </section>
             </template>
         </div>
@@ -51,6 +56,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { getAboutContent } from '@thxnetwork/app/config/aboutContent';
 import { useAccountStore } from '@thxnetwork/app/stores/Account';
 import { useThemeStore } from '@thxnetwork/app/stores/Stores';
+import { sanitizeHtml } from '@thxnetwork/app/utils/sanitize';
 
 const props = defineProps({
     activeTab: {
@@ -181,7 +187,16 @@ const calculateBottomPadding = async () => {
 };
 
 onMounted(async () => {
-    content.value = await getAboutContent(themeStore.currentTheme);
+    const groups = await getAboutContent(themeStore.currentTheme);
+    const mapped = await Promise.all(
+        groups.map(async (g) => ({
+            ...g,
+            sections: await Promise.all(
+                g.sections.map(async (s) => ({ ...s, content: await sanitizeHtml(s.content) })),
+            ),
+        })),
+    );
+    content.value = mapped;
 
     if (mainContent.value) {
         mainContent.value.addEventListener('scroll', updateActiveNavItemOnScroll);
@@ -207,7 +222,16 @@ watch(
             calculateBottomPadding();
         }
 
-        content.value = await getAboutContent(currentTheme);
+        const groups = await getAboutContent(currentTheme);
+        const mapped = await Promise.all(
+            groups.map(async (g) => ({
+                ...g,
+                sections: await Promise.all(
+                    g.sections.map(async (s) => ({ ...s, content: await sanitizeHtml(s.content) })),
+                ),
+            })),
+        );
+        content.value = mapped;
     },
     { immediate: true },
 );
@@ -333,6 +357,13 @@ nav > div:not(:first-child) .about-header {
 }
 .text-before-bullet {
     margin-bottom: 0;
+}
+.about-card {
+    background: var(--tabs-bg);
+    border: 1px solid var(--dropdown-border-color);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 .about-nav {
     flex-direction: column;
