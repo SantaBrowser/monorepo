@@ -72,7 +72,7 @@ if (NODE_ENV !== 'production') {
     // In production, only log errors to console
     transports.push(
         new winston.transports.Console({
-            // level: 'error',
+            level: 'error',
             format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
         }),
     );
