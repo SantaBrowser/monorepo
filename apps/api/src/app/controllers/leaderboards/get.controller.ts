@@ -16,7 +16,7 @@ const controller = async (req: Request, res: Response) => {
 
     const options = { startDate, endDate };
     const leaderboard = await PoolService.getLeaderboardFromCache(pool, options);
-    const result = await PoolService.getLeaderboardTop(leaderboard, 100);
+    const result = await PoolService.getLeaderboardTop(leaderboard, 99);
 
     res.json(result);
 };
