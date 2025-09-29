@@ -111,21 +111,9 @@ export default class ParticipantService {
             );
 
             // Call touch() periodically to keep the job alive
-            const BATCH = 50;
-            for (let i = 0; i < updates.length; i += BATCH) {
-              try {
-                await job.touch();
-              } catch (err) {
-                logger.warn('Job lock lost while updating ranks; aborting further updates.', { err });
-                throw new Error('Job lock lost; aborting updateRanksJob');
-              }
-
-              // small yield to event loop to let Agenda or Node housekeeping run
-              await new Promise((res) => setImmediate(res));
-
-              await Participant.bulkWrite(
-                updates.slice(i, i + BATCH)
-              );
+            for (let i = 0; i < updates.length; i += 100) {
+                await Participant.bulkWrite(updates.slice(i, i + 100));
+                job.touch(); // Reset the timeout counter
             }
 
             logger.info('Updated participant ranks.');
