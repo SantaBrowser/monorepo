@@ -373,7 +373,7 @@ export default class QuestService {
             await agenda.now(JobType.UpdateLeaderboard, { poolId: pool.id });
 
             // Send Discord and e-mail notifications
-            await NotificationService.sendQuestEntryNotification(pool, quest, account, amount);
+            // await NotificationService.sendQuestEntryNotification(pool, quest, account, amount);
 
             // Register THX onboarding campaign event for completed daily quests
             if (quest.variant === QuestVariant.Daily) {
