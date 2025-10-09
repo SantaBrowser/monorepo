@@ -46,7 +46,7 @@
                     </tr>
                 </thead>
                 <div class="table-separator"></div>
-                <tbody v-if="true">
+                <tbody v-if="isLoading">
                     <tr v-for="n in 10" :key="n" class="skeleton-item">
                         <td>
                             <div class="skeleton-rank">{{ n }}</div>
