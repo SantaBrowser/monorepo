@@ -33,7 +33,7 @@
             </b-button> -->
         </b-card-title>
 
-        <img class="leaderboard-image" src="../assets/leaderboard2x.png" alt="leaderboard" />
+        <img class="leaderboard-image" src="../assets/leaderboard.png" alt="leaderboard" />
 
         <div class="table-wrapper">
             <table>
