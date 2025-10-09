@@ -13,16 +13,20 @@
                 </span>
                 <!-- <b-spinner v-if="walletStore.isLoading" class="ms-2" variant="primary" small /> -->
             </div>
+
             <!-- <b-dropdown variant="primary" size="sm" no-caret>
                 <template #button-content>
                     {{ activeFilter.label }}
                     <i class="fas fa-caret-down ms-1" />
                 </template>
-                <b-dropdown-item-button v-for="filter of filters" @click="activeFilter = filter">
-                    {{ filter.label }}
-                </b-dropdown-item-button>
-            </b-dropdown> -->
+<b-dropdown-item-button v-for="filter of filters" @click="activeFilter = filter">
+  {{ filter.label }}
+</b-dropdown-item-button>
+</b-dropdown> -->
         </div>
+
+        <img class="wall-image" src="../../assets/wall.png" alt="wall-banner" />
+
         <div v-if="accountStore.isAuthenticated" class="d-flex overflow-auto flex-grow-1">
             <div v-if="walletStore.isLoading" class="spinner-container">
                 <b-spinner variant="primary" small />
@@ -346,6 +350,7 @@ export default defineComponent({
 .refresh-color {
     --bs-primary-rgb: #515151 !important;
 }
+
 .empty-message {
     position: fixed;
     top: 50%;
@@ -354,6 +359,7 @@ export default defineComponent({
     text-align: center;
     font-size: 16px !important;
 }
+
 .wallet-box {
     height: 100%;
     border-radius: 5px 5px 0px 0px;
@@ -363,6 +369,7 @@ export default defineComponent({
     max-width: 360px;
     flex-shrink: 0;
 }
+
 .wallet-online-word {
     color: var(--wallet-online-color);
     font-size: 14px;
@@ -370,9 +377,11 @@ export default defineComponent({
     font-weight: 400;
     line-height: normal;
 }
+
 .wallet-online {
     margin-right: 2px;
 }
+
 .new-wallet-btn {
     font-size: 13px;
     font-style: normal;
@@ -384,9 +393,11 @@ export default defineComponent({
     border-radius: 6px;
     padding: 2px 14px;
 }
+
 .wallet-info {
     width: 100%;
 }
+
 .wallet-text {
     color: var(--body-text);
     font-size: 16px;
@@ -397,6 +408,7 @@ export default defineComponent({
     padding: 7px 0;
     border-bottom: 1px solid var(--wallet-connected-border-color);
 }
+
 .wallet-connected {
     position: relative;
     border-radius: 12px;
@@ -405,12 +417,15 @@ export default defineComponent({
     max-width: 360px;
     min-height: 245px;
 }
+
 .address-list {
     padding: 12px 20px;
 }
+
 .selected-wallet {
     color: var(--selected-wallet-color);
 }
+
 .token-display {
     display: flex;
     padding: 19px 38px;
@@ -421,6 +436,7 @@ export default defineComponent({
     border-radius: 6px;
     background: var(--token-display-bg);
 }
+
 .token-symbol {
     color: #a6a6a6;
     font-size: 11px;
@@ -428,41 +444,68 @@ export default defineComponent({
     font-weight: 500;
     line-height: normal;
 }
+
 .token-balance {
     font-size: 20px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
 }
+
 .wallet-boxes {
     margin-top: -40px;
 }
+
 .spinner-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 .icon-shadow {
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
 }
+
 @media (max-width: 992px) {
     .wallet-box {
         height: 100px;
         max-width: 100%;
     }
+
     .wallet-boxes {
         justify-content: space-between;
     }
 }
+
 @media (max-width: 540px) {
     .wallet-boxes {
         flex-direction: column;
     }
+
     .wallet-connected {
         min-height: 300px;
         max-width: 100%;
+    }
+}
+
+.wall-image {
+    width: 800px;
+    max-width: 100%;
+    height: 110px;
+    top: 48px;
+    left: 16px;
+    border-radius: 2px;
+    opacity: 1;
+    border-width: 1px;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+@media (max-width: 992px) {
+    .wall-image {
+        height: auto;
     }
 }
 </style>
