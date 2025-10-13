@@ -367,10 +367,10 @@ export default class QuestService {
             }
 
             // Update participant ranks async
-            await agenda.now(JobType.UpdateParticipantRanks, { poolId: pool.id });
+            // await agenda.now(JobType.UpdateParticipantRanks, { poolId: pool.id });
 
             // Update leaderboard async
-            await agenda.now(JobType.UpdateLeaderboard, { poolId: pool.id });
+            // await agenda.now(JobType.UpdateLeaderboard, { poolId: pool.id });
 
             // Send Discord and e-mail notifications
             // await NotificationService.sendQuestEntryNotification(pool, quest, account, amount);
