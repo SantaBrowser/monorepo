@@ -49,7 +49,7 @@ export default class RewardKanaLabsService implements IRewardService {
 
         const balanceOfPool = await AptosService.getCoinBalance(signer.accountAddress.toString(), USDTAddress);
         const [, , decimals] = await AptosService.getCoinInfo(USDTAddress);
-        if (balanceOfPool < Number(reward.amount) * 10 ** decimals) {
+        if (balanceOfPool < Number(reward.amount) * 6 ** decimals) {
             return {
                 result: false,
                 reason: `We have notified the campaign owner that there is insufficient USDT in the campaign wallet. Please try again later!`,
