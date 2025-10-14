@@ -44,8 +44,8 @@ export const useRewardStore = defineStore('reward', {
             const { api } = useAccountStore();
             this.isLoading = true;
 
-            const { coin, nft, custom, coupon, discordRole } = await api.rewards.list(poolId);
-            this.rewards = [...coin, ...nft, ...custom, ...coupon, ...discordRole]
+            const { coin, nft, custom, coupon, discordRole, kanaLabs } = await api.rewards.list(poolId);
+            this.rewards = [...kanaLabs, ...coin, ...nft, ...custom, ...coupon, ...discordRole]
                 .sort((a: any, b: any) => toNumber(b.createdAt) - toNumber(a.createdAt))
                 .sort((a: any, b: any) => toNumber(b.isPromoted) - toNumber(a.isPromoted));
             this.isLoading = false;

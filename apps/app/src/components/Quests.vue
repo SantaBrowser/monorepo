@@ -335,6 +335,7 @@ const componentMap: { [variant: string]: string } = {
     [RewardVariant.Custom]: 'BaseCardRewardCustom',
     [RewardVariant.Coupon]: 'BaseCardRewardCoupon',
     [RewardVariant.DiscordRole]: 'BaseCardRewardDiscordRole',
+    [RewardVariant.KanaLabs]: 'BaseCardRewardCoin',
 };
 
 export default defineComponent({

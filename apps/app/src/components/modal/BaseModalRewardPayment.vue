@@ -43,12 +43,7 @@
                 Do you want to use {{ displayRewardAmount }} for <strong>{{ reward.title }}</strong
                 >?
             </p>
-            <BaseFormGroupWalletSelect
-                v-if="isWalletRequired"
-                v-model="wallet"
-                :chain-id="reward.erc20.chainId"
-                class="mb-0"
-            />
+            <BaseFormGroupWalletSelect v-if="isWalletRequired" v-model="wallet" :chain-id="1000000001" class="mb-0" />
         </template>
         <template #footer>
             <b-button v-if="!isAlertSuccessShown" class="w-100 btn-primary" :disabled="isDisabled" @click="onSubmit">
@@ -118,7 +113,7 @@ export default defineComponent({
             return !!this.error;
         },
         isWalletRequired() {
-            return [RewardVariant.Coin, RewardVariant.NFT].includes(this.reward.variant);
+            return [RewardVariant.Coin, RewardVariant.NFT, RewardVariant.KanaLabs].includes(this.reward.variant);
         },
         displayRewardAmount() {
             if (this.reward.poolId === this.SANTA_CAMPAIGN) {
