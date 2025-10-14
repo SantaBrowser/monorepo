@@ -8,6 +8,7 @@ import SafeService from './SafeService';
 import AptosService from './AptosService';
 import KanaLabsService from './KanaLabsService';
 import { KanaLabsTransaction } from '../models/KanaLabsTransaction';
+import { Account, Ed25519PrivateKey, PrivateKey, PrivateKeyVariants } from '@aptos-labs/ts-sdk';
 
 export default class RewardKanaLabsService implements IRewardService {
     models = {
@@ -28,15 +29,22 @@ export default class RewardKanaLabsService implements IRewardService {
     async getValidationResult({ reward, account, wallet }: { reward: TReward; account?: TAccount; wallet:WalletDocument }) {
         if (!wallet) return { result: false, reason: `No wallet provided for this reward transfer.` };
 
-        if (!reward.amount) return { result: false, reason: `No reweard amount provided for this reward transfer.` };
+        if (!reward.amount) return { result: false, reason: `No reward amount provided for this reward transfer.` };
 
-        const pool = await PoolService.getById(reward.poolId);
-        const safe = await SafeService.findOneByPool(pool, ChainId.Aptos);
-        if (!safe) return { result: false, reason: 'Campaign Safe is no longer available for this network' };
+        const {KANA_DEPOSIT_PRIVATE_KEY} = process.env;
 
+        if (!KANA_DEPOSIT_PRIVATE_KEY) {
+              return { result: false, reason: `KANA_DEPOSIT_PRIVATE_KEY is not provided.` };
+        }
+
+        const formattedKey = PrivateKey.formatPrivateKey(KANA_DEPOSIT_PRIVATE_KEY, PrivateKeyVariants.Ed25519);
+        const privateKey = new Ed25519PrivateKey(formattedKey);
+        const signer = Account.fromPrivateKey({ privateKey: privateKey });
+
+        console.log('signer', signer.accountAddress.toString());
         const USDTAddress = '0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b'
 
-        const balanceOfPool = await AptosService.getCoinBalance(safe.address, USDTAddress);
+        const balanceOfPool = await AptosService.getCoinBalance(signer.accountAddress.toString(), USDTAddress);
         const [, , decimals] = await AptosService.getCoinInfo(USDTAddress);
         if (balanceOfPool < Number(reward.amount) * 10 ** decimals) {
             return {
@@ -74,10 +82,6 @@ export default class RewardKanaLabsService implements IRewardService {
         wallet?: WalletDocument;
     }): Promise<TValidationResult | void> {
       if (!wallet) return { result: false, reason: 'Wallet not found' };
-
-      const pool = await PoolService.getById(reward.poolId);
-      const safe = await SafeService.findOneByPool(pool, ChainId.Aptos);
-      if (!safe) return { result: false, reason: 'Safe not found' };
 
       const result = await KanaLabsService.depositToPerps(wallet, reward.amount);
 
