@@ -3,7 +3,7 @@ type TInfoLink = {
     url: string;
 };
 
-type TReward = TRewardCoin | TRewardNFT | TRewardCustom | TRewardCoupon | TRewardDiscordRole;
+type TReward = TRewardCoin | TRewardNFT | TRewardCustom | TRewardCoupon | TRewardDiscordRole | TRewardKanaLabs;
 type TBaseReward = {
     _id: string;
     variant: RewardVariant;
@@ -41,4 +41,6 @@ type TRewardPayment =
     | TRewardNFTPayment
     | TRewardCustomPayment
     | TRewardCouponPayment
-    | TRewardDiscordRolePayment;
+    | TRewardDiscordRolePayment
+    | TRewardKanaLabsPayment
+;

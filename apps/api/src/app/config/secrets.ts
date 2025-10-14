@@ -43,6 +43,7 @@ if (process.env.NODE_ENV === 'production') {
             'BASE_SAFE_TXS_SERVICE',
             'SEPOLIA_SAFE_TXS_SERVICE',
             'LINEA_SAFE_TXS_SERVICE',
+            'KANA_DEPOSIT_PRIVATE_KEY'
         ],
     );
 } else if (process.env.NODE_ENV === 'development') {
@@ -190,3 +191,5 @@ export const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || '';
 export const SUPABASE_URL = process.env.SUPABASE_URL || '';
 export const SECURE_KEY = process.env.SECURE_KEY || '';
 export const JWKS_JSON = process.env.JWKS_JSON || '';
+
+export const KANA_DEPOSIT_PRIVATE_KEY = process.env.KANA_DEPOSIT_PRIVATE_KEY || '';

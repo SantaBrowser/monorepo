@@ -6,6 +6,7 @@ import RewardDiscordRoleService from '../RewardDiscordRoleService';
 import RewardCustomService from '../RewardCustomService';
 import RewardCouponService from '../RewardCouponService';
 import RewardCoinService from '../RewardCoinService';
+import RewardKanaLabsService from '../RewardKanaLabsService';
 
 export interface IRewardService {
     models: {
@@ -41,4 +42,5 @@ export const serviceMap = {
     [RewardVariant.Custom]: new RewardCustomService(),
     [RewardVariant.Coupon]: new RewardCouponService(),
     [RewardVariant.DiscordRole]: new RewardDiscordRoleService(),
+    [RewardVariant.KanaLabs]: new RewardKanaLabsService(),
 };

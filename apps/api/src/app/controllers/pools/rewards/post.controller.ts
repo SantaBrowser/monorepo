@@ -32,6 +32,7 @@ const validationBaseQuest = [
     body('metadata').optional().isString(),
     // DiscordRole
     body('discordRoleId').optional().isString(),
+
 ];
 
 const validation = [param('id').isMongoId(), ...validationBaseQuest];
