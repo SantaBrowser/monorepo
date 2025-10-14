@@ -24,6 +24,7 @@ export const useRewardStore = defineStore('reward', {
                 [RewardVariant.Coupon]: 'coupon reward redemption',
                 [RewardVariant.Custom]: 'custom reward redemption',
                 [RewardVariant.DiscordRole]: 'discord role reward redemption',
+                [RewardVariant.KanaLabs]: 'kana labs reward redemption',
             };
             track('UserCreates', [account?.sub, eventMap[variant], { poolId }]);
         },
@@ -82,6 +83,7 @@ export const useReward2Store = defineStore('reward2', {
                 [RewardVariant.Coupon]: 'coupon reward redemption',
                 [RewardVariant.Custom]: 'custom reward redemption',
                 [RewardVariant.DiscordRole]: 'discord role reward redemption',
+                [RewardVariant.KanaLabs]: 'kana labs reward redemption',
             };
             track('UserCreates', [account?.sub, eventMap[variant], { poolId }]);
         },
