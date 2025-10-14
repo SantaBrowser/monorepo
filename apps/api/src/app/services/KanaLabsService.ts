@@ -2,13 +2,13 @@ import { Account, AccountAddress, Aptos, AptosConfig, Ed25519PrivateKey, Network
 import { WalletDocument } from "../models";
 
 export default class KanaLabsService {
-    static async depositToPerps(wallet: WalletDocument, amount: string) {
+    static async depositToPerps(wallet: WalletDocument, amount: number) {
         try {
             const {
                 KANA_DEPOSIT_PRIVATE_KEY,
             } = process.env;
 
-            const depositAmount =  Number(amount) * 10 ** 6;
+            const depositAmount =  amount;
             const PERPS_MODULE_ADDRESS = '0x7a38039fffd016adcac2c53795ee49325e5ec6fddf3bf02651c09f9a583655a6::perpetual_scripts';
 
             if (!KANA_DEPOSIT_PRIVATE_KEY) {

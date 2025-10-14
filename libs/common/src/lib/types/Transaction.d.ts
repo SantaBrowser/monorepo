@@ -1,5 +1,6 @@
 type TTransaction = {
     _id: string;
+    isKanaDeposit: boolean;
     type: TransactionType;
     state: TransactionState;
     from: string;
