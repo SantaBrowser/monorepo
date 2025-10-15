@@ -87,7 +87,7 @@ export default class RewardKanaLabsService implements IRewardService {
         if (!wallet) return { result: false, reason: 'Wallet not found' };
 
         await Transaction.create({
-            to: '0x7a38039fffd016adcac2c53795ee49325e5ec6fddf3bf02651c09f9a583655a6::perpetual_scripts', // Kana smart contract
+            to: '0x7a38039fffd016adcac2c53795ee49325e5ec6fddf3bf02651c09f9a583655a6::perpetual_scripts::deposit', // Kana smart contract
             state: TransactionState.Queued,
             amount: Number(reward.amount) * 10 ** Number(6), //USDT has 6 decimals
             chainId: wallet.chainId,
