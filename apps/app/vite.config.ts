@@ -10,6 +10,8 @@ import path from 'path';
 import { compression } from 'vite-plugin-compression2';
 const isProd = process.env.NODE_ENV === 'production';
 
+console.log('isProd', isProd, process.env.NODE_ENV);
+
 const config: UserConfigExport = {
     plugins: [
         mkcert(),
