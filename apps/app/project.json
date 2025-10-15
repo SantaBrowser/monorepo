@@ -17,6 +17,14 @@
                 }
             }
         },
+        "preview": {
+            "executor": "@nx/vite:preview-server",
+            "defaultConfiguration": "production",
+            "options": {
+                "buildTarget": "app:build"
+            },
+            "configurations": {}
+        },
         "serve": {
             "executor": "@nx/vite:dev-server",
             "defaultConfiguration": "development",
