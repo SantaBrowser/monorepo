@@ -18,7 +18,8 @@
         "serve:app": "nx serve app",
         "preview:app": "nx preview app",
         "serve:api": "NODE_TLS_REJECT_UNAUTHORIZED='0' nx serve api",
-        "serve:auth": "NODE_TLS_REJECT_UNAUTHORIZED='0' nx serve auth"
+        "serve:auth": "NODE_TLS_REJECT_UNAUTHORIZED='0' nx serve auth",
+        "reset": "nx reset"
     },
     "private": true,
     "dependencies": {
