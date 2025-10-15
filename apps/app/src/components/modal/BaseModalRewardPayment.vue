@@ -14,7 +14,11 @@
         </template>
         <b-alert v-if="isAlertSuccessShown" v-model="isAlertSuccessShown" show variant="success" class="p-2 mb-0">
             <i class="fas fa-gift me-2"></i>
-            Your reward has been successfully purchased!
+            {{
+                isXyraPerps
+                    ? 'Your reward has been successfully deposited into the perps trading account of Xyra Labs'
+                    : 'Your reward has been successfully purchased!'
+            }}
         </b-alert>
         <template v-else>
             <b-alert v-model="isAlertDangerShown" show variant="danger" class="p-2">
@@ -51,7 +55,9 @@
                 <template v-else-if="reward.isLocked"> <i class="fas fa-lock"></i></template>
                 <template v-else> Pay {{ displayRewardAmount }} </template>
             </b-button>
-            <b-button v-else class="w-100" variant="primary" @click="onClickContinue">Continue</b-button>
+            <b-button v-else class="w-100" variant="primary" @click="onClickContinue">
+                {{ isXyraPerps ? 'Visit Xyra Labs' : 'Continue' }}
+            </b-button>
         </template>
     </b-modal>
 </template>
@@ -89,6 +95,7 @@ export default defineComponent({
             isLoading: false,
             chainList,
             SANTA_CAMPAIGN,
+            isXyraPerps: false,
         };
     },
     computed: {
@@ -129,6 +136,9 @@ export default defineComponent({
             this.isModalShown = value;
         },
     },
+    mounted() {
+        this.isXyraPerps = this.reward.variant === RewardVariant.KanaLabs;
+    },
     methods: {
         onShow() {
             this.isAlertSuccessShown = false;
@@ -160,6 +170,9 @@ export default defineComponent({
         async onClickContinue() {
             this.isModalShown = false;
             // Updates point balance
+            if (this.isXyraPerps) {
+                window.open('https://www.xyra.trade/?market=BTC-PERP', '_blank');
+            }
             await this.accountStore.getParticipants();
         },
     },
