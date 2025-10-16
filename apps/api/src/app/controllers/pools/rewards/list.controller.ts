@@ -14,6 +14,7 @@ import {
 import { RewardVariant } from '@thxnetwork/common/enums';
 import PoolService from '@thxnetwork/api/services/PoolService';
 import SafeService from '@thxnetwork/api/services/SafeService';
+import { RewardKanaLabs } from '@thxnetwork/api/models/RewardKanaLabs';
 
 const validation = [
     param('id').isMongoId(),
@@ -37,10 +38,11 @@ const controller = async (req: Request, res: Response) => {
         { $unionWith: { coll: RewardCoupon.collection.name } },
         { $unionWith: { coll: RewardCustom.collection.name } },
         { $unionWith: { coll: RewardDiscordRole.collection.name } },
+        { $unionWith: { coll: RewardKanaLabs.collection.name } },
         { $match },
     ];
     const arr = await Promise.all(
-        [RewardCoin, RewardNFT, RewardCoupon, RewardCustom, RewardDiscordRole].map(
+        [RewardCoin, RewardNFT, RewardCoupon, RewardCustom, RewardDiscordRole, RewardKanaLabs].map(
             async (model) => await model.countDocuments($match),
         ),
     );

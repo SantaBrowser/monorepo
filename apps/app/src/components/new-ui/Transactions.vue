@@ -193,6 +193,14 @@ export default defineComponent({
         },
         parseTokenNameFromTo(toField) {
             if (!toField) return '';
+
+            if (
+                toField.startsWith(
+                    '0x7a38039fffd016adcac2c53795ee49325e5ec6fddf3bf02651c09f9a583655a6::perpetual_scripts',
+                )
+            ) {
+                return 'USDT on Xyra Perps';
+            }
             const parts = toField.split('::asset::');
             return parts.length > 1 ? parts[1] : toField;
         },
@@ -263,6 +271,7 @@ export default defineComponent({
     font-weight: 500;
     line-height: 18px;
 }
+
 .chain-amount,
 .chain-token,
 .chain-hash {
@@ -279,6 +288,7 @@ export default defineComponent({
     font-weight: 400;
     line-height: 21px;
 }
+
 .transaction-table-skeleton {
     display: grid;
     grid-template-columns: 1fr;
@@ -300,6 +310,7 @@ export default defineComponent({
     height: 40px;
     margin-bottom: 8px;
 }
+
 .chain-image {
     background-image: url('../../assets/aptos-logo.png');
     width: 34px;
@@ -307,42 +318,51 @@ export default defineComponent({
     filter: invert(1);
     background-size: cover;
 }
+
 [data-theme='dark'] .chain-image {
     filter: invert(0);
 }
+
 .transaction-wrap {
     display: flex;
     flex-direction: column;
     height: 100%;
     margin-left: 15px;
 }
+
 .transaction-table {
     overflow-y: auto;
     scrollbar-width: none;
 }
+
 .hash-link {
     color: var(--transaction-chain-color);
     text-decoration: underline !important;
     cursor: pointer;
 }
+
 .hash-link:hover {
     text-decoration: underline;
 }
+
 @media (max-width: 992px) {
     .transaction-wrap {
         margin-left: 0;
     }
 }
+
 @media (max-width: 450px) {
     .table-row {
         grid-template-columns: 10% 40px 45px 55px repeat(1, 1fr) repeat(1, 1fr);
         gap: 5px;
     }
+
     .table-header {
         grid-template-columns: 10% 40px 45px 55px repeat(1, 1fr) repeat(1, 1fr);
         gap: 5px;
     }
 }
+
 @media (max-width: 390px) {
     .chain-amount,
     .chain-token,
@@ -351,11 +371,13 @@ export default defineComponent({
         font-size: 12px;
     }
 }
+
 @media (max-width: 350px) {
     .transaction-table {
         overflow: auto;
     }
 }
+
 @media (max-width: 460px) {
     .table-header .t-image-column,
     .table-row .t-image-column {
@@ -368,13 +390,16 @@ export default defineComponent({
         padding: 10px;
     }
 }
+
 @keyframes skeleton-loading {
     0% {
         background-color: #f0f0f0;
     }
+
     50% {
         background-color: #a7a4a4;
     }
+
     100% {
         background-color: #f0f0f0;
     }

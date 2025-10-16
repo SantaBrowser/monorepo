@@ -6,12 +6,12 @@ import AccountProxy from '@thxnetwork/api/proxies/AccountProxy';
 const controller = async (req: Request, res: Response) => {
     const account = await AccountProxy.findByRequest(req);
     const pool = await PoolService.getById(req.header('X-PoolId'));
-    const [coin, nft, custom, coupon, discordRole] = await RewardService.list({
+    const [coin, nft, custom, coupon, discordRole, kanaLabs] = await RewardService.list({
         pool,
         account,
     });
 
-    res.json({ coin, nft, custom, coupon, discordRole });
+    res.json({ coin, nft, custom, coupon, discordRole, kanaLabs });
 };
 
 export { controller };

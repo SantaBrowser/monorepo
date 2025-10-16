@@ -14,6 +14,7 @@ export const Transaction = mongoose.model<TransactionDocument>(
             amount: Number,
             transactionHash: String,
             safeTxHash: String,
+            isKanaDeposit: Boolean,
             type: Number,
             state: { type: Number, index: { sparse: true } },
             chainId: Number,

@@ -14,7 +14,11 @@
         </template>
         <b-alert v-if="isAlertSuccessShown" v-model="isAlertSuccessShown" show variant="success" class="p-2 mb-0">
             <i class="fas fa-gift me-2"></i>
-            Your reward has been successfully purchased!
+            {{
+                isXyraPerps
+                    ? 'Your reward has been successfully deposited into the perps trading account of Xyra Labs'
+                    : 'Your reward has been successfully purchased!'
+            }}
         </b-alert>
         <template v-else>
             <b-alert v-model="isAlertDangerShown" show variant="danger" class="p-2">
@@ -43,12 +47,7 @@
                 Do you want to use {{ displayRewardAmount }} for <strong>{{ reward.title }}</strong
                 >?
             </p>
-            <BaseFormGroupWalletSelect
-                v-if="isWalletRequired"
-                v-model="wallet"
-                :chain-id="reward.erc20.chainId"
-                class="mb-0"
-            />
+            <BaseFormGroupWalletSelect v-if="isWalletRequired" v-model="wallet" :chain-id="1000000001" class="mb-0" />
         </template>
         <template #footer>
             <b-button v-if="!isAlertSuccessShown" class="w-100 btn-primary" :disabled="isDisabled" @click="onSubmit">
@@ -56,7 +55,9 @@
                 <template v-else-if="reward.isLocked"> <i class="fas fa-lock"></i></template>
                 <template v-else> Pay {{ displayRewardAmount }} </template>
             </b-button>
-            <b-button v-else class="w-100" variant="primary" @click="onClickContinue">Continue</b-button>
+            <b-button v-else class="w-100" variant="primary" @click="onClickContinue">
+                {{ isXyraPerps ? 'Visit Xyra Labs' : 'Continue' }}
+            </b-button>
         </template>
     </b-modal>
 </template>
@@ -94,6 +95,7 @@ export default defineComponent({
             isLoading: false,
             chainList,
             SANTA_CAMPAIGN,
+            isXyraPerps: false,
         };
     },
     computed: {
@@ -118,7 +120,7 @@ export default defineComponent({
             return !!this.error;
         },
         isWalletRequired() {
-            return [RewardVariant.Coin, RewardVariant.NFT].includes(this.reward.variant);
+            return [RewardVariant.Coin, RewardVariant.NFT, RewardVariant.KanaLabs].includes(this.reward.variant);
         },
         displayRewardAmount() {
             if (this.reward.poolId === this.SANTA_CAMPAIGN) {
@@ -133,6 +135,9 @@ export default defineComponent({
         show(value) {
             this.isModalShown = value;
         },
+    },
+    mounted() {
+        this.isXyraPerps = this.reward.variant === RewardVariant.KanaLabs;
     },
     methods: {
         onShow() {
@@ -165,6 +170,9 @@ export default defineComponent({
         async onClickContinue() {
             this.isModalShown = false;
             // Updates point balance
+            if (this.isXyraPerps) {
+                window.open('https://www.xyra.trade/?market=BTC-PERP', '_blank');
+            }
             await this.accountStore.getParticipants();
         },
     },

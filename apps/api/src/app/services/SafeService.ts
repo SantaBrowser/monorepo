@@ -22,6 +22,7 @@ import { MultiSigPublicKey } from '@mysten/sui/multisig';
 import { APTOS_NODE_URL, SUI_NODE_URL } from '../config/secrets';
 import { createMultisig, getOrCreateAssociatedTokenAccount, transfer } from '@solana/spl-token';
 import solanaWeb3 from '@solana/web3.js';
+import KanaLabsService from './KanaLabsService';
 
 const { AccountAddress, EntryFunction, MultiSig, MultiSigTransactionPayload, TransactionPayloadMultisig } =
     TxnBuilderTypes;
@@ -234,6 +235,16 @@ class SafeService {
             await tx.updateOne({ state: TransactionState.Mined });
             logger.debug('Safe TX Executed');
         } else if (wallet.chainId == ChainId.Aptos) {
+            if(tx.isKanaDeposit){
+              const result = await KanaLabsService.depositToPerps(wallet, tx.amount);
+              if(result.success){
+                await tx.updateOne({ state: TransactionState.Mined, transactionHash: result.hash });
+              }else{
+                await tx.updateOne({ state: TransactionState.Failed, failReason: result.error });
+              }
+              return;
+            }
+
             await tx.updateOne({ state: TransactionState.Executed });
             const client = new AptosClient(APTOS_NODE_URL);
             const { signer } = NetworkService.getProvider(wallet.chainId);
