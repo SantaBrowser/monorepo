@@ -455,7 +455,7 @@ export default defineComponent({
 
 @media (max-width: 420px) {
     .list-item-field-questcount {
-        display: none;
+        /* display: none; */
     }
 }
 
@@ -492,7 +492,7 @@ td:first-child {
 
 th:nth-child(3),
 td:nth-child(3) {
-    width: 180px;
+    min-width: 180px;
 }
 
 th:nth-child(4),
@@ -550,12 +550,12 @@ tbody tr td {
 
     th:nth-child(3),
     td:nth-child(3) {
-        width: 160px;
+        min-width: 160px;
     }
 
     th:nth-child(4),
     td:nth-child(4) {
-        width: 120px;
+        min-width: 120px;
     }
 
     .leaderboard-image {
