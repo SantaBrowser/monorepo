@@ -37,7 +37,7 @@
             </div>
 
             <!-- More wallets section (collapsible) -->
-            <div class="more-wallets-section">
+            <!-- <div class="more-wallets-section">
                 <div
                     class="more-wallets-header"
                     :class="{ 'dark-mode': isDarkMode, 'light-mode': !isDarkMode }"
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div v-if="wallets.length === 0" class="text-center text-muted py-3">No Aptos wallets detected.</div>
         </div>
     </b-modal>
@@ -150,26 +150,26 @@ const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injecte
         injectedKey: 'santaAptos',
         priority: true,
     },
-    {
-        key: 'google',
-        name: 'Google',
-        icon: googleLogo,
-        installUrl: '#',
-        injectedKey: 'googleWallet',
-        priority: true,
-        disabled: true,
-        comingSoon: true,
-    },
-    {
-        key: 'apple',
-        name: 'Apple',
-        icon: appleLogo,
-        installUrl: '#',
-        injectedKey: 'appleWallet',
-        priority: true,
-        disabled: true,
-        comingSoon: true,
-    },
+    // {
+    //     key: 'google',
+    //     name: 'Google',
+    //     icon: googleLogo,
+    //     installUrl: '#',
+    //     injectedKey: 'googleWallet',
+    //     priority: true,
+    //     disabled: true,
+    //     comingSoon: true,
+    // },
+    // {
+    //     key: 'apple',
+    //     name: 'Apple',
+    //     icon: appleLogo,
+    //     installUrl: '#',
+    //     injectedKey: 'appleWallet',
+    //     priority: true,
+    //     disabled: true,
+    //     comingSoon: true,
+    // },
     {
         key: 'aptos',
         name: 'Petra',
@@ -177,27 +177,27 @@ const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injecte
         installUrl: 'https://petra.app/download',
         injectedKey: 'aptos',
     },
-    {
-        key: 'okx',
-        name: 'OKX',
-        icon: okxLogo,
-        installUrl: 'https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
-        injectedKey: 'okxwallet',
-    },
-    {
-        key: 'pontem',
-        name: 'Pontem',
-        icon: pontemLogo,
-        installUrl: 'https://pontem.network/wallet',
-        injectedKey: 'pontem',
-    },
-    {
-        key: 'nightly',
-        name: 'Nightly',
-        icon: nightlyLogo,
-        installUrl: 'https://nightly.app/',
-        injectedKey: 'nightly',
-    },
+    // {
+    //     key: 'okx',
+    //     name: 'OKX',
+    //     icon: okxLogo,
+    //     installUrl: 'https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
+    //     injectedKey: 'okxwallet',
+    // },
+    // {
+    //     key: 'pontem',
+    //     name: 'Pontem',
+    //     icon: pontemLogo,
+    //     installUrl: 'https://pontem.network/wallet',
+    //     injectedKey: 'pontem',
+    // },
+    // {
+    //     key: 'nightly',
+    //     name: 'Nightly',
+    //     icon: nightlyLogo,
+    //     installUrl: 'https://nightly.app/',
+    //     injectedKey: 'nightly',
+    // },
 ];
 
 const mobileStoreUrls = {

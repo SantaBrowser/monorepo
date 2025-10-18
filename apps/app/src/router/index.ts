@@ -1,6 +1,5 @@
 import { useAccountStore } from '../stores/Account';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import { trackPageViewEvent } from '../utils/snowplowTracker';
 
 async function beforeEnter(to: any, from: any, next: any) {
     // Redirect to last match
@@ -173,12 +172,6 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes,
-});
-
-// Track page views on route changes
-router.afterEach(() => {
-    // Only track page view after navigation is complete
-    trackPageViewEvent();
 });
 
 export default router;

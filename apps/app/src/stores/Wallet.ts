@@ -48,12 +48,13 @@ export const walletLogoMap: { [variantOrProvider: string]: string } = {
     [WalletVariant.WalletConnect]: imgWalletConnectLogo,
     [WalletVariant.Safe]: imgSafeLogo,
     // Aptos wallet providers by provider key (backend/frontend)
-    santaaptos: santaLogo,
-    petra: petraLogo,
-    okx: okxLogo,
-    pontem: pontemLogo,
-    nightly: nightlyLogo,
-    aptos: aptosConnectLogo,
+    'santaaptos': santaLogo,
+    'petra': petraLogo,
+    'okx': okxLogo,
+    'pontem': pontemLogo,
+    'nightly': nightlyLogo,
+    'aptos': aptosConnectLogo,
+    'santa wallet': santaLogo,
     // Add more as needed: martian, fewcha, etc.
 };
 
