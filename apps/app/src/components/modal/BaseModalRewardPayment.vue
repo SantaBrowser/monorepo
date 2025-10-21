@@ -50,7 +50,7 @@
             <BaseFormGroupWalletSelect
                 v-if="isWalletRequired"
                 v-model="wallet"
-                :chain-id="reward.erc20.chainId"
+                :chain-id="1000000001"
                 :variants="[
                     WalletVariant.Safe,
                     WalletVariant.WalletConnect,
