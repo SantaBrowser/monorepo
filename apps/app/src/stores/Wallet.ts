@@ -206,6 +206,7 @@ export const useWalletStore = defineStore('wallet', {
             address?: string;
             chainId?: ChainId;
             provider?: string;
+            rawData?: { signature?: string; [key: string]: unknown };
         }) {
             const { api } = useAccountStore();
             console.log('Wallet store create method called with data:', data);
