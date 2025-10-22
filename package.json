@@ -16,7 +16,7 @@
         "test": "NODE_OPTIONS='--max-old-space-size=8192' nx test",
         "serve:docker": "docker compose --env-file .env.example -f docker-compose.yml -f docker-compose.safe.yml up --build -d",
         "serve:app": "nx serve app",
-        "preview:app": "nx preview app",
+        "preview:app": "NODE_OPTIONS='--max-old-space-size=8192' nx preview app",
         "serve:api": "NODE_TLS_REJECT_UNAUTHORIZED='0' nx serve api",
         "serve:auth": "NODE_TLS_REJECT_UNAUTHORIZED='0' nx serve auth",
         "reset": "nx reset"
@@ -228,5 +228,6 @@
     "resolutions": {
         "@achrinza/node-ipc": "9.2.7",
         "lit": "3.1.0"
-    }
+    },
+    "packageManager": "yarn@4.3.1+sha512.af78262d7d125afbfeed740602ace8c5e4405cd7f4735c08feb327286b2fdb2390fbca01589bfd1f50b1240548b74806767f5a063c94b67e431aabd0d86f7774"
 }
