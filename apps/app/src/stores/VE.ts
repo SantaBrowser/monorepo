@@ -5,12 +5,13 @@ import { contractNetworks } from '../config/constants';
 import { track } from '@thxnetwork/app/utils/mixpanel';
 import { ChainId } from '@thxnetwork/common/enums';
 import { abi } from '../utils/abi';
+import { BigNumber } from 'bignumber.js';
 
 export const useVeStore = defineStore('ve', {
     state: (): TVeState => ({
         lock: { end: 0, amount: '0' },
         now: Date.now(),
-        balance: 0,
+        balance: new BigNumber(0),
         rewards: [],
         isAccepted: false,
         isModalClaimTokensShown: false,
@@ -25,7 +26,7 @@ export const useVeStore = defineStore('ve', {
         reset() {
             this.lock = { end: 0, amount: '0' };
             this.now = Date.now();
-            this.balance = 0;
+            this.balance = new BigNumber(0);
             this.rewards = [];
         },
         async getLocks(wallet: TWallet) {
@@ -35,7 +36,7 @@ export const useVeStore = defineStore('ve', {
             this.lock = { amount, end };
             this.now = now;
             this.rewards = rewards;
-            this.balance = balance;
+            this.balance = new BigNumber(balance);
         },
         async deposit(wallet: TWallet, { lockEndTimestamp, amountInWei }: TRequestBodyDeposit) {
             const { sendTransaction, getBalance, waitForTransactionReceipt } = useWalletStore();
