@@ -89,56 +89,78 @@ export default defineComponent({
                 this.resetConnectionState();
 
                 if (this.walletStore.currentChainId == ChainId.Aptos) {
-                    // if (!window.okxwallet) {
-                    //     if (this.isMobile()) {
-                    //         const currentUrl = new URL(window.location.href);
-                    //         if (!currentUrl.searchParams.has('clid')) {
-                    //             const clid = this.accountStore.account?.providerUserId;
-                    //             currentUrl.searchParams.set('clid', clid || '');
-                    //         }
-                    //         const encodedDappUrl = encodeURIComponent(currentUrl.toString());
-                    //         const deepLink = 'okx://wallet/dapp/url?dappUrl=' + encodedDappUrl;
-                    //         window.open('https://www.okx.com/download?deeplink=' + encodeURIComponent(deepLink));
-                    //     } else {
-                    //         window.open(
-                    //             'https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge',
-                    //             '_blank',
-                    //         );
-                    //     }
-                    //     return;
-                    // }
+                    console.log('Connecting to Aptos wallet');
 
-                    // // ... existing code ...
-                    // try {
-                    //     const response = await window.okxwallet.aptos.connect();
-                    //     this.address = response.address;
-                    //     this.publicKey = response.publicKey;
-                    //     this.walletStore.account = { address: response.address };
-                    // } catch (error) {
-                    //     if (error.status === 'Rejected') {
-                    //         this.error = 'Wallet connect is rejected. Please check your wallet.';
-                    //     } else {
-                    //         console.log(error);
-                    //     }
-                    // }
-                    if (!window.santaAptos) return;
-                    // try {
-                    //     await window.santaAptos.disconnect();
-                    //     this.resetConnectionState();
-                    // } catch (error) {
-                    //     console.log('Disconnect error:', error);
-                    // }
+                    // Determine which Aptos wallets are available
+                    const isSantaWallet = !!window.santaAptos;
+                    const isPetraWallet = !!window.aptos;
+                    const isOkxWallet = !!window.okxwallet?.aptos;
+
+                    console.log('Available wallets:', {
+                        isSantaWallet,
+                        isPetraWallet,
+                        isOkxWallet,
+                    });
 
                     try {
-                        const response = await window.santaAptos.connect();
-                        this.address = response.args.address;
-                        this.publicKey = response.args.publicKey;
-                        this.walletStore.account = { address: response.args.address };
-                    } catch (error: unknown) {
-                        if (typeof error === 'object' && error && 'status' in error && error.status === 'Rejected') {
-                            alert('Kindly check your Santa wallet and confirm the connection request to proceed.');
+                        let response;
+
+                        // Try to connect to available wallets in order of preference
+                        if (isSantaWallet) {
+                            console.log('Connecting to Santa wallet');
+                            response = await window.santaAptos.connect();
+                            console.log('Santa wallet connect response:', response);
+
+                            // Santa wallet stores address in response.args
+                            this.address = response.args?.address;
+                            this.publicKey = response.args?.publicKey;
+                            console.log('Santa wallet address:', this.address);
+                            console.log('Santa wallet publicKey:', this.publicKey);
+
+                            if (!this.address) {
+                                console.warn('No address found in Santa wallet response');
+                                if (response.address) {
+                                    this.address = response.address;
+                                    console.log('Using response.address instead:', this.address);
+                                }
+                            }
+
+                            this.walletStore.account = { address: this.address };
+                        } else if (isPetraWallet) {
+                            console.log('Connecting to Petra wallet');
+                            response = await window.aptos.connect();
+                            console.log('Petra wallet connect response:', response);
+
+                            this.address = response.address;
+                            this.publicKey = response.publicKey;
+                            this.walletStore.account = { address: response.address };
+                        } else if (isOkxWallet) {
+                            console.log('Connecting to OKX wallet');
+                            response = await window.okxwallet.aptos.connect();
+                            console.log('OKX wallet connect response:', response);
+
+                            this.address = response.address;
+                            this.publicKey = response.publicKey;
+                            this.walletStore.account = { address: response.address };
                         } else {
-                            console.log(error);
+                            this.error =
+                                'No Aptos wallet extension found. Please install a wallet like Santa Wallet, Petra, or OKX.';
+                            return;
+                        }
+
+                        // Verify we have an address
+                        if (!this.address) {
+                            this.error = 'Failed to get wallet address';
+                            return;
+                        }
+
+                        console.log('Successfully connected to wallet with address:', this.address);
+                    } catch (error) {
+                        console.error('Wallet connect error:', error);
+                        if (error.status === 'Rejected') {
+                            this.error = 'Wallet connection rejected. Please check your wallet.';
+                        } else {
+                            this.error = 'Failed to connect wallet: ' + (error.message || error);
                         }
                     }
                 } else if (this.walletStore.currentChainId == ChainId.Sui) {
@@ -221,28 +243,124 @@ export default defineComponent({
         async onClickAdd() {
             if (this.walletStore.currentChainId == ChainId.Aptos) {
                 this.isLoading = true;
-
-                // const responsePetra = await window.aptos.signMessage({
-                //     message: this.message,
-                //     nonce: 'random',
-                // });
+                let signature, publicKey, address;
+                let message = this.message;
 
                 try {
-                    // const response = await window.okxwallet.aptos.signMessage({
-                    //     message: this.message,
-                    //     nonce: 'random',
-                    // });
-                    const response = await window.santaAptos.signMessage(
-                        `APTOS\nmessage: ${this.message}\nnonce: random`,
-                    );
+                    // Determine which Aptos wallet is connected
+                    const isSantaWallet = !!window.santaAptos;
+                    const isPetraWallet = !!window.aptos;
+                    const isOkxWallet = !!window.okxwallet?.aptos;
+
+                    console.log('Connected wallets:', {
+                        isSantaWallet,
+                        isPetraWallet,
+                        isOkxWallet,
+                    });
+
+                    // Handle Santa wallet
+                    if (isSantaWallet) {
+                        console.log('Using Santa wallet for signing');
+                        // Format message the way Santa wallet expects it
+                        const formattedMessage = `APTOS\nmessage: ${this.message}\nnonce: random`;
+                        console.log('Signing with formatted message:', formattedMessage);
+
+                        const response = await window.santaAptos.signMessage(formattedMessage);
+                        console.log('Santa wallet sign response:', response);
+
+                        // Extract signature from response - try all possible locations
+                        signature =
+                            response.signature ||
+                            response.signatureHex ||
+                            response.args?.signature ||
+                            response.args?.signatureHex;
+                        console.log('Extracted signature:', signature);
+
+                        if (!signature && typeof response === 'object') {
+                            // Try to find signature in any property of the response
+                            console.log('Searching for signature in response object...');
+                            for (const key in response) {
+                                if (key.toLowerCase().includes('signature')) {
+                                    signature = response[key];
+                                    console.log(`Found signature in response.${key}:`, signature);
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Use existing values from connection step or extract from sign response
+                        publicKey = this.publicKey || response.publicKey || response.args?.publicKey;
+                        address = this.address || response.address || response.args?.address;
+
+                        console.log('After signing:', {
+                            signature,
+                            publicKey,
+                            address,
+                        });
+
+                        message = formattedMessage; // Use the formatted message
+                    }
+                    // Handle Petra wallet
+                    else if (isPetraWallet) {
+                        console.log('Using Petra wallet for signing');
+                        const response = await window.aptos.signMessage({
+                            message: this.message,
+                            nonce: 'random',
+                        });
+                        console.log('Petra wallet sign response:', response);
+
+                        signature = response.signature;
+                        publicKey = response.publicKey;
+                        address = this.address; // Already set during connect
+                    }
+                    // Handle OKX wallet
+                    else if (isOkxWallet) {
+                        console.log('Using OKX wallet for signing');
+                        const response = await window.okxwallet.aptos.signMessage({
+                            message: this.message,
+                            nonce: 'random',
+                        });
+                        console.log('OKX wallet sign response:', response);
+
+                        signature = response.signature;
+                        publicKey = response.publicKey;
+                        address = this.address; // Already set during connect
+                    } else {
+                        throw new Error('No supported Aptos wallet found');
+                    }
+
+                    // Verify we have all required fields before creating the wallet
+                    if (!address) {
+                        console.error('Missing address for wallet creation');
+                        this.error = 'Failed to get wallet address';
+                        return;
+                    }
+
+                    if (!signature) {
+                        console.error('Missing signature for wallet creation');
+                        this.error = 'Failed to get wallet signature';
+                        return;
+                    }
+
+                    console.log('Creating wallet with data:', {
+                        chainId: ChainId.Aptos,
+                        variant: this.variant,
+                        message: message,
+                        publicKey: publicKey,
+                        signature: signature,
+                        rawAddress: address,
+                        address: address,
+                    });
+
+                    // Create wallet with all required fields
                     await this.walletStore.create({
                         chainId: ChainId.Aptos,
                         variant: this.variant,
-                        message: `APTOS\nmessage: ${this.message}\nnonce: random`,
-                        publicKey: this.publicKey,
-                        signature: response.signature,
-                        // signature: response.args.signature,
-                        rawAddress: this.address,
+                        message: message,
+                        publicKey: publicKey,
+                        signature: signature,
+                        rawAddress: address,
+                        address: address, // Explicitly add address field for the API
                     });
                     const wallet = this.walletStore.wallets.find((wallet: TWallet) => wallet.address === this.address);
                     if (!wallet) throw new Error('New wallet not found');

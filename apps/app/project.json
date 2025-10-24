@@ -21,7 +21,8 @@
             "executor": "@nx/vite:preview-server",
             "defaultConfiguration": "production",
             "options": {
-                "buildTarget": "app:build"
+                "buildTarget": "app:build",
+                "port": 8080
             },
             "configurations": {}
         },

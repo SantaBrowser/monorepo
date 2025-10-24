@@ -453,12 +453,6 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 420px) {
-    .list-item-field-questcount {
-        display: none;
-    }
-}
-
 @media (max-width: 360px) {
     .username-text {
         width: 110px;
@@ -492,7 +486,7 @@ td:first-child {
 
 th:nth-child(3),
 td:nth-child(3) {
-    width: 180px;
+    min-width: 180px;
 }
 
 th:nth-child(4),
@@ -543,21 +537,6 @@ tbody tr td {
 }
 
 @media (max-width: 992px) {
-    th:first-child,
-    td:first-child {
-        width: 66px;
-    }
-
-    th:nth-child(3),
-    td:nth-child(3) {
-        width: 160px;
-    }
-
-    th:nth-child(4),
-    td:nth-child(4) {
-        width: 120px;
-    }
-
     .leaderboard-image {
         height: auto;
     }
@@ -565,17 +544,132 @@ tbody tr td {
 
 @media (max-width: 992px) {
     table {
-        min-width: 520px;
+        min-width: 400px;
     }
 
     th:first-child,
     td:first-child {
-        width: 56px;
+        width: 40px;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+        min-width: 120px;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+        min-width: 100px;
     }
 
     th:nth-child(4),
     td:nth-child(4) {
+        width: 80px;
+    }
+
+    thead th {
+        font-size: 13px;
+        padding: 0 8px;
+    }
+
+    tbody tr td {
+        padding: 0 8px;
+        font-size: 14px;
+    }
+
+    .username-text {
         width: 100px;
+        font-size: 14px;
+    }
+
+    .list-item-field-questcount {
+        font-size: 14px;
+    }
+
+    .list-item-field-score {
+        font-size: 14px;
+    }
+
+    .list-item-field-rank {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    table {
+        min-width: 320px;
+    }
+
+    th:first-child,
+    td:first-child {
+        width: 30px;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+        min-width: 100px;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+        min-width: 80px;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+        width: 60px;
+    }
+
+    thead th {
+        font-size: 12px;
+        padding: 0 4px;
+    }
+
+    tbody tr td {
+        padding: 0 4px;
+        font-size: 13px;
+    }
+
+    .username-text {
+        width: 80px;
+        font-size: 13px;
+    }
+
+    .list-item-field-questcount {
+        font-size: 13px;
+    }
+
+    .list-item-field-score {
+        font-size: 13px;
+    }
+
+    .list-item-field-rank {
+        font-size: 13px;
+    }
+
+    .list-item-field-address .b-avatar {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 360px) {
+    table {
+        min-width: 280px;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+        display: none;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+        min-width: 150px;
+    }
+
+    .username-text {
+        width: 130px;
     }
 }
 </style>

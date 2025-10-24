@@ -30,6 +30,13 @@ import { abi } from '../utils/abi';
 import { contractNetworks } from '../config/constants';
 import imgSafeLogo from '../assets/safe-logo.jpg';
 import imgWalletConnectLogo from '../assets/walletconnect-logo.png';
+import petraLogo from '../assets/wallets/petra.png';
+import okxLogo from '../assets/wallets/okx.png';
+import pontemLogo from '../assets/wallets/pontem.png';
+import nightlyLogo from '../assets/wallets/nightly.png';
+import aptosConnectLogo from '../assets/wallets/aptos.png';
+import santaLogo from '../assets/wallets/santa.png';
+// Add more as needed (e.g., Martian, Fewcha)
 
 type TRequestBodyApproval = {
     tokenAddress: string;
@@ -37,9 +44,18 @@ type TRequestBodyApproval = {
     amountInWei: string;
 };
 
-export const walletLogoMap: { [variant: string]: string } = {
+export const walletLogoMap: { [variantOrProvider: string]: string } = {
     [WalletVariant.WalletConnect]: imgWalletConnectLogo,
     [WalletVariant.Safe]: imgSafeLogo,
+    // Aptos wallet providers by provider key (backend/frontend)
+    'santaaptos': santaLogo,
+    'petra': petraLogo,
+    'okx': okxLogo,
+    'pontem': pontemLogo,
+    'nightly': nightlyLogo,
+    'aptos': aptosConnectLogo,
+    'santa wallet': santaLogo,
+    // Add more as needed: martian, fewcha, etc.
 };
 
 const wagmiConfig = defaultWagmiConfig({
@@ -187,10 +203,48 @@ export const useWalletStore = defineStore('wallet', {
             publicKey?: string;
             signature?: string;
             rawAddress?: string;
+            address?: string;
             chainId?: ChainId;
+            provider?: string;
+            rawData?: { signature?: string; [key: string]: unknown };
         }) {
             const { api } = useAccountStore();
-            await api.request.post('/v1/account/wallets', { data });
+            console.log('Wallet store create method called with data:', data);
+
+            // Validate required fields for Aptos wallets
+            if (data.variant === 'aptos') {
+                // Check for required fields
+                if (!data.rawAddress && !data.address) {
+                    console.error('Missing address for Aptos wallet creation');
+                    throw new Error('Missing address for Aptos wallet');
+                }
+
+                if (!data.signature) {
+                    console.error('Missing signature for Aptos wallet creation');
+
+                    // Try to extract signature from other fields if available
+                    if (data.rawData && typeof data.rawData === 'object' && data.rawData.signature) {
+                        console.log('Found signature in rawData, using it instead');
+                        data.signature = data.rawData.signature;
+                    } else {
+                        throw new Error('Missing signature for Aptos wallet');
+                    }
+                }
+
+                // Add address field explicitly for Aptos wallets if not already present
+                const apiData = {
+                    ...data,
+                    // Use address if provided, otherwise use rawAddress
+                    address: data.address || data.rawAddress,
+                    // Ensure rawAddress is also set
+                    rawAddress: data.rawAddress || data.address,
+                };
+                console.log('Sending modified data to API:', apiData);
+                await api.request.post('/v1/account/wallets', { data: apiData });
+            } else {
+                await api.request.post('/v1/account/wallets', { data });
+            }
+
             await this.listWallets();
         },
         async setWallet(wallet: TWallet | null) {

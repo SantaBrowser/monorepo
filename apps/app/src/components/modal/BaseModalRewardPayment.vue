@@ -47,7 +47,18 @@
                 Do you want to use {{ displayRewardAmount }} for <strong>{{ reward.title }}</strong
                 >?
             </p>
-            <BaseFormGroupWalletSelect v-if="isWalletRequired" v-model="wallet" :chain-id="1000000001" class="mb-0" />
+            <BaseFormGroupWalletSelect
+                v-if="isWalletRequired"
+                v-model="wallet"
+                :chain-id="1000000001"
+                :variants="[
+                    WalletVariant.Safe,
+                    WalletVariant.WalletConnect,
+                    WalletVariant.Web3Auth,
+                    WalletVariant.Aptos,
+                ]"
+                class="mb-0"
+            />
         </template>
         <template #footer>
             <b-button v-if="!isAlertSuccessShown" class="w-100 btn-primary" :disabled="isDisabled" @click="onSubmit">
@@ -69,6 +80,7 @@ import { useRewardStore } from '../../stores/Reward';
 import { useAccountStore } from '../../stores/Account';
 import { useWalletStore } from '../../stores/Wallet';
 import { RewardVariant } from '@thxnetwork/app/types/enums/rewards';
+import { WalletVariant } from '../../types/enums/accountVariant';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { SANTA_CAMPAIGN } from '@thxnetwork/app/config/secrets';
 
@@ -88,6 +100,7 @@ export default defineComponent({
     data() {
         return {
             RewardVariant,
+            WalletVariant,
             isAlertSuccessShown: false,
             error: '',
             wallet: undefined,
