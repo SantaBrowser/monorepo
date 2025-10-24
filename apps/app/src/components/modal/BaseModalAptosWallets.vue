@@ -176,6 +176,7 @@ const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injecte
         icon: petraLogo,
         installUrl: 'https://petra.app/download',
         injectedKey: 'aptos',
+        priority: true,
     },
     // {
     //     key: 'okx',
@@ -321,15 +322,15 @@ const topWalletsArray = computed(() => {
     });
 
     // If Santa wallet is not available, add Petra to the top section
-    if (!hasSantaWallet.value) {
-        const petra = wallets.value.find((w) => w.key === 'aptos');
-        if (petra) {
-            // Create a copy of Petra with priority flag
-            const petraPriority = { ...petra, priority: true };
-            // Add Petra to the beginning of the array
-            return [petraPriority, ...filteredWallets];
-        }
-    }
+    // if (!hasSantaWallet.value) {
+    //     const petra = wallets.value.find((w) => w.key === 'aptos');
+    //     if (petra) {
+    //         // Create a copy of Petra with priority flag
+    //         const petraPriority = { ...petra, priority: true };
+    //         // Add Petra to the beginning of the array
+    //         return [petraPriority, ...filteredWallets];
+    //     }
+    // }
 
     return filteredWallets;
 });
