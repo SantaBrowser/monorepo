@@ -313,13 +313,13 @@ const topWalletsArray = computed(() => {
     if (!wallets.value || !wallets.value.length) return [];
 
     // Filter out Santa if it's not injected
-    const filteredWallets = wallets.value.filter((w) => {
-        // Include all priority wallets except Santa when it's not injected
-        if (w.key === 'santaAptos') {
-            return w.injected;
-        }
-        return w.priority === true;
-    });
+    // const filteredWallets = wallets.value.filter((w) => {
+    //     // Include all priority wallets except Santa when it's not injected
+    //     if (w.key === 'santaAptos') {
+    //         return w.injected;
+    //     }
+    //     return w.priority === true;
+    // });
 
     // If Santa wallet is not available, add Petra to the top section
     // if (!hasSantaWallet.value) {
@@ -332,6 +332,8 @@ const topWalletsArray = computed(() => {
     //     }
     // }
 
+    // Only show santa or Petra if available
+    const filteredWallets = wallets.value.filter((w) => w.injected);
     return filteredWallets;
 });
 
