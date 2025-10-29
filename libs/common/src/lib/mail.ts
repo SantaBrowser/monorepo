@@ -20,7 +20,7 @@ function sendMail(to: string, subject: string, html: string) {
                     Data: subject,
                 },
             },
-            Source: 'SantaBrowser <noreply@thx.network>',
+            Source: 'SantaBrowser <gowtham@santabrowser.com>',
         },
         console.log,
     );
