@@ -10,7 +10,7 @@ import { accountVariantProviderKindMap, OAuthScopes } from '../utils/social';
 import { AccessTokenKind } from '../types/enums/accessTokenKind';
 import { decodeHTML } from '../utils/decode-html';
 import { useWalletStore } from './Wallet';
-import { AuthChangeEvent, createClient, Provider, Session } from '@supabase/supabase-js';
+import { createClient, Provider, Session } from '@supabase/supabase-js';
 import { popup } from '../utils/popup';
 import poll from 'promise-poller';
 
@@ -157,7 +157,11 @@ export const useAccountStore = defineStore('account', {
             return this.participants.find((p) => p.poolId === id)?.isSubscribed;
         },
         async getAccount() {
-            this.account = await this.api.request.get('/v1/account');
+            const nextAccount = await this.api.request.get('/v1/account');
+            const accountUpdated = !this.account || JSON.stringify(nextAccount) !== JSON.stringify(this.account);
+            if (accountUpdated) {
+                this.account = nextAccount;
+            }
             const result = await this.api.request.get('/v1/account/referral');
             this.referralCode = result.referralCode;
             this.inviter = result.inviter;
@@ -205,16 +209,31 @@ export const useAccountStore = defineStore('account', {
                 if (!data.url) throw new Error('Could not get authorize URL');
                 const authWindow: any = popup.open(data.url);
 
-                const windowClosedPromise = new Promise((_, reject) => {
+                const windowClosedPromise = new Promise<string>((resolve) => {
                     checkWindowClosed = setInterval(() => {
                         if (authWindow.closed) {
                             clearInterval(checkWindowClosed);
-                            reject(new Error('Authentication window closed by the user.'));
+                            resolve('closed');
                         }
                     }, 500);
                 });
 
-                await Promise.race([this.waitForToken({ kind, scopes }), windowClosedPromise]);
+                const primaryAbortController = new AbortController();
+                const tokenPromise = this.waitForToken({ kind, scopes }, primaryAbortController.signal);
+                const result = await Promise.race([tokenPromise, windowClosedPromise]);
+
+                if (result === 'closed') {
+                    primaryAbortController.abort();
+                    const graceAbortController = new AbortController();
+                    const graceTimeout = setTimeout(() => graceAbortController.abort(), 5000);
+                    try {
+                        await this.waitForToken({ kind, scopes }, graceAbortController.signal);
+                    } catch (e) {
+                        throw new Error('Authentication window closed.');
+                    } finally {
+                        clearTimeout(graceTimeout);
+                    }
+                }
 
                 clearInterval(checkWindowClosed);
             } catch (error) {
@@ -232,31 +251,61 @@ export const useAccountStore = defineStore('account', {
                 console.error(error);
             }
         },
-        async waitForToken({ kind, scopes }: { kind: AccessTokenKind; scopes: TOAuthScope[] }) {
+        async waitForToken({ kind, scopes }: { kind: AccessTokenKind; scopes: TOAuthScope[] }, signal?: AbortSignal) {
             return new Promise((resolve, reject) => {
-                const poll = async () => {
-                    await this.getAccount();
+                let attempts = 0;
+                const maxAttempts = 300; // ~5 minutes @ 1s interval
+                let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+                const cleanup = () => {
+                    if (timeoutId) {
+                        clearTimeout(timeoutId);
+                        timeoutId = null;
+                    }
+                };
+
+                const poll = async (): Promise<void> => {
+                    if (signal?.aborted) return reject(new Error('ABORTED'));
+
+                    attempts++;
+                    try {
+                        await this.getAccount();
+                    } catch {
+                        // ignore transient errors
+                    }
 
                     if (!this.account) {
-                        setTimeout(poll, 1000);
-                        return reject('account_not_found');
-                    }
-
-                    if (!this.account.tokens || this.account.tokens.length === 0) {
-                        setTimeout(poll, 1000);
+                        if (attempts >= maxAttempts) return reject(new Error('account_not_found'));
+                        timeoutId = setTimeout(() => poll(), 1000);
                         return;
                     }
 
-                    const isAuthorized = this.account.tokens.find(
-                        (token) => token.kind === kind && scopes.every((scope) => token.scopes.includes(scope)),
+                    const tokens = this.account.tokens || [];
+                    const token = tokens.find(
+                        (t) => t.kind === kind && scopes.every((scope) => t.scopes.includes(scope)),
                     );
-                    if (!isAuthorized) {
-                        setTimeout(poll, 1000);
+
+                    if (!token) {
+                        if (attempts >= maxAttempts) return reject(new Error('token_invalid'));
+                        timeoutId = setTimeout(() => poll(), 1000);
                         return;
                     }
 
-                    return isAuthorized ? resolve('') : reject('token_invalid');
+                    cleanup();
+                    resolve(token);
                 };
+
+                if (signal) {
+                    signal.addEventListener(
+                        'abort',
+                        () => {
+                            cleanup();
+                            reject(new Error('aborted'));
+                        },
+                        { once: true },
+                    );
+                }
+
                 poll();
             });
         },
