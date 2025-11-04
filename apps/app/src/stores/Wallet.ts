@@ -281,53 +281,61 @@ export const useWalletStore = defineStore('wallet', {
             const { api } = useAccountStore();
             this.isLoading = true;
 
-            const promises = [
-                api.request.get('/v1/rewards/payments'),
-                ...(this.wallet
-                    ? [
-                          api.erc20.list({ walletId: this.wallet._id, chainId: 1000000001 }),
-                          api.erc721.list({ walletId: this.wallet._id, chainId: this.chainId }),
-                          api.erc1155.list({ walletId: this.wallet._id, chainId: this.chainId }),
-                      ]
-                    : []),
-            ];
+            try {
+                const promises = [
+                    api.request.get('/v1/rewards/payments'),
+                    ...(this.wallet
+                        ? [
+                              api.erc20.list({ walletId: this.wallet._id, chainId: 1000000001 }),
+                              api.erc721.list({ walletId: this.wallet._id, chainId: this.chainId }),
+                              api.erc1155.list({ walletId: this.wallet._id, chainId: this.chainId }),
+                          ]
+                        : []),
+                ];
 
-            const [payments, erc20, erc721, erc1155] = await Promise.all(promises);
-            this.erc20 = erc20
-                ? erc20.map((t: TERC20Token) => ({
-                      ...t,
-                      rewardVariant: RewardVariant.Coin,
-                      component: 'BaseCardCoin',
-                  }))
-                : [];
-            this.erc721 = erc721
-                ? erc721.map((t: TERC721Token) => ({
-                      ...t,
-                      rewardVariant: RewardVariant.NFT,
-                      component: 'BaseCardNFT',
-                  }))
-                : [];
-            this.erc1155 = erc1155
-                ? erc1155.map((t: TERC721Token) => ({
-                      ...t,
-                      rewardVariant: RewardVariant.NFT,
-                      component: 'BaseCardNFT',
-                  }))
-                : [];
-            this.couponCodes = payments
-                .filter((p: { rewardVariant: RewardVariant }) => p.rewardVariant === RewardVariant.Coupon)
-                .map((t: TRewardCouponPayment[]) => ({
-                    ...t,
-                    component: 'BaseCardCouponCode',
-                }));
-            this.discordRoles = payments
-                .filter((p: { rewardVariant: RewardVariant }) => p.rewardVariant === RewardVariant.DiscordRole)
-                .map((t: TRewardDiscordRolePayment[]) => ({
-                    ...t,
-                    component: 'BaseCardDiscordRole',
-                }));
-
-            this.isLoading = false;
+                const [payments, erc20, erc721, erc1155] = await Promise.all(promises);
+                this.erc20 = erc20
+                    ? erc20.map((t: TERC20Token) => ({
+                          ...t,
+                          rewardVariant: RewardVariant.Coin,
+                          component: 'BaseCardCoin',
+                      }))
+                    : [];
+                this.erc721 = erc721
+                    ? erc721.map((t: TERC721Token) => ({
+                          ...t,
+                          rewardVariant: RewardVariant.NFT,
+                          component: 'BaseCardNFT',
+                      }))
+                    : [];
+                this.erc1155 = erc1155
+                    ? erc1155.map((t: TERC721Token) => ({
+                          ...t,
+                          rewardVariant: RewardVariant.NFT,
+                          component: 'BaseCardNFT',
+                      }))
+                    : [];
+                this.couponCodes = payments
+                    .filter((p: { rewardVariant: RewardVariant }) => p.rewardVariant === RewardVariant.Coupon)
+                    .map((t: TRewardCouponPayment[]) => ({
+                        ...t,
+                        component: 'BaseCardCouponCode',
+                    }));
+                this.discordRoles = payments
+                    .filter((p: { rewardVariant: RewardVariant }) => p.rewardVariant === RewardVariant.DiscordRole)
+                    .map((t: TRewardDiscordRolePayment[]) => ({
+                        ...t,
+                        component: 'BaseCardDiscordRole',
+                    }));
+            } catch (error) {
+                this.erc20 = [];
+                this.erc721 = [];
+                this.erc1155 = [];
+                this.couponCodes = [] as any;
+                this.discordRoles = [] as any;
+            } finally {
+                this.isLoading = false;
+            }
         },
         async transferERC20(config: TERC20TransferConfig) {
             if (!this.wallet) return;
