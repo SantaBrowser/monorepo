@@ -6,7 +6,8 @@
 
 html,
 body {
-    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
 }
 
 body,
@@ -17,7 +18,7 @@ body,
 
 body {
     overflow: hidden !important;
-    height: 100vh;
+    height: 100dvh;
     position: relative;
 }
 
