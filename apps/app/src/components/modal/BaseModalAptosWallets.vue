@@ -83,28 +83,6 @@
             <div v-if="wallets.length === 0" class="text-center text-muted py-3">No Aptos wallets detected.</div>
         </div>
     </b-modal>
-
-    <!-- No Account Found Modal -->
-    <b-modal
-        id="no-account-modal"
-        v-model="showNoAccountModal"
-        centered
-        hide-footer
-        size="sm"
-        content-class="wallet-modal-content"
-    >
-        <template #header>
-            <h5 class="modal-title"><i class="fas fa-exclamation-circle me-2"></i> No Account Found</h5>
-            <b-link class="btn-close" @click="showNoAccountModal = false"><i class="fas fa-times"></i></b-link>
-        </template>
-        <div class="text-center py-3">
-            <p class="mb-3">No account found in your Petra wallet.</p>
-            <p class="mb-4">Please create an account by clicking the Petra icon in your browser extension.</p>
-            <div class="d-flex justify-content-center mb-3">
-                <img :src="petraLogo" alt="Petra" class="wallet-icon-large" />
-            </div>
-        </div>
-    </b-modal>
 </template>
 
 <script setup lang="ts">
@@ -279,7 +257,6 @@ function getAptosWalletsForPopup(): WalletInfo[] {
 }
 
 const wallets = ref<WalletInfo[]>([]);
-const showNoAccountModal = ref(false);
 
 onMounted(() => {
     wallets.value = getAptosWalletsForPopup();
@@ -522,12 +499,6 @@ function connect(wallet: WalletInfo) {
                 })
                 .catch((err: any) => {
                     console.error('Wallet connect error:', wallet.name, err);
-                    if (wallet.name.toLowerCase() === 'petra') {
-                        if (err.code == 4000) {
-                            showNoAccountModal.value = true;
-                            return;
-                        }
-                    }
                 });
         } catch (err) {
             console.error(`Error connecting to ${wallet.name} wallet:`, err);
