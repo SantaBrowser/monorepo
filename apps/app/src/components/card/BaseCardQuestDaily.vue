@@ -105,9 +105,9 @@ export default defineComponent({
             });
 
             return {
-                hours: String(hours).padStart(2, '0'),
-                minutes: String(minutes).padStart(2, '0'),
-                seconds: String(seconds).padStart(2, '0'),
+                hours: String(hours || 0).padStart(2, '0'),
+                minutes: String(minutes || 0).padStart(2, '0'),
+                seconds: String(seconds || 0).padStart(2, '0'),
             };
         },
     },
