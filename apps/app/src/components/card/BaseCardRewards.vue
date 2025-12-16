@@ -211,15 +211,19 @@ import { WalletVariant } from '@thxnetwork/app/types/enums/accountVariant';
 import { RewardVariant } from '@thxnetwork/app/types/enums/rewards';
 import shareIcon from '@thxnetwork/app/assets/share.png';
 import { chainList } from '@thxnetwork/app/utils/chains';
+import { useWallet } from '@aptos-labs/wallet-adapter-vue';
+
 export default defineComponent({
     name: 'BaseViewWallet',
     components: {
         BaseModalAptosWallets,
     },
+
     setup() {
         const showWalletModal = ref(false);
         const error = ref('');
         const walletStore = useWalletStore();
+        const { signMessage, account } = useWallet();
 
         async function onWalletConnected({ wallet, response }: any) {
             // 1. Sign a message with the connected Aptos wallet
@@ -236,8 +240,8 @@ export default defineComponent({
             try {
                 // Check if this is the Santa wallet
                 const isSantaWallet =
-                    wallet.key === 'santa' ||
-                    wallet.name === 'Santa' ||
+                    wallet.key === 'santaAptos' ||
+                    wallet.name === 'Santa Wallet' ||
                     (typeof window !== 'undefined' && window.santaAptos && wallet.provider === window.santaAptos);
 
                 // Handle Santa wallet separately
@@ -347,43 +351,45 @@ export default defineComponent({
                     // Handle other wallets (Petra/Martian)
                     console.log('Using standard wallet for signing');
                     // Petra/Martian signMessage expects an object with message and nonce
-                    const signResp = await wallet.provider.signMessage({ message, nonce: 'random' });
-                    console.log('Standard wallet sign response:', signResp);
+                    const signResp = await signMessage({ message, nonce: 'random' });
 
                     // Extract signature from response - check all possible locations
-                    signature = signResp.signature || signResp.signatureHex;
+                    signature = signResp.signature.toString();
+
+                    // signature = signResp.signature || signResp.signatureHex;
 
                     // Check if signature is in args object
-                    if (!signature && signResp.args) {
-                        console.log('Checking for signature in args object:', signResp.args);
-                        signature = signResp.args.signature || signResp.args.signatureHex;
-                    }
+                    // if (!signature && signResp.args) {
+                    //     console.log('Checking for signature in args object:', signResp.args);
+                    //     signature = signResp.args.signature || signResp.args.signatureHex;
+                    // }
 
                     // Try to find signature in any property of the response
-                    if (!signature && typeof signResp === 'object') {
-                        console.log('Searching for signature in response object...');
-                        for (const key in signResp) {
-                            if (key.toLowerCase().includes('signature')) {
-                                signature = signResp[key];
-                                console.log(`Found signature in signResp.${key}:`, signature);
-                                break;
-                            }
+                    // if (!signature && typeof signResp === 'object') {
+                    //     console.log('Searching for signature in response object...');
+                    //     for (const key in signResp) {
+                    //         if (key.toLowerCase().includes('signature')) {
+                    //             signature = signResp[key];
+                    //             console.log(`Found signature in signResp.${key}:`, signature);
+                    //             break;
+                    //         }
 
-                            // Check if there's an args object with signature
-                            if (key === 'args' && typeof signResp.args === 'object') {
-                                for (const argsKey in signResp.args) {
-                                    if (argsKey.toLowerCase().includes('signature')) {
-                                        signature = signResp.args[argsKey];
-                                        console.log(`Found signature in signResp.args.${argsKey}:`, signature);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    //         // Check if there's an args object with signature
+                    //         if (key === 'args' && typeof signResp.args === 'object') {
+                    //             for (const argsKey in signResp.args) {
+                    //                 if (argsKey.toLowerCase().includes('signature')) {
+                    //                     signature = signResp.args[argsKey];
+                    //                     console.log(`Found signature in signResp.args.${argsKey}:`, signature);
+                    //                     break;
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
 
-                    publicKey = publicKey || signResp.publicKey || signResp.args?.publicKey;
-                    address = address || signResp.address || signResp.args?.address;
+                    // publicKey = publicKey || signResp.publicKey || signResp.args?.publicKey;
+                    publicKey = account?.value?.publicKey?.toString();
+                    address = signResp.address;
                 } else {
                     throw new Error('Wallet does not support message signing');
                 }
