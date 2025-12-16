@@ -96,7 +96,8 @@ import nightlyLogo from '../../assets/wallets/nightly.png';
 import googleLogo from '../../assets/wallets/google.png';
 import appleLogo from '../../assets/wallets/apple.png';
 // If you have a Martian or Fewcha icon, import here as well.
-import { ref, defineEmits, onMounted, computed } from 'vue';
+import { ref, defineEmits, onMounted, computed, watch } from 'vue';
+import { useWallet } from '@aptos-labs/wallet-adapter-vue';
 import { useThemeStore } from '../../stores/Stores';
 
 const emit = defineEmits(['close', 'connected']);
@@ -118,6 +119,8 @@ interface WalletInfo {
     disabled?: boolean;
     comingSoon?: boolean;
 }
+
+const { connect: connectAptosWallet, account: aptosAccount, connected: isAptosConnected } = useWallet();
 
 // Detect mobile device and platform
 const isMobile = computed(() => {
@@ -350,7 +353,7 @@ const moreWalletsArray = computed(() => {
     return nonPriorityWallets;
 });
 
-function connect(wallet: WalletInfo) {
+async function connect(wallet: WalletInfo) {
     if (!wallet.provider) return;
     console.log(`Connecting to ${wallet.name} wallet...`);
 
@@ -488,18 +491,51 @@ function connect(wallet: WalletInfo) {
                 console.error('Santa wallet connect error:', err);
             });
     } else {
-        // Standard flow for other wallets with connect method
         try {
-            wallet.provider
-                .connect()
-                .then((response: any) => {
-                    console.log(`${wallet.name} connect response:`, response);
-                    emit('connected', { wallet, response });
+            const isConnected = isAptosConnected.value;
+
+            const signRequest = () => {
+                if (aptosAccount.value && aptosAccount.value.address && aptosAccount.value.publicKey) {
+                    const processedResponse = {
+                        args: {
+                            address: aptosAccount.value?.address.toString(),
+                            publicKey: aptosAccount.value?.publicKey.toString(),
+                        },
+                        status: 'Approved',
+                        address: aptosAccount.value?.address.toString(),
+                        publicKey: aptosAccount.value?.publicKey.toString(),
+                    };
+                    emit('connected', { wallet, response: processedResponse });
                     emit('close');
-                })
-                .catch((err: any) => {
-                    console.error('Wallet connect error:', wallet.name, err);
-                });
+                }
+            };
+
+            if (isConnected) {
+                return signRequest();
+            } else {
+                const waitForAptosConnection = () =>
+                    new Promise<typeof aptosAccount.value>((resolve, reject) => {
+                        const stopWatch = watch(
+                            aptosAccount,
+                            (account) => {
+                                if (account?.address && account?.publicKey) {
+                                    stopWatch();
+                                    resolve(account);
+                                }
+                            },
+                            { immediate: true },
+                        );
+
+                        setTimeout(() => {
+                            stopWatch();
+                            reject(new Error('Aptos connection timed out'));
+                        }, 10_000);
+                    });
+
+                connectAptosWallet(wallet.name);
+                await waitForAptosConnection();
+                return signRequest();
+            }
         } catch (err) {
             console.error(`Error connecting to ${wallet.name} wallet:`, err);
         }
