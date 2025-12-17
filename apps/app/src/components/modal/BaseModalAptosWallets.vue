@@ -13,7 +13,55 @@
             <b-link class="btn-close" @click="emit('close')"><i class="fas fa-times"></i></b-link>
         </template>
         <div class="wallet-list">
-            <!-- Top wallets section (Santa, Google, Apple) -->
+            <!-- Social Login Section (Aptos Connect) -->
+            <div class="social-login-section">
+                <p class="social-login-label" :class="{ 'dark-text': isDarkMode }">Continue with</p>
+                <div class="social-buttons">
+                    <button
+                        class="social-btn google-btn"
+                        :class="{
+                            'dark-mode': isDarkMode,
+                            'connecting': isConnecting && connectingProvider === 'google',
+                        }"
+                        :disabled="isConnecting"
+                        @click="connectWithAptosConnect('google')"
+                    >
+                        <template v-if="isConnecting && connectingProvider === 'google'">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Connecting...</span>
+                        </template>
+                        <template v-else>
+                            <img :src="googleLogo" alt="Google" class="social-icon" />
+                            <span>Google</span>
+                        </template>
+                    </button>
+                    <button
+                        class="social-btn apple-btn"
+                        :class="{
+                            'dark-mode': isDarkMode,
+                            'connecting': isConnecting && connectingProvider === 'apple',
+                        }"
+                        :disabled="isConnecting"
+                        @click="connectWithAptosConnect('apple')"
+                    >
+                        <template v-if="isConnecting && connectingProvider === 'apple'">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Connecting...</span>
+                        </template>
+                        <template v-else>
+                            <img :src="appleLogo" alt="Apple" class="social-icon" />
+                            <span>Apple</span>
+                        </template>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="wallet-divider" :class="{ 'dark-mode': isDarkMode }">
+                <span>or connect wallet</span>
+            </div>
+
+            <!-- Top wallets section (Santa, Petra, etc.) -->
             <div class="wallet-top-section">
                 <div
                     v-for="wallet in topWalletsArray"
@@ -80,7 +128,9 @@
                     </div>
                 </div>
             </div> -->
-            <div v-if="wallets.length === 0" class="text-center text-muted py-3">No Aptos wallets detected.</div>
+            <div v-if="wallets.length === 0 && !hasAptosConnect" class="text-center text-muted py-3">
+                No Aptos wallets detected.
+            </div>
         </div>
     </b-modal>
 </template>
@@ -88,16 +138,17 @@
 <script setup lang="ts">
 import logo from '../../assets/wallets/santa.png';
 import petraLogo from '../../assets/wallets/petra.png';
-import okxLogo from '../../assets/wallets/okx.png';
-import pontemLogo from '../../assets/wallets/pontem.png';
-import nightlyLogo from '../../assets/wallets/nightly.png';
+// Uncomment these when enabling additional wallets
+// import okxLogo from '../../assets/wallets/okx.png';
+// import pontemLogo from '../../assets/wallets/pontem.png';
+// import nightlyLogo from '../../assets/wallets/nightly.png';
 
-// Use the actual Google and Apple wallet icons
+// Social login icons for Aptos Connect
 import googleLogo from '../../assets/wallets/google.png';
 import appleLogo from '../../assets/wallets/apple.png';
-// If you have a Martian or Fewcha icon, import here as well.
-import { ref, defineEmits, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useWallet } from '@aptos-labs/wallet-adapter-vue';
+import { Network } from '@aptos-labs/ts-sdk';
 import { useThemeStore } from '../../stores/Stores';
 
 const emit = defineEmits(['close', 'connected']);
@@ -120,7 +171,151 @@ interface WalletInfo {
     comingSoon?: boolean;
 }
 
-const { connect: connectAptosWallet, account: aptosAccount, connected: isAptosConnected } = useWallet();
+// Configure wallet adapter with AptosConnect support
+// The dappConfig with aptosConnect enables Google/Apple sign-in via Petra Web
+const walletConfig = {
+    dappConfig: {
+        network: Network.MAINNET,
+        aptosConnectDappId: 'santa-rewards',
+        aptosConnect: {
+            dappName: 'Santa Rewards',
+        },
+    },
+    onError: (error: any) => {
+        console.error('Aptos wallet error:', error);
+    },
+};
+
+const {
+    connect: connectAptosWallet,
+    account: aptosAccount,
+    connected: isAptosConnected,
+    wallets: adapterWallets,
+} = useWallet(walletConfig as any);
+
+// Track connecting state for loading indicators
+const isConnecting = ref(false);
+const connectingProvider = ref<'google' | 'apple' | null>(null);
+const hasEmittedConnection = ref(false);
+
+// Reset state when modal opens
+watch(show, (newVal) => {
+    if (newVal) {
+        // Reset connection tracking when modal opens
+        hasEmittedConnection.value = false;
+        isConnecting.value = false;
+        connectingProvider.value = null;
+    }
+});
+
+// Check if Aptos Connect wallets are available from the adapter
+const hasAptosConnect = computed(() => {
+    const walletsList = adapterWallets?.value;
+    if (!walletsList) return false;
+    return walletsList.some(
+        (w) => w.name === 'Continue with Google' || w.name === 'Continue with Apple' || w.name.includes('Petra'),
+    );
+});
+
+// Connect using Aptos Connect (Google or Apple)
+async function connectWithAptosConnect(provider: 'google' | 'apple') {
+    isConnecting.value = true;
+    connectingProvider.value = provider;
+    // The wallet adapter uses "Continue with Google/Apple" as wallet names
+    const adapterWalletName = provider === 'google' ? 'Continue with Google' : 'Continue with Apple';
+    console.log(`Connecting with Aptos Connect (${provider})...`);
+
+    try {
+        // Find the appropriate wallet from the adapter's wallet list
+        // The wallet adapter with AptosConnect enabled will have these options
+        const walletsList = adapterWallets?.value;
+        console.log(
+            'Available wallets from adapter:',
+            walletsList?.map((w) => w.name),
+        );
+
+        // First try to find the specific social login wallet
+        let targetWallet = walletsList ? walletsList.find((w) => w.name === adapterWalletName) : undefined;
+
+        // If not found, fall back to Petra (which supports AptosConnect)
+        if (!targetWallet && walletsList) {
+            targetWallet = walletsList.find((w) => w.name === 'Petra');
+        }
+
+        if (targetWallet) {
+            console.log('Found target wallet:', targetWallet.name);
+            await connectAptosWallet(targetWallet.name);
+            // The watcher on aptosAccount will handle the success callback
+            // Don't call handleConnectionSuccess here to avoid double popup
+        } else {
+            // Open Petra Web for Aptos Connect if no wallet adapter found
+            // This will open the Aptos Connect flow in a new window
+            const aptosConnectUrl =
+                provider === 'google'
+                    ? 'https://petra.app/explore?network=mainnet'
+                    : 'https://petra.app/explore?network=mainnet';
+            window.open(aptosConnectUrl, '_blank', 'width=450,height=700');
+            console.log('Opened Aptos Connect in new window');
+            // Reset connecting state since we're opening external window
+            isConnecting.value = false;
+            connectingProvider.value = null;
+        }
+    } catch (error) {
+        console.error(`Error connecting with ${provider}:`, error);
+        isConnecting.value = false;
+        connectingProvider.value = null;
+    }
+    // Note: Don't reset isConnecting here - the watcher will handle it after successful connection
+}
+
+// Handle successful connection
+function handleConnectionSuccess(walletName = 'AptosConnect') {
+    // Prevent double emission
+    if (hasEmittedConnection.value) {
+        console.log('Connection already emitted, skipping...');
+        return;
+    }
+
+    if (aptosAccount.value?.address) {
+        hasEmittedConnection.value = true;
+        const processedResponse = {
+            args: {
+                address: aptosAccount.value.address.toString(),
+                publicKey: aptosAccount.value.publicKey?.toString() || '',
+            },
+            status: 'Approved',
+            address: aptosAccount.value.address.toString(),
+            publicKey: aptosAccount.value.publicKey?.toString() || '',
+        };
+        console.log('AptosConnect connection success:', processedResponse);
+        emit('connected', {
+            wallet: {
+                name: walletName,
+                key: 'aptosConnect',
+                // AptosConnect wallets don't have a provider, they use the wallet adapter directly
+            },
+            response: processedResponse,
+        });
+        emit('close');
+    } else {
+        console.log('Waiting for account to be available...');
+    }
+}
+
+// Watch for account changes from Aptos Connect
+watch(
+    aptosAccount,
+    (newAccount) => {
+        if (newAccount?.address && isConnecting.value && connectingProvider.value) {
+            // Use the stored provider name and reset the connecting state
+            const provider = connectingProvider.value;
+            isConnecting.value = false;
+            connectingProvider.value = null;
+            handleConnectionSuccess(provider);
+        }
+    },
+    { deep: true },
+);
 
 // Detect mobile device and platform
 const isMobile = computed(() => {
@@ -144,7 +339,11 @@ const isIOS = computed(() => {
     return false;
 });
 
-const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injectedKey: string }[] = [
+interface KnownWallet extends Omit<WalletInfo, 'provider' | 'injected'> {
+    injectedKey: string;
+}
+
+const KNOWN_APTOS_WALLETS: KnownWallet[] = [
     {
         key: 'santaAptos',
         name: 'Santa Wallet',
@@ -204,7 +403,7 @@ const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injecte
     // },
 ];
 
-const mobileStoreUrls = {
+const mobileStoreUrls: Record<string, { android: string; ios: string }> = {
     // Santa Wallet is not available on mobile stores, use desktop URL
     // Petra Wallet
     aptos: {
@@ -228,7 +427,7 @@ const mobileStoreUrls = {
     },
 };
 
-function getInstallUrl(wallet: any) {
+function getInstallUrl(wallet: KnownWallet) {
     // For Santa Wallet, always use the desktop URL regardless of device
     if (wallet.key === 'santaAptos') {
         return wallet.installUrl;
@@ -236,10 +435,11 @@ function getInstallUrl(wallet: any) {
 
     // For other wallets, use mobile app store URLs on mobile devices
     if (isMobile.value) {
-        if (isAndroid.value && mobileStoreUrls[wallet.injectedKey]?.android) {
-            return mobileStoreUrls[wallet.injectedKey].android;
-        } else if (isIOS.value && mobileStoreUrls[wallet.injectedKey]?.ios) {
-            return mobileStoreUrls[wallet.injectedKey].ios;
+        const storeUrls = mobileStoreUrls[wallet.injectedKey];
+        if (isAndroid.value && storeUrls?.android) {
+            return storeUrls.android;
+        } else if (isIOS.value && storeUrls?.ios) {
+            return storeUrls.ios;
         }
     }
 
@@ -551,6 +751,127 @@ async function connect(wallet: WalletInfo) {
 
 .wallet-list {
     margin-top: 1rem;
+}
+
+/* Social Login Section Styling */
+.social-login-section {
+    margin-bottom: 1rem;
+}
+
+.social-login-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.social-login-label.dark-text {
+    color: #adb5bd;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    background: #ffffff;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.social-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.social-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.social-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.social-btn.dark-mode {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #fff;
+}
+
+.social-btn.dark-mode:hover:not(:disabled) {
+    background: #3a3a3a;
+    border-color: #555;
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.social-btn.connecting {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+.social-btn .fa-spinner {
+    font-size: 16px;
+}
+
+.google-btn:hover:not(:disabled) {
+    border-color: #4285f4;
+}
+
+.apple-btn:hover:not(:disabled) {
+    border-color: #333;
+}
+
+.apple-btn.dark-mode:hover:not(:disabled) {
+    border-color: #fff;
+}
+
+/* Wallet Divider */
+.wallet-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1rem 0;
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.wallet-divider::before,
+.wallet-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.wallet-divider.dark-mode::before,
+.wallet-divider.dark-mode::after {
+    border-color: #444;
+}
+
+.wallet-divider.dark-mode {
+    color: #adb5bd;
+}
+
+.wallet-divider span {
+    padding: 0 12px;
 }
 
 /* Top wallet section styling */

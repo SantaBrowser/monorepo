@@ -212,6 +212,7 @@ import { RewardVariant } from '@thxnetwork/app/types/enums/rewards';
 import shareIcon from '@thxnetwork/app/assets/share.png';
 import { chainList } from '@thxnetwork/app/utils/chains';
 import { useWallet } from '@aptos-labs/wallet-adapter-vue';
+import { Network } from '@aptos-labs/ts-sdk';
 
 export default defineComponent({
     name: 'BaseViewWallet',
@@ -223,7 +224,21 @@ export default defineComponent({
         const showWalletModal = ref(false);
         const error = ref('');
         const walletStore = useWalletStore();
-        const { signMessage, account } = useWallet();
+
+        // Configure wallet adapter with AptosConnect support
+        const walletConfig = {
+            dappConfig: {
+                network: Network.MAINNET,
+                aptosConnectDappId: 'santa-rewards',
+                aptosConnect: {
+                    dappName: 'Santa Rewards',
+                },
+            },
+            onError: (error: any) => {
+                console.error('Aptos wallet error:', error);
+            },
+        };
+        const { signMessage, account } = useWallet(walletConfig as any);
 
         async function onWalletConnected({ wallet, response }: any) {
             // 1. Sign a message with the connected Aptos wallet
@@ -347,7 +362,36 @@ export default defineComponent({
                                 .map(() => Math.floor(Math.random() * 16).toString(16))
                                 .join('');
                     }
-                } else if (wallet.provider.signMessage) {
+                } else if (
+                    wallet.name === 'AptosConnect' ||
+                    wallet.name === 'google' ||
+                    wallet.name === 'apple' ||
+                    wallet.name?.includes('Google') ||
+                    wallet.name?.includes('Apple')
+                ) {
+                    // Handle AptosConnect wallets (Google/Apple sign-in)
+                    // These wallets use the wallet adapter's signMessage directly
+                    console.log('Using AptosConnect wallet for signing:', wallet.name);
+                    try {
+                        const signResp = await signMessage({ message, nonce: 'random' });
+                        console.log('AptosConnect sign response:', signResp);
+
+                        // Extract signature from response
+                        if (signResp.signature) {
+                            signature =
+                                typeof signResp.signature === 'string'
+                                    ? signResp.signature
+                                    : signResp.signature.toString();
+                        }
+
+                        // Use account from wallet adapter for publicKey
+                        publicKey = account?.value?.publicKey?.toString() || publicKey;
+                        address = signResp.address || address;
+                    } catch (signErr) {
+                        console.error('AptosConnect sign error:', signErr);
+                        throw signErr;
+                    }
+                } else if (wallet.provider && wallet.provider.signMessage) {
                     // Handle other wallets (Petra/Martian)
                     console.log('Using standard wallet for signing');
                     // Petra/Martian signMessage expects an object with message and nonce
@@ -356,42 +400,29 @@ export default defineComponent({
                     // Extract signature from response - check all possible locations
                     signature = signResp.signature.toString();
 
-                    // signature = signResp.signature || signResp.signatureHex;
-
-                    // Check if signature is in args object
-                    // if (!signature && signResp.args) {
-                    //     console.log('Checking for signature in args object:', signResp.args);
-                    //     signature = signResp.args.signature || signResp.args.signatureHex;
-                    // }
-
-                    // Try to find signature in any property of the response
-                    // if (!signature && typeof signResp === 'object') {
-                    //     console.log('Searching for signature in response object...');
-                    //     for (const key in signResp) {
-                    //         if (key.toLowerCase().includes('signature')) {
-                    //             signature = signResp[key];
-                    //             console.log(`Found signature in signResp.${key}:`, signature);
-                    //             break;
-                    //         }
-
-                    //         // Check if there's an args object with signature
-                    //         if (key === 'args' && typeof signResp.args === 'object') {
-                    //             for (const argsKey in signResp.args) {
-                    //                 if (argsKey.toLowerCase().includes('signature')) {
-                    //                     signature = signResp.args[argsKey];
-                    //                     console.log(`Found signature in signResp.args.${argsKey}:`, signature);
-                    //                     break;
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // }
-
                     // publicKey = publicKey || signResp.publicKey || signResp.args?.publicKey;
                     publicKey = account?.value?.publicKey?.toString();
                     address = signResp.address;
                 } else {
-                    throw new Error('Wallet does not support message signing');
+                    // Fallback: try using wallet adapter's signMessage
+                    console.log('Using wallet adapter signMessage as fallback');
+                    try {
+                        const signResp = await signMessage({ message, nonce: 'random' });
+                        console.log('Fallback sign response:', signResp);
+
+                        if (signResp.signature) {
+                            signature =
+                                typeof signResp.signature === 'string'
+                                    ? signResp.signature
+                                    : signResp.signature.toString();
+                        }
+
+                        publicKey = account?.value?.publicKey?.toString() || publicKey;
+                        address = signResp.address || address;
+                    } catch (fallbackErr) {
+                        console.error('Fallback sign error:', fallbackErr);
+                        throw new Error('Wallet does not support message signing');
+                    }
                 }
 
                 console.log('Final extracted values:', { address, publicKey, signature });
