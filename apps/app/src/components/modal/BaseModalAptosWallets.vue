@@ -56,13 +56,13 @@
                 </div>
             </div>
 
-            <!-- Divider -->
-            <div class="wallet-divider" :class="{ 'dark-mode': isDarkMode }">
+            <!-- Divider - only show if there are wallets available -->
+            <div v-if="topWalletsArray.length > 0" class="wallet-divider" :class="{ 'dark-mode': isDarkMode }">
                 <span>or connect wallet</span>
             </div>
 
             <!-- Top wallets section (Santa, Petra, etc.) -->
-            <div class="wallet-top-section">
+            <div v-if="topWalletsArray.length > 0" class="wallet-top-section">
                 <div
                     v-for="wallet in topWalletsArray"
                     :key="wallet.key"
