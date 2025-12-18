@@ -36,6 +36,8 @@ import pontemLogo from '../assets/wallets/pontem.png';
 import nightlyLogo from '../assets/wallets/nightly.png';
 import aptosConnectLogo from '../assets/wallets/aptos.png';
 import santaLogo from '../assets/wallets/santa.png';
+import googleLogo from '../assets/wallets/google.png';
+import appleLogo from '../assets/wallets/apple.png';
 // Add more as needed (e.g., Martian, Fewcha)
 
 type TRequestBodyApproval = {
@@ -55,6 +57,9 @@ export const walletLogoMap: { [variantOrProvider: string]: string } = {
     'nightly': nightlyLogo,
     'aptos': aptosConnectLogo,
     'santa wallet': santaLogo,
+    // AptosConnect social login providers
+    'google': googleLogo,
+    'apple': appleLogo,
     // Add more as needed: martian, fewcha, etc.
 };
 

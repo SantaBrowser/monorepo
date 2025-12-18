@@ -13,8 +13,169 @@
             <b-link class="btn-close" @click="emit('close')"><i class="fas fa-times"></i></b-link>
         </template>
         <div class="wallet-list">
-            <!-- Top wallets section (Santa, Google, Apple) -->
-            <div class="wallet-top-section">
+            <!-- Already Connected Section - Show when wallet is already connected -->
+            <div v-if="showAlreadyConnected" class="already-connected-section">
+                <div class="connected-card" :class="{ 'dark-mode': isDarkMode }">
+                    <!-- Success State -->
+                    <template v-if="verificationState === 'success'">
+                        <div class="verification-success-icon">
+                            <i class="fas fa-check-circle text-success"></i>
+                        </div>
+                        <div class="connected-info">
+                            <p class="connected-title text-success">Account Added!</p>
+                            <p class="connected-address">
+                                {{ truncateAddress(alreadyConnectedAddress || aptosAccount?.address?.toString()) }}
+                            </p>
+                        </div>
+                        <button class="btn btn-primary continue-btn" @click="closeAfterSuccess">
+                            <i class="fas fa-check me-2"></i>
+                            Done
+                        </button>
+                    </template>
+
+                    <!-- Verifying State -->
+                    <template v-else-if="verificationState === 'verifying'">
+                        <div class="connected-icon verifying">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <div class="connected-info">
+                            <p class="connected-title">Verifying...</p>
+                            <p class="connected-address text-muted">Please sign the message in your wallet</p>
+                        </div>
+                    </template>
+
+                    <!-- Error State -->
+                    <template v-else-if="verificationState === 'error'">
+                        <div class="connected-icon error">
+                            <i class="fas fa-exclamation-circle text-danger"></i>
+                        </div>
+                        <div class="connected-info">
+                            <p class="connected-title text-danger">Verification Failed</p>
+                            <p class="connected-address error-message">{{ verificationError }}</p>
+                        </div>
+                        <button class="btn btn-primary continue-btn" @click="verifyAndCreateWallet">
+                            <i class="fas fa-redo me-2"></i>
+                            Try Again
+                        </button>
+                        <button
+                            v-b-tooltip.hover
+                            class="btn btn-link btn-sm text-muted mt-2"
+                            title="To switch Google accounts, log out from aptosconnect.app first"
+                            @click="useDifferentAccount"
+                        >
+                            <i class="fas fa-sync-alt me-1"></i>
+                            Switch address
+                        </button>
+                    </template>
+
+                    <!-- Initial Connected State (waiting for user to verify) -->
+                    <template v-else>
+                        <div class="connected-icon">
+                            <img
+                                v-if="alreadyConnectedProvider === 'google'"
+                                :src="googleLogo"
+                                alt="Google"
+                                class="provider-logo"
+                            />
+                            <img
+                                v-else-if="alreadyConnectedProvider === 'apple'"
+                                :src="appleLogo"
+                                alt="Apple"
+                                class="provider-logo"
+                            />
+                            <i v-else class="fas fa-check-circle text-success"></i>
+                        </div>
+                        <div class="connected-info">
+                            <p class="connected-title">Account Connected</p>
+                            <p v-if="alreadyConnectedAddress || aptosAccount?.address" class="connected-address">
+                                {{ truncateAddress(alreadyConnectedAddress || aptosAccount?.address?.toString()) }}
+                            </p>
+                            <p v-else class="connected-address loading">
+                                <i class="fas fa-spinner fa-spin me-1"></i> Loading address...
+                            </p>
+                            <!-- Show "Already verified" badge if wallet is already in the system -->
+                            <p v-if="isCurrentWalletAlreadyVerified" class="verified-badge">
+                                <i class="fas fa-check-circle text-success me-1"></i>
+                                Already verified
+                            </p>
+                        </div>
+                        <!-- Show Verify button only for unverified wallets -->
+                        <button
+                            v-if="!isCurrentWalletAlreadyVerified"
+                            class="btn btn-primary continue-btn"
+                            :disabled="!alreadyConnectedAddress && !aptosAccount?.address"
+                            @click="verifyAndCreateWallet"
+                        >
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Verify this account
+                        </button>
+                        <button
+                            v-b-tooltip.hover
+                            class="btn btn-link btn-sm text-muted mt-2"
+                            title="To switch Google accounts, log out from aptosconnect.app first"
+                            @click="useDifferentAccount"
+                        >
+                            <i class="fas fa-sync-alt me-1"></i>
+                            Switch address
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Social Login Section (Aptos Connect) - Hide when showing already connected -->
+            <div v-else class="social-login-section">
+                <!-- <p class="social-login-label" :class="{ 'dark-text': isDarkMode }">Continue with</p> -->
+                <div class="social-buttons">
+                    <button
+                        class="social-btn google-btn"
+                        :class="{
+                            'dark-mode': isDarkMode,
+                            'connecting': isConnecting && connectingProvider === 'google',
+                        }"
+                        :disabled="isConnecting"
+                        @click="connectWithAptosConnect('google')"
+                    >
+                        <template v-if="isConnecting && connectingProvider === 'google'">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Connecting...</span>
+                        </template>
+                        <template v-else>
+                            <img :src="googleLogo" alt="Google" class="social-icon" />
+                            <span>Continue with Google</span>
+                        </template>
+                    </button>
+                    <!-- <button
+                        class="social-btn apple-btn"
+                        :class="{
+                            'dark-mode': isDarkMode,
+                            'connecting': isConnecting && connectingProvider === 'apple',
+                        }"
+                        :disabled="isConnecting"
+                        @click="connectWithAptosConnect('apple')"
+                    >
+                        <template v-if="isConnecting && connectingProvider === 'apple'">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Connecting...</span>
+                        </template>
+                        <template v-else>
+                            <img :src="appleLogo" alt="Apple" class="social-icon" />
+                            <span>Apple</span>
+                        </template>
+                    </button> -->
+                </div>
+            </div>
+
+            <!-- Divider - only show if there are wallets available and not showing already connected -->
+            <!-- <div
+                v-if="topWalletsArray.length > 0 && !showAlreadyConnected"
+                class="wallet-divider"
+                :class="{ 'dark-mode': isDarkMode }"
+            >
+                <span>or connect wallet</span>
+            </div> -->
+
+            <!-- Top wallets section (Santa, Petra, etc.) - Hide when showing already connected -->
+            <!-- <div v-if="topWalletsArray.length > 0 && !showAlreadyConnected" class="wallet-top-section">
                 <div
                     v-for="wallet in topWalletsArray"
                     :key="wallet.key"
@@ -34,7 +195,7 @@
                     <div v-if="wallet.injected" class="wallet-status connected"></div>
                     <div v-else class="wallet-status not-connected"></div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- More wallets section (collapsible) -->
             <!-- <div class="more-wallets-section">
@@ -80,7 +241,9 @@
                     </div>
                 </div>
             </div> -->
-            <div v-if="wallets.length === 0" class="text-center text-muted py-3">No Aptos wallets detected.</div>
+            <div v-if="wallets.length === 0 && !hasAptosConnect" class="text-center text-muted py-3">
+                No Aptos wallets detected.
+            </div>
         </div>
     </b-modal>
 </template>
@@ -88,17 +251,23 @@
 <script setup lang="ts">
 import logo from '../../assets/wallets/santa.png';
 import petraLogo from '../../assets/wallets/petra.png';
-import okxLogo from '../../assets/wallets/okx.png';
-import pontemLogo from '../../assets/wallets/pontem.png';
-import nightlyLogo from '../../assets/wallets/nightly.png';
+// Uncomment these when enabling additional wallets
+// import okxLogo from '../../assets/wallets/okx.png';
+// import pontemLogo from '../../assets/wallets/pontem.png';
+// import nightlyLogo from '../../assets/wallets/nightly.png';
 
-// Use the actual Google and Apple wallet icons
+// Social login icons for Aptos Connect
 import googleLogo from '../../assets/wallets/google.png';
 import appleLogo from '../../assets/wallets/apple.png';
-// If you have a Martian or Fewcha icon, import here as well.
-import { ref, defineEmits, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useWallet } from '@aptos-labs/wallet-adapter-vue';
+import { Network } from '@aptos-labs/ts-sdk';
 import { useThemeStore } from '../../stores/Stores';
+import { useWalletStore } from '../../stores/Wallet';
+import { WalletVariant } from '../../types/enums/accountVariant';
+
+// Get wallet store to check existing wallets
+const walletStore = useWalletStore();
 
 const emit = defineEmits(['close', 'connected']);
 const props = defineProps<{ show: boolean }>();
@@ -120,7 +289,393 @@ interface WalletInfo {
     comingSoon?: boolean;
 }
 
-const { connect: connectAptosWallet, account: aptosAccount, connected: isAptosConnected } = useWallet();
+// Track connecting state for loading indicators
+const isConnecting = ref(false);
+const connectingProvider = ref<'google' | 'apple' | null>(null);
+const hasEmittedConnection = ref(false);
+
+// Track "already connected" state to show connected wallet UI
+const showAlreadyConnected = ref(false);
+const alreadyConnectedProvider = ref<'google' | 'apple' | null>(null);
+const alreadyConnectedAddress = ref<string | null>(null);
+
+// Check if wallet is already verified (exists in wallet store with same provider)
+function isWalletAlreadyVerified(address: string, provider: string): boolean {
+    if (!walletStore.wallets || walletStore.wallets.length === 0) return false;
+
+    // Check if wallet exists with same address and provider
+    // Wallets are stored with variant='aptos' and provider='google'/'apple'
+    const found = walletStore.wallets.some(
+        (w: any) => w.address?.toLowerCase() === address.toLowerCase() && w.provider === provider,
+    );
+    console.log('isWalletAlreadyVerified:', { address, provider, found, wallets: walletStore.wallets });
+    return found;
+}
+
+// Emit connection directly (for already verified wallets)
+function emitConnectionDirectly(address: string, provider: string) {
+    if (hasEmittedConnection.value) return;
+
+    hasEmittedConnection.value = true;
+    const publicKey = aptosAccount.value?.publicKey?.toString() || '';
+
+    const processedResponse = {
+        args: { address, publicKey },
+        status: 'Approved',
+        address,
+        publicKey,
+    };
+
+    console.log('Wallet already verified, emitting directly:', processedResponse);
+    emit('connected', {
+        wallet: {
+            name: provider,
+            key: 'aptosConnect',
+        },
+        response: processedResponse,
+    });
+    emit('close');
+}
+
+// Handle wallet adapter errors
+function handleWalletError(error: any) {
+    console.error('Aptos wallet error:', error);
+    const errorMessage = error?.message || error?.toString() || String(error);
+
+    // Check if this is an "already connected" error
+    if (errorMessage.includes('already connected') && connectingProvider.value) {
+        const provider = connectingProvider.value;
+        const address = aptosAccount.value?.address?.toString();
+
+        console.log('onError: Wallet already connected', { provider, address });
+
+        // Show the connected UI (even for already verified wallets)
+        // User can click "Continue" or "Use a different account"
+        console.log('Wallet connected, showing connected UI');
+
+        showAlreadyConnected.value = true;
+        alreadyConnectedProvider.value = provider;
+        if (address) {
+            alreadyConnectedAddress.value = address;
+
+            // If wallet is already verified, auto-select it
+            if (isWalletAlreadyVerified(address, provider)) {
+                const wallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+                if (wallet) {
+                    console.log('Auto-selecting already verified wallet:', wallet);
+                    walletStore.setWallet(wallet);
+                }
+            }
+        }
+        isConnecting.value = false;
+        connectingProvider.value = null;
+    }
+}
+
+// Configure wallet adapter with AptosConnect support
+// The dappConfig with aptosConnect enables Google/Apple sign-in via Petra Web
+const walletConfig = {
+    dappConfig: {
+        network: Network.MAINNET,
+        aptosConnectDappId: 'santa-rewards',
+        aptosConnect: {
+            dappName: 'Santa Rewards',
+        },
+    },
+    onError: handleWalletError,
+};
+
+const {
+    connect: connectAptosWallet,
+    disconnect: disconnectAptosWallet,
+    account: aptosAccount,
+    connected: isAptosConnected,
+    wallets: adapterWallets,
+    signMessage,
+} = useWallet(walletConfig as any);
+
+// Verification state
+const verificationState = ref<'idle' | 'verifying' | 'success' | 'error'>('idle');
+const verificationError = ref<string | null>(null);
+
+// Computed: Check if current connected wallet is already verified
+const isCurrentWalletAlreadyVerified = computed(() => {
+    const address = alreadyConnectedAddress.value || aptosAccount.value?.address?.toString();
+    const provider = alreadyConnectedProvider.value;
+    if (!address || !provider) return false;
+    return isWalletAlreadyVerified(address, provider);
+});
+
+// Truncate address for display
+function truncateAddress(address: string | undefined | null): string {
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+// Watch for account to become available when already connected
+watch(
+    aptosAccount,
+    (newAccount) => {
+        if (showAlreadyConnected.value && newAccount?.address && !alreadyConnectedAddress.value) {
+            alreadyConnectedAddress.value = newAccount.address.toString();
+            console.log('Account address now available:', alreadyConnectedAddress.value);
+        }
+    },
+    { deep: true, immediate: true },
+);
+
+// Reset state when modal opens
+watch(show, (newVal) => {
+    if (newVal) {
+        // Reset connection tracking when modal opens
+        hasEmittedConnection.value = false;
+        isConnecting.value = false;
+        connectingProvider.value = null;
+        showAlreadyConnected.value = false;
+        alreadyConnectedProvider.value = null;
+        alreadyConnectedAddress.value = null;
+        verificationState.value = 'idle';
+        verificationError.value = null;
+    }
+});
+
+// Check if Aptos Connect wallets are available from the adapter
+const hasAptosConnect = computed(() => {
+    const walletsList = adapterWallets?.value;
+    if (!walletsList) return false;
+    return walletsList.some(
+        (w) => w.name === 'Continue with Google' || w.name === 'Continue with Apple' || w.name.includes('Petra'),
+    );
+});
+
+// Connect using Aptos Connect (Google or Apple)
+async function connectWithAptosConnect(provider: 'google' | 'apple') {
+    isConnecting.value = true;
+    connectingProvider.value = provider;
+    // The wallet adapter uses "Continue with Google/Apple" as wallet names
+    const adapterWalletName = provider === 'google' ? 'Continue with Google' : 'Continue with Apple';
+    console.log(`Connecting with Aptos Connect (${provider})...`);
+
+    try {
+        // Find the appropriate wallet from the adapter's wallet list
+        // The wallet adapter with AptosConnect enabled will have these options
+        const walletsList = adapterWallets?.value;
+        console.log(
+            'Available wallets from adapter:',
+            walletsList?.map((w) => w.name),
+        );
+
+        // First try to find the specific social login wallet
+        let targetWallet = walletsList ? walletsList.find((w) => w.name === adapterWalletName) : undefined;
+
+        // If not found, fall back to Petra (which supports AptosConnect)
+        if (!targetWallet && walletsList) {
+            targetWallet = walletsList.find((w) => w.name === 'Petra');
+        }
+
+        if (targetWallet) {
+            console.log('Found target wallet:', targetWallet.name);
+            await connectAptosWallet(targetWallet.name);
+            // The watcher on aptosAccount will handle the success callback
+            // Don't call handleConnectionSuccess here to avoid double popup
+        } else {
+            // Open Petra Web for Aptos Connect if no wallet adapter found
+            // This will open the Aptos Connect flow in a new window
+            const aptosConnectUrl =
+                provider === 'google'
+                    ? 'https://petra.app/explore?network=mainnet'
+                    : 'https://petra.app/explore?network=mainnet';
+            window.open(aptosConnectUrl, '_blank', 'width=450,height=700');
+            console.log('Opened Aptos Connect in new window');
+            // Reset connecting state since we're opening external window
+            isConnecting.value = false;
+            connectingProvider.value = null;
+        }
+    } catch (error: any) {
+        console.error(`Error in catch block connecting with ${provider}:`, error);
+
+        // Get the error message from various possible formats
+        const errorMessage = error?.message || error?.toString() || String(error);
+        console.log('Catch block error message:', errorMessage);
+
+        // Check if this is an "already connected" error (backup check in case onError didn't handle it)
+        if (errorMessage.includes('already connected') && !showAlreadyConnected.value && !hasEmittedConnection.value) {
+            const address = aptosAccount.value?.address?.toString();
+
+            // Check if already verified
+            if (address && isWalletAlreadyVerified(address, provider)) {
+                console.log('Catch: Wallet already verified, proceeding directly');
+                isConnecting.value = false;
+                connectingProvider.value = null;
+                emitConnectionDirectly(address, provider);
+                return;
+            }
+
+            console.log('Catch: Wallet already connected, setting showAlreadyConnected to true');
+            showAlreadyConnected.value = true;
+            alreadyConnectedProvider.value = provider;
+            if (address) {
+                alreadyConnectedAddress.value = address;
+            }
+        }
+
+        isConnecting.value = false;
+        connectingProvider.value = null;
+    }
+    // Note: Don't reset isConnecting here - the watcher will handle it after successful connection
+}
+
+// Verify wallet and create on server
+async function verifyAndCreateWallet() {
+    const address = alreadyConnectedAddress.value || aptosAccount.value?.address?.toString();
+    const provider = alreadyConnectedProvider.value;
+
+    if (!address || !provider) {
+        verificationError.value = 'Missing wallet address or provider';
+        verificationState.value = 'error';
+        return;
+    }
+
+    verificationState.value = 'verifying';
+    verificationError.value = null;
+
+    try {
+        const message = 'Sign to connect your wallet to Santa Rewards';
+
+        // Request signature from wallet
+        console.log('Requesting signature for verification...');
+        const signResp = await signMessage({ message, nonce: 'random' });
+        console.log('Sign response:', signResp);
+
+        const signature = typeof signResp.signature === 'string' ? signResp.signature : signResp.signature?.toString();
+        const publicKey = aptosAccount.value?.publicKey?.toString() || '';
+
+        if (!signature) {
+            throw new Error('Failed to get signature from wallet');
+        }
+
+        // Create wallet on server
+        const walletData = {
+            variant: WalletVariant.Aptos,
+            message,
+            publicKey,
+            signature,
+            rawAddress: address,
+            address,
+            chainId: 1000000001,
+            provider: provider,
+        };
+
+        console.log('Creating wallet with data:', walletData);
+        await walletStore.create(walletData);
+
+        // Find and select the newly created wallet
+        const newWallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+        if (newWallet) {
+            console.log('Setting newly created wallet as active:', newWallet);
+            await walletStore.setWallet(newWallet);
+        }
+
+        verificationState.value = 'success';
+        console.log('Wallet verified and created successfully');
+    } catch (err: any) {
+        console.error('Verification error:', err);
+        verificationState.value = 'error';
+        verificationError.value = err.message || 'Verification failed. Please try again.';
+    }
+}
+
+// Close modal after successful verification
+async function closeAfterSuccess() {
+    // If wallet was just verified, it should already be selected
+    // But for already verified wallets, we need to select it now
+    const address = alreadyConnectedAddress.value || aptosAccount.value?.address?.toString();
+    if (address) {
+        const wallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+        if (wallet) {
+            console.log('Setting wallet as active on close:', wallet);
+            await walletStore.setWallet(wallet);
+        }
+    }
+
+    showAlreadyConnected.value = false;
+    verificationState.value = 'idle';
+    verificationError.value = null;
+    emit('close');
+}
+
+// Disconnect and connect with a different account
+async function useDifferentAccount() {
+    const provider = alreadyConnectedProvider.value;
+    showAlreadyConnected.value = false;
+    alreadyConnectedProvider.value = null;
+    alreadyConnectedAddress.value = null;
+    verificationState.value = 'idle';
+    verificationError.value = null;
+
+    try {
+        // Disconnect the current wallet
+        await disconnectAptosWallet();
+        console.log('Disconnected previous wallet');
+
+        // Small delay to ensure disconnect completes
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        // Reconnect with the same provider
+        if (provider) {
+            await connectWithAptosConnect(provider);
+        }
+    } catch (err) {
+        console.error('Error switching accounts:', err);
+    }
+}
+
+// Handle successful connection - shows verification UI instead of auto-verifying
+async function handleConnectionSuccess(walletName = 'AptosConnect') {
+    // Prevent double handling
+    if (hasEmittedConnection.value || showAlreadyConnected.value) {
+        console.log('Connection already handled, skipping...');
+        return;
+    }
+
+    if (aptosAccount.value?.address) {
+        const address = aptosAccount.value.address.toString();
+
+        // Always show connected UI - user can click "Continue" or "Use a different account"
+        // The UI will show different buttons based on whether wallet is already verified
+        console.log('Connection success, showing connected UI for:', address);
+        showAlreadyConnected.value = true;
+        alreadyConnectedProvider.value = walletName as 'google' | 'apple';
+        alreadyConnectedAddress.value = address;
+        verificationState.value = 'idle';
+
+        // If wallet is already verified, auto-select it
+        if (isWalletAlreadyVerified(address, walletName)) {
+            const wallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+            if (wallet) {
+                console.log('Auto-selecting already verified wallet:', wallet);
+                await walletStore.setWallet(wallet);
+            }
+        }
+    } else {
+        console.log('Waiting for account to be available...');
+    }
+}
+
+// Watch for account changes from Aptos Connect
+watch(
+    aptosAccount,
+    (newAccount) => {
+        if (newAccount?.address && isConnecting.value && connectingProvider.value) {
+            // Use the stored provider name and reset the connecting state
+            const provider = connectingProvider.value;
+            isConnecting.value = false;
+            connectingProvider.value = null;
+            handleConnectionSuccess(provider);
+        }
+    },
+    { deep: true },
+);
 
 // Detect mobile device and platform
 const isMobile = computed(() => {
@@ -144,7 +699,11 @@ const isIOS = computed(() => {
     return false;
 });
 
-const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injectedKey: string }[] = [
+interface KnownWallet extends Omit<WalletInfo, 'provider' | 'injected'> {
+    injectedKey: string;
+}
+
+const KNOWN_APTOS_WALLETS: KnownWallet[] = [
     {
         key: 'santaAptos',
         name: 'Santa Wallet',
@@ -204,7 +763,7 @@ const KNOWN_APTOS_WALLETS: Omit<WalletInfo, 'provider' | 'injected'> & { injecte
     // },
 ];
 
-const mobileStoreUrls = {
+const mobileStoreUrls: Record<string, { android: string; ios: string }> = {
     // Santa Wallet is not available on mobile stores, use desktop URL
     // Petra Wallet
     aptos: {
@@ -228,7 +787,7 @@ const mobileStoreUrls = {
     },
 };
 
-function getInstallUrl(wallet: any) {
+function getInstallUrl(wallet: KnownWallet) {
     // For Santa Wallet, always use the desktop URL regardless of device
     if (wallet.key === 'santaAptos') {
         return wallet.installUrl;
@@ -236,10 +795,11 @@ function getInstallUrl(wallet: any) {
 
     // For other wallets, use mobile app store URLs on mobile devices
     if (isMobile.value) {
-        if (isAndroid.value && mobileStoreUrls[wallet.injectedKey]?.android) {
-            return mobileStoreUrls[wallet.injectedKey].android;
-        } else if (isIOS.value && mobileStoreUrls[wallet.injectedKey]?.ios) {
-            return mobileStoreUrls[wallet.injectedKey].ios;
+        const storeUrls = mobileStoreUrls[wallet.injectedKey];
+        if (isAndroid.value && storeUrls?.android) {
+            return storeUrls.android;
+        } else if (isIOS.value && storeUrls?.ios) {
+            return storeUrls.ios;
         }
     }
 
@@ -551,6 +1111,248 @@ async function connect(wallet: WalletInfo) {
 
 .wallet-list {
     margin-top: 1rem;
+}
+
+/* Social Login Section Styling */
+.social-login-section {
+    margin-bottom: 1rem;
+}
+
+.social-login-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.social-login-label.dark-text {
+    color: #adb5bd;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    background: #ffffff;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.social-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.social-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.social-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.social-btn.dark-mode {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #fff;
+}
+
+.social-btn.dark-mode:hover:not(:disabled) {
+    background: #3a3a3a;
+    border-color: #555;
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Already Connected Section */
+.already-connected-section {
+    padding: 0.5rem 0;
+}
+
+.connected-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #f8f9fa;
+    border: 1px solid #e5e5e5;
+    text-align: center;
+}
+
+.connected-card.dark-mode {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #fff;
+}
+
+.connected-icon {
+    margin-bottom: 0.75rem;
+}
+
+.connected-icon .provider-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.connected-icon .fa-check-circle {
+    font-size: 2.5rem;
+    color: #28a745;
+}
+
+.connected-info {
+    margin-bottom: 1rem;
+}
+
+.connected-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: inherit;
+}
+
+.connected-address {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-family: monospace;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.connected-card.dark-mode .connected-address {
+    color: #adb5bd;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.connected-address.loading {
+    font-family: inherit;
+    font-style: italic;
+    color: #888;
+}
+
+.connected-address.error-message {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.verified-badge {
+    font-size: 0.85rem;
+    color: #28a745;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+/* Verification States */
+.verification-success-icon {
+    margin-bottom: 1rem;
+}
+
+.verification-success-icon .fa-check-circle {
+    font-size: 3.5rem;
+    color: #28a745;
+}
+
+.connected-icon.verifying {
+    margin-bottom: 1rem;
+}
+
+.connected-icon.verifying .fa-spinner {
+    font-size: 2.5rem;
+    color: #007bff;
+}
+
+.connected-icon.error {
+    margin-bottom: 0.75rem;
+}
+
+.connected-icon.error .fa-exclamation-circle {
+    font-size: 2.5rem;
+}
+
+.continue-btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.continue-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.social-btn.connecting {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+.social-btn .fa-spinner {
+    font-size: 16px;
+}
+
+.google-btn:hover:not(:disabled) {
+    border-color: #4285f4;
+}
+
+.apple-btn:hover:not(:disabled) {
+    border-color: #333;
+}
+
+.apple-btn.dark-mode:hover:not(:disabled) {
+    border-color: #fff;
+}
+
+/* Wallet Divider */
+.wallet-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1rem 0;
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.wallet-divider::before,
+.wallet-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.wallet-divider.dark-mode::before,
+.wallet-divider.dark-mode::after {
+    border-color: #444;
+}
+
+.wallet-divider.dark-mode {
+    color: #adb5bd;
+}
+
+.wallet-divider span {
+    padding: 0 12px;
 }
 
 /* Top wallet section styling */
