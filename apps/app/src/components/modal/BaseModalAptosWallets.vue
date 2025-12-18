@@ -57,9 +57,14 @@
                             <i class="fas fa-redo me-2"></i>
                             Try Again
                         </button>
-                        <button class="btn btn-link btn-sm text-muted mt-2" @click="useDifferentAccount">
+                        <button
+                            v-b-tooltip.hover
+                            class="btn btn-link btn-sm text-muted mt-2"
+                            title="To switch Google accounts, log out from aptosconnect.app first"
+                            @click="useDifferentAccount"
+                        >
                             <i class="fas fa-sync-alt me-1"></i>
-                            Use a different account
+                            Switch address
                         </button>
                     </template>
 
@@ -104,9 +109,14 @@
                             <i class="fas fa-shield-alt me-2"></i>
                             Verify this account
                         </button>
-                        <button class="btn btn-link btn-sm text-muted mt-2" @click="useDifferentAccount">
+                        <button
+                            v-b-tooltip.hover
+                            class="btn btn-link btn-sm text-muted mt-2"
+                            title="To switch Google accounts, log out from aptosconnect.app first"
+                            @click="useDifferentAccount"
+                        >
                             <i class="fas fa-sync-alt me-1"></i>
-                            Use a different account
+                            Switch address
                         </button>
                     </template>
                 </div>
