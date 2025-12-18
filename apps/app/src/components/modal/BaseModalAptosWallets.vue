@@ -343,12 +343,19 @@ function handleWalletError(error: any) {
         // User can click "Continue" or "Use a different account"
         console.log('Wallet connected, showing connected UI');
 
-        // Not verified yet, show the UI
-        console.log('Wallet not verified yet, showing connected UI');
         showAlreadyConnected.value = true;
         alreadyConnectedProvider.value = provider;
         if (address) {
             alreadyConnectedAddress.value = address;
+
+            // If wallet is already verified, auto-select it
+            if (isWalletAlreadyVerified(address, provider)) {
+                const wallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+                if (wallet) {
+                    console.log('Auto-selecting already verified wallet:', wallet);
+                    walletStore.setWallet(wallet);
+                }
+            }
         }
         isConnecting.value = false;
         connectingProvider.value = null;
@@ -552,6 +559,13 @@ async function verifyAndCreateWallet() {
         console.log('Creating wallet with data:', walletData);
         await walletStore.create(walletData);
 
+        // Find and select the newly created wallet
+        const newWallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+        if (newWallet) {
+            console.log('Setting newly created wallet as active:', newWallet);
+            await walletStore.setWallet(newWallet);
+        }
+
         verificationState.value = 'success';
         console.log('Wallet verified and created successfully');
     } catch (err: any) {
@@ -562,7 +576,18 @@ async function verifyAndCreateWallet() {
 }
 
 // Close modal after successful verification
-function closeAfterSuccess() {
+async function closeAfterSuccess() {
+    // If wallet was just verified, it should already be selected
+    // But for already verified wallets, we need to select it now
+    const address = alreadyConnectedAddress.value || aptosAccount.value?.address?.toString();
+    if (address) {
+        const wallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+        if (wallet) {
+            console.log('Setting wallet as active on close:', wallet);
+            await walletStore.setWallet(wallet);
+        }
+    }
+
     showAlreadyConnected.value = false;
     verificationState.value = 'idle';
     verificationError.value = null;
@@ -596,7 +621,7 @@ async function useDifferentAccount() {
 }
 
 // Handle successful connection - shows verification UI instead of auto-verifying
-function handleConnectionSuccess(walletName = 'AptosConnect') {
+async function handleConnectionSuccess(walletName = 'AptosConnect') {
     // Prevent double handling
     if (hasEmittedConnection.value || showAlreadyConnected.value) {
         console.log('Connection already handled, skipping...');
@@ -613,6 +638,15 @@ function handleConnectionSuccess(walletName = 'AptosConnect') {
         alreadyConnectedProvider.value = walletName as 'google' | 'apple';
         alreadyConnectedAddress.value = address;
         verificationState.value = 'idle';
+
+        // If wallet is already verified, auto-select it
+        if (isWalletAlreadyVerified(address, walletName)) {
+            const wallet = walletStore.wallets.find((w: any) => w.address?.toLowerCase() === address.toLowerCase());
+            if (wallet) {
+                console.log('Auto-selecting already verified wallet:', wallet);
+                await walletStore.setWallet(wallet);
+            }
+        }
     } else {
         console.log('Waiting for account to be available...');
     }
