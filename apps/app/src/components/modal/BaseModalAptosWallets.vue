@@ -27,7 +27,7 @@
                                 {{ truncateAddress(alreadyConnectedAddress || aptosAccount?.address?.toString()) }}
                             </p>
                         </div>
-                        <button class="btn btn-success continue-btn" @click="closeAfterSuccess">
+                        <button class="btn btn-primary continue-btn" @click="closeAfterSuccess">
                             <i class="fas fa-check me-2"></i>
                             Done
                         </button>
