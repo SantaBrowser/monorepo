@@ -64,11 +64,19 @@ function getByAddress(address: string) {
 }
 
 async function getLeaderboardFromCache(pool: PoolDocument, options: { startDate: Date; endDate: Date }) {
-    if (AnalyticsService.leaderboards[pool.id]) {
-        return AnalyticsService.leaderboards[pool.id];
+    const cached = AnalyticsService.leaderboards[pool.id];
+    const now = new Date();
+    const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+    // Check if cache exists and less than 24 hours
+    if (cached) {
+        const cacheAge = now.getTime() - cached.timestamp.getTime();
+        if (cacheAge < CACHE_TTL_MS) {
+            return cached.data;
+        }
     }
 
-    // If not cached create the leaderboard and store in cache
+    // If not cached or expired, create the leaderboard and store in cache
     const leaderboard = await AnalyticsService.createLeaderboard(pool, options);
     AnalyticsService.cacheLeaderboard(pool.id, leaderboard);
     return leaderboard;

@@ -41,7 +41,7 @@ import { subWeeks } from 'date-fns';
 import { logger } from '../util/logger';
 
 class AnalyticsService {
-    public leaderboards: { [poolId: string]: TLeaderboardEntry[] } = {};
+    public leaderboards: { [poolId: string]: { data: TLeaderboardEntry[]; timestamp: Date } } = {};
 
     // Triggered when a quest entry is added
     async updateLeaderboardJob(job: TJob) {
@@ -66,7 +66,10 @@ class AnalyticsService {
     }
 
     cacheLeaderboard(poolId: string, leaderboard: TLeaderboardEntry[]) {
-        this.leaderboards[poolId] = leaderboard;
+        this.leaderboards[poolId] = {
+            data: leaderboard,
+            timestamp: new Date(),
+        };
     }
 
     async createLeaderboard(pool: PoolDocument, options?: { startDate: Date; endDate: Date }) {
