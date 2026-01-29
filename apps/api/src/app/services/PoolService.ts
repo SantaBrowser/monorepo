@@ -66,7 +66,7 @@ function getByAddress(address: string) {
 async function getLeaderboardFromCache(pool: PoolDocument, options: { startDate: Date; endDate: Date }) {
     const cached = AnalyticsService.leaderboards[pool.id];
     const now = new Date();
-    const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+    const CACHE_TTL_MS = 15 * 60 * 1000;
 
     // Check if cache exists and less than 24 hours
     if (cached) {
